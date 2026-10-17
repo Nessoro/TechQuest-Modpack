@@ -24,6 +24,29 @@ jobs:
           python-version: '3.12'
       - name: Validate pack builder and server installer
         run: python -m unittest discover -s tests -v
+      - name: Validate GitHub-hosted IndustrialCraft JAR and download hash
+        run: |
+          python - <<'PY'
+          import re
+          import zipfile
+          from pathlib import Path
+          import build_pack
+          manual=build_pack.manual_records(build_pack.load_cfg())
+          if not manual:
+              raise SystemExit("IndustrialCraft is required but missing")
+          for item in manual:
+              with zipfile.ZipFile(item["source_path"]) as jar:
+                  metadata="\n".join(
+                      jar.read(path).decode("utf-8", "replace")
+                      for path in ("META-INF/neoforge.mods.toml","META-INF/mods.toml")
+                      if path in jar.namelist())
+                  if not re.search(r'modId\\s*=\\s*["\\x27]ic2["\\x27]', metadata, re.I):
+                      raise SystemExit("Expected IC2 modId not present in JAR metadata")
+              print("Checking GitHub raw pinned URL:", item["url"])
+              data=build_pack.get_url(item["url"])
+              build_pack.verify(data,item["hashes"])
+              print("IC2 binary and raw download match:",item["filename"],len(data),"bytes")
+          PY
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
       - name: Create server bootstrap (no redistributed third-party JARs)
@@ -39,9 +62,9 @@ jobs:
           1. Install Java 21 (64-bit) and Python 3.9+.
           2. In this extracted folder, run:
                python scripts/install_server.py --pack TechQuest.mrpack --target server
-          3. Manually download Industrial Craft 2: Nostalgia for NeoForge 1.21.1:
-             https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia
-             Copy its JAR into the generated server/mods folder.
+          3. Industrial Craft 2: Nostalgia is included automatically in TechQuest.mrpack
+             as a pinned GitHub download with SHA-512/SHA-1 verification.
+             You do NOT need to add its JAR manually. The same mod goes to client/server.
           4. Read Minecraft's EULA and change eula.txt to eula=true only if you agree.
           5. Set whitelist players with /whitelist add <username> using server console.
           6. Run ./run.sh nogui on Linux or run.bat nogui on Windows.
@@ -86,7 +109,8 @@ jobs:
           else:
               lines.append("- Full download/hash verification failed or did not finish; inspect logs.")
           lines += ["","**Not a tested playable release.** No Minecraft client/server runtime startup was performed.",
-                    "Third-party mod JAR files are never uploaded as artifacts.",
+                    "IndustrialCraft 2 Nostalgia is included as a verified download URL inside .mrpack.",
+                    "Third-party JAR bytes are referenced via pinned GitHub URL, not bundled in the artifact.",
                     "Look under this run's **Artifacts** for .mrpack and server bootstrap."]
           with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
               f.write("\n".join(lines)+"\n")
