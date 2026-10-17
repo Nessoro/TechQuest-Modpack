@@ -2,8 +2,9 @@
 """Build TechQuest for Minecraft 1.21.1 / NeoForge.
 
 Resolves Modrinth mod versions and mandatory dependencies, verifies hashes,
-produces an .mrpack and separate client/server folders. The IC2 Nostalgia
-JAR is a separate, user-supplied mod and is never redistributed here.
+produces an .mrpack and separate client/server folders. The pinned IC2 Nostalgia
+JAR is read from manual-mods/ and referenced through its immutable GitHub URL.
+The .mrpack contains only a URL and verified hashes, not the third-party JAR.
 """
 import argparse
 import hashlib
@@ -151,7 +152,41 @@ def download_checked(info, dest):
     path.write_bytes(data)
     return path
 
-def make_mrpack(cfg, mods, output):
+def manual_records(cfg):
+    """Verify owner-supplied mod JARs and prepare hash-pinned download entries.
+
+    The public .mrpack references an immutable GitHub URL; it does not embed the
+    third-party binary. The GitHub-hosted copy requires license compliance.
+    """
+    records = []
+    for mod in cfg.get("manual_mods", []):
+        name = safe_filename(mod["file_name"])
+        path = ROOT / "manual-mods" / name
+        if not path.is_file():
+            if mod.get("required"):
+                raise BuildError("Missing REQUIRED manual mod: " + name)
+            continue
+        if path.stat().st_size <= 1024 or not zipfile.is_zipfile(path):
+            raise BuildError("Invalid manual JAR: " + name)
+        with zipfile.ZipFile(path) as archive:
+            if archive.testzip() is not None:
+                raise BuildError("Corrupt manual JAR: " + name)
+            if not any(x in archive.namelist() for x in
+                       ("META-INF/neoforge.mods.toml", "META-INF/mods.toml")):
+                raise BuildError("Mod metadata not found in manual JAR: " + name)
+        url = mod.get("download_url")
+        if not url or not url.startswith("https://raw.githubusercontent.com/"):
+            raise BuildError("Manual mod has no pinned GitHub raw URL: " + name)
+        data = path.read_bytes()
+        records.append({
+            "name": mod["name"], "filename": name, "source_path": path,
+            "url": url, "fileSize": len(data),
+            "hashes": {"sha1": hashlib.sha1(data).hexdigest(),
+                       "sha512": hashlib.sha512(data).hexdigest()}})
+    return records
+
+
+def make_mrpack(cfg, mods, output, manual_files=()):
     files = []
     for rec in mods:
         f = rec["file"]
@@ -165,6 +200,13 @@ def make_mrpack(cfg, mods, output):
         files.append({"path": "mods/" + safe_filename(f["filename"]),
                       "hashes": hashes, "env": side, "downloads": [f["url"]],
                       "fileSize": f["size"]})
+    for local in manual_files:
+        files.append({
+            "path": "mods/" + safe_filename(local["filename"]),
+            "hashes": local["hashes"],
+            "env": {"client": "required", "server": "required"},
+            "downloads": [local["url"]],
+            "fileSize": local["fileSize"]})
     idx = {"formatVersion": 1, "game": "minecraft", "versionId": cfg["version"],
            "name": cfg["pack_name"], "summary": cfg["description"],
            "files": files,
@@ -172,10 +214,6 @@ def make_mrpack(cfg, mods, output):
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("modrinth.index.json", json.dumps(idx, ensure_ascii=False, indent=2))
-        archive.writestr("overrides/INSTALL_IC2.txt",
-            "IndustrialCraft 2: Nostalgia is not included. Download the exact NeoForge "
-            "1.21.1 mod from https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia "
-            "and add it manually to the client and server mods folders.")
     return len(files)
 
 def main():
@@ -189,13 +227,16 @@ def main():
     out.mkdir(exist_ok=True)
     print("Resolving Minecraft", cfg["minecraft"], cfg["loader"], "...")
     resolved, optional = resolve_manifest(cfg)
+    manual = manual_records(cfg)
     write_json(out / "versions-lock.json", {
         "minecraft": cfg["minecraft"], "loader_version": cfg["loader_version"],
         "mods": [{k:m[k] for k in ("requested","title","version","version_id","filename","environment")}
                  for m in resolved], "optional_skipped": optional,
-        "manual_mods": cfg["manual_mods"]})
+        "manual_mods": [{"name": row["name"], "file_name": row["filename"],
+                          "url": row["url"], "hashes": row["hashes"]}
+                         for row in manual]})
     if not args.no_mrpack:
-        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.1.0.mrpack")
+        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.1.0.mrpack", manual)
         print("Generated Modrinth manifest:", n, "files")
     if args.resolve_only:
         print("Version resolution done. Minecraft startup is NOT verified.")
@@ -213,14 +254,9 @@ def main():
         elif env["server"] != "unsupported":
             download_checked(rec, server)
     missing = []
-    for item in cfg["manual_mods"]:
-        filename = safe_filename(item["file_name"])
-        path = ROOT / "manual-mods" / filename
-        if path.is_file() and path.stat().st_size > 1024 and zipfile.is_zipfile(path):
-            shutil.copy2(path, client / filename)
-            shutil.copy2(path, server / filename)
-        else:
-            missing.append(item["name"])
+    for local in manual:
+        shutil.copy2(local["source_path"], client / local["filename"])
+        shutil.copy2(local["source_path"], server / local["filename"])
     (out / "server" / "server.properties").write_text(
         "motd=TechQuest Industrial Frontier\nmax-players=8\nonline-mode=true\n"
         "white-list=true\nenforce-whitelist=true\nenable-rcon=false\n"
@@ -231,7 +267,7 @@ def main():
         "and back up the world before mod updates.\n" %
         (cfg["loader_version"], cfg["minecraft"]), encoding="utf-8")
     write_json(out / "BUILD_STATUS.json", {
-        "status": "MISSING_MANUAL_MODS" if missing else "READY_FOR_GAME_TESTS",
+        "status": "READY_FOR_GAME_TESTS",
         "missing_mods": missing,
         "warning": "Successful build DOES NOT confirm client/server runtime compatibility"})
     print("Client/server files created. Missing manually supplied mods:", missing)
