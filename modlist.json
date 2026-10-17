@@ -179,7 +179,8 @@
       "file_name": "industrial-craft-2-nostalgia-21.1.0-local.26.jar",
       "source": "https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244",
       "required": true,
-      "note": "Неофициальный IC2-порт для NeoForge 1.21.1. Скачайте с CurseForge и положите в manual-mods/. Не добавляйте другие IC2-порты одновременно."
+      "note": "Обязательный IC2 порт. JAR хранится в репозитории и скачивается по закреплённому GitHub commit с SHA-512/SHA-1 проверкой. Публикация требует отдельного соблюдения лицензий IC2 и автора порта.",
+      "download_url": "https://raw.githubusercontent.com/Nessoro/TechQuest-Modpack/503b0676cb44764ede56e94975f66e9a3c35c6db/manual-mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar"
     }
   ]
 }
