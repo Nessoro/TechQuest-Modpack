@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 cfg = json.loads((ROOT / "modlist.json").read_text(encoding="utf-8"))
 NAMES = {
     "buildcraft-community-edition": "BuildCraft Community Edition",
-    "applied-energistics-2": "Applied Energistics 2",
+    "ae2": "Applied Energistics 2",
     "irons-spells-n-spellbooks": "Iron's Spells 'n Spellbooks",
     "l_enders-cataclysm": "L_Ender's Cataclysm",
     "yungs-better-dungeons": "YUNG's Better Dungeons",
@@ -21,7 +21,7 @@ NAMES = {
     "modern-industrialization": "Modern Industrialization",
     "mekanism-generators": "Mekanism Generators",
     "iron-chests": "Iron Chests",
-    "storage-drawers": "Storage Drawers",
+    "storagedrawers": "Storage Drawers",
     "mowzies-mobs": "Mowzie's Mobs",
     "farmers-delight": "Farmer's Delight",
     "iris": "Iris Shaders",
@@ -33,7 +33,7 @@ DESCRIPTIONS = {
     "create": "Шестерни, вращение и автоматизированные производства.",
     "mekanism": "Техническая энергетика и многоуровневая переработка руд.",
     "modern-industrialization": "Промышленные цепочки и заводы.",
-    "applied-energistics-2": "Цифровые склады и промышленная логистика.",
+    "ae2": "Цифровые склады и промышленная логистика.",
     "l_enders-cataclysm": "Боссы, структуры и сложные сражения.",
     "terralith": "Новые биомы и ландшафты.",
     "yungs-better-dungeons": "Новые вариации подземелий.",
