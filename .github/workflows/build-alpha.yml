@@ -40,7 +40,7 @@ jobs:
                       jar.read(path).decode("utf-8", "replace")
                       for path in ("META-INF/neoforge.mods.toml","META-INF/mods.toml")
                       if path in jar.namelist())
-                  if not re.search(r'modId\\s*=\\s*["\\x27]ic2["\\x27]', metadata, re.I):
+                  if 'modId="ic2"' not in ''.join(metadata.split()) and "modId='ic2'" not in ''.join(metadata.split()):
                       raise SystemExit("Expected IC2 modId not present in JAR metadata")
               print("Checking GitHub raw pinned URL:", item["url"])
               data=build_pack.get_url(item["url"])
