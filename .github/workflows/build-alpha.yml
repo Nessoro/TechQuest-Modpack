@@ -1,0 +1,55 @@
+name: Build TechQuest alpha
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - modlist.json
+      - build_pack.py
+      - tests/**
+      - .github/workflows/build-alpha.yml
+permissions:
+  contents: read
+jobs:
+  pack:
+    name: Resolve and assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate pack builder
+        run: python -m unittest discover -s tests -v
+      - name: Resolve dependencies and create Modrinth modpack
+        run: python build_pack.py --resolve-only
+      - name: Archive pack and lockfile
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-mrpack
+          path: |
+            output/*.mrpack
+            output/versions-lock.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Summarize pack creation
+        if: success()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=json.loads(Path("output/versions-lock.json").read_text(encoding="utf-8"))
+          n=len(d.get("mods", []))
+          o=len(d.get("optional_skipped", []))
+          lines=["# TechQuest alpha — manifest built", "",
+                 f"- Resolved Modrinth JAR versions including dependencies: **{n}**",
+                 f"- Optional mods skipped: **{o}**",
+                 "- IC2: Nostalgia must be downloaded separately from its author.",
+                 "- Modrinth package is **unverified in Minecraft**; actual server and client startup are not tested.",
+                 "- Use the `TechQuest-1.21.1-alpha-mrpack` artifact attached to this workflow run."]
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
+              f.write("\n".join(lines)+"\n")
+          PY
