@@ -23,12 +23,20 @@ TechQuest — большая комплексная сборка вокруг **
 1. Репозиторий уже создан: `Nessoro/TechQuest-Modpack`.
 2. В GitHub откройте **Settings → Pages → Build and deployment → Deploy from a branch**.
 3. Выберите ветку `main`, папку `/docs`, нажмите **Save**.
-4. Сайт появится по адресу `https://nessoro.github.io/TechQuest-Modpack/` (точный адрес GitHub покажет в Settings → Pages).
+4. Сайт опубликован по адресу `https://nessoro.github.io/TechQuest-Modpack/` (GitHub Pages build завершился успешно 17.10.2026).
 5. Убедитесь, что вкладка **Issues** включена в Settings → General → Features.
 
 Сайт не хранит сообщения у себя: кнопка «Создать отчёт / Отправить предложение» открывает **заполненный черновик GitHub Issue**, затем пользователь входит в GitHub и подтверждает публикацию. На сайте также автоматически отображаются недавние открытые Issues.
 
-**Если владелец или имя репозитория будут другими:** измените `REPO` в `docs/assets/app.js` и URL в `.github/ISSUE_TEMPLATE/config.yml`.
+**Если владелец или имя репозитория будут другими:** измените `REPO` в `docs/index.html` и URL в `.github/ISSUE_TEMPLATE/config.yml`.
+
+## Проверка доступности модов
+
+[Автоматическая проверка Modrinth](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/audit-mods.yml) запускается при изменении списка модов, вручную и по понедельникам.
+
+Она создаёт отчёты `compatibility.md` и `compatibility.json` в артефакте `techquest-compatibility-report`: для каждого кандидата показывает наличие подходящей версии под Minecraft 1.21.1 / NeoForge. Это **не** игровой тест. Моды из CurseForge, включая IC2: Nostalgia, проверяются отдельно.
+
+Для локального отчёта: `python scripts/audit_modlist.py`.
 
 ## Собрать файлы модпака
 
