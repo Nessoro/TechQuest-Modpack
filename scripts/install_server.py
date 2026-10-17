@@ -72,7 +72,8 @@ def install_neoforge(target, version):
         raise packbuilder.BuildError("Java not found. Install Java 21 before running.")
     probe = subprocess.run(["java", "-version"], text=True,
                            capture_output=True, check=True, timeout=15)
-    if not re.search(r'version "[1]?21[.+"-]', probe.stderr + probe.stdout):
+    found_version = re.search(r'version "([0-9]+)', probe.stderr + probe.stdout)
+    if not found_version or found_version.group(1) != "21":
         raise packbuilder.BuildError("Java 21 required: " + (probe.stderr or probe.stdout).splitlines()[0])
     name = f"neoforge-{version}-installer.jar"
     root_url = f"{NEOFORGE_MAVEN}/{version}/{name}"
