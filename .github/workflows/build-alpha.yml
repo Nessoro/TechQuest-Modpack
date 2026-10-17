@@ -5,15 +5,16 @@ on:
     paths:
       - modlist.json
       - build_pack.py
+      - scripts/install_server.py
       - tests/**
       - .github/workflows/build-alpha.yml
 permissions:
   contents: read
 jobs:
   pack:
-    name: Resolve and assemble
+    name: Build pack and verify file hashes
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 50
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -21,35 +22,72 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate pack builder
+      - name: Validate pack builder and server installer
         run: python -m unittest discover -s tests -v
-      - name: Resolve dependencies and create Modrinth modpack
-        run: python build_pack.py --resolve-only
-      - name: Archive pack and lockfile
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: TechQuest-1.21.1-alpha-mrpack
-          path: |
-            output/*.mrpack
-            output/versions-lock.json
-          if-no-files-found: warn
-          retention-days: 30
-      - name: Summarize pack creation
+      - name: Assemble client and server mods (temporary; do not redistribute)
+        run: python build_pack.py
+      - name: Create server bootstrap (no redistributed third-party JARs)
         if: success()
         run: |
           python - <<'PY'
-          import json, os
           from pathlib import Path
-          d=json.loads(Path("output/versions-lock.json").read_text(encoding="utf-8"))
-          n=len(d.get("mods", []))
-          o=len(d.get("optional_skipped", []))
-          lines=["# TechQuest alpha — manifest built", "",
-                 f"- Resolved Modrinth JAR versions including dependencies: **{n}**",
-                 f"- Optional mods skipped: **{o}**",
-                 "- IC2: Nostalgia must be downloaded separately from its author.",
-                 "- Modrinth package is **unverified in Minecraft**; actual server and client startup are not tested.",
-                 "- Use the `TechQuest-1.21.1-alpha-mrpack` artifact attached to this workflow run."]
+          import zipfile
+          out=Path("output")
+          p=out/"TechQuest_Server_Bootstrap.zip"
+          readme="""TechQuest server bootstrap — Minecraft 1.21.1 / NeoForge / Java 21
+
+          1. Install Java 21 (64-bit) and Python 3.9+.
+          2. In this extracted folder, run:
+               python scripts/install_server.py --pack TechQuest.mrpack --target server
+          3. Manually download Industrial Craft 2: Nostalgia for NeoForge 1.21.1:
+             https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia
+             Copy its JAR into the generated server/mods folder.
+          4. Read Minecraft's EULA and change eula.txt to eula=true only if you agree.
+          5. Set whitelist players with /whitelist add <username> using server console.
+          6. Run ./run.sh nogui on Linux or run.bat nogui on Windows.
+
+          Current pack is an untested alpha. Back up worlds, review logs.
+          """
+          with zipfile.ZipFile(p,"w",zipfile.ZIP_DEFLATED) as z:
+              z.write("scripts/install_server.py")
+              z.write("build_pack.py")
+              z.write(out/"TechQuest_1.21.1_0.1.0.mrpack",arcname="TechQuest.mrpack")
+              z.writestr("SERVER_INSTALL_README.txt",readme)
+          print("Created",p,p.stat().st_size,"bytes")
+          PY
+      - name: Publish downloadable manifests and bootstrap
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          path: |
+            output/*.mrpack
+            output/TechQuest_Server_Bootstrap.zip
+            output/versions-lock.json
+            output/BUILD_STATUS.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Summarize build
+        if: always()
+        run: |
+          python - <<'PY'
+          import os,json
+          from pathlib import Path
+          out=Path("output")
+          lines=["# TechQuest alpha build", ""]
+          if (out/"versions-lock.json").exists():
+              d=json.loads((out/"versions-lock.json").read_text(encoding="utf-8"))
+              lines.append(f"- Resolved mods and dependencies: **{len(d.get('mods',[]))}**")
+              lines.append(f"- Optional mods skipped: **{len(d.get('optional_skipped',[]))}**")
+          if (out/"BUILD_STATUS.json").exists():
+              j=json.loads((out/"BUILD_STATUS.json").read_text(encoding="utf-8"))
+              lines.append(f"- Build status: **{j['status']}**")
+              lines.append(f"- Manual mods missing: **{', '.join(j['missing_mods']) or 'none'}**")
+          else:
+              lines.append("- Full download/hash verification failed or did not finish; inspect logs.")
+          lines += ["","**Not a tested playable release.** No Minecraft client/server runtime startup was performed.",
+                    "Third-party mod JAR files are never uploaded as artifacts.",
+                    "Look under this run's **Artifacts** for .mrpack and server bootstrap."]
           with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
               f.write("\n".join(lines)+"\n")
           PY
