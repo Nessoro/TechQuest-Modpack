@@ -1,0 +1,33 @@
+name: Audit mod availability
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - modlist.json
+      - scripts/audit_modlist.py
+      - tests/test_audit_modlist.py
+      - .github/workflows/audit-mods.yml
+  schedule:
+    - cron: '18 7 * * 1'
+permissions:
+  contents: read
+jobs:
+  modrinth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test audit logic
+        run: python -m unittest discover -s tests -p 'test_audit_modlist.py' -v
+      - name: Check versions on Modrinth (no downloads)
+        run: python scripts/audit_modlist.py
+      - name: Upload compatibility report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: techquest-compatibility-report
+          path: output/audit/
+          if-no-files-found: warn
