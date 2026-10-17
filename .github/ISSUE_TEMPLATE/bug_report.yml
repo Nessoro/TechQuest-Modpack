@@ -1,0 +1,58 @@
+name: "🐛 Ошибка в сборке"
+description: "Сообщить о проблеме с клиентом, сервером, модом или миром"
+title: "[Баг] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Убедитесь, что такой ошибки ещё нет. Перед отправкой удалите из логов IP-адреса, пароли и токены."
+  - type: input
+    id: version
+    attributes:
+      label: Версия TechQuest
+      placeholder: "0.1.0-alpha"
+    validations:
+      required: true
+  - type: dropdown
+    id: location
+    attributes:
+      label: Где возникает ошибка?
+      options:
+        - Клиент Minecraft
+        - Выделенный сервер
+        - На обеих сторонах
+        - Неизвестно
+    validations:
+      required: true
+  - type: input
+    id: mod
+    attributes:
+      label: Затронутый мод
+      placeholder: "BuildCraft / IndustrialCraft / неизвестно"
+  - type: textarea
+    id: repro
+    attributes:
+      label: Шаги для воспроизведения
+      placeholder: "1. Запустил...
+2. Нажал...
+3. Возникла ошибка..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Ожидаемый результат
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Логи или скриншоты
+      description: "Прикрепите файл или ссылку. Уберите приватную информацию."
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Подтверждение
+      options:
+        - label: Я проверил дубликаты и удалил приватную информацию.
+          required: true
