@@ -1,0 +1,52 @@
+name: "🧩 Предложить мод"
+description: "Идея для технологического, RPG, приключенческого или оптимизационного мода"
+title: "[Мод] "
+labels: ["enhancement"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Название мода
+      placeholder: "Ad Astra"
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Официальная ссылка
+      placeholder: "https://modrinth.com/mod/..."
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Категория
+      options:
+        - Технологии и автоматизация
+        - RPG и навыки
+        - Мобы и боссы
+        - Генерация мира
+        - Интерфейс и комфорт
+        - Оптимизация
+        - Другое
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Почему стоит добавить этот мод?
+      description: "Что он добавляет и как впишется в сборку?"
+    validations:
+      required: true
+  - type: input
+    id: compatibility
+    attributes:
+      label: Совместимость с Minecraft 1.21.1 и NeoForge
+      placeholder: "Поддерживается / неизвестно / нет"
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Проверка
+      options:
+        - label: Я проверил, что аналогичное предложение ещё не открыто.
+          required: true
