@@ -73,7 +73,7 @@ python scripts/install_server.py --pack TechQuest.mrpack --target server
 
 Для проверки фактического запуска NeoForge предусмотрен [ручной workflow Smoke-test NeoForge server](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/smoke-server.yml).
 Он требует **явного согласия с Minecraft EULA** через переключатель `accept_minecraft_eula`. Workflow скачает моды, установит временный NeoForge 1.21.1, запустит сервер и приложит логи к результату.
-**Ограничение:** сторонний порт IC2: Nostalgia не включается в автоматический тест (нельзя перепубликовывать без проверки лицензии). Даже успешный smoke-test не заменяет испытание полного набора модов с IC2 и игру нескольких участников.
+**Ограничение:** теперь smoke-test включает загруженный IC2 Nostalgia и требует явного согласия администратора с EULA при ручном запуске. Прохождение теста старта сервера не заменяет испытаний клиента, подключения друзей и устойчивости индустриальных механизмов.
 
 ## Собрать файлы модпака
 
@@ -84,7 +84,7 @@ python scripts/sync_site_mods.py       # Обновить каталог сай�
 python -m unittest discover -s tests -v
 ```
 
-Нужны интернет, Python 3.9+ и отдельно установленная Java 21 для Minecraft. IndustrialCraft 2: Nostalgia скачивается пользователем с [CurseForge](https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244) в `manual-mods/`, из-за ограничения на перераспространение модов. **Не загружайте чужие JAR, файлы сервера или миры в git:** в `.gitignore` есть соответствующие исключения.
+Нужны интернет, Python 3.9+ и отдельно установленная Java 21 для Minecraft. IndustrialCraft 2: Nostalgia уже лежит в `manual-mods/` и включается в клиент/сервер через зафиксированный GitHub URL; оригинальная [страница автора на CurseForge](https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244). При распространении важно самостоятельно проверить соблюдение прав на порт и оригинальный IC2. **Не загружайте чужие JAR, файлы сервера или миры в git:** в `.gitignore` есть соответствующие исключения.
 
 ### Важные ссылки
 
