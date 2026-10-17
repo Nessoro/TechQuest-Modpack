@@ -1,0 +1,185 @@
+{
+  "pack_name": "TechQuest: BuildCraft & IndustrialCraft",
+  "version": "0.1.0-alpha",
+  "minecraft": "1.21.1",
+  "loader": "neoforge",
+  "loader_version": "21.1.259",
+  "description": "Большая техническая RPG-сборка для сервера друзей: BuildCraft, IndustrialCraft, Create, Mekanism, прокачка и мобы",
+  "mods": [
+    {
+      "project": "buildcraft-community-edition",
+      "group": "Технологии",
+      "required": true,
+      "version_prefix": "8.0.23+1.21.1+neoforge"
+    },
+    {
+      "project": "create",
+      "group": "Технологии",
+      "required": true
+    },
+    {
+      "project": "mekanism",
+      "group": "Технологии",
+      "required": true
+    },
+    {
+      "project": "modern-industrialization",
+      "group": "Технологии",
+      "required": true
+    },
+    {
+      "project": "applied-energistics-2",
+      "group": "Технологии",
+      "required": true
+    },
+    {
+      "project": "immersiveengineering",
+      "group": "Технологии",
+      "required": false
+    },
+    {
+      "project": "mekanism-generators",
+      "group": "Технологии",
+      "required": false
+    },
+    {
+      "project": "iron-chests",
+      "group": "Хранение",
+      "required": false
+    },
+    {
+      "project": "sophisticated-backpacks",
+      "group": "Хранение",
+      "required": true
+    },
+    {
+      "project": "storage-drawers",
+      "group": "Хранение",
+      "required": false
+    },
+    {
+      "project": "irons-spells-n-spellbooks",
+      "group": "RPG",
+      "required": true
+    },
+    {
+      "project": "apotheosis",
+      "group": "RPG",
+      "required": true
+    },
+    {
+      "project": "skill-tree",
+      "group": "RPG",
+      "required": false
+    },
+    {
+      "project": "project-mmo",
+      "group": "RPG",
+      "required": false
+    },
+    {
+      "project": "naturalist",
+      "group": "Мобы",
+      "required": true
+    },
+    {
+      "project": "l_enders-cataclysm",
+      "group": "Мобы",
+      "required": true
+    },
+    {
+      "project": "mowzies-mobs",
+      "group": "Мобы",
+      "required": false
+    },
+    {
+      "project": "terralith",
+      "group": "Мир",
+      "required": false
+    },
+    {
+      "project": "yungs-better-dungeons",
+      "group": "Мир",
+      "required": true
+    },
+    {
+      "project": "yungs-better-mineshafts",
+      "group": "Мир",
+      "required": false
+    },
+    {
+      "project": "waystones",
+      "group": "Комфорт",
+      "required": true
+    },
+    {
+      "project": "farmers-delight",
+      "group": "Комфорт",
+      "required": false
+    },
+    {
+      "project": "jei",
+      "group": "Интерфейс",
+      "required": true
+    },
+    {
+      "project": "jade",
+      "group": "Интерфейс",
+      "required": true
+    },
+    {
+      "project": "appleskin",
+      "group": "Интерфейс",
+      "required": true
+    },
+    {
+      "project": "mouse-tweaks",
+      "group": "Интерфейс",
+      "required": false
+    },
+    {
+      "project": "ferrite-core",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "modernfix",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "sodium",
+      "group": "Оптимизация",
+      "required": false
+    },
+    {
+      "project": "iris",
+      "group": "Шейдеры",
+      "required": false
+    },
+    {
+      "project": "entityculling",
+      "group": "Оптимизация",
+      "required": false
+    },
+    {
+      "project": "spark",
+      "group": "Сервер",
+      "required": false
+    },
+    {
+      "project": "chunky",
+      "group": "Сервер",
+      "required": false
+    }
+  ],
+  "manual_mods": [
+    {
+      "name": "Industrial Craft 2: Nostalgia",
+      "file_name": "industrial-craft-2-nostalgia-21.1.0-local.26.jar",
+      "source": "https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244",
+      "required": true,
+      "note": "Неофициальный IC2-порт для NeoForge 1.21.1. Скачайте с CurseForge и положите в manual-mods/. Не добавляйте другие IC2-порты одновременно."
+    }
+  ]
+}
