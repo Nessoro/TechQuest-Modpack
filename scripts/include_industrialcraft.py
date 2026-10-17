@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Add the user-downloaded IndustrialCraft 2: Nostalgia JAR to a local .mrpack.
+"""Legacy helper for older TechQuest packs that did not include IndustrialCraft.
 
-The public GitHub build contains metadata and an installer, not third-party
-binaries. This creates a separate PERSONAL copy that includes IndustrialCraft.
+Current builds already include IC2 as a hash-pinned download; do not run
+this helper against a current .mrpack because it would duplicate the mod.
 """
 import argparse
 import json
@@ -57,6 +57,9 @@ def embed_ic2(pack_path: Path, jar: Path, output: Path, expected_name: str):
         index = json.loads(src.read("modrinth.index.json"))
         if index.get("dependencies", {}).get("minecraft") != "1.21.1":
             raise build_pack.BuildError("Expected a Minecraft 1.21.1 modpack")
+        if any(row.get("path") == "mods/" + expected_name for row in index.get("files", [])):
+            raise build_pack.BuildError(
+                "IndustrialCraft is already included as a verified download in this pack")
         for info in src.infolist():
             dest.writestr(info, src.read(info))
         dest.write(jar, item, compress_type=zipfile.ZIP_DEFLATED)
