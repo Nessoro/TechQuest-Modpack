@@ -1,0 +1,5 @@
+IndustrialCraft 2: Nostalgia — экспериментальный порт для NeoForge 1.21.1.
+Скачайте с официальной страницы CurseForge:
+https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244
+Положите JAR в эту папку с именем из поля file_name файла modlist.json.
+Сам JAR не добавляйте в git. Для клиентов и сервера нужен одинаковый файл.
