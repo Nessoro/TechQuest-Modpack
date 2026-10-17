@@ -1,0 +1,20 @@
+# Generated mod downloads and Minecraft server files
+output/
+run/
+world/
+world_nether/
+world_the_end/
+logs/
+crash-reports/
+mods/
+*.jar
+*.mrpack
+*.log
+*.lock
+*.bak
+*.zip
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+.env
