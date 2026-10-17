@@ -1,4 +1,4 @@
-name: Smoke-test NeoForge server (opt-in)
+name: Smoke-test TechQuest server with IC2 (opt-in)
 on:
   workflow_dispatch:
     inputs:
@@ -23,8 +23,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Prepare server mods (IC2 must be tested separately)
-        run: python build_pack.py
+      - name: Prepare server mods including IndustrialCraft 2
+        run: |
+          python build_pack.py
+          test -s output/server/mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar
       - name: Install official NeoForge 21.1.259
         shell: bash
         run: |
@@ -67,7 +69,7 @@ jobs:
             echo "Server did not finish starting: examine artifact logs."
             exit 1
           fi
-          echo "Server launched without IC2. Full TechQuest compatibility NOT established."
+          echo "Server launched WITH IndustrialCraft 2: Nostalgia. Multiplayer testing still required."
       - name: Upload smoke-test reports
         if: always()
         uses: actions/upload-artifact@v4
