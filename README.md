@@ -58,6 +58,18 @@ python scripts/install_server.py --pack TechQuest.mrpack --target server
 
 **Внимание:** успешное создание пакета и загрузка файлов с проверкой хешей не доказывают совместимость модов или отсутствие крашей при старте. Не используйте для постоянного мира до тестового запуска клиента и сервера.
 
+## Боевые моды и разрушения — тестовая интеграция
+
+По запросу в каталог TechQuest для **NeoForge 1.21.1** добавлены:
+- [Superb Warfare](https://modrinth.com/mod/superb-warfare) — вооружение, военная техника, авиация; версия `0.8.9.2` (обязательный компонент следующего тестового пакета).
+- [Burnt + Additions](https://modrinth.com/mod/burnt) — пожарная система; ветка `1.10.2` (с Geckolib и Cloth Config API).
+- [Explosion Overhaul: A new level of destruction](https://modrinth.com/mod/explosion-overhaul-a-new-level-of-destruction) от Vinlanx — взрывы с кинематографическими эффектами; экспериментальный порт `0.2.3.0-neoforge`.
+- [DragonRise: Reforge](https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025) — аддон военной техники к Superb Warfare, файл `dragonrise_reforge-1.5.1-release.jar`. **Ожидает загрузки оригинального JAR и закрепления SHA-512**, поэтому пока **не входит в автоматический .mrpack**. Для локальной проверки можно добавить файл вручную в папки `mods` клиента и сервера.
+
+В список обязательных библиотек также добавлены `lithostitched` (1.8.0, для Terralith) и `irons-lib` (1.21.1-2.x, для Iron's Spells) после ошибки загрузки NeoForge 18 октября 2026 г.
+
+**Важно:** сборка после этого изменения ещё не прошла полноценный тест запуска. Superb Warfare уже имеет разрушение блоков, а Burnt и Explosion Overhaul тоже изменяют мир. На тестовом сервере сначала отключите разрушение мира в Superb Warfare через `/sbw config explosionDestroy false`, сделайте отдельный мир/бэкап и оцените TPS/FPS. Explosion Overhaul для 1.21.1 — alpha; если установлен Create Aeronautics или Valkyrien Skies, автор рекомендует отключить async в конфиге Explosion Overhaul.
+
 ## IndustrialCraft — обязательный компонент
 
 **BuildCraft и IndustrialCraft — главные моды TechQuest.** Владелец проекта загрузил оригинальный `industrial-craft-2-nostalgia-21.1.0-local.26.jar` в `manual-mods/`. Теперь сборщик автоматически:
