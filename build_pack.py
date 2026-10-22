@@ -88,6 +88,9 @@ def resolve_manifest(cfg):
             if meta.get("project_type") != "mod":
                 raise BuildError("Project is not a mod")
             if canonical_id in found:
+                if prefix and not found[canonical_id]["version"].startswith(prefix):
+                    raise BuildError("Version conflict for %s: resolved %s but requested %s" %
+                                     (project, found[canonical_id]["version"], prefix))
                 return
             modfiles = [f for f in version.get("files", []) if f["filename"].endswith(".jar")]
             if not modfiles:
@@ -120,7 +123,10 @@ def resolve_manifest(cfg):
             skipped.append({"project": project, "reason": str(exc)})
         finally:
             visiting.discard(project)
-    for entry in cfg["mods"]:
+    # Resolve explicitly pinned entries first, so a transitive dependency does not
+    # silently select a different release before its own version_prefix is applied.
+    ordered = sorted(cfg["mods"], key=lambda item: not bool(item.get("version_prefix")))
+    for entry in ordered:
         add(entry["project"], entry.get("required", True), entry.get("version_prefix", ""))
     return list(found.values()), skipped
 
