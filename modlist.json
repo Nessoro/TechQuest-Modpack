@@ -171,6 +171,36 @@
       "project": "chunky",
       "group": "Сервер",
       "required": false
+    },
+    {
+      "project": "superb-warfare",
+      "group": "Военная техника",
+      "required": true,
+      "version_prefix": "0.8.9.2"
+    },
+    {
+      "project": "burnt",
+      "group": "Разрушения",
+      "required": true,
+      "version_prefix": "1.10.2"
+    },
+    {
+      "project": "explosion-overhaul-a-new-level-of-destruction",
+      "group": "Разрушения",
+      "required": true,
+      "version_prefix": "0.2.3.0-neoforge"
+    },
+    {
+      "project": "lithostitched",
+      "group": "Библиотеки",
+      "required": true,
+      "version_prefix": "1.8.0-neoforge-21.1"
+    },
+    {
+      "project": "irons-lib",
+      "group": "Библиотеки",
+      "required": true,
+      "version_prefix": "1.21.1-2."
     }
   ],
   "manual_mods": [
@@ -181,6 +211,14 @@
       "required": true,
       "note": "Обязательный IC2 порт. JAR хранится в репозитории и скачивается по закреплённому GitHub commit с SHA-512/SHA-1 проверкой. Публикация требует отдельного соблюдения лицензий IC2 и автора порта.",
       "download_url": "https://raw.githubusercontent.com/Nessoro/TechQuest-Modpack/503b0676cb44764ede56e94975f66e9a3c35c6db/manual-mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar"
+    },
+    {
+      "name": "[SBW] DragonRise: Reforge",
+      "group": "Военная техника",
+      "file_name": "dragonrise_reforge-1.5.1-release.jar",
+      "source": "https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025",
+      "required": false,
+      "note": "Выпуск 1.5.1 для NeoForge 1.21.1. Требует Superb Warfare. ОЖИДАЕТ ручного добавления оригинального JAR в manual-mods/ и проверки лицензии; НЕ включён в публичный .mrpack, пока файл не предоставлен."
     }
   ]
 }
