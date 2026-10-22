@@ -27,6 +27,11 @@ NAMES = {
     "iris": "Iris Shaders",
     "sodium": "Sodium",
     "spark": "spark",
+    "superb-warfare": "Superb Warfare",
+    "burnt": "Burnt + Additions",
+    "explosion-overhaul-a-new-level-of-destruction": "Explosion Overhaul",
+    "lithostitched": "Lithostitched",
+    "irons-lib": "Iron's Lib",
 }
 DESCRIPTIONS = {
     "buildcraft-community-edition": "Классическая автоматизация, карьеры, трубы и двигатели.",
@@ -37,6 +42,11 @@ DESCRIPTIONS = {
     "l_enders-cataclysm": "Боссы, структуры и сложные сражения.",
     "terralith": "Новые биомы и ландшафты.",
     "yungs-better-dungeons": "Новые вариации подземелий.",
+    "superb-warfare": "Огнестрельное оружие, артиллерия, самолёты и бронетехника.",
+    "burnt": "Реалистичные пожары, обугленные блоки и распространение огня.",
+    "explosion-overhaul-a-new-level-of-destruction": "Мощные взрывы, звуковые эффекты и ударные волны. NeoForge alpha.",
+    "lithostitched": "Библиотека генерации мира, необходимая Terralith.",
+    "irons-lib": "Библиотека, необходимая Iron's Spells 'n Spellbooks.",
 }
 mods = []
 for row in cfg["mods"]:
@@ -48,11 +58,15 @@ for row in cfg["mods"]:
         "description": DESCRIPTIONS.get(slug, "Кандидат; совместимость требует отдельной проверки."),
         "url": "https://modrinth.com/mod/" + slug,
     })
-for row in cfg.get("manual_mods", []):
+for row in reversed(cfg.get("manual_mods", [])):
+    ready = bool(row.get("download_url"))
     mods.insert(1, {
-        "name": row["name"], "group": "Технологии",
-        "required": row["required"],
-        "description": "Экспериментальный порт IndustrialCraft 2 — машины, EU и энергетика.",
+        "name": row["name"],
+        "group": row.get("group", "Технологии"),
+        "required": row.get("required", False),
+        "description": ("IndustrialCraft 2: EU, генераторы и промышленные машины."
+                        if ready else
+                        "Ожидает файла от владельца проекта. Пока не включён в скачиваемый модпак."),
         "url": row["source"],
     })
 index = ROOT / "docs" / "index.html"
