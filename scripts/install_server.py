@@ -3,7 +3,7 @@
 
 Downloads server-side mod files only from the URLs in .mrpack, checks hashes,
 and installs official NeoForge. Does not agree to the Minecraft EULA.
-IndustrialCraft 2: Nostalgia is NOT redistributed; add its JAR manually.
+IndustrialCraft 2: Nostalgia is downloaded through the hash-pinned manifest.
 """
 import argparse
 import hashlib
@@ -57,15 +57,24 @@ def prepare_properties(target):
     props = target / "server.properties"
     if not props.exists():
         props.write_text(
-            "motd=TechQuest Industrial Frontier\\n"
-            "max-players=8\\n"
-            "online-mode=true\\n"
-            "white-list=true\\n"
-            "enforce-whitelist=true\\n"
-            "enable-rcon=false\\n"
-            "view-distance=8\\n"
-            "simulation-distance=6\\n"
-            "allow-flight=true\\n", encoding="utf-8")
+            "motd=TechQuest Industrial Frontier\n"
+            "max-players=8\n"
+            "online-mode=true\n"
+            "white-list=true\n"
+            "enforce-whitelist=true\n"
+            "enable-rcon=false\n"
+            "view-distance=8\n"
+            "simulation-distance=6\n"
+            "allow-flight=true\n", encoding="utf-8")
+
+def install_compatibility(pack_path, mods):
+    # Extract only our known resource mod, never arbitrary paths from an archive.
+    with zipfile.ZipFile(pack_path) as archive:
+        entry = "overrides/mods/" + packbuilder.COMPAT_JAR_NAME
+        if entry in archive.namelist():
+            (mods / packbuilder.COMPAT_JAR_NAME).write_bytes(archive.read(entry))
+    for path in mods.glob("superbwarfare-*.jar"):
+        packbuilder.patch_superb_server_jar(path)
 
 def install_neoforge(target, version):
     if not shutil.which("java"):
@@ -112,20 +121,23 @@ def main():
     for i, info in enumerate(files, 1):
         print(f"[{i}/{len(files)}] {info['file']['filename']}", flush=True)
         packbuilder.download_checked(info, mods)
+    install_compatibility(args.pack, mods)
     prepare_properties(target)
     if not args.skip_neoforge:
         install_neoforge(target, ver)
     (target / "TECHQUEST_README.txt").write_text(
-        "TechQuest 0.1.0-alpha (UNTESTED).\\n"
-        "Industrial Craft 2: Nostalgia is REQUIRED but not redistributed.\\n"
-        "Download it separately from its author and put JAR in mods/.\\n"
-        "Check all mod versions before playing. Back up the world.\\n"
-        "Read Minecraft EULA. If you accept, set eula=true in eula.txt.\\n"
-        "To start on Linux: ./run.sh nogui. On Windows: run.bat nogui.\\n"
-        "Use whitelist and online-mode. Do not open this untested server to public.\\n",
+        "TechQuest 0.1.0-alpha.\n"
+        "Industrial Craft 2: Nostalgia is included through the verified manifest.\n"
+        "TechQuest compatibility recipes are installed automatically.\n"
+        "The verified Superb Warfare 0.8.9.2 JAR is locally patched on the server\n"
+        "to remove ClientLevelMixin from its common (both-sides) mixin list.\n"
+        "Client downloads remain unchanged. Back up the world before updates.\n"
+        "Read Minecraft EULA. If you accept, set eula=true in eula.txt.\n"
+        "To start on Linux: ./run.sh nogui. On Windows: run.bat nogui.\n"
+        "Use whitelist and online-mode. Test gameplay before public hosting.\n",
         encoding="utf-8")
     print("Server files prepared at", target)
-    print("NEXT: add IndustrialCraft 2: Nostalgia and accept EULA yourself.")
+    print("NEXT: review Minecraft EULA and set eula=true only if you agree.")
     return 0
 
 if __name__ == "__main__":

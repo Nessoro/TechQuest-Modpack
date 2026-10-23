@@ -15,7 +15,8 @@
     {
       "project": "create",
       "group": "Технологии",
-      "required": true
+      "required": true,
+      "version_id": "UjX6dr61"
     },
     {
       "project": "mekanism",
@@ -150,12 +151,14 @@
     {
       "project": "sodium",
       "group": "Оптимизация",
-      "required": false
+      "required": false,
+      "version_id": "Pb3OXVqC"
     },
     {
       "project": "iris",
       "group": "Шейдеры",
-      "required": false
+      "required": false,
+      "version_id": "t3ruzodq"
     },
     {
       "project": "entityculling",
@@ -176,7 +179,8 @@
       "project": "superb-warfare",
       "group": "Военная техника",
       "required": true,
-      "version_prefix": "0.8.9.2"
+      "version_prefix": "0.8.9.2",
+      "version_id": "bl7W8fjU"
     },
     {
       "project": "burnt",

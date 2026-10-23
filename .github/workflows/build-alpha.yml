@@ -5,6 +5,7 @@ on:
     paths:
       - modlist.json
       - build_pack.py
+      - compat/**
       - scripts/install_server.py
       - tests/**
       - .github/workflows/build-alpha.yml
@@ -65,7 +66,10 @@ jobs:
           3. Industrial Craft 2: Nostalgia is included automatically in TechQuest.mrpack
              as a pinned GitHub download with SHA-512/SHA-1 verification.
              You do NOT need to add its JAR manually. The same mod goes to client/server.
-          4. Read Minecraft's EULA and change eula.txt to eula=true only if you agree.
+          4. Compatibility recipes are installed automatically. Superb Warfare 0.8.9.2
+             is locally patched on servers to keep ClientLevelMixin client-only;
+             downloaded originals are checksum-verified before this patch.
+             Read Minecraft's EULA and change eula.txt to eula=true only if you agree.
           5. Set whitelist players with /whitelist add <username> using server console.
           6. Run ./run.sh nogui on Linux or run.bat nogui on Windows.
 

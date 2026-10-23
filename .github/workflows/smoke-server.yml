@@ -69,6 +69,10 @@ jobs:
             echo "Server did not finish starting: examine artifact logs."
             exit 1
           fi
+          if grep -Eq 'Parsing error loading recipe create:(smelting|blasting)/ingot_(tin|silver|uranium|aluminium)_compat_ic2|ClientLevel.*invalid dist DEDICATED_SERVER|ClientLevelMixin from mod superbwarfare' startup.log; then
+            echo "A TechQuest compatibility regression was found; inspect startup.log."
+            exit 1
+          fi
           echo "Server launched WITH IndustrialCraft 2: Nostalgia. Multiplayer testing still required."
       - name: Upload smoke-test reports
         if: always()
