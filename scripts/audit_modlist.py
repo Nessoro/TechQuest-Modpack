@@ -34,9 +34,10 @@ def fetch_versions(slug, mc, loader):
                 continue
             raise
 
-def choose_version(versions, prefix=""):
-    filtered = [v for v in versions if not prefix or
-                v.get("version_number", "").startswith(prefix)]
+def choose_version(versions, prefix="", version_id=""):
+    filtered = [v for v in versions
+                if (not prefix or v.get("version_number", "").startswith(prefix))
+                and (not version_id or v.get("id") == version_id)]
     if not filtered:
         return None
     stable = [v for v in filtered if v.get("version_type") == "release"]
@@ -51,10 +52,10 @@ def audit(cfg, fetch=fetch_versions):
                "status": "unknown", "version": None, "reason": None}
         try:
             versions = fetch(slug, cfg["minecraft"], cfg["loader"])
-            version = choose_version(versions, item.get("version_prefix", ""))
+            version = choose_version(versions, item.get("version_prefix", ""), item.get("version_id", ""))
             if version is None:
                 row["status"] = "missing"
-                row["reason"] = "No matching loader/Minecraft version or pinned prefix"
+                row["reason"] = "No matching loader/Minecraft version, pinned prefix or version ID"
             else:
                 row["status"] = "available"
                 row["version"] = version.get("version_number", "(unknown)")

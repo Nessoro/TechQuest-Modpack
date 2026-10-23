@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parent
 API = "https://api.modrinth.com/v2"
 UA = "TechQuest-Modpack/0.1 (modpack installer)"
 MAX_DOWNLOAD = 256 * 1024 * 1024
+COMPAT_JAR_NAME = "techquest-compat-1.0.0.jar"
 
 class BuildError(Exception):
     pass
@@ -60,8 +61,10 @@ def safe_filename(name):
         raise BuildError("Unsafe JAR filename: %r" % name)
     return name
 
-def select_version(versions, prefix=""):
-    options = [v for v in versions if not prefix or v.get("version_number", "").startswith(prefix)]
+def select_version(versions, prefix="", version_id=""):
+    options = [v for v in versions
+               if (not prefix or v.get("version_number", "").startswith(prefix))
+               and (not version_id or v.get("id") == version_id)]
     if not options:
         raise BuildError("No matching NeoForge 1.21.1 version")
     stable = [v for v in options if v.get("version_type") == "release"]
@@ -71,9 +74,13 @@ def resolve_manifest(cfg):
     found = {}
     skipped = []
     visiting = set()
-    def add(project, required=True, prefix="", parent="modlist"):
+    def add(project, required=True, prefix="", parent="modlist", version_id=""):
         project = str(project)
         if project in visiting:
+            for record in found.values():
+                if project in (record["requested"], record["id"]):
+                    if version_id and record["version_id"] != version_id:
+                        raise BuildError("Exact dependency conflict in cycle for " + project)
             return
         visiting.add(project)
         previous = set(found)
@@ -82,12 +89,15 @@ def resolve_manifest(cfg):
                 "loaders": json.dumps([cfg["loader"]]),
                 "game_versions": json.dumps([cfg["minecraft"]])
             })
-            version = select_version(versions, prefix)
+            version = select_version(versions, prefix, version_id)
             meta = get_json("/project/" + urllib.parse.quote(project, safe=""))
             canonical_id = meta["id"]
             if meta.get("project_type") != "mod":
                 raise BuildError("Project is not a mod")
             if canonical_id in found:
+                if version_id and found[canonical_id]["version_id"] != version_id:
+                    raise BuildError("Exact dependency conflict for %s: resolved %s but %s requires %s" %
+                                     (project, found[canonical_id]["version_id"], parent, version_id))
                 if prefix and not found[canonical_id]["version"].startswith(prefix):
                     raise BuildError("Version conflict for %s: resolved %s but requested %s" %
                                      (project, found[canonical_id]["version"], prefix))
@@ -112,7 +122,7 @@ def resolve_manifest(cfg):
                     dependency_id = dv.get("project_id")
                 if not dependency_id:
                     raise BuildError("Unknown mandatory dependency in " + project)
-                add(dependency_id, True, parent=project)
+                add(dependency_id, True, parent=project, version_id=dep.get("version_id") or "")
             print("  +", meta.get("title", project), version["version_number"])
         except (KeyError, TypeError, ValueError, BuildError) as exc:
             for key in set(found) - previous:
@@ -125,9 +135,10 @@ def resolve_manifest(cfg):
             visiting.discard(project)
     # Resolve explicitly pinned entries first, so a transitive dependency does not
     # silently select a different release before its own version_prefix is applied.
-    ordered = sorted(cfg["mods"], key=lambda item: not bool(item.get("version_prefix")))
+    ordered = sorted(cfg["mods"], key=lambda item: not bool(item.get("version_prefix") or item.get("version_id")))
     for entry in ordered:
-        add(entry["project"], entry.get("required", True), entry.get("version_prefix", ""))
+        add(entry["project"], entry.get("required", True), entry.get("version_prefix", ""),
+            version_id=entry.get("version_id", ""))
     return list(found.values()), skipped
 
 def verify(data, hashes):
@@ -192,6 +203,66 @@ def manual_records(cfg):
     return records
 
 
+def compatibility_jar():
+    """Package our data-only NeoForge mod; no third-party binary is embedded."""
+    import io
+    source = ROOT / "compat" / "techquest-compat"
+    if not (source / "META-INF" / "neoforge.mods.toml").is_file():
+        raise BuildError("Missing TechQuest compatibility resources")
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(source.rglob("*")):
+            if path.is_file():
+                # Fixed timestamps make repeated builds byte-identical.
+                info = zipfile.ZipInfo(path.relative_to(source).as_posix(), (2026, 1, 1, 0, 0, 0))
+                info.compress_type = zipfile.ZIP_DEFLATED
+                archive.writestr(info, path.read_bytes())
+    return buffer.getvalue()
+
+
+def patch_superb_server_jar(path):
+    """Remove a client mixin from SBW 0.8.9.2's common list, on servers only.
+
+    Call only AFTER verifying the original download hash. The original remains
+    unchanged in the client and .mrpack download manifest; no patched JAR is published.
+    """
+    path = Path(path)
+    if not path.name.startswith("superbwarfare-0.8.9.2-"):
+        return False
+    config_name = "mixins.superbwarfare.json"
+    with zipfile.ZipFile(path) as source:
+        config = json.loads(source.read(config_name))
+        if "ClientLevelMixin" not in config.get("client", []):
+            raise BuildError("Unexpected Superb Warfare mixin layout; review workaround")
+        if "ClientLevelMixin" not in config.get("mixins", []):
+            return False
+        if any(name.upper().endswith((".SF", ".RSA", ".DSA"))
+               for name in source.namelist() if name.startswith("META-INF/")):
+            raise BuildError("Refusing to patch a signed Superb Warfare JAR")
+        config["mixins"].remove("ClientLevelMixin")
+        temporary = path.with_suffix(".jar.tmp")
+        try:
+            with zipfile.ZipFile(temporary, "w") as target:
+                for info in source.infolist():
+                    data = (json.dumps(config, indent=2).encode("utf-8")
+                            if info.filename == config_name else source.read(info.filename))
+                    target.writestr(info, data)
+        except Exception:
+            temporary.unlink(missing_ok=True)
+            raise
+    temporary.replace(path)
+    print("Applied server-only Superb Warfare ClientLevelMixin fix:", path.name)
+    return True
+
+
+def remove_stale_generated_jars(directory, expected):
+    """Generated output must not retain older mod versions after rebuilding."""
+    for path in directory.glob("*.jar"):
+        if path.name not in expected:
+            path.unlink()
+            print("Removed obsolete generated mod:", path.name)
+
+
 def make_mrpack(cfg, mods, output, manual_files=()):
     files = []
     for rec in mods:
@@ -220,6 +291,7 @@ def make_mrpack(cfg, mods, output, manual_files=()):
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("modrinth.index.json", json.dumps(idx, ensure_ascii=False, indent=2))
+        archive.writestr("overrides/mods/" + COMPAT_JAR_NAME, compatibility_jar())
     return len(files)
 
 def main():
@@ -251,6 +323,11 @@ def main():
     server = out / "server" / "mods"
     client.mkdir(parents=True, exist_ok=True)
     server.mkdir(parents=True, exist_ok=True)
+    for side, directory in (("client", client), ("server", server)):
+        expected = {rec["filename"] for rec in resolved if rec["environment"][side] != "unsupported"}
+        expected.update(local["filename"] for local in manual)
+        expected.add(COMPAT_JAR_NAME)
+        remove_stale_generated_jars(directory, expected)
     for rec in resolved:
         env = rec["environment"]
         if env["client"] != "unsupported":
@@ -263,6 +340,10 @@ def main():
     for local in manual:
         shutil.copy2(local["source_path"], client / local["filename"])
         shutil.copy2(local["source_path"], server / local["filename"])
+    for directory in (client, server):
+        (directory / COMPAT_JAR_NAME).write_bytes(compatibility_jar())
+    for path in server.glob("superbwarfare-*.jar"):
+        patch_superb_server_jar(path)
     (out / "server" / "server.properties").write_text(
         "motd=TechQuest Industrial Frontier\nmax-players=8\nonline-mode=true\n"
         "white-list=true\nenforce-whitelist=true\nenable-rcon=false\n"
