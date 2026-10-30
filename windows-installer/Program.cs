@@ -277,7 +277,7 @@ internal sealed class InstallerForm : Form
                     File.WriteAllText(optionsFile,
                         "graphicsMode:fast\nrenderDistance:6\nsimulationDistance:5\n" +
                         "entityDistanceScaling:0.5\nparticles:2\nmaxFps:60\n" +
-                        "biomeBlendRadius:0\nmipmapLevels:1\n", Encoding.UTF8);
+                        "biomeBlendRadius:0\nmipmapLevels:1\n", new UTF8Encoding(false));
             }
             File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
                 "TechQuest " + (selectedLite ? "Lite" : "Full") + "\n" +
@@ -333,7 +333,9 @@ internal sealed class InstallerForm : Form
             try
             {
                 var start = new ProcessStartInfo("javaw.exe") {
-                    UseShellExecute = true
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WorkingDirectory = Path.GetDirectoryName(destination)!
                 };
                 start.ArgumentList.Add("-jar");
                 start.ArgumentList.Add(destination);
