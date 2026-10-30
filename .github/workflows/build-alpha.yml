@@ -6,6 +6,7 @@ on:
       - modlist.json
       - build_pack.py
       - scripts/install_server.py
+      - scripts/build_lite.py
       - tests/**
       - .github/workflows/build-alpha.yml
 permissions:
@@ -49,6 +50,8 @@ jobs:
           PY
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
+      - name: Create separate client-only Lite Modrinth pack
+        run: python scripts/build_lite.py
       - name: Create server bootstrap (no redistributed third-party JARs)
         if: success()
         run: |
@@ -88,6 +91,7 @@ jobs:
             output/TechQuest_Server_Bootstrap.zip
             output/versions-lock.json
             output/BUILD_STATUS.json
+            output/Lite_BUILD_STATUS.json
           if-no-files-found: warn
           retention-days: 30
       - name: Summarize build
@@ -108,6 +112,11 @@ jobs:
               lines.append(f"- Manual mods missing: **{', '.join(j['missing_mods']) or 'none'}**")
           else:
               lines.append("- Full download/hash verification failed or did not finish; inspect logs.")
+          if (out/"Lite_BUILD_STATUS.json").exists():
+              lite=json.loads((out/"Lite_BUILD_STATUS.json").read_text(encoding="utf-8"))
+              lines.append(f"- Lite optimizers added: **{len(lite['optimizers'])}**")
+              lines.append("- Lite keeps all shared gameplay mods; Iris shaders are omitted.")
+              lines.append("- Multiplayer uses the SAME Full server.")
           lines += ["","**Not a tested playable release.** No Minecraft client/server runtime startup was performed.",
                     "IndustrialCraft 2 Nostalgia is included as a verified download URL inside .mrpack.",
                     "Third-party JAR bytes are referenced via pinned GitHub URL, not bundled in the artifact.",
