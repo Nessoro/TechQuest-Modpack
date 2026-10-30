@@ -7,6 +7,7 @@ on:
       - build_pack.py
       - scripts/install_server.py
       - scripts/build_lite.py
+      - scripts/install_client.py
       - tests/**
       - .github/workflows/build-alpha.yml
 permissions:
@@ -81,6 +82,40 @@ jobs:
               z.writestr("SERVER_INSTALL_README.txt",readme)
           print("Created",p,p.stat().st_size,"bytes")
           PY
+      - name: Create official Launcher client bootstrap for Full and Lite
+        if: success()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          out=Path("output")
+          readme="""TECHQUEST 1.21.1 — Minecraft Official Launcher, Full / Lite
+
+          Requirements: Windows 10/11, Minecraft Java Edition 1.21.1,
+          official NeoForge 21.1.259, Java 21, Python 3.9+, internet.
+
+          1. Extract this ZIP to a new folder, e.g. C:\\TechQuestInstaller.
+          2. Run ONE command, from that folder:
+               python scripts/install_client.py --pack TechQuest_Lite.mrpack --game-dir C:\\Minecraft\\TechQuestLite
+             For Full instead:
+               python scripts/install_client.py --pack TechQuest_Full.mrpack --game-dir C:\\Minecraft\\TechQuestFull
+          3. In OFFICIAL Minecraft Launcher: Installations -> New/Edit NeoForge 21.1.259
+             -> More Options -> Game Directory -> the SAME game-dir folder.
+          4. Launch this NeoForge installation (NOT vanilla 1.21.1).
+          5. For Lite: lower graphics settings (see TECHQUEST_LITE_SETTINGS.txt inside
+             the Lite .mrpack overrides). For full set allocate ~8 GiB RAM.
+
+          First test a new world, then try multiplayer on the SAME TechQuest server.
+          This alpha pack has NOT passed a full runtime test of every gameplay mod.
+          """
+          with zipfile.ZipFile(out/"TechQuest_Client_Bootstrap.zip","w",
+                               zipfile.ZIP_DEFLATED) as z:
+              z.write("scripts/install_client.py")
+              z.write("build_pack.py")
+              z.write(out/"TechQuest_1.21.1_0.1.0.mrpack",arcname="TechQuest_Full.mrpack")
+              z.write(out/"TechQuest_1.21.1_LITE_0.1.0.mrpack",arcname="TechQuest_Lite.mrpack")
+              z.writestr("OFFICIAL_LAUNCHER_INSTALL.txt", readme)
+          PY
       - name: Publish downloadable manifests and bootstrap
         if: always()
         uses: actions/upload-artifact@v4
@@ -89,6 +124,7 @@ jobs:
           path: |
             output/*.mrpack
             output/TechQuest_Server_Bootstrap.zip
+            output/TechQuest_Client_Bootstrap.zip
             output/versions-lock.json
             output/BUILD_STATUS.json
             output/Lite_BUILD_STATUS.json
