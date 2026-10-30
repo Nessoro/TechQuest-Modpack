@@ -10,8 +10,13 @@ namespace TechQuestInstaller;
 internal static class Program
 {
     [STAThread]
-    private static void Main()
+    private static void Main(string[] args)
     {
+        if (args.Contains("--self-test", StringComparer.OrdinalIgnoreCase))
+        {
+            Environment.ExitCode = InstallerForm.VerifyEmbeddedPacks();
+            return;
+        }
         ApplicationConfiguration.Initialize();
         Application.Run(new InstallerForm());
     }
@@ -43,8 +48,8 @@ internal sealed class InstallerForm : Form
     {
         Text = "TechQuest — установщик Minecraft 1.21.1";
         Width = 800;
-        Height = 620;
-        MinimumSize = new Size(760, 600);
+        Height = 680;
+        MinimumSize = new Size(760, 660);
         StartPosition = FormStartPosition.CenterScreen;
         BackColor = Color.FromArgb(15, 22, 34);
         ForeColor = Color.WhiteSmoke;
@@ -159,6 +164,30 @@ internal sealed class InstallerForm : Form
         string name = isLite ? "TechQuest.Lite.mrpack" : "TechQuest.Full.mrpack";
         return Assembly.GetExecutingAssembly().GetManifestResourceStream(name)
             ?? throw new InvalidDataException("Сборка " + name + " не встроена в установщик.");
+    }
+
+    internal static int VerifyEmbeddedPacks()
+    {
+        try
+        {
+            foreach (bool isLite in new[] { false, true })
+            {
+                using var resource = GetEmbeddedPack(isLite);
+                var mods = LoadManifest(resource);
+                var fileNames = mods.Select(x => x.Name.ToLowerInvariant()).ToArray();
+                if (!fileNames.Any(n => n.Contains("industrial-craft-2-nostalgia")) ||
+                    !fileNames.Any(n => n.Contains("buildcraft")))
+                    return 2;
+                bool hasIris = fileNames.Any(n => n.StartsWith("iris-"));
+                bool hasImmediatelyFast = fileNames.Any(n => n.Contains("immediatelyfast"));
+                if (isLite && (hasIris || !hasImmediatelyFast))
+                    return 3;
+                if (!isLite && !hasIris)
+                    return 4;
+            }
+            return 0;
+        }
+        catch { return 5; }
     }
 
     private sealed record ModFile(string Name, Uri Url, string? Sha512, string? Sha1, long Size);
