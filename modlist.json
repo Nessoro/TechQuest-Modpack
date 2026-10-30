@@ -220,5 +220,40 @@
       "required": false,
       "note": "Выпуск 1.5.1 для NeoForge 1.21.1. Требует Superb Warfare. ОЖИДАЕТ ручного добавления оригинального JAR в manual-mods/ и проверки лицензии; НЕ включён в публичный .mrpack, пока файл не предоставлен."
     }
-  ]
+  ],
+  "lite_profile": {
+    "name": "TechQuest: Industrial Frontier — Lite",
+    "description": "Модпак с теми же игровыми механиками и серверными модами, но без Iris и с дополнительными клиентскими оптимизациями.",
+    "exclude_projects": [
+      "iris"
+    ],
+    "required_projects": [
+      "sodium",
+      "entityculling",
+      "ferrite-core",
+      "modernfix"
+    ],
+    "extra_client_mods": [
+      {
+        "project": "immediatelyfast",
+        "group": "Оптимизация",
+        "required": true
+      },
+      {
+        "project": "moreculling",
+        "group": "Оптимизация",
+        "required": true
+      },
+      {
+        "project": "badoptimizations",
+        "group": "Оптимизация",
+        "required": true
+      },
+      {
+        "project": "dynamic-fps",
+        "group": "Оптимизация",
+        "required": true
+      }
+    ]
+  }
 }
