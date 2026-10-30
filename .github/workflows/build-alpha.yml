@@ -8,6 +8,7 @@ on:
       - scripts/install_server.py
       - scripts/build_lite.py
       - scripts/install_client.py
+      - windows-installer/**
       - tests/**
       - .github/workflows/build-alpha.yml
 permissions:
@@ -160,3 +161,56 @@ jobs:
           with open(os.environ["GITHUB_STEP_SUMMARY"],"a",encoding="utf-8") as f:
               f.write("\n".join(lines)+"\n")
           PY
+
+  windows-installer:
+    name: Build self-contained GUI installer (Windows)
+    needs: pack
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Install .NET SDK 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Get the Full and Lite packs from this workflow
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          path: client-packages
+      - name: Embed both client manifests (no third-party JARs)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force windows-installer/assets | Out-Null
+          Copy-Item client-packages/TechQuest_1.21.1_0.1.0.mrpack windows-installer/assets/TechQuest_Full.mrpack
+          Copy-Item client-packages/TechQuest_1.21.1_LITE_0.1.0.mrpack windows-installer/assets/TechQuest_Lite.mrpack
+          Add-Type -AssemblyName System.IO.Compression
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $full = [IO.Compression.ZipFile]::OpenRead("$PWD/windows-installer/assets/TechQuest_Full.mrpack")
+          $lite = [IO.Compression.ZipFile]::OpenRead("$PWD/windows-installer/assets/TechQuest_Lite.mrpack")
+          try {
+            foreach($pack in @($full,$lite)) {
+              if(-not ($pack.Entries | Where-Object FullName -EQ 'modrinth.index.json')) { throw 'Invalid embedded pack' }
+            }
+            $liteFiles = $lite.Entries | Where-Object FullName -EQ 'modrinth.index.json'
+            $reader = [IO.StreamReader]::new($liteFiles.Open())
+            try { $liteJSON = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Close() }
+            $modPaths = @($liteJSON.files | ForEach-Object { $_.path })
+            if(-not ($modPaths | Where-Object { $_ -match 'immediatelyfast' })) { throw 'Lite optimizer missing' }
+            if($modPaths | Where-Object { $_ -match '^mods/iris-' }) { throw 'Lite contains Iris unexpectedly' }
+          } finally { $full.Dispose(); $lite.Dispose() }
+      - name: Publish Windows x64 native GUI app
+        shell: pwsh
+        run: |
+          dotnet publish windows-installer/TechQuestInstaller.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:PublishTrimmed=false --output dist
+          if($LASTEXITCODE -ne 0) { throw 'dotnet publish failed' }
+          if(-not (Test-Path dist/TechQuestInstaller.exe)) { throw 'Missing GUI executable' }
+          Get-Item dist/TechQuestInstaller.exe | Select-Object Name,Length
+      - name: Upload one-click graphical installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Windows-GUI-Installer
+          path: dist/TechQuestInstaller.exe
+          if-no-files-found: error
+          retention-days: 30
