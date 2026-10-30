@@ -88,17 +88,25 @@ TechQuest теперь автоматически создаёт **два кли
 - `TechQuest_Server_Bootstrap.zip` — общая серверная сборка, **Lite-сервер не нужен**.
 - `Lite_BUILD_STATUS.json` — версии дополнительных оптимизаций, изменения от Full.
 
-### Официальный лаунчер Minecraft (без Prism)
+### Графический Windows-установщик — без Python и командной строки
 
-Официальный Minecraft Launcher **не умеет импортировать `.mrpack` напрямую**. Для него используйте `TechQuest_Client_Bootstrap.zip` и установленный Python 3.9+.
+**Рекомендуемый способ для игроков на Windows 10/11** — [TechQuest-Windows-GUI-Installer](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml).
 
-Распакуйте ZIP в новый каталог. Установите Java 21 и официальную NeoForge 21.1.259, затем выполните из каталога распаковки в терминале:
+1. Откройте последний **успешный** запуск Build TechQuest alpha на GitHub.
+2. В разделе Artifacts скачайте **TechQuest-Windows-GUI-Installer**. После распаковки дважды щёлкните **TechQuestInstaller.exe**.
+3. В окне выберите **Lite** (для слабых ПК) либо **Full**, укажите отдельную папку и нажмите **«Установить моды»**.
+4. По завершении нажмите **«Установить NeoForge»**. Для этой кнопки требуется установленная **Java 21**; в открывшемся окне официального NeoForge Installer выберите **Install client**.
+5. Откройте официальный Minecraft Launcher → **Установки / Installations** → NeoForge 21.1.259 → **Изменить / Edit** → **Папка игры / Game Directory**. Укажите **ту же папку**, что в графическом установщике, и запустите профиль NeoForge.
 
-```powershell
-python scripts/install_client.py --pack TechQuest_Lite.mrpack --game-dir C:\Minecraft\TechQuestLite
-```
+Приложение — **нативное графическое Windows EXE** на .NET 8, самодостаточная сборка (self-contained), поэтому **Python, PowerShell, терминал и отдельно установленный .NET не требуются**. Моды загружаются по HTTPS с проверкой SHA-512/SHA-1. Пользователю нужна Minecraft Java Edition и доступ к интернету.
 
-В официальном лаунчере откройте **Installations → NeoForge 21.1.259 → Edit → More Options → Game Directory** и укажите `C:\Minecraft\TechQuestLite`. Запускать следует именно профиль **NeoForge**, не vanilla 1.21.1. Скрипт скачивает JAR-файлы с проверкой хешей и отказывается смешивать их с уже установленными модами — используйте новую отдельную папку.
+**Ограничения:** установщик не меняет конфигурацию официального Minecraft Launcher автоматически — папку игрового профиля выбирают один раз вручную. Для установки NeoForge нужна Java 21. EXE пока не подписан цифровой подписью, поэтому Windows SmartScreen может показать предупреждение: проверяйте источник файла в GitHub Actions.
+
+**Lite:** в новой папке автоматически создаётся options.txt с графикой Fast, прорисовкой 6 чанков, симуляцией 5, минимальными частицами, лимитом FPS 60, сниженной дальностью сущностей и mipmap. Существующий options.txt не перезаписывается. Сохранены BuildCraft, IndustrialCraft, Create, Mekanism и остальные игровые моды; исключён Iris, добавлены ImmediatelyFast, More Culling, BadOptimizations и Dynamic FPS. Реальный прирост FPS не измерялся.
+
+### Официальный лаунчер — ручной запасной вариант
+
+Старый Python-скрипт остаётся для разработчиков и ручной установки, но **обычным игрокам он больше не нужен**. Официальный Minecraft Launcher не импортирует mrpack напрямую: используйте EXE-установщик выше.
 
 ### Настройки Lite для слабого ПК
 
