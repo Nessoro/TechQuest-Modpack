@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Install verified TechQuest client mod JARs for the official Minecraft Launcher.
 
-Works with BOTH Full and Lite .mrpack packages. Minecraft Java and official
+Works with the single unified optimized .mrpack. Minecraft Java and official
 NeoForge 21.1.259 must be installed separately using the official installers.
 The destination should be a NEW dedicated game directory, not a shared .minecraft.
 """
@@ -45,6 +45,28 @@ def client_records(index):
         raise build_pack.BuildError("Modrinth package contains no client JARs")
     return result
 
+def install_guide_overrides(archive, game_dir):
+    """Extract first-party guide data only, never arbitrary archive paths."""
+    allowed_prefix = "patchouli_books/techquest_guide/"
+    allowed_datapack = "config/openloader/packs/techquest_starter_guide.zip"
+    for info in archive.infolist():
+        if not info.filename.startswith("overrides/"):
+            continue
+        relative = info.filename[len("overrides/"):]
+        if relative.endswith("/"):
+            continue
+        if not (relative.startswith(allowed_prefix)
+                or relative in (allowed_datapack, "TECHQUEST_INGAME_GUIDE.txt")):
+            continue
+        parts = Path(relative).parts
+        if ".." in parts or any(x in relative for x in ("\\", "\x00", ":")):
+            raise build_pack.BuildError("Unsafe guide override path: " + relative)
+        target = game_dir.joinpath(*parts)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if not target.exists():
+            target.write_bytes(archive.read(info.filename))
+
+
 def install(pack: Path, game_dir: Path, dry_run=False):
     with zipfile.ZipFile(pack) as archive:
         index = json.loads(archive.read("modrinth.index.json"))
@@ -64,11 +86,15 @@ def install(pack: Path, game_dir: Path, dry_run=False):
     for i, item in enumerate(records, 1):
         print(f"[{i}/{len(records)}] {item['file']['filename']}", flush=True)
         build_pack.download_checked(item, mods)
+    with zipfile.ZipFile(pack) as archive:
+        install_guide_overrides(archive, destination)
     (destination / "TECHQUEST_LAUNCHER_README.txt").write_text(
         "Client mods installed with SHA-1/SHA-512 verification.\n"
         "Install Minecraft Java 1.21.1 and NeoForge 21.1.259 in the OFFICIAL launcher.\n"
         "Create/edit a NeoForge installation; set Game Directory to this folder.\n"
-        "Use Java 21. Allocate ~4-6 GiB for Lite if system RAM allows, 8 GiB for Full.\n"
+        "Use Java 21. Allocate about 6-8 GiB if the PC has enough RAM.\n"
+        "Find Путеводитель TechQuest in creative Tools & Utilities.\n"
+        "Open Loader gives the book on first join if datapack loads.\n"
         "Do NOT run the vanilla Minecraft profile: it cannot load NeoForge mods.\n"
         "Test a new world first; TechQuest remains an experimental modpack.\n",
         encoding="utf-8")
@@ -77,7 +103,7 @@ def install(pack: Path, game_dir: Path, dry_run=False):
     return len(records)
 
 def main():
-    p = argparse.ArgumentParser(description="Install TechQuest Full/Lite mods for official Launcher")
+    p = argparse.ArgumentParser(description="Install unified optimized TechQuest mods for official Launcher")
     p.add_argument("--pack", required=True, type=Path, help=".mrpack from the GitHub artifact")
     p.add_argument("--game-dir", required=True, type=Path, help="New empty Minecraft game directory")
     p.add_argument("--dry-run", action="store_true")
