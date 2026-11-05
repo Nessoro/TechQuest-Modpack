@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reproducible integrity/source audit for all Full + Lite Minecraft JARs.
+"""Reproducible integrity/source audit for all Optimized Minecraft JARs.
 
 This validates signed-by-manifest SHA-1/SHA-512 and scans ZIP integrity. It is
 NOT an antivirus. The CI workflow runs ClamAV separately on the downloaded
@@ -71,11 +71,11 @@ def manifest_entries(paths):
                 "sha512": hashes["sha512"], "size": size,
             }
             if dest in records and records[dest] != record:
-                raise AuditError("Conflicting Full/Lite mod identity: " + dest)
+                raise AuditError("Conflicting optimized mod identity: " + dest)
             records[dest] = record
             by_pack[name].append(dest)
-    if len(paths) != 2:
-        raise AuditError("Exactly Full and Lite packs are expected")
+    if len(paths) != 1:
+        raise AuditError("Exactly one optimized pack is expected")
     return records, by_pack
 
 
@@ -139,8 +139,8 @@ def download_and_verify(item, directory):
     }
 
 
-def audit(full, lite, directory, report_dir):
-    items, packs = manifest_entries([full, lite])
+def audit(pack, directory, report_dir):
+    items, packs = manifest_entries([pack])
     directory.mkdir(parents=True, exist_ok=True)
     report_dir.mkdir(parents=True, exist_ok=True)
     checked = []
@@ -150,7 +150,7 @@ def audit(full, lite, directory, report_dir):
     result = {
         "checked_at_utc": datetime.now(timezone.utc).isoformat(),
         "source_commit_audit": "Sources restricted to Modrinth CDN or SHA-pinned TechQuest GitHub",
-        "full_mods": len(packs[full.name]), "lite_mods": len(packs[lite.name]),
+        "pack_mods": len(packs[pack.name]),
         "unique_jar_files": len(items),
         "result": "HASH_AND_ARCHIVE_OK",
         "antivirus_result": "NOT_SCANNED_BY_THIS_SCRIPT",
@@ -161,9 +161,8 @@ def audit(full, lite, directory, report_dir):
         json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     (report_dir / "manifest-integrity.md").write_text(
-        "# TechQuest Full + Lite integrity audit\n\n" +
-        f"- Full: {result['full_mods']} JAR entries\n" +
-        f"- Lite: {result['lite_mods']} JAR entries\n" +
+        "# TechQuest Optimized integrity audit\n\n" +
+        f"- Optimized pack: {result['pack_mods']} JAR entries\n" +
         f"- Unique JAR binaries: {len(items)}\n" +
         "- All files downloaded from allowlisted HTTPS sources\n" +
         "- All manifest hashes and ZIP archives verified\n" +
@@ -175,12 +174,11 @@ def audit(full, lite, directory, report_dir):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--full", type=Path, required=True)
-    p.add_argument("--lite", type=Path, required=True)
+    p.add_argument("--pack", type=Path, required=True)
     p.add_argument("--mods-dir", type=Path, default=Path("security-work/mods"))
     p.add_argument("--reports", type=Path, default=Path("security-work/reports"))
     args = p.parse_args()
-    result = audit(args.full, args.lite, args.mods_dir, args.reports)
+    result = audit(args.pack, args.mods_dir, args.reports)
     print("Source/hash/JAR validation complete for", result["unique_jar_files"], "unique files")
 
 
