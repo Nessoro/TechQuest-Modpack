@@ -14,12 +14,12 @@ spec.loader.exec_module(installer)
 class ServerInstallerTests(unittest.TestCase):
     def test_valid_version(self):
         self.assertEqual(installer.check_index({"game":"minecraft",
-            "dependencies":{"minecraft":"1.21.1","neoforge":"21.1.259"}}), "21.1.259")
+            "dependencies":{"minecraft":"1.21.1","neoforge":"21.1.264"}}), "21.1.264")
 
     def test_reject_wrong_version(self):
         with self.assertRaises(installer.packbuilder.BuildError):
             installer.check_index({"game":"minecraft",
-                "dependencies":{"minecraft":"1.21.4","neoforge":"21.1.259"}})
+                "dependencies":{"minecraft":"1.21.4","neoforge":"21.1.264"}})
 
     def test_excludes_client_only(self):
         f=lambda path, env: {"path":"mods/"+path,"env":env,
