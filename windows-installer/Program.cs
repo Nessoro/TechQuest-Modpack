@@ -28,8 +28,6 @@ internal sealed class InstallerForm : Form
     private const string NeoForgeUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.1.259/neoforge-21.1.259-installer.jar";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
 
-    private readonly RadioButton lite = new() { Text = "Lite — для слабых ПК (рекомендуется)", Checked = true, AutoSize = true };
-    private readonly RadioButton full = new() { Text = "Full — все шейдерные возможности", AutoSize = true };
     private readonly TextBox location = new() { Width = 540 };
     private readonly Button browse = new() { Text = "Обзор…", Width = 110 };
     private readonly Button install = new() { Text = "1. Установить моды", Width = 205, Height = 45 };
@@ -63,15 +61,12 @@ internal sealed class InstallerForm : Form
         var subtitle = new Label { Text = "Minecraft Java 1.21.1  •  NeoForge " + NeoForgeVersion +
             "  •  BuildCraft + IndustrialCraft", Left = 32, Top = 78, Width = 710, Height = 30,
             ForeColor = Color.FromArgb(175, 194, 212) };
-        var heading = new Label { Text = "Выберите клиентскую версию", Left = 32, Top = 126,
+        var heading = new Label { Text = "TechQuest 0.2 — единая оптимизированная сборка", Left = 32, Top = 126,
             Width = 700, Height = 30, Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
-        lite.Location = new Point(36, 166);
-        full.Location = new Point(36, 197);
-        lite.CheckedChanged += (_, _) => UpdateTarget();
-        full.CheckedChanged += (_, _) => UpdateTarget();
-
-        var liteDesc = new Label { Text = "Без Iris; Sodium, ImmediatelyFast, More Culling, BadOptimizations, Dynamic FPS.",
-            Left = 57, Top = 228, Width = 685, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
+        var liteDesc = new Label { Text = "Сохранены все игровые моды. Ускорение: Sodium, ImmediatelyFast, More Culling,",
+            Left = 36, Top = 168, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
+        var moreDesc = new Label { Text = "BadOptimizations, Dynamic FPS, FerriteCore и ModernFix. Без Iris и шейдеров.",
+            Left = 36, Top = 197, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
         var pathHeading = new Label { Text = "Папка игры (новая, без других модов)", Left = 32, Top = 280,
             Width = 690, Height = 26, Font = new Font("Segoe UI", 11F, FontStyle.Bold) };
         location.Location = new Point(32, 311);
@@ -88,7 +83,7 @@ internal sealed class InstallerForm : Form
         };
 
         var safety = new Label {
-            Text = "В оба варианта входят одинаковые игровые моды. Lite подключается к общему серверу Full.\n" +
+            Text = "Единый набор игровых модов для любого ПК и общего сервера.\n" +
                    "Моды скачиваются по HTTPS с проверкой SHA-512 / SHA-1.",
             Left = 32, Top = 354, Width = 710, Height = 54,
             ForeColor = Color.FromArgb(175, 194, 212)
@@ -121,15 +116,10 @@ internal sealed class InstallerForm : Form
         cancel.Click += (_, _) => cancellation?.Cancel();
         help.Click += (_, _) => ShowInstructions();
         Controls.AddRange(new Control[] {
-            title, subtitle, heading, lite, full, liteDesc, pathHeading, location,
+            title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
             browse, safety, install, neoforge, openFolder, help, cancel, progress, status
         });
-        UpdateTarget();
-    }
-
-    private void UpdateTarget()
-    {
-        location.Text = Path.Combine(baseDir, lite.Checked ? "Lite" : "Full");
+        location.Text = Path.Combine(baseDir, "Optimized");
     }
 
     private void SetBusy(bool busy, bool cancellable)
@@ -137,8 +127,6 @@ internal sealed class InstallerForm : Form
         install.Enabled = !busy;
         neoforge.Enabled = !busy;
         browse.Enabled = !busy;
-        lite.Enabled = !busy;
-        full.Enabled = !busy;
         location.ReadOnly = busy;
         cancel.Enabled = busy && cancellable;
         UseWaitCursor = busy;
@@ -153,15 +141,15 @@ internal sealed class InstallerForm : Form
             "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.259 → Изменить.\n" +
             "5. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
             "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n\n" +
-            "Lite: графика Fast, прорисовка 4–6 чанков, без шейдеров, 4–6 ГБ RAM\n" +
-            "(если системной памяти достаточно). Full: ориентир 8 ГБ RAM.\n\n" +
-            "Клиент Lite и Full подключаются к одному серверу. Сборка alpha: протестируйте новый мир.",
+            "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
+            "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
+            "Сервер общий; все игровые механики сохранены. Тестируйте новый мир.",
             "Как запустить TechQuest", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
-    private static Stream GetEmbeddedPack(bool isLite)
+    private static Stream GetEmbeddedPack()
     {
-        string name = isLite ? "TechQuest.Lite.mrpack" : "TechQuest.Full.mrpack";
+        const string name = "TechQuest.Optimized.mrpack";
         return Assembly.GetExecutingAssembly().GetManifestResourceStream(name)
             ?? throw new InvalidDataException("Сборка " + name + " не встроена в установщик.");
     }
@@ -170,21 +158,14 @@ internal sealed class InstallerForm : Form
     {
         try
         {
-            foreach (bool isLite in new[] { false, true })
-            {
-                using var resource = GetEmbeddedPack(isLite);
-                var mods = LoadManifest(resource);
-                var fileNames = mods.Select(x => x.Name.ToLowerInvariant()).ToArray();
-                if (!fileNames.Any(n => n.Contains("industrial-craft-2-nostalgia")) ||
-                    !fileNames.Any(n => n.Contains("buildcraft")))
-                    return 2;
-                bool hasIris = fileNames.Any(n => n.StartsWith("iris-"));
-                bool hasImmediatelyFast = fileNames.Any(n => n.Contains("immediatelyfast"));
-                if (isLite && (hasIris || !hasImmediatelyFast))
-                    return 3;
-                if (!isLite && !hasIris)
-                    return 4;
-            }
+            using var resource = GetEmbeddedPack();
+            var mods = LoadManifest(resource);
+            var fileNames = mods.Select(x => x.Name.ToLowerInvariant()).ToArray();
+            string[] core = { "industrial-craft-2-nostalgia", "buildcraft", "create-", "mekanism" };
+            string[] optimization = { "sodium-", "immediatelyfast", "moreculling", "badoptimizations", "dynamic-fps" };
+            if (core.Any(id => !fileNames.Any(n => n.Contains(id)))) return 2;
+            if (optimization.Any(id => !fileNames.Any(n => n.Contains(id)))) return 3;
+            if (fileNames.Any(n => n.StartsWith("iris-"))) return 4;
             return 0;
         }
         catch { return 5; }
@@ -276,13 +257,12 @@ internal sealed class InstallerForm : Form
                 "Нельзя смешивать модпаки", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
-        bool selectedLite = lite.Checked;
         cancellation = new CancellationTokenSource();
         SetBusy(true, true);
         string staging = Path.Combine(target, ".techquest-download-" + Guid.NewGuid().ToString("N"));
         try
         {
-            using var pack = GetEmbeddedPack(selectedLite);
+            using var pack = GetEmbeddedPack();
             var list = LoadManifest(pack);
             Directory.CreateDirectory(staging);
             progress.Minimum = 0;
@@ -299,24 +279,21 @@ internal sealed class InstallerForm : Form
             if (Directory.Exists(mods)) Directory.Delete(mods, recursive: false);
             Directory.Move(staging, mods);
             installedGameDir = target;
-            if (selectedLite)
-            {
-                var optionsFile = Path.Combine(target, "options.txt");
-                if (!File.Exists(optionsFile))
-                    File.WriteAllText(optionsFile,
-                        "graphicsMode:fast\nrenderDistance:6\nsimulationDistance:5\n" +
-                        "entityDistanceScaling:0.5\nparticles:2\nmaxFps:60\n" +
-                        "biomeBlendRadius:0\nmipmapLevels:1\n", new UTF8Encoding(false));
-            }
+            var optionsFile = Path.Combine(target, "options.txt");
+            if (!File.Exists(optionsFile))
+                File.WriteAllText(optionsFile,
+                    "graphicsMode:fast\nrenderDistance:6\nsimulationDistance:5\n" +
+                    "entityDistanceScaling:0.5\nparticles:2\nmaxFps:60\n" +
+                    "biomeBlendRadius:0\nmipmapLevels:1\n", new UTF8Encoding(false));
             File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
-                "TechQuest " + (selectedLite ? "Lite" : "Full") + "\n" +
+                "TechQuest 0.2 Optimized\n" +
                 "Minecraft Java 1.21.1, NeoForge 21.1.259.\n" +
                 "Установите официальный NeoForge (кнопка в установщике).\n" +
                 "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +
                 target + "\nJava 21. Не используйте ванильный профиль.\n", Encoding.UTF8);
             status.Text = $"Установлено {list.Count} файлов. Далее установите NeoForge и настройте профиль Minecraft.";
             MessageBox.Show(this,
-                $"Моды TechQuest {(selectedLite ? "Lite" : "Full")} установлены!\n\n" +
+                $"Моды TechQuest Optimized установлены!\n\n" +
                 target + "\n\nТеперь нажмите «Установить NeoForge», затем выберите эту папку " +
                 "в официальном Minecraft Launcher (Установки → профиль NeoForge → Папка игры).",
                 "Установка завершена", MessageBoxButtons.OK, MessageBoxIcon.Information);
