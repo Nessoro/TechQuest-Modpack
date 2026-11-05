@@ -24,8 +24,8 @@ internal static class Program
 
 internal sealed class InstallerForm : Form
 {
-    private const string NeoForgeVersion = "21.1.259";
-    private const string NeoForgeUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.1.259/neoforge-21.1.259-installer.jar";
+    private const string NeoForgeVersion = "21.1.264";
+    private const string NeoForgeUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.1.264/neoforge-21.1.264-installer.jar";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
 
     private readonly TextBox location = new() { Width = 540 };
@@ -61,7 +61,7 @@ internal sealed class InstallerForm : Form
         var subtitle = new Label { Text = "Minecraft Java 1.21.1  •  NeoForge " + NeoForgeVersion +
             "  •  BuildCraft + IndustrialCraft", Left = 32, Top = 78, Width = 710, Height = 30,
             ForeColor = Color.FromArgb(175, 194, 212) };
-        var heading = new Label { Text = "TechQuest 0.3.1 — карта, HP, путеводитель и оптимизация", Left = 32, Top = 126,
+        var heading = new Label { Text = "TechQuest 0.3.2 — карта, HP, путеводитель и оптимизация", Left = 32, Top = 126,
             Width = 700, Height = 30, Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
         var liteDesc = new Label { Text = "Сохранены все игровые моды. Ускорение: Sodium, ImmediatelyFast, More Culling,",
             Left = 36, Top = 168, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
@@ -138,7 +138,7 @@ internal sealed class InstallerForm : Form
             "1. Нажмите «Установить моды»; Python и консоль не нужны.\n" +
             "2. Установите Java 21, если её нет на компьютере.\n" +
             "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
-            "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.259 → Изменить.\n" +
+            "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
             "5. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
             "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n\n" +
             "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
@@ -164,7 +164,7 @@ internal sealed class InstallerForm : Form
             using var resource = GetEmbeddedPack();
             var mods = LoadManifest(resource);
             var fileNames = mods.Select(x => x.Name.ToLowerInvariant()).ToArray();
-            string[] core = { "industrial-craft-2-nostalgia", "buildcraft", "create-", "mekanism" };
+            string[] core = { "industrial-craft-2-nostalgia", "buildcraft", "create-", "mekanism", "incoming-3.10.4" };
             string[] optimization = { "sodium-", "immediatelyfast", "moreculling", "badoptimizations", "dynamic-fps" };
             if (core.Any(id => !fileNames.Any(n => n.Contains(id)))) return 2;
             if (optimization.Any(id => !fileNames.Any(n => n.Contains(id)))) return 3;
@@ -221,7 +221,10 @@ internal sealed class InstallerForm : Form
                 !Uri.TryCreate(downloads[0].GetString(), UriKind.Absolute, out var url) ||
                 url.Scheme != Uri.UriSchemeHttps ||
                 (url.Host != "cdn.modrinth.com" &&
-                 url.Host != "raw.githubusercontent.com"))
+                 url.Host != "raw.githubusercontent.com" &&
+                 !(url.Host == "github.com" &&
+                   url.AbsolutePath == "/zentixua/incoming/releases/download/v3.10.4/incoming-3.10.4.jar" &&
+                   string.IsNullOrEmpty(url.Query) && string.IsNullOrEmpty(url.Fragment))))
                 throw new InvalidDataException("Недоверенный URL мода: " + name);
             var hashes = file.GetProperty("hashes");
             string? sha512 = hashes.TryGetProperty("sha512", out var h512) ? h512.GetString() : null;
@@ -338,8 +341,8 @@ internal sealed class InstallerForm : Form
                     "entityDistanceScaling:0.5\nparticles:2\nmaxFps:120\n" +
                     "biomeBlendRadius:0\nmipmapLevels:1\n", new UTF8Encoding(false));
             File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
-                "TechQuest 0.3.1 Optimized\n" +
-                "Minecraft Java 1.21.1, NeoForge 21.1.259.\n" +
+                "TechQuest 0.3.2 Optimized\n" +
+                "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +
                 "Установите официальный NeoForge (кнопка в установщике).\n" +
                 "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +
                 target + "\nJava 21. Не используйте ванильный профиль.\n", Encoding.UTF8);
