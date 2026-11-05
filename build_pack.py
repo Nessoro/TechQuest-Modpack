@@ -220,6 +220,14 @@ def make_mrpack(cfg, mods, output, manual_files=()):
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("modrinth.index.json", json.dumps(idx, ensure_ascii=False, indent=2))
+        video = cfg.get("performance_profile", {}).get("video_defaults", {})
+        if video:
+            lines = ["%s:%s" % (key, value) for key, value in video.items()]
+            archive.writestr("overrides/options.txt", "\n".join(lines) + "\n")
+            archive.writestr("overrides/TECHQUEST_OPTIMIZED.txt",
+                "Unified optimized TechQuest client. Iris shaders are not included. "
+                "Gameplay mods are preserved. Set graphics Fast, view distance 4-6, "
+                "particles minimal. The settings are not a guarantee of FPS gains.\n")
     return len(files)
 
 def main():
@@ -242,7 +250,7 @@ def main():
                           "url": row["url"], "hashes": row["hashes"]}
                          for row in manual]})
     if not args.no_mrpack:
-        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.1.0.mrpack", manual)
+        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack", manual)
         print("Generated Modrinth manifest:", n, "files")
     if args.resolve_only:
         print("Version resolution done. Minecraft startup is NOT verified.")
