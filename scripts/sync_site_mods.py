@@ -90,6 +90,13 @@ for row in reversed(cfg.get("manual_mods", [])):
                         "Ожидает файла от владельца проекта. Пока не включён в скачиваемый модпак."),
         "url": row["source"],
     })
+for row in reversed(cfg.get("external_mods", [])):
+    mods.insert(1, {
+        "name": row["name"], "group": row.get("group", "Военная техника"),
+        "required": row.get("required", False),
+        "description": "Авиаудары, ПВО, ракеты и ядерные взрывы. Может сильно нагружать сервер.",
+        "url": row["source"],
+    })
 index = ROOT / "docs" / "index.html"
 source = index.read_text(encoding="utf-8")
 marker = "window.TQ_MODS = "
