@@ -1,4 +1,4 @@
-"""TechQuest 0.3 internal handbook, minimap and HP overlays tests."""
+"""TechQuest 0.3.1 internal handbook, minimap and HP overlays tests."""
 import importlib.util
 import json
 import tempfile
@@ -59,13 +59,13 @@ class GuideTests(unittest.TestCase):
     def test_map_and_health_are_explicitly_client_only(self):
         cfg=json.loads((ROOT/"modlist.json").read_text(encoding="utf-8"))
         mods={m["project"]:m for m in cfg["mods"]}
-        for slug in ("xaeros-minimap", "xaeros-world-map", "new-health-bars"):
+        for slug in ("xaeros-minimap", "xaeros-world-map", "health-indicator-txf"):
             self.assertTrue(mods[slug]["required"])
             self.assertTrue(mods[slug]["client_only"])
         for slug in ("patchouli","open-loader"):
             self.assertTrue(mods[slug]["required"])
             self.assertFalse(mods[slug].get("client_only",False))
-        self.assertEqual(cfg["version"],"0.3.0-alpha")
+        self.assertEqual(cfg["version"],"0.3.1-alpha")
 
 if __name__=="__main__":
     unittest.main()
