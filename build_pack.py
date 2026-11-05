@@ -260,7 +260,7 @@ def main():
                           "url": row["url"], "hashes": row["hashes"]}
                          for row in manual]})
     if not args.no_mrpack:
-        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.3.0_OPTIMIZED.mrpack", manual)
+        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.3.1_OPTIMIZED.mrpack", manual)
         print("Generated Modrinth manifest:", n, "files")
     if args.resolve_only:
         print("Version resolution done. Minecraft startup is NOT verified.")
