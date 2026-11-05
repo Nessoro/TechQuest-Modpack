@@ -169,8 +169,13 @@ internal sealed class InstallerForm : Form
             if (core.Any(id => !fileNames.Any(n => n.Contains(id)))) return 2;
             if (optimization.Any(id => !fileNames.Any(n => n.Contains(id)))) return 3;
             if (fileNames.Any(n => n.StartsWith("iris-"))) return 4;
-            if (!new[] { "xaerominimap", "xaeroworldmap", "health-bars", "patchouli" }
-                .All(x => fileNames.Any(n => n.Contains(x)))) return 6;
+            var normalized = fileNames.Select(n =>
+                n.Replace("-", "").Replace("_", "").Replace(" ", "")).ToArray();
+            if (!normalized.Any(n => n.Contains("xaero") && n.Contains("minimap")) ||
+                !normalized.Any(n => n.Contains("xaero") && n.Contains("worldmap")) ||
+                !normalized.Any(n => n.Contains("health") && n.Contains("bar")) ||
+                !normalized.Any(n => n.Contains("patchouli")))
+                return 6;
             using var zipStream = GetEmbeddedPack();
             using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
             if (archive.GetEntry("overrides/patchouli_books/techquest_guide/book.json") is null ||
