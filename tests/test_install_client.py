@@ -15,7 +15,7 @@ spec.loader.exec_module(mod)
 
 def sample_index():
     return {"game":"minecraft",
-            "dependencies":{"minecraft":"1.21.1","neoforge":"21.1.259"},
+            "dependencies":{"minecraft":"1.21.1","neoforge":"21.1.264"},
             "files":[
                 {"path":"mods/buildcraft.jar","hashes":{"sha1":"a"*40},
                  "env":{"client":"required","server":"required"},
