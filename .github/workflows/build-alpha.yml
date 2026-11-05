@@ -6,7 +6,6 @@ on:
       - modlist.json
       - build_pack.py
       - scripts/install_server.py
-      - scripts/build_lite.py
       - scripts/install_client.py
       - windows-installer/**
       - scripts/security_audit.py
@@ -53,8 +52,6 @@ jobs:
           PY
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
-      - name: Create separate client-only Lite Modrinth pack
-        run: python scripts/build_lite.py
       - name: Create server bootstrap (no redistributed third-party JARs)
         if: success()
         run: |
@@ -80,42 +77,35 @@ jobs:
           with zipfile.ZipFile(p,"w",zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_server.py")
               z.write("build_pack.py")
-              z.write(out/"TechQuest_1.21.1_0.1.0.mrpack",arcname="TechQuest.mrpack")
+              z.write(out/"TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack",arcname="TechQuest.mrpack")
               z.writestr("SERVER_INSTALL_README.txt",readme)
           print("Created",p,p.stat().st_size,"bytes")
           PY
-      - name: Create official Launcher client bootstrap for Full and Lite
+      - name: Create optional official Launcher command-line bootstrap
         if: success()
         run: |
           python - <<'PY'
           from pathlib import Path
           import zipfile
           out=Path("output")
-          readme="""TECHQUEST 1.21.1 — Minecraft Official Launcher, Full / Lite
+          readme="""TECHQUEST 0.2 OPTIMIZED — Minecraft Official Launcher
 
-          Requirements: Windows 10/11, Minecraft Java Edition 1.21.1,
-          official NeoForge 21.1.259, Java 21, Python 3.9+, internet.
+          Non-technical Windows players should use TechQuestInstaller.exe GUI
+          from the Windows GUI artifact instead. This ZIP is an optional
+          backup for developers using Python, not needed by ordinary players.
 
-          1. Extract this ZIP to a new folder, e.g. C:\\TechQuestInstaller.
-          2. Run ONE command, from that folder:
-               python scripts/install_client.py --pack TechQuest_Lite.mrpack --game-dir C:\\Minecraft\\TechQuestLite
-             For Full instead:
-               python scripts/install_client.py --pack TechQuest_Full.mrpack --game-dir C:\\Minecraft\\TechQuestFull
-          3. In OFFICIAL Minecraft Launcher: Installations -> New/Edit NeoForge 21.1.259
-             -> More Options -> Game Directory -> the SAME game-dir folder.
-          4. Launch this NeoForge installation (NOT vanilla 1.21.1).
-          5. For Lite: lower graphics settings (see TECHQUEST_LITE_SETTINGS.txt inside
-             the Lite .mrpack overrides). For full set allocate ~8 GiB RAM.
+          Needs Minecraft Java 1.21.1, NeoForge 21.1.259, Java 21.
+          From this folder:
+            python scripts/install_client.py --pack TechQuest_Optimized.mrpack --game-dir C:\\Minecraft\\TechQuestOptimized
 
-          First test a new world, then try multiplayer on the SAME TechQuest server.
-          This alpha pack has NOT passed a full runtime test of every gameplay mod.
+          Then set Official Minecraft Launcher -> NeoForge -> Game Directory
+          to the same dedicated game folder. Never mix with vanilla/Fabric mods.
           """
           with zipfile.ZipFile(out/"TechQuest_Client_Bootstrap.zip","w",
                                zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_client.py")
               z.write("build_pack.py")
-              z.write(out/"TechQuest_1.21.1_0.1.0.mrpack",arcname="TechQuest_Full.mrpack")
-              z.write(out/"TechQuest_1.21.1_LITE_0.1.0.mrpack",arcname="TechQuest_Lite.mrpack")
+              z.write(out/"TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack",arcname="TechQuest_Optimized.mrpack")
               z.writestr("OFFICIAL_LAUNCHER_INSTALL.txt", readme)
           PY
       - name: Publish downloadable manifests and bootstrap
@@ -129,7 +119,6 @@ jobs:
             output/TechQuest_Client_Bootstrap.zip
             output/versions-lock.json
             output/BUILD_STATUS.json
-            output/Lite_BUILD_STATUS.json
           if-no-files-found: warn
           retention-days: 30
       - name: Summarize build
@@ -150,11 +139,9 @@ jobs:
               lines.append(f"- Manual mods missing: **{', '.join(j['missing_mods']) or 'none'}**")
           else:
               lines.append("- Full download/hash verification failed or did not finish; inspect logs.")
-          if (out/"Lite_BUILD_STATUS.json").exists():
-              lite=json.loads((out/"Lite_BUILD_STATUS.json").read_text(encoding="utf-8"))
-              lines.append(f"- Lite optimizers added: **{len(lite['optimizers'])}**")
-              lines.append("- Lite keeps all shared gameplay mods; Iris shaders are omitted.")
-              lines.append("- Multiplayer uses the SAME Full server.")
+          lines.append("- One optimized client profile: Sodium, ImmediatelyFast, More Culling, BadOptimizations, Dynamic FPS.")
+          lines.append("- All gameplay mods are preserved. Iris/shader loader removed from default package.")
+          lines.append("- Both client and server continue to use the same game-changing mods.")
           lines += ["","**Not a tested playable release.** No Minecraft client/server runtime startup was performed.",
                     "IndustrialCraft 2 Nostalgia is included as a verified download URL inside .mrpack.",
                     "Third-party JAR bytes are referenced via pinned GitHub URL, not bundled in the artifact.",
@@ -180,27 +167,26 @@ jobs:
         with:
           name: TechQuest-1.21.1-alpha-build
           path: client-packages
-      - name: Embed both client manifests (no third-party JARs)
+      - name: Embed single optimized client manifest
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force windows-installer/assets | Out-Null
-          Copy-Item client-packages/TechQuest_1.21.1_0.1.0.mrpack windows-installer/assets/TechQuest_Full.mrpack
-          Copy-Item client-packages/TechQuest_1.21.1_LITE_0.1.0.mrpack windows-installer/assets/TechQuest_Lite.mrpack
+          Copy-Item client-packages/TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack windows-installer/assets/TechQuest_Optimized.mrpack
           Add-Type -AssemblyName System.IO.Compression
           Add-Type -AssemblyName System.IO.Compression.FileSystem
-          $full = [IO.Compression.ZipFile]::OpenRead("$PWD/windows-installer/assets/TechQuest_Full.mrpack")
-          $lite = [IO.Compression.ZipFile]::OpenRead("$PWD/windows-installer/assets/TechQuest_Lite.mrpack")
+          $zip = [IO.Compression.ZipFile]::OpenRead("$PWD/windows-installer/assets/TechQuest_Optimized.mrpack")
           try {
-            foreach($pack in @($full,$lite)) {
-              if(-not ($pack.Entries | Where-Object FullName -EQ 'modrinth.index.json')) { throw 'Invalid embedded pack' }
+            $entry = $zip.Entries | Where-Object FullName -EQ 'modrinth.index.json'
+            if(-not $entry) { throw 'Invalid optimized pack' }
+            $reader = [IO.StreamReader]::new($entry.Open())
+            try { $index = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Close() }
+            $paths = @($index.files | ForEach-Object { $_.path })
+            foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft')) {
+              if(-not ($paths | Where-Object { $_ -match $mustHave })) { throw "Missing required mod: $mustHave" }
             }
-            $liteFiles = $lite.Entries | Where-Object FullName -EQ 'modrinth.index.json'
-            $reader = [IO.StreamReader]::new($liteFiles.Open())
-            try { $liteJSON = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Close() }
-            $modPaths = @($liteJSON.files | ForEach-Object { $_.path })
-            if(-not ($modPaths | Where-Object { $_ -match 'immediatelyfast' })) { throw 'Lite optimizer missing' }
-            if($modPaths | Where-Object { $_ -match '^mods/iris-' }) { throw 'Lite contains Iris unexpectedly' }
-          } finally { $full.Dispose(); $lite.Dispose() }
+            if($paths | Where-Object { $_ -match '^mods/iris-' }) { throw 'Optimized pack contains Iris unexpectedly' }
+            if(-not ($zip.Entries | Where-Object FullName -EQ 'overrides/options.txt')) { throw 'Missing low-lag video settings' }
+          } finally { $zip.Dispose() }
       - name: Publish Windows x64 native GUI app
         shell: pwsh
         run: |
@@ -208,13 +194,13 @@ jobs:
           if($LASTEXITCODE -ne 0) { throw 'dotnet publish failed' }
           if(-not (Test-Path dist/TechQuestInstaller.exe)) { throw 'Missing GUI executable' }
           Get-Item dist/TechQuestInstaller.exe | Select-Object Name,Length
-      - name: Smoke-test compiled GUI EXE and embedded Lite/Full
+      - name: Smoke-test compiled GUI EXE and optimized pack
         shell: pwsh
         run: |
           $exe = (Resolve-Path dist/TechQuestInstaller.exe).Path
           $run = Start-Process -FilePath $exe -ArgumentList '--self-test' -Wait -PassThru
           if($run.ExitCode -ne 0) { throw "GUI packaged resource self-test failed: $($run.ExitCode)" }
-          Write-Host "Native installer Full/Lite embedded manifests verified"
+          Write-Host "Native installer unified optimized manifest verified"
       - name: Upload one-click graphical installer
         uses: actions/upload-artifact@v4
         with:
@@ -224,7 +210,7 @@ jobs:
           retention-days: 30
 
   security-scan:
-    name: Security audit (ClamAV Full+Lite+EXE)
+    name: Security audit (ClamAV Optimized+EXE)
     needs: [pack, windows-installer]
     runs-on: ubuntu-latest
     timeout-minutes: 75
@@ -237,7 +223,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Download exact Full and Lite manifests from this build
+      - name: Download exact optimized manifest from this build
         uses: actions/download-artifact@v4
         with:
           name: TechQuest-1.21.1-alpha-build
@@ -247,11 +233,10 @@ jobs:
         with:
           name: TechQuest-Windows-GUI-Installer
           path: security-work/installer
-      - name: Verify provenance, JAR ZIP integrity and every file hash
+      - name: Verify source, JAR integrity and every checksum
         run: |
           python scripts/security_audit.py \
-            --full security-work/manifests/TechQuest_1.21.1_0.1.0.mrpack \
-            --lite security-work/manifests/TechQuest_1.21.1_LITE_0.1.0.mrpack \
+            --pack security-work/manifests/TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack \
             --mods-dir security-work/mods --reports security-work/reports
           test -s security-work/installer/TechQuestInstaller.exe
           sha256sum security-work/installer/TechQuestInstaller.exe | tee security-work/reports/windows-installer-sha256.txt
@@ -263,7 +248,7 @@ jobs:
           sudo freshclam
           clamscan --version | tee security-work/reports/clamav-version.txt
           test -n "$(find /var/lib/clamav -maxdepth 1 -type f \( -name 'daily.cvd' -o -name 'daily.cld' \) -print -quit)"
-      - name: Antivirus scan all unique Full + Lite JARs and Windows EXE
+      - name: Antivirus scan all optimized client/server JARs and Windows EXE
         shell: bash
         run: |
           set +e
@@ -301,7 +286,7 @@ jobs:
           import json
           x=json.load(open("security-work/reports/manifest-integrity.json"))
           print(f"- Unique scanned-source JARs: {x['unique_jar_files']}")
-          print(f"- Full JARs: {x['full_mods']}; Lite JARs: {x['lite_mods']}")
+          print(f"- Optimized package JARs: {x['pack_mods']}")
           print("- All JAR hash and ZIP-integrity checks succeeded.")
           PY
           else
