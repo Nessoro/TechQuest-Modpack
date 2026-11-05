@@ -9,6 +9,7 @@ on:
       - scripts/install_client.py
       - windows-installer/**
       - scripts/security_audit.py
+      - scripts/guide_assets.py
       - tests/**
       - .github/workflows/build-alpha.yml
 permissions:
@@ -77,7 +78,7 @@ jobs:
           with zipfile.ZipFile(p,"w",zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_server.py")
               z.write("build_pack.py")
-              z.write(out/"TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack",arcname="TechQuest.mrpack")
+              z.write(out/"TechQuest_1.21.1_0.3.0_OPTIMIZED.mrpack",arcname="TechQuest.mrpack")
               z.writestr("SERVER_INSTALL_README.txt",readme)
           print("Created",p,p.stat().st_size,"bytes")
           PY
@@ -105,7 +106,7 @@ jobs:
                                zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_client.py")
               z.write("build_pack.py")
-              z.write(out/"TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack",arcname="TechQuest_Optimized.mrpack")
+              z.write(out/"TechQuest_1.21.1_0.3.0_OPTIMIZED.mrpack",arcname="TechQuest_Optimized.mrpack")
               z.writestr("OFFICIAL_LAUNCHER_INSTALL.txt", readme)
           PY
       - name: Publish downloadable manifests and bootstrap
@@ -171,7 +172,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force windows-installer/assets | Out-Null
-          Copy-Item client-packages/TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack windows-installer/assets/TechQuest_Optimized.mrpack
+          Copy-Item client-packages/TechQuest_1.21.1_0.3.0_OPTIMIZED.mrpack windows-installer/assets/TechQuest_Optimized.mrpack
           Add-Type -AssemblyName System.IO.Compression
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           $zip = [IO.Compression.ZipFile]::OpenRead("$PWD/windows-installer/assets/TechQuest_Optimized.mrpack")
@@ -181,11 +182,18 @@ jobs:
             $reader = [IO.StreamReader]::new($entry.Open())
             try { $index = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Close() }
             $paths = @($index.files | ForEach-Object { $_.path })
-            foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft')) {
+            foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft','xaero','patchouli','openloader')) {
               if(-not ($paths | Where-Object { $_ -match $mustHave })) { throw "Missing required mod: $mustHave" }
             }
             if($paths | Where-Object { $_ -match '^mods/iris-' }) { throw 'Optimized pack contains Iris unexpectedly' }
             if(-not ($zip.Entries | Where-Object FullName -EQ 'overrides/options.txt')) { throw 'Missing low-lag video settings' }
+            foreach ($required in @(
+              'overrides/patchouli_books/techquest_guide/book.json',
+              'overrides/patchouli_books/techquest_guide/en_us/entries/start.json',
+              'overrides/config/openloader/packs/techquest_starter_guide.zip'
+            )) {
+              if(-not ($zip.Entries | Where-Object FullName -EQ $required)) { throw "Missing in-game book: $required" }
+            }
           } finally { $zip.Dispose() }
       - name: Publish Windows x64 native GUI app
         shell: pwsh
@@ -236,7 +244,7 @@ jobs:
       - name: Verify source, JAR integrity and every checksum
         run: |
           python scripts/security_audit.py \
-            --pack security-work/manifests/TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack \
+            --pack security-work/manifests/TechQuest_1.21.1_0.3.0_OPTIMIZED.mrpack \
             --mods-dir security-work/mods --reports security-work/reports
           test -s security-work/installer/TechQuestInstaller.exe
           sha256sum security-work/installer/TechQuestInstaller.exe | tee security-work/reports/windows-installer-sha256.txt
