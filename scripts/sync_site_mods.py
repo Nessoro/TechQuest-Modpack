@@ -36,6 +36,12 @@ NAMES = {
     "explosion-overhaul-a-new-level-of-destruction": "Explosion Overhaul",
     "lithostitched": "Lithostitched",
     "irons-lib": "Iron's Lib",
+    "xaeros-minimap": "Xaero's Minimap",
+    "xaeros-world-map": "Xaero's World Map",
+    "new-health-bars": "Health Bars",
+    "patchouli": "Patchouli — путеводитель TechQuest",
+    "open-loader": "Open Loader",
+    "lithium": "Lithium",
 }
 DESCRIPTIONS = {
     "buildcraft-community-edition": "Классическая автоматизация, карьеры, трубы и двигатели.",
@@ -56,6 +62,12 @@ DESCRIPTIONS = {
     "explosion-overhaul-a-new-level-of-destruction": "Мощные взрывы, звуковые эффекты и ударные волны. NeoForge alpha.",
     "lithostitched": "Библиотека генерации мира, необходимая Terralith.",
     "irons-lib": "Библиотека, необходимая Iron's Spells 'n Spellbooks.",
+    "xaeros-minimap": "Лёгкая миникарта, точки маршрутов, настройка радаров.",
+    "xaeros-world-map": "Полноэкранная карта исследованного мира; обычно открывается M.",
+    "new-health-bars": "Отображает полоски здоровья мобов при сражениях.",
+    "patchouli": "Русское внутриигровое руководство по модам TechQuest.",
+    "open-loader": "Автоматически подключает datapack выдачи книги в мире.",
+    "lithium": "Оптимизация логики и тиков Minecraft; требуется проверка совместимости.",
 }
 mods = []
 for row in cfg["mods"]:
