@@ -313,6 +313,48 @@ window.TQ_MODS = [
     "required": true,
     "description": "Снижает нагрузку, когда игра в фоне.",
     "url": "https://modrinth.com/mod/dynamic-fps"
+  },
+  {
+    "name": "Xaero's Minimap",
+    "group": "Карта и интерфейс",
+    "required": true,
+    "description": "Миникарта с метками, радаром и навигацией.",
+    "url": "https://modrinth.com/mod/xaeros-minimap"
+  },
+  {
+    "name": "Xaero's World Map",
+    "group": "Карта и интерфейс",
+    "required": true,
+    "description": "Полноэкранная карта мира и путевые точки.",
+    "url": "https://modrinth.com/mod/xaeros-world-map"
+  },
+  {
+    "name": "Health Bars",
+    "group": "Карта и интерфейс",
+    "required": true,
+    "description": "Индикаторы здоровья существ и мобов.",
+    "url": "https://modrinth.com/mod/new-health-bars"
+  },
+  {
+    "name": "Patchouli — путеводитель TechQuest",
+    "group": "Руководства",
+    "required": true,
+    "description": "Русскоязычная книга TechQuest прямо в игре.",
+    "url": "https://modrinth.com/mod/patchouli"
+  },
+  {
+    "name": "Open Loader",
+    "group": "Руководства",
+    "required": true,
+    "description": "Подключает datapack выдачи книги новичкам.",
+    "url": "https://modrinth.com/mod/open-loader"
+  },
+  {
+    "name": "Lithium",
+    "group": "Оптимизация",
+    "required": false,
+    "description": "Необязательная оптимизация серверных тиков.",
+    "url": "https://modrinth.com/mod/lithium"
   }
 ];
 </script>
@@ -472,7 +514,7 @@ initLinks();renderMods();setupSearch();setupForms();renderIssues();
       <div id="mods-grid" class="mods-grid" aria-live="polite"><p class="empty">Загружаем список модов…</p></div><p id="mods-error" class="hint" role="status"></p>
     </section>
     <section id="feedback" class="section feedback-section"><div class="container"><div class="section-head"><div><p class="kicker">02 / СООБЩЕСТВО</p><h2>Развиваем сборку <span>вместе.</span></h2><p class="subtext">Нашёл баг? Хочешь новый мод? Заполни форму. Она создаст черновик обращения на GitHub, который нужно будет подтвердить там.</p></div></div>
-      <div class="feedback-grid"><article class="feedback-card"><div class="feedback-card-top"><span class="feedback-icon red">!</span><span class="card-index">01 / BUG REPORT</span></div><h3>Сообщить о проблеме</h3><p>Вылет игры, конфликт модов, ошибка генерации мира или проблемы с сервером.</p><form id="bug-form" class="feedback-form"><label>Краткое описание *<input name="title" required maxlength="120" placeholder="Например, вылет при запуске карьера"></label><label>Какой мод затронут?<input name="mod" maxlength="100" placeholder="BuildCraft / IC2 / неизвестно"></label><label>Что произошло и как повторить? *<textarea name="details" required minlength="15" maxlength="7000" rows="5" placeholder="Опиши шаги, ожидаемый и фактический результат…"></textarea></label><label>Версия / лог (без персональных данных)<input name="logs" maxlength="500" placeholder="Например, 0.2.0 / ссылка на лог"></label><button type="submit" class="button button-primary form-btn">Создать отчёт <span aria-hidden="true">↗</span></button></form></article>
+      <div class="feedback-grid"><article class="feedback-card"><div class="feedback-card-top"><span class="feedback-icon red">!</span><span class="card-index">01 / BUG REPORT</span></div><h3>Сообщить о проблеме</h3><p>Вылет игры, конфликт модов, ошибка генерации мира или проблемы с сервером.</p><form id="bug-form" class="feedback-form"><label>Краткое описание *<input name="title" required maxlength="120" placeholder="Например, вылет при запуске карьера"></label><label>Какой мод затронут?<input name="mod" maxlength="100" placeholder="BuildCraft / IC2 / неизвестно"></label><label>Что произошло и как повторить? *<textarea name="details" required minlength="15" maxlength="7000" rows="5" placeholder="Опиши шаги, ожидаемый и фактический результат…"></textarea></label><label>Версия / лог (без персональных данных)<input name="logs" maxlength="500" placeholder="Например, 0.3.0 / ссылка на лог"></label><button type="submit" class="button button-primary form-btn">Создать отчёт <span aria-hidden="true">↗</span></button></form></article>
       <article class="feedback-card"><div class="feedback-card-top"><span class="feedback-icon green">+</span><span class="card-index">02 / MOD REQUEST</span></div><h3>Предложить мод</h3><p>Не хватает новой технологии, мобов, навыков, измерений или улучшений для компании?</p><form id="mod-form" class="feedback-form"><label>Название мода *<input name="title" required maxlength="120" placeholder="Например, Ad Astra"></label><label>Ссылка на страницу мода<input name="url" type="url" maxlength="400" placeholder="https://modrinth.com/mod/..."></label><label>Почему его стоит добавить? *<textarea name="details" required minlength="15" maxlength="7000" rows="5" placeholder="Что добавляет, зачем нужен, есть ли конфликты…"></textarea></label><label>Совместимость<input name="compat" maxlength="250" placeholder="Есть NeoForge 1.21.1 / не проверял"></label><button type="submit" class="button button-outline-green form-btn">Отправить предложение <span aria-hidden="true">↗</span></button></form></article></div>
       <p class="privacy-note"><span aria-hidden="true">ⓘ</span> Для отправки нужен аккаунт GitHub. Текст не хранится на этом сайте: после нажатия откроется страница создания Issue. Не публикуй IP сервера, токены и приватные данные в логах.</p>
     </div></section>
