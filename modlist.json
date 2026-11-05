@@ -1,10 +1,10 @@
 {
-  "pack_name": "TechQuest: BuildCraft & IndustrialCraft",
-  "version": "0.1.0-alpha",
+  "pack_name": "TechQuest: Industrial Frontier — Optimized",
+  "version": "0.2.0-alpha",
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.259",
-  "description": "Большая техническая RPG-сборка для сервера друзей: BuildCraft, IndustrialCraft, Create, Mekanism, прокачка и мобы",
+  "description": "Единая оптимизированная техническая RPG-сборка для NeoForge 1.21.1: BuildCraft, IC2, Create, Mekanism, приключения, война и улучшенный FPS",
   "mods": [
     {
       "project": "buildcraft-community-edition",
@@ -150,17 +150,12 @@
     {
       "project": "sodium",
       "group": "Оптимизация",
-      "required": false
-    },
-    {
-      "project": "iris",
-      "group": "Шейдеры",
-      "required": false
+      "required": true
     },
     {
       "project": "entityculling",
       "group": "Оптимизация",
-      "required": false
+      "required": true
     },
     {
       "project": "spark",
@@ -201,6 +196,26 @@
       "group": "Библиотеки",
       "required": true,
       "version_prefix": "1.21.1-2."
+    },
+    {
+      "project": "immediatelyfast",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "moreculling",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "badoptimizations",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "dynamic-fps",
+      "group": "Оптимизация",
+      "required": true
     }
   ],
   "manual_mods": [
@@ -221,39 +236,19 @@
       "note": "Выпуск 1.5.1 для NeoForge 1.21.1. Требует Superb Warfare. ОЖИДАЕТ ручного добавления оригинального JAR в manual-mods/ и проверки лицензии; НЕ включён в публичный .mrpack, пока файл не предоставлен."
     }
   ],
-  "lite_profile": {
-    "name": "TechQuest: Industrial Frontier — Lite",
-    "description": "Модпак с теми же игровыми механиками и серверными модами, но без Iris и с дополнительными клиентскими оптимизациями.",
-    "exclude_projects": [
-      "iris"
-    ],
-    "required_projects": [
-      "sodium",
-      "entityculling",
-      "ferrite-core",
-      "modernfix"
-    ],
-    "extra_client_mods": [
-      {
-        "project": "immediatelyfast",
-        "group": "Оптимизация",
-        "required": true
-      },
-      {
-        "project": "moreculling",
-        "group": "Оптимизация",
-        "required": true
-      },
-      {
-        "project": "badoptimizations",
-        "group": "Оптимизация",
-        "required": true
-      },
-      {
-        "project": "dynamic-fps",
-        "group": "Оптимизация",
-        "required": true
-      }
-    ]
+  "performance_profile": {
+    "unified": true,
+    "shader_loader_included": false,
+    "notes": "Все прежние Lite-оптимизации теперь включены в единственный профиль. Клиент и сервер используют те же игровые моды. Прирост FPS не гарантирован без тестирования.",
+    "video_defaults": {
+      "graphicsMode": "fast",
+      "renderDistance": 6,
+      "simulationDistance": 5,
+      "entityDistanceScaling": 0.5,
+      "particles": 2,
+      "maxFps": 60,
+      "biomeBlendRadius": 0,
+      "mipmapLevels": 1
+    }
   }
 }
