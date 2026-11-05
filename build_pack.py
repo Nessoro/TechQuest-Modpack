@@ -18,6 +18,8 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
+from scripts.guide_assets import guide_overrides
+
 ROOT = Path(__file__).resolve().parent
 API = "https://api.modrinth.com/v2"
 UA = "TechQuest-Modpack/0.1 (modpack installer)"
@@ -128,6 +130,12 @@ def resolve_manifest(cfg):
     ordered = sorted(cfg["mods"], key=lambda item: not bool(item.get("version_prefix")))
     for entry in ordered:
         add(entry["project"], entry.get("required", True), entry.get("version_prefix", ""))
+    client_only = {entry["project"] for entry in cfg["mods"] if entry.get("client_only")}
+    for item in found.values():
+        if item["requested"] in client_only:
+            if item["environment"]["client"] == "unsupported":
+                raise BuildError("Client-only mod is not client-compatible: " + item["requested"])
+            item["environment"]["server"] = "unsupported"
     return list(found.values()), skipped
 
 def verify(data, hashes):
@@ -228,6 +236,8 @@ def make_mrpack(cfg, mods, output, manual_files=()):
                 "Unified optimized TechQuest client. Iris shaders are not included. "
                 "Gameplay mods are preserved. Set graphics Fast, view distance 4-6, "
                 "particles minimal. The settings are not a guarantee of FPS gains.\n")
+        for relative, data in guide_overrides().items():
+            archive.writestr("overrides/" + relative, data)
     return len(files)
 
 def main():
@@ -250,7 +260,7 @@ def main():
                           "url": row["url"], "hashes": row["hashes"]}
                          for row in manual]})
     if not args.no_mrpack:
-        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.2.0_OPTIMIZED.mrpack", manual)
+        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.3.0_OPTIMIZED.mrpack", manual)
         print("Generated Modrinth manifest:", n, "files")
     if args.resolve_only:
         print("Version resolution done. Minecraft startup is NOT verified.")
@@ -271,10 +281,18 @@ def main():
     for local in manual:
         shutil.copy2(local["source_path"], client / local["filename"])
         shutil.copy2(local["source_path"], server / local["filename"])
+    for relative, data in guide_overrides().items():
+        target = out / "client" / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
+        if relative.startswith("config/openloader/"):
+            server_target = out / "server" / relative
+            server_target.parent.mkdir(parents=True, exist_ok=True)
+            server_target.write_bytes(data)
     (out / "server" / "server.properties").write_text(
         "motd=TechQuest Industrial Frontier\nmax-players=8\nonline-mode=true\n"
         "white-list=true\nenforce-whitelist=true\nenable-rcon=false\n"
-        "view-distance=8\nsimulation-distance=6\nallow-flight=true\n", encoding="utf-8")
+        "view-distance=6\nsimulation-distance=5\nallow-flight=true\n", encoding="utf-8")
     (out / "server" / "START_HERE.txt").write_text(
         "Install official NeoForge %s for Minecraft %s with Java 21; then "
         "review Mojang EULA and set eula=true only if you agree. Enable whitelist "
