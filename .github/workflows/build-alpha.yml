@@ -9,6 +9,7 @@ on:
       - scripts/build_lite.py
       - scripts/install_client.py
       - windows-installer/**
+      - scripts/security_audit.py
       - tests/**
       - .github/workflows/build-alpha.yml
 permissions:
@@ -221,3 +222,94 @@ jobs:
           path: dist/TechQuestInstaller.exe
           if-no-files-found: error
           retention-days: 30
+
+  security-scan:
+    name: Security audit (ClamAV Full+Lite+EXE)
+    needs: [pack, windows-installer]
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download exact Full and Lite manifests from this build
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          path: security-work/manifests
+      - name: Download exact published Windows GUI EXE from this build
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-Windows-GUI-Installer
+          path: security-work/installer
+      - name: Verify provenance, JAR ZIP integrity and every file hash
+        run: |
+          python scripts/security_audit.py \
+            --full security-work/manifests/TechQuest_1.21.1_0.1.0.mrpack \
+            --lite security-work/manifests/TechQuest_1.21.1_LITE_0.1.0.mrpack \
+            --mods-dir security-work/mods --reports security-work/reports
+          test -s security-work/installer/TechQuestInstaller.exe
+          sha256sum security-work/installer/TechQuestInstaller.exe | tee security-work/reports/windows-installer-sha256.txt
+      - name: Install ClamAV antivirus and update signatures
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y clamav clamav-freshclam
+          sudo systemctl stop clamav-freshclam 2>/dev/null || true
+          sudo freshclam
+          clamscan --version | tee security-work/reports/clamav-version.txt
+          test -n "$(find /var/lib/clamav -maxdepth 1 -type f \( -name 'daily.cvd' -o -name 'daily.cld' \) -print -quit)"
+      - name: Antivirus scan all unique Full + Lite JARs and Windows EXE
+        shell: bash
+        run: |
+          set +e
+          clamscan --recursive --infected \
+            --max-filesize=512M --max-scansize=2048M --max-recursion=20 \
+            --max-files=10000 --log=security-work/reports/clamav-results.txt \
+            security-work/mods security-work/installer/TechQuestInstaller.exe
+          code=$?
+          set -e
+          printf 'ClamAV exit code: %s\n' "$code" | tee security-work/reports/clamav-exit-code.txt
+          if [ "$code" -eq 0 ]; then
+            echo "No malware signatures detected by ClamAV in scanned files." | tee -a security-work/reports/clamav-exit-code.txt
+          elif [ "$code" -eq 1 ]; then
+            echo "::error::ClamAV flagged at least one file as infected!"
+            exit 1
+          else
+            echo "::error::Antivirus failed; scan is NOT verified or clean."
+            exit 2
+          fi
+      - name: Publish transparent security report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Security-Audit
+          path: security-work/reports/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Security scan summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## TechQuest malware scan" >> "$GITHUB_STEP_SUMMARY"
+          if [ -s security-work/reports/manifest-integrity.json ]; then
+            python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          x=json.load(open("security-work/reports/manifest-integrity.json"))
+          print(f"- Unique scanned-source JARs: {x['unique_jar_files']}")
+          print(f"- Full JARs: {x['full_mods']}; Lite JARs: {x['lite_mods']}")
+          print("- All JAR hash and ZIP-integrity checks succeeded.")
+          PY
+          else
+            echo "- Integrity/source audit incomplete — do NOT call this safe." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -s security-work/reports/clamav-exit-code.txt ]; then
+            cat security-work/reports/clamav-exit-code.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- ClamAV not completed. No antivirus clearance." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "- Negative antivirus scans cannot guarantee absence of malicious code." >> "$GITHUB_STEP_SUMMARY"
