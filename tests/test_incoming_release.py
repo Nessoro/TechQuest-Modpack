@@ -28,7 +28,8 @@ class IncomingTests(unittest.TestCase):
         with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
             z.writestr("META-INF/neoforge.mods.toml",
                        'modLoader="javafml"\n[[mods]]\nmodId="incoming"\n')
-            z.writestr("assets/incoming/dummy", "hello" * 450)
+            z.writestr("assets/incoming/dummy", b"".join(
+                hashlib.sha256(str(i).encode()).digest() for i in range(160)))
         return out.getvalue()
 
     def test_pin_and_loader_bumped(self):
