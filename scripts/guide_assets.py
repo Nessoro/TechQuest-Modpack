@@ -1,0 +1,169 @@
+#!/usr/bin/env python3
+"""First-party, data-only TechQuest Patchouli guide and starter datapack.
+
+The game guide is stored in patchouli_books/ next to mods/. A small Open Loader
+datapack grants the guide to players upon first login and offers a cheap
+crafting recipe for replacements. No third-party binaries or scripts run in
+Minecraft from this module.
+"""
+import io
+import json
+import zipfile
+
+BOOK = "techquest_guide"
+BOOK_ID = "patchouli:" + BOOK
+
+CATEGORIES = {
+    "first_steps": ("Начало игры", "Основные советы по порядку изучения модов.", "minecraft:compass"),
+    "industry": ("Промышленность", "BuildCraft, IC2, Create и механизмы.", "minecraft:piston"),
+    "power": ("Энергетика и хранение", "Энергосистемы, Mekanism и AE2.", "minecraft:redstone"),
+    "adventure": ("Оружие и приключения", "Мир, техника, магия и сражения.", "minecraft:iron_sword"),
+    "navigation": ("Карта и интерфейс", "Миникарта, здоровье мобов и рецепты.", "minecraft:map"),
+    "performance": ("Производительность", "Как снизить лаги и найти причину.", "minecraft:clock"),
+}
+
+# Key -> (category, icon, title, pages).
+ENTRIES = {
+    "start": ("first_steps", "minecraft:book", "Начало TechQuest", [
+        ("С чего начать", "TechQuest — единая техническая и приключенческая сборка. Начните с дерева, камня и железа. Откройте JEI в инвентаре для поиска рецептов. Выберите одно направление техники; не пытайтесь сразу строить все заводы."),
+        ("Порядок развития", "$(li)Железо и первые инструменты.$(br)$(li)Create или BuildCraft для первых механизмов.$(br)$(li)IC2 и Mekanism для энергетики.$(br)$(li)AE2 для больших складов.$(br)$(li)Исследование мира, снаряжение, боссы.")
+    ]),
+    "safety": ("first_steps", "minecraft:shield", "Мир и сохранения", [
+        ("Новый мир", "Проверяйте моды в новом мире. Перед обновлениями делайте полную резервную копию папки saves или серверного мира. Переход между несовместимыми версиями модов может повредить чанки и механизмы."),
+        ("Для друзей", "На сервере всем нужна одна версия игрового набора TechQuest и NeoForge. Миникарта и индикатор HP устанавливаются только на клиент, они не обязательны серверу.")
+    ]),
+    "buildcraft": ("industry", "minecraft:piston", "BuildCraft", [
+        ("Автоматизация", "BuildCraft добавляет трубы, механизмы и карьер. Начните с транспорта предметов и простых двигателей. В JEI найдите доступные рецепты и изучите их зависимости."),
+        ("Первые задачи", "$(li)Сделайте источник энергии для механизма.$(br)$(li)Соедините источник с потребителем.$(br)$(li)Добавьте трубы для предметов.$(br)$(li)Испытайте систему на небольшом объёме, прежде чем строить карьер.")
+    ]),
+    "ic2": ("industry", "minecraft:furnace", "IndustrialCraft 2", [
+        ("Энергия EU", "IC2: Nostalgia использует свою энергосистему EU. Осваивайте генератор, кабели, аккумуляторы и мацератор. Следите за напряжением и характеристиками оборудования."),
+        ("Важно", "Не считайте, что кабели IC2 автоматически совместимы с любой сетью FE, RF или Create. Используйте только подтверждённые в игре преобразователи и читайте подсказки JEI.")
+    ]),
+    "create": ("industry", "minecraft:cogwheel", "Create", [
+        ("Вращение", "Create использует механическое вращение, скорость и нагрузку. Начните с водяного колеса, валов и шестерён. Для изучения механизмов наведите курсор на предмет Create в JEI и воспользуйтесь функцией Ponder, если она доступна."),
+        ("Лаги заводов", "Очень большие кинетические сети и множество постоянно движущихся механизмов могут снижать FPS и TPS. Проверяйте производительность частями, вместо одновременного запуска всей фабрики.")
+    ]),
+    "mekanism": ("power", "minecraft:redstone", "Mekanism", [
+        ("Энергетика", "В Mekanism изучите генераторы, кабели FE и машины обработки руды. Продвинутые цепочки расширяйте постепенно; особенно следите за количеством одновременно работающих машин."),
+        ("Проверка рецептов", "Рецепты зависят от версии Mekanism и дополнительных модов. Нажмите R в JEI для просмотра изготовления и U для применения предмета, если назначения клавиш не изменены.")
+    ]),
+    "modern_industrialization": ("power", "minecraft:iron_block", "Modern Industrialization", [
+        ("Промышленные цепочки", "Modern Industrialization ориентирован на многоступенчатое производство и автоматизацию. Сначала изучите базовые машины и материалы через JEI; затем постепенно подключайте обработку и транспорт ресурсов.")
+    ]),
+    "ae2": ("power", "minecraft:chest", "Applied Energistics 2", [
+        ("Цифровой склад", "AE2 позволяет создавать сетевое хранение и автокрафт. Начните с накопителей, контроллера, терминала и источника питания. Затем изучите каналы и автоматический заказ предметов."),
+        ("Встроенное руководство", "У AE2 есть собственная система GuideME. Откройте встроенное руководство мода, если оно доступно в установленной версии, а для точных рецептов используйте JEI.")
+    ]),
+    "superb": ("adventure", "minecraft:crossbow", "Superb Warfare", [
+        ("Военная техника", "Superb Warfare содержит вооружение и боевые машины. Изучайте доступные рецепты через JEI. Проверяйте настройку управления транспортом в меню клавиш, прежде чем взлетать или стрелять."),
+        ("Разрушение мира", "Тяжёлые взрывы, огонь и множество снарядов могут резко нагружать сервер. Не испытывайте массовые взрывы рядом с основной базой. Администратору стоит ограничить разрушения мира и сделать бэкап.")
+    ]),
+    "rpg": ("adventure", "minecraft:enchanted_book", "Магия и боссы", [
+        ("Исследование", "Iron's Spells 'n Spellbooks, Apotheosis и моды на боссов усиливают приключения. Сначала соберите броню и лечение. Сложные структуры и боссы лучше проходить группой."),
+        ("Подсказки", "Проверяйте способности и ингредиенты через JEI и собственные руководства модов. При сильных просадках FPS уменьшите дистанцию прорисовки и дальность сущностей.")
+    ]),
+    "map": ("navigation", "minecraft:map", "Карта и маршруты", [
+        ("Миникарта Xaero", "Xaero's Minimap показывает окружение и точки маршрута. Xaero's World Map открывает полноэкранную карту. Обычно карта открывается клавишей M, но назначение можно изменить: Настройки → Управление."),
+        ("Метки", "Сохраняйте метки важных мест: база, карьеры, портал, деревни. Для слабого ПК отключите лишние значки сущностей, тяжёлые эффекты карты и динамическую подгрузку дальних областей.")
+    ]),
+    "health": ("navigation", "minecraft:iron_sword", "Здоровье мобов", [
+        ("Индикация HP", "Health Bars показывает здоровье существ во время боя. Дополнительно Jade выводит сведения о блоке или мобе под прицелом. В настройках управления можно настроить отображение полос и подсказок."),
+        ("Если тормозит", "Частое отображение меток на десятках существ нагружает интерфейс. При плохом FPS снизьте число видимых элементов Health Bars и отключите неиспользуемые индикаторы.")
+    ]),
+    "jei": ("navigation", "minecraft:crafting_table", "Рецепты и документация", [
+        ("JEI", "JEI — основной справочник рецептов. Откройте инвентарь, найдите нужный предмет, наведите на него курсор и используйте R (рецепт) или U (применение). Назначения клавиш могут отличаться."),
+        ("Другие руководства", "Для механизмов Create доступен Ponder, а у AE2 — GuideME. Этот путеводитель TechQuest объясняет общий порядок развития, но точные схемы сборки и рецепты берите из самих модов.")
+    ]),
+    "fps": ("performance", "minecraft:clock", "Низкий FPS", [
+        ("Быстрые настройки", "$(li)Графика Fast.$(br)$(li)Прорисовка 4–6 чанков.$(br)$(li)Частицы Minimal.$(br)$(li)Отключите шейдеры.$(br)$(li)Снизьте дальность сущностей.$(br)$(li)Проверьте, что используется дискретная видеокарта."),
+        ("Что уже включено", "Sodium, ImmediatelyFast, More Culling, Entity Culling, BadOptimizations и ModernFix помогают отрисовке. Dynamic FPS уменьшает нагрузку в фоне; не ожидайте от него прироста FPS в активном окне.")
+    ]),
+    "tps": ("performance", "minecraft:repeater", "Лаги сервера и заводов", [
+        ("TPS и FPS", "FPS — скорость кадров на вашем ПК. TPS — скорость обработки мира сервером. Если мобы, машины и блоки обновляются рывками, даже при высоком FPS проблема может быть на стороне TPS."),
+        ("Диагностика Spark", "В сборке установлен Spark для профилирования. Администратор может запустить профилирование по официальной документации Spark и проверить, какие моды или механизмы создают нагрузку. Отключайте подозреваемые функции только после сохранения мира.")
+    ]),
+}
+
+def _json(value):
+    return (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+
+def guide_overrides():
+    """Return safe relative game-directory paths and bytes for .mrpack overrides."""
+    root = "patchouli_books/" + BOOK + "/"
+    files = {
+        root + "book.json": _json({
+            "name": "Путеводитель TechQuest",
+            "landing_text": "Добро пожаловать в TechQuest! Здесь описаны первые шаги, техника, карта, HP и оптимизация.$(br2)Подробные рецепты всегда смотрите через JEI.",
+            "subtitle": "Industrial Frontier · 0.3",
+            "version": 0, "show_progress": False,
+            "creative_tab": "minecraft:tools_and_utilities",
+            "book_texture": "patchouli:textures/gui/book_green.png",
+            "model": "patchouli:book_green",
+            "use_resource_pack": False,
+        })
+    }
+    for num, (cid, (name, desc, icon)) in enumerate(CATEGORIES.items()):
+        files[root + "en_us/categories/" + cid + ".json"] = _json(
+            {"name": name, "description": desc, "icon": icon, "sortnum": num * 10})
+    for num, (eid, (cid, icon, title, pages)) in enumerate(ENTRIES.items()):
+        files[root + "en_us/entries/" + eid + ".json"] = _json({
+            "name": title, "category": "patchouli:" + cid, "icon": icon,
+            "sortnum": num * 10, "pages": [
+                {"type": "patchouli:text", "title": page_title, "text": text}
+                for page_title, text in pages]
+        })
+    files["TECHQUEST_INGAME_GUIDE.txt"] = (
+        "TechQuest 0.3: Open Creative > Tools and Utilities and find Путеводитель TechQuest.\n"
+        "In survival, Open Loader datapack attempts to give the book on first join.\n"
+        "Map and waypoints: Xaero's Minimap/World Map (check controls, M often opens map).\n"
+        "Health Bars and Jade show mob health, JEI recipes via R/U, Create Ponder.\n"
+        "If the book is missing, verify Patchouli and openloader in the log.\n"
+        "The guide is pack-authored and untested in a running Minecraft client.\n"
+    ).encode("utf-8")
+    files["config/openloader/packs/techquest_starter_guide.zip"] = starter_datapack()
+    return files
+
+def starter_datapack():
+    """Vanilla 1.21.1 datapack: once-per-player guide and replacement recipe."""
+    pack = {
+        "pack": {"pack_format": 48, "description": "TechQuest: first-join Patchouli guide"}
+    }
+    advancement = {
+        "criteria": {"first_join": {"trigger": "minecraft:tick"}},
+        "rewards": {"loot": ["techquest:starter_guide"]}
+    }
+    loot = {
+        "type": "minecraft:advancement_reward",
+        "pools": [{
+            "rolls": 1,
+            "entries": [{
+                "type": "minecraft:item",
+                "name": "patchouli:guide_book",
+                "functions": [{
+                    "function": "minecraft:set_components",
+                    "components": {"patchouli:book": BOOK_ID}
+                }]
+            }]
+        }]
+    }
+    # Patchouli provides this recipe serializer for its book items.
+    recipe = {
+        "type": "patchouli:shapeless_book_recipe",
+        "ingredients": [
+            {"item": "minecraft:book"},
+            {"item": "minecraft:compass"}
+        ],
+        "book": BOOK_ID,
+    }
+    data = {
+        "pack.mcmeta": _json(pack),
+        "data/techquest/advancement/first_guide.json": _json(advancement),
+        "data/techquest/loot_table/starter_guide.json": _json(loot),
+        "data/techquest/recipe/guide_book.json": _json(recipe),
+    }
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as z:
+        for path, content in data.items():
+            z.writestr(path, content)
+    return output.getvalue()
