@@ -78,7 +78,7 @@ jobs:
           with zipfile.ZipFile(p,"w",zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_server.py")
               z.write("build_pack.py")
-              z.write(out/"TechQuest_1.21.1_0.3.1_OPTIMIZED.mrpack",arcname="TechQuest.mrpack")
+              z.write(out/"TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack",arcname="TechQuest.mrpack")
               z.writestr("SERVER_INSTALL_README.txt",readme)
           print("Created",p,p.stat().st_size,"bytes")
           PY
@@ -89,13 +89,13 @@ jobs:
           from pathlib import Path
           import zipfile
           out=Path("output")
-          readme="""TECHQUEST 0.3.1 OPTIMIZED — Minecraft Official Launcher
+          readme="""TECHQUEST 0.3.2 OPTIMIZED — Minecraft Official Launcher
 
           Non-technical Windows players should use TechQuestInstaller.exe GUI
           from the Windows GUI artifact instead. This ZIP is an optional
           backup for developers using Python, not needed by ordinary players.
 
-          Needs Minecraft Java 1.21.1, NeoForge 21.1.259, Java 21.
+          Needs Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
           From this folder:
             python scripts/install_client.py --pack TechQuest_Optimized.mrpack --game-dir C:\\Minecraft\\TechQuestOptimized
 
@@ -106,7 +106,7 @@ jobs:
                                zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_client.py")
               z.write("build_pack.py")
-              z.write(out/"TechQuest_1.21.1_0.3.1_OPTIMIZED.mrpack",arcname="TechQuest_Optimized.mrpack")
+              z.write(out/"TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack",arcname="TechQuest_Optimized.mrpack")
               z.writestr("OFFICIAL_LAUNCHER_INSTALL.txt", readme)
           PY
       - name: Publish downloadable manifests and bootstrap
@@ -172,7 +172,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force windows-installer/assets | Out-Null
-          Copy-Item client-packages/TechQuest_1.21.1_0.3.1_OPTIMIZED.mrpack windows-installer/assets/TechQuest_Optimized.mrpack
+          Copy-Item client-packages/TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack windows-installer/assets/TechQuest_Optimized.mrpack
           Add-Type -AssemblyName System.IO.Compression
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           $zip = [IO.Compression.ZipFile]::OpenRead("$PWD/windows-installer/assets/TechQuest_Optimized.mrpack")
@@ -244,7 +244,7 @@ jobs:
       - name: Verify source, JAR integrity and every checksum
         run: |
           python scripts/security_audit.py \
-            --pack security-work/manifests/TechQuest_1.21.1_0.3.1_OPTIMIZED.mrpack \
+            --pack security-work/manifests/TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack \
             --mods-dir security-work/mods --reports security-work/reports
           test -s security-work/installer/TechQuestInstaller.exe
           sha256sum security-work/installer/TechQuestInstaller.exe | tee security-work/reports/windows-installer-sha256.txt
