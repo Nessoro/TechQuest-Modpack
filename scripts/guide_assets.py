@@ -68,8 +68,8 @@ ENTRIES = {
         ("Метки", "Сохраняйте метки важных мест: база, карьеры, портал, деревни. Для слабого ПК отключите лишние значки сущностей, тяжёлые эффекты карты и динамическую подгрузку дальних областей.")
     ]),
     "health": ("navigation", "minecraft:iron_sword", "Здоровье мобов", [
-        ("Индикация HP", "Health Bars показывает здоровье существ во время боя. Дополнительно Jade выводит сведения о блоке или мобе под прицелом. В настройках управления можно настроить отображение полос и подсказок."),
-        ("Если тормозит", "Частое отображение меток на десятках существ нагружает интерфейс. При плохом FPS снизьте число видимых элементов Health Bars и отключите неиспользуемые индикаторы.")
+        ("Индикация HP", "Health Indicator TXF показывает здоровье моба числом и полоской, когда вы смотрите на него. Дополнительно Jade выводит сведения о блоке или мобе под прицелом. В настройках управления можно настроить отображение полос и подсказок."),
+        ("Если тормозит", "Частое отображение меток на десятках существ нагружает интерфейс. При плохом FPS снизьте число видимых элементов Health Indicator TXF и отключите неиспользуемые индикаторы.")
     ]),
     "jei": ("navigation", "minecraft:crafting_table", "Рецепты и документация", [
         ("JEI", "JEI — основной справочник рецептов. Откройте инвентарь, найдите нужный предмет, наведите на него курсор и используйте R (рецепт) или U (применение). Назначения клавиш могут отличаться."),
@@ -95,7 +95,7 @@ def guide_overrides():
         root + "book.json": _json({
             "name": "Путеводитель TechQuest",
             "landing_text": "Добро пожаловать в TechQuest! Здесь описаны первые шаги, техника, карта, HP и оптимизация.$(br2)Подробные рецепты всегда смотрите через JEI.",
-            "subtitle": "Industrial Frontier · 0.3",
+            "subtitle": "Industrial Frontier · 0.3.1",
             "version": 0, "show_progress": False,
             "creative_tab": "minecraft:tools_and_utilities",
             "book_texture": "patchouli:textures/gui/book_green.png",
@@ -114,10 +114,10 @@ def guide_overrides():
                 for page_title, text in pages]
         })
     files["TECHQUEST_INGAME_GUIDE.txt"] = (
-        "TechQuest 0.3: Open Creative > Tools and Utilities and find Путеводитель TechQuest.\n"
+        "TechQuest 0.3.1: Open Creative > Tools and Utilities and find Путеводитель TechQuest.\n"
         "In survival, Open Loader datapack attempts to give the book on first join.\n"
         "Map and waypoints: Xaero's Minimap/World Map (check controls, M often opens map).\n"
-        "Health Bars and Jade show mob health, JEI recipes via R/U, Create Ponder.\n"
+        "Health Indicator TXF and Jade show mob health, JEI recipes via R/U, Create Ponder.\n"
         "If the book is missing, verify Patchouli and openloader in the log.\n"
         "The guide is pack-authored and untested in a running Minecraft client.\n"
     ).encode("utf-8")
