@@ -4,7 +4,7 @@
 
 TechQuest — большая комплексная сборка вокруг **BuildCraft Community Edition** и **Industrial Craft 2: Nostalgia**. Дополнительно в план включены Create, Mekanism, Modern Industrialization, AE2, магия, развитие, новые мобы и миры.
 
-**Статус: `0.3.0-alpha` — единый профиль Optimized / исходники и сайт опубликованы в GitHub. Готовая игровая сборка НЕ проверена запуском клиента/сервера.** Не переносите старый мир без резервной копии. Перечисленные моды — кандидаты, а не подтверждённый полностью совместимый набор.
+**Статус: `0.3.1-alpha` — единый профиль Optimized / исходники и сайт опубликованы в GitHub. Готовая игровая сборка НЕ проверена запуском клиента/сервера.** Не переносите старый мир без резервной копии. Перечисленные моды — кандидаты, а не подтверждённый полностью совместимый набор.
 
 ## Навигация
 
@@ -38,14 +38,14 @@ TechQuest — большая комплексная сборка вокруг **
 
 Для локального отчёта: `python scripts/audit_modlist.py`.
 
-## Скачать TechQuest 0.3 Optimized (экспериментальная альфа)
+## Скачать TechQuest 0.3.1 Optimized (экспериментальная альфа)
 
 Теперь **только ОДНА версия клиента**: Full и Lite объединены в TechQuest Optimized. Сохранены BuildCraft, IC2: Nostalgia, Create, Mekanism, Modern Industrialization, AE2, магия, техника, мир и приключения. По умолчанию установлены клиентские Sodium, ImmediatelyFast, More Culling, BadOptimizations, Dynamic FPS, Entity Culling, FerriteCore и ModernFix; Iris исключён, шейдеры отключены.
 
 На странице [Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml) откройте самый новый **успешный** запуск и скачайте из Artifacts:
 
 - **TechQuest-Windows-GUI-Installer** — обычным игрокам на Windows 10/11: скачайте архив, извлеките `TechQuestInstaller.exe`, запустите двойным щелчком. **Без Python, PowerShell и консоли.**
-- **TechQuest-1.21.1-alpha-build** — один `TechQuest_1.21.1_0.3.0_OPTIMIZED.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap и диагностические данные.
+- **TechQuest-1.21.1-alpha-build** — один `TechQuest_1.21.1_0.3.1_OPTIMIZED.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap и диагностические данные.
 - **TechQuest-Security-Audit** — отчёт проверки хешей, ZIP и ClamAV, если этап безопасности завершился успешно. Проверка антивирусом не гарантирует отсутствие всех угроз.
 
 ### Установка через официальный Minecraft Launcher (без Prism)
@@ -83,7 +83,7 @@ TechQuest — большая комплексная сборка вокруг **
 В сборке **только один оптимизированный профиль** для всех игроков: полная промышленность, магия, оружие, путешествия и уже активные оптимизации. Не нужен выбор Full/Lite. Сторонние шейдеры Iris в основной пакет не включены.
 
 - **[Xaero's Minimap](https://modrinth.com/mod/xaeros-minimap)** — миникарта и метки; **[Xaero's World Map](https://modrinth.com/mod/xaeros-world-map)** — полноэкранная карта (обычно клавиша M, проверьте назначение).
-- **[Health Bars](https://modrinth.com/mod/new-health-bars)** — индикаторы здоровья мобов в бою. Дополнительно Jade показывает информацию о мобе/блоке под прицелом.
+- **[Health Indicator TXF](https://modrinth.com/mod/health-indicator-txf)** — здоровье моба цифрами и полоской при наведении прицела. Дополнительно Jade показывает информацию о мобе/блоке под прицелом.
 - **[Patchouli](https://modrinth.com/mod/patchouli)** — наш собственный русский **«Путеводитель TechQuest»**, где 15 разделов о первых шагах, BuildCraft, IC2, Create, Mekanism, AE2, оружии, исследованиях и оптимизации. Руководство находится в творческом инвентаре, вкладка «Инструменты и приспособления».
 - **[Open Loader](https://modrinth.com/mod/open-loader)** — загружает небольшой datapack, который должен **выдать книгу каждому игроку при первом входе** и добавить рецепт восстановления книги из обычной книги и компаса. Автоматическая выдача ещё не проверена игровым запуском. При отсутствии книги проверьте логи Patchouli/Open Loader и наличие `config/openloader/packs/techquest_starter_guide.zip`.
 - Вариант **Lithium** для оптимизации тиков проверяется сборщиком как необязательная зависимость. Его эффект и совместимость с промышленными модами требуют реальных испытаний.
