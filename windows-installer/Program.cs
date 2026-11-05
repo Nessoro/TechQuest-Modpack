@@ -119,7 +119,7 @@ internal sealed class InstallerForm : Form
             title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
             browse, safety, install, neoforge, openFolder, help, cancel, progress, status
         });
-        location.Text = Path.Combine(baseDir, "Optimized");
+        location.Text = Path.Combine(baseDir, "Optimized_0.3");
     }
 
     private void SetBusy(bool busy, bool cancellable)
