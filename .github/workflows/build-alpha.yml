@@ -182,7 +182,7 @@ jobs:
             $reader = [IO.StreamReader]::new($entry.Open())
             try { $index = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Close() }
             $paths = @($index.files | ForEach-Object { $_.path })
-            foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft','xaero','health-indicator','patchouli','openloader')) {
+            foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft','xaero','healthindicator','patchouli','openloader')) {
               if(-not ($paths | Where-Object { $_ -match $mustHave })) { throw "Missing required mod: $mustHave" }
             }
             if($paths | Where-Object { $_ -match '^mods/iris-' }) { throw 'Optimized pack contains Iris unexpectedly' }
