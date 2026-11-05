@@ -88,6 +88,12 @@
       "required": true
     },
     {
+      "project": "bosses-of-mass-destruction-forge",
+      "group": "Боссы",
+      "required": true,
+      "version_prefix": "1.3.3"
+    },
+    {
       "project": "mowzies-mobs",
       "group": "Мобы",
       "required": false
@@ -111,6 +117,12 @@
       "project": "waystones",
       "group": "Комфорт",
       "required": true
+    },
+    {
+      "project": "parcool",
+      "group": "Передвижение",
+      "required": true,
+      "version_prefix": "1.21.1-3.4.3.3"
     },
     {
       "project": "farmers-delight",
