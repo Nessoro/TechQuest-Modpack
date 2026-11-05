@@ -8,6 +8,7 @@ The .mrpack contains only a URL and verified hashes, not the third-party JAR.
 """
 import argparse
 import hashlib
+import io
 import json
 import shutil
 import sys
@@ -200,7 +201,51 @@ def manual_records(cfg):
     return records
 
 
-def make_mrpack(cfg, mods, output, manual_files=()):
+def external_records(cfg):
+    """Resolve a pinned, author-hosted binary without vendoring it into TechQuest.
+
+    The manifest keeps only an official release URL and freshly verified hashes.
+    The source SHA-256 pin comes from the author's GitHub Release asset metadata.
+    """
+    records = []
+    for mod in cfg.get("external_mods", []):
+        filename = safe_filename(mod["file_name"])
+        url = mod["download_url"]
+        parsed = urllib.parse.urlsplit(url)
+        expected_path = (
+            "/zentixua/incoming/releases/download/v3.10.4/"
+            "incoming-3.10.4.jar"
+        )
+        if (parsed.scheme != "https" or parsed.hostname != "github.com"
+                or parsed.path != expected_path or parsed.query or parsed.fragment):
+            raise BuildError("Unexpected author release URL: " + url)
+        size = mod["file_size"]
+        expected = mod["sha256"]
+        if (not isinstance(size, int) or size <= 1024 or size > MAX_DOWNLOAD
+                or not isinstance(expected, str) or len(expected) != 64
+                or any(c not in "0123456789abcdefABCDEF" for c in expected)):
+            raise BuildError("Missing trusted size/SHA256 pin: " + filename)
+        print("  + Fetching author-hosted", filename, flush=True)
+        data = get_url(url)
+        if len(data) != size or hashlib.sha256(data).hexdigest().lower() != expected.lower():
+            raise BuildError("Author release size/SHA256 mismatch: " + filename)
+        if not zipfile.is_zipfile(io.BytesIO(data)):
+            raise BuildError("Author release is not a JAR: " + filename)
+        with zipfile.ZipFile(io.BytesIO(data)) as jar:
+            if jar.testzip() is not None:
+                raise BuildError("Corrupt author release JAR: " + filename)
+            if not any(n in jar.namelist() for n in
+                       ("META-INF/neoforge.mods.toml", "META-INF/mods.toml")):
+                raise BuildError("NeoForge metadata missing: " + filename)
+        records.append({
+            "name": mod["name"], "filename": filename, "data": data,
+            "url": url, "fileSize": len(data), "sha256": expected,
+            "hashes": {"sha1": hashlib.sha1(data).hexdigest(),
+                       "sha512": hashlib.sha512(data).hexdigest()}})
+    return records
+
+
+def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
     files = []
     for rec in mods:
         f = rec["file"]
@@ -221,6 +266,13 @@ def make_mrpack(cfg, mods, output, manual_files=()):
             "env": {"client": "required", "server": "required"},
             "downloads": [local["url"]],
             "fileSize": local["fileSize"]})
+    for external in external_files:
+        files.append({
+            "path": "mods/" + safe_filename(external["filename"]),
+            "hashes": external["hashes"],
+            "env": {"client": "required", "server": "required"},
+            "downloads": [external["url"]],
+            "fileSize": external["fileSize"]})
     idx = {"formatVersion": 1, "game": "minecraft", "versionId": cfg["version"],
            "name": cfg["pack_name"], "summary": cfg["description"],
            "files": files,
@@ -252,15 +304,20 @@ def main():
     print("Resolving Minecraft", cfg["minecraft"], cfg["loader"], "...")
     resolved, optional = resolve_manifest(cfg)
     manual = manual_records(cfg)
+    external = external_records(cfg)
     write_json(out / "versions-lock.json", {
         "minecraft": cfg["minecraft"], "loader_version": cfg["loader_version"],
         "mods": [{k:m[k] for k in ("requested","title","version","version_id","filename","environment")}
                  for m in resolved], "optional_skipped": optional,
         "manual_mods": [{"name": row["name"], "file_name": row["filename"],
                           "url": row["url"], "hashes": row["hashes"]}
-                         for row in manual]})
+                         for row in manual],
+        "external_mods": [{"name": row["name"], "file_name": row["filename"],
+                           "url": row["url"], "sha256": row["sha256"],
+                           "hashes": row["hashes"]}
+                          for row in external]})
     if not args.no_mrpack:
-        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.3.1_OPTIMIZED.mrpack", manual)
+        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack", manual, external)
         print("Generated Modrinth manifest:", n, "files")
     if args.resolve_only:
         print("Version resolution done. Minecraft startup is NOT verified.")
@@ -281,6 +338,9 @@ def main():
     for local in manual:
         shutil.copy2(local["source_path"], client / local["filename"])
         shutil.copy2(local["source_path"], server / local["filename"])
+    for extra in external:
+        (client / extra["filename"]).write_bytes(extra["data"])
+        (server / extra["filename"]).write_bytes(extra["data"])
     for relative, data in guide_overrides().items():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
