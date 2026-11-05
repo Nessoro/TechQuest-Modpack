@@ -3,7 +3,7 @@
 
 Downloads server-side mod files only from the URLs in .mrpack, checks hashes,
 and installs official NeoForge. Does not agree to the Minecraft EULA.
-IndustrialCraft 2: Nostalgia is NOT redistributed; add its JAR manually.
+IndustrialCraft 2: Nostalgia is referenced through a pinned URL in the .mrpack.
 """
 import argparse
 import hashlib
@@ -63,8 +63,8 @@ def prepare_properties(target):
             "white-list=true\\n"
             "enforce-whitelist=true\\n"
             "enable-rcon=false\\n"
-            "view-distance=8\\n"
-            "simulation-distance=6\\n"
+            "view-distance=6\\n"
+            "simulation-distance=5\\n"
             "allow-flight=true\\n", encoding="utf-8")
 
 def install_neoforge(target, version):
@@ -112,20 +112,29 @@ def main():
     for i, info in enumerate(files, 1):
         print(f"[{i}/{len(files)}] {info['file']['filename']}", flush=True)
         packbuilder.download_checked(info, mods)
+    # Open Loader first-join guide pack is needed on dedicated servers too.
+    # Never overwrite an existing operator-maintained datapack.
+    with zipfile.ZipFile(args.pack) as archive:
+        guide_name = "overrides/config/openloader/packs/techquest_starter_guide.zip"
+        if guide_name in archive.namelist():
+            guide_target = target / "config/openloader/packs/techquest_starter_guide.zip"
+            guide_target.parent.mkdir(parents=True, exist_ok=True)
+            if not guide_target.exists():
+                guide_target.write_bytes(archive.read(guide_name))
     prepare_properties(target)
     if not args.skip_neoforge:
         install_neoforge(target, ver)
     (target / "TECHQUEST_README.txt").write_text(
-        "TechQuest 0.1.0-alpha (UNTESTED).\\n"
-        "Industrial Craft 2: Nostalgia is REQUIRED but not redistributed.\\n"
-        "Download it separately from its author and put JAR in mods/.\\n"
+        "TechQuest 0.3.0-alpha (UNTESTED).\\n"
+        "IndustrialCraft 2: Nostalgia is installed from pinned SHA-checked URL.\\n"
+        "Open Loader starter guide datapack placed in config/openloader/packs.\\n"
         "Check all mod versions before playing. Back up the world.\\n"
         "Read Minecraft EULA. If you accept, set eula=true in eula.txt.\\n"
         "To start on Linux: ./run.sh nogui. On Windows: run.bat nogui.\\n"
         "Use whitelist and online-mode. Do not open this untested server to public.\\n",
         encoding="utf-8")
     print("Server files prepared at", target)
-    print("NEXT: add IndustrialCraft 2: Nostalgia and accept EULA yourself.")
+    print("NEXT: review and accept Minecraft EULA yourself before starting.")
     return 0
 
 if __name__ == "__main__":
