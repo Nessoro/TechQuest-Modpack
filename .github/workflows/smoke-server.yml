@@ -27,7 +27,7 @@ jobs:
         run: |
           python build_pack.py
           test -s output/server/mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar
-      - name: Install official NeoForge 21.1.259
+      - name: Install official NeoForge 21.1.264
         shell: bash
         run: |
           set -euo pipefail
