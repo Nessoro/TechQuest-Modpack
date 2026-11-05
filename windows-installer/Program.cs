@@ -61,7 +61,7 @@ internal sealed class InstallerForm : Form
         var subtitle = new Label { Text = "Minecraft Java 1.21.1  •  NeoForge " + NeoForgeVersion +
             "  •  BuildCraft + IndustrialCraft", Left = 32, Top = 78, Width = 710, Height = 30,
             ForeColor = Color.FromArgb(175, 194, 212) };
-        var heading = new Label { Text = "TechQuest 0.3 — карта, HP, путеводитель и оптимизация", Left = 32, Top = 126,
+        var heading = new Label { Text = "TechQuest 0.3.1 — карта, HP, путеводитель и оптимизация", Left = 32, Top = 126,
             Width = 700, Height = 30, Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
         var liteDesc = new Label { Text = "Сохранены все игровые моды. Ускорение: Sodium, ImmediatelyFast, More Culling,",
             Left = 36, Top = 168, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
@@ -143,7 +143,7 @@ internal sealed class InstallerForm : Form
             "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n\n" +
             "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
-            "В игре: Xaero Minimap/World Map, здоровье мобов Health Bars,\n" +
+            "В игре: Xaero Minimap/World Map, здоровье мобов Health Indicator TXF (HP цифрами),\n" +
             "книга «Путеводитель TechQuest» через Patchouli (в творческом режиме).\n" +
             "В режиме выживания руководство выдаётся при первом входе в мир.\n\n" +
             "Сервер общий; все игровые механики сохранены. Тестируйте новый мир.",
@@ -173,7 +173,7 @@ internal sealed class InstallerForm : Form
                 n.Replace("-", "").Replace("_", "").Replace(" ", "")).ToArray();
             if (!normalized.Any(n => n.Contains("xaero") && n.Contains("minimap")) ||
                 !normalized.Any(n => n.Contains("xaero") && n.Contains("worldmap")) ||
-                !normalized.Any(n => n.Contains("health") && n.Contains("bar")) ||
+                !normalized.Any(n => n.Contains("healthindicator")) ||
                 !normalized.Any(n => n.Contains("patchouli")))
                 return 6;
             using var zipStream = GetEmbeddedPack();
@@ -338,7 +338,7 @@ internal sealed class InstallerForm : Form
                     "entityDistanceScaling:0.5\nparticles:2\nmaxFps:120\n" +
                     "biomeBlendRadius:0\nmipmapLevels:1\n", new UTF8Encoding(false));
             File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
-                "TechQuest 0.3 Optimized\n" +
+                "TechQuest 0.3.1 Optimized\n" +
                 "Minecraft Java 1.21.1, NeoForge 21.1.259.\n" +
                 "Установите официальный NeoForge (кнопка в установщике).\n" +
                 "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +
