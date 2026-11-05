@@ -61,7 +61,7 @@ internal sealed class InstallerForm : Form
         var subtitle = new Label { Text = "Minecraft Java 1.21.1  •  NeoForge " + NeoForgeVersion +
             "  •  BuildCraft + IndustrialCraft", Left = 32, Top = 78, Width = 710, Height = 30,
             ForeColor = Color.FromArgb(175, 194, 212) };
-        var heading = new Label { Text = "TechQuest 0.2 — единая оптимизированная сборка", Left = 32, Top = 126,
+        var heading = new Label { Text = "TechQuest 0.3 — карта, HP, путеводитель и оптимизация", Left = 32, Top = 126,
             Width = 700, Height = 30, Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
         var liteDesc = new Label { Text = "Сохранены все игровые моды. Ускорение: Sodium, ImmediatelyFast, More Culling,",
             Left = 36, Top = 168, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
@@ -143,6 +143,9 @@ internal sealed class InstallerForm : Form
             "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n\n" +
             "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
+            "В игре: Xaero Minimap/World Map, здоровье мобов Health Bars,\n" +
+            "книга «Путеводитель TechQuest» через Patchouli (в творческом режиме).\n" +
+            "В режиме выживания руководство выдаётся при первом входе в мир.\n\n" +
             "Сервер общий; все игровые механики сохранены. Тестируйте новый мир.",
             "Как запустить TechQuest", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
@@ -166,6 +169,13 @@ internal sealed class InstallerForm : Form
             if (core.Any(id => !fileNames.Any(n => n.Contains(id)))) return 2;
             if (optimization.Any(id => !fileNames.Any(n => n.Contains(id)))) return 3;
             if (fileNames.Any(n => n.StartsWith("iris-"))) return 4;
+            if (!new[] { "xaerominimap", "xaeroworldmap", "health-bars", "patchouli" }
+                .All(x => fileNames.Any(n => n.Contains(x)))) return 6;
+            using var zipStream = GetEmbeddedPack();
+            using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
+            if (archive.GetEntry("overrides/patchouli_books/techquest_guide/book.json") is null ||
+                archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null)
+                return 7;
             return 0;
         }
         catch { return 5; }
@@ -247,6 +257,42 @@ internal sealed class InstallerForm : Form
         }
     }
 
+    private static void InstallGuideOverrides(string gameDirectory)
+    {
+        // The .mrpack is a trusted embedded build artifact. Still restrict every
+        // extracted path to a narrow first-party allowlist to avoid ZIP traversal.
+        using var stream = GetEmbeddedPack();
+        using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
+        string safeRoot = Path.GetFullPath(gameDirectory).TrimEnd(Path.DirectorySeparatorChar)
+                          + Path.DirectorySeparatorChar;
+        foreach (var entry in zip.Entries)
+        {
+            if (!entry.FullName.StartsWith("overrides/", StringComparison.Ordinal))
+                continue;
+            string relative = entry.FullName["overrides/".Length..];
+            bool allowed =
+                relative.StartsWith("patchouli_books/techquest_guide/", StringComparison.Ordinal) ||
+                relative == "config/openloader/packs/techquest_starter_guide.zip" ||
+                relative == "TECHQUEST_INGAME_GUIDE.txt";
+            if (!allowed || relative.EndsWith("/", StringComparison.Ordinal))
+                continue;
+            if (relative.Contains("..", StringComparison.Ordinal) ||
+                relative.Contains('\\') || Path.IsPathRooted(relative))
+                throw new InvalidDataException("Invalid guide override path: " + relative);
+            string destination = Path.GetFullPath(Path.Combine(gameDirectory,
+                relative.Replace('/', Path.DirectorySeparatorChar)));
+            if (!destination.StartsWith(safeRoot, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("Guide override escaped the install folder.");
+            Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+            // Protect existing player-created files; install into an empty profile.
+            if (File.Exists(destination))
+                continue;
+            using var source = entry.Open();
+            using var output = File.Create(destination);
+            source.CopyTo(output);
+        }
+    }
+
     private async Task InstallAsync()
     {
         string target = Path.GetFullPath(location.Text);
@@ -278,15 +324,16 @@ internal sealed class InstallerForm : Form
             }
             if (Directory.Exists(mods)) Directory.Delete(mods, recursive: false);
             Directory.Move(staging, mods);
+            InstallGuideOverrides(target);
             installedGameDir = target;
             var optionsFile = Path.Combine(target, "options.txt");
             if (!File.Exists(optionsFile))
                 File.WriteAllText(optionsFile,
                     "graphicsMode:fast\nrenderDistance:6\nsimulationDistance:5\n" +
-                    "entityDistanceScaling:0.5\nparticles:2\nmaxFps:60\n" +
+                    "entityDistanceScaling:0.5\nparticles:2\nmaxFps:120\n" +
                     "biomeBlendRadius:0\nmipmapLevels:1\n", new UTF8Encoding(false));
             File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
-                "TechQuest 0.2 Optimized\n" +
+                "TechQuest 0.3 Optimized\n" +
                 "Minecraft Java 1.21.1, NeoForge 21.1.259.\n" +
                 "Установите официальный NeoForge (кнопка в установщике).\n" +
                 "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +
