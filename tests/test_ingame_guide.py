@@ -1,4 +1,4 @@
-"""TechQuest 0.3.1 internal handbook, minimap and HP overlays tests."""
+"""TechQuest 0.3.2 internal handbook, minimap and HP overlays tests."""
 import importlib.util
 import json
 import tempfile
@@ -65,7 +65,7 @@ class GuideTests(unittest.TestCase):
         for slug in ("patchouli","open-loader"):
             self.assertTrue(mods[slug]["required"])
             self.assertFalse(mods[slug].get("client_only",False))
-        self.assertEqual(cfg["version"],"0.3.1-alpha")
+        self.assertEqual(cfg["version"],"0.3.2-alpha")
 
 if __name__=="__main__":
     unittest.main()
