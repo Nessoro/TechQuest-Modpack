@@ -4,7 +4,7 @@
 
 TechQuest — большая комплексная сборка вокруг **BuildCraft Community Edition** и **Industrial Craft 2: Nostalgia**. Дополнительно в план включены Create, Mekanism, Modern Industrialization, AE2, магия, развитие, новые мобы и миры.
 
-**Статус: `0.3.1-alpha` — единый профиль Optimized / исходники и сайт опубликованы в GitHub. Готовая игровая сборка НЕ проверена запуском клиента/сервера.** Не переносите старый мир без резервной копии. Перечисленные моды — кандидаты, а не подтверждённый полностью совместимый набор.
+**Статус: `0.3.2-alpha` — единый профиль Optimized / исходники и сайт опубликованы в GitHub. Готовая игровая сборка НЕ проверена запуском клиента/сервера.** Не переносите старый мир без резервной копии. Перечисленные моды — кандидаты, а не подтверждённый полностью совместимый набор.
 
 ## Навигация
 
@@ -38,22 +38,22 @@ TechQuest — большая комплексная сборка вокруг **
 
 Для локального отчёта: `python scripts/audit_modlist.py`.
 
-## Скачать TechQuest 0.3.1 Optimized (экспериментальная альфа)
+## Скачать TechQuest 0.3.2 Optimized (экспериментальная альфа)
 
 Теперь **только ОДНА версия клиента**: Full и Lite объединены в TechQuest Optimized. Сохранены BuildCraft, IC2: Nostalgia, Create, Mekanism, Modern Industrialization, AE2, магия, техника, мир и приключения. По умолчанию установлены клиентские Sodium, ImmediatelyFast, More Culling, BadOptimizations, Dynamic FPS, Entity Culling, FerriteCore и ModernFix; Iris исключён, шейдеры отключены.
 
 На странице [Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml) откройте самый новый **успешный** запуск и скачайте из Artifacts:
 
 - **TechQuest-Windows-GUI-Installer** — обычным игрокам на Windows 10/11: скачайте архив, извлеките `TechQuestInstaller.exe`, запустите двойным щелчком. **Без Python, PowerShell и консоли.**
-- **TechQuest-1.21.1-alpha-build** — один `TechQuest_1.21.1_0.3.1_OPTIMIZED.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap и диагностические данные.
+- **TechQuest-1.21.1-alpha-build** — один `TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap и диагностические данные.
 - **TechQuest-Security-Audit** — отчёт проверки хешей, ZIP и ClamAV, если этап безопасности завершился успешно. Проверка антивирусом не гарантирует отсутствие всех угроз.
 
 ### Установка через официальный Minecraft Launcher (без Prism)
 
 1. Запустите графический `TechQuestInstaller.exe`; отдельного выбора Full/Lite больше нет.
 2. Выберите **НОВУЮ пустую папку**, например `C:\\Games\\TechQuest-Optimized`, и нажмите «Установить моды». Старые `mods` не смешивайте с новыми.
-3. Установите **Java 21** и **NeoForge 21.1.259** для Minecraft Java 1.21.1. В GUI есть кнопка запуска официального NeoForge Installer. Для установки NeoForge требуется соединение с Maven.
-4. В Minecraft Launcher: **Установки → NeoForge 21.1.259 → Изменить → Папка игры**; укажите ту же папку, затем запустите NeoForge.
+3. Установите **Java 21** и **NeoForge 21.1.264** для Minecraft Java 1.21.1. В GUI есть кнопка запуска официального NeoForge Installer. Для установки NeoForge требуется соединение с Maven.
+4. В Minecraft Launcher: **Установки → NeoForge 21.1.264 → Изменить → Папка игры**; укажите ту же папку, затем запустите NeoForge.
 5. Если переносите прогресс, **сделайте копии** `saves`, `options.txt` и других нужных файлов перед переносом. Никогда не перезаписывайте старые моды и миры без резервной копии.
 
 ### Настройки и диагностика производительности
