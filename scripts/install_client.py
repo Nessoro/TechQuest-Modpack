@@ -2,7 +2,7 @@
 """Install verified TechQuest client mod JARs for the official Minecraft Launcher.
 
 Works with the single unified optimized .mrpack. Minecraft Java and official
-NeoForge 21.1.259 must be installed separately using the official installers.
+NeoForge 21.1.264 must be installed separately using the official installers.
 The destination should be a NEW dedicated game directory, not a shared .minecraft.
 """
 import argparse
@@ -19,8 +19,8 @@ def client_records(index):
     if index.get("game") != "minecraft":
         raise build_pack.BuildError("Not a Minecraft .mrpack")
     deps = index.get("dependencies", {})
-    if deps.get("minecraft") != "1.21.1" or deps.get("neoforge") != "21.1.259":
-        raise build_pack.BuildError("Expected Minecraft 1.21.1 / NeoForge 21.1.259")
+    if deps.get("minecraft") != "1.21.1" or deps.get("neoforge") != "21.1.264":
+        raise build_pack.BuildError("Expected Minecraft 1.21.1 / NeoForge 21.1.264")
     seen = set()
     result = []
     for entry in index.get("files", []):
@@ -90,7 +90,7 @@ def install(pack: Path, game_dir: Path, dry_run=False):
         install_guide_overrides(archive, destination)
     (destination / "TECHQUEST_LAUNCHER_README.txt").write_text(
         "Client mods installed with SHA-1/SHA-512 verification.\n"
-        "Install Minecraft Java 1.21.1 and NeoForge 21.1.259 in the OFFICIAL launcher.\n"
+        "Install Minecraft Java 1.21.1 and NeoForge 21.1.264 in the OFFICIAL launcher.\n"
         "Create/edit a NeoForge installation; set Game Directory to this folder.\n"
         "Use Java 21. Allocate about 6-8 GiB if the PC has enough RAM.\n"
         "Find Путеводитель TechQuest in creative Tools & Utilities.\n"
