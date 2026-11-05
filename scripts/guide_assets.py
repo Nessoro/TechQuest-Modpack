@@ -59,6 +59,11 @@ ENTRIES = {
         ("Военная техника", "Superb Warfare содержит вооружение и боевые машины. Изучайте доступные рецепты через JEI. Проверяйте настройку управления транспортом в меню клавиш, прежде чем взлетать или стрелять."),
         ("Разрушение мира", "Тяжёлые взрывы, огонь и множество снарядов могут резко нагружать сервер. Не испытывайте массовые взрывы рядом с основной базой. Администратору стоит ограничить разрушения мира и сделать бэкап.")
     ]),
+    "incoming": ("adventure", "minecraft:fire_charge", "Incoming: авиаудары и ядерное оружие", [
+        ("Авиаудары", "Incoming добавляет дроны, крылатые ракеты, Б-2, РСЗО и межконтинентальные ракеты. Наводите цели специальным пультом Strike Designator; у базы можно построить ПВО и сирены."),
+        ("Для сервера", "Требуются одинаковая версия Incoming 3.10.4 у всех игроков и на сервере, Minecraft 1.21.1 / NeoForge 21.1.264 или новее. Мод нужен и на клиенте, и на сервере."),
+        ("Лаги и безопасность мира", "Большие залпы и особенно ядерные удары способны сильно снижать FPS/TPS и разрушать чанки. Сначала испытывайте на отдельном мире. Администратор может ограничить доступ к запуску, отключить разрушение блоков и пожары через настройки мода; перед испытаниями обязательно сохраняйте мир.")
+    ]),
     "rpg": ("adventure", "minecraft:enchanted_book", "Магия и боссы", [
         ("Исследование", "Iron's Spells 'n Spellbooks, Apotheosis и моды на боссов усиливают приключения. Сначала соберите броню и лечение. Сложные структуры и боссы лучше проходить группой."),
         ("Подсказки", "Проверяйте способности и ингредиенты через JEI и собственные руководства модов. При сильных просадках FPS уменьшите дистанцию прорисовки и дальность сущностей.")
@@ -95,7 +100,7 @@ def guide_overrides():
         root + "book.json": _json({
             "name": "Путеводитель TechQuest",
             "landing_text": "Добро пожаловать в TechQuest! Здесь описаны первые шаги, техника, карта, HP и оптимизация.$(br2)Подробные рецепты всегда смотрите через JEI.",
-            "subtitle": "Industrial Frontier · 0.3.1",
+            "subtitle": "Industrial Frontier · 0.3.2",
             "version": 0, "show_progress": False,
             "creative_tab": "minecraft:tools_and_utilities",
             "book_texture": "patchouli:textures/gui/book_green.png",
@@ -114,7 +119,7 @@ def guide_overrides():
                 for page_title, text in pages]
         })
     files["TECHQUEST_INGAME_GUIDE.txt"] = (
-        "TechQuest 0.3.1: Open Creative > Tools and Utilities and find Путеводитель TechQuest.\n"
+        "TechQuest 0.3.2: Open Creative > Tools and Utilities and find Путеводитель TechQuest.\n"
         "In survival, Open Loader datapack attempts to give the book on first join.\n"
         "Map and waypoints: Xaero's Minimap/World Map (check controls, M often opens map).\n"
         "Health Indicator TXF and Jade show mob health, JEI recipes via R/U, Create Ponder.\n"
