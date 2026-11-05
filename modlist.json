@@ -1,10 +1,10 @@
 {
-  "pack_name": "TechQuest: Industrial Frontier — Optimized 0.3.1",
-  "version": "0.3.1-alpha",
+  "pack_name": "TechQuest: Industrial Frontier — Optimized 0.3.2",
+  "version": "0.3.2-alpha",
   "minecraft": "1.21.1",
   "loader": "neoforge",
-  "loader_version": "21.1.259",
-  "description": "Единая оптимизированная сборка NeoForge 1.21.1: BuildCraft, IC2, Create, Mekanism, миникарта, HP мобов цифрами и внутриигровой путеводитель",
+  "loader_version": "21.1.264",
+  "description": "Единая оптимизированная NeoForge 1.21.1: BuildCraft, IC2, Create, Mekanism, Incoming, авиаудары, миникарта, числовое HP и путеводитель",
   "mods": [
     {
       "project": "buildcraft-community-edition",
@@ -284,5 +284,19 @@
       "biomeBlendRadius": 0,
       "mipmapLevels": 1
     }
-  }
+  },
+  "external_mods": [
+    {
+      "name": "Incoming: Air Strikes & Nukes",
+      "file_name": "incoming-3.10.4.jar",
+      "version": "3.10.4",
+      "group": "Военная техника",
+      "source": "https://github.com/zentixua/incoming/releases/tag/v3.10.4",
+      "download_url": "https://github.com/zentixua/incoming/releases/download/v3.10.4/incoming-3.10.4.jar",
+      "sha256": "445c8549f6fec60758b841313adc8d1b58c3770eb4e08bb04c3845e22690d53f",
+      "file_size": 23250455,
+      "required": true,
+      "note": "Официальный GitHub-релиз автора ZentixUA (GPLv3). Клиент и сервер, NeoForge >=21.1.264. Большие ядерные взрывы очень требовательны к CPU/GPU и создают разрушения."
+    }
+  ]
 }
