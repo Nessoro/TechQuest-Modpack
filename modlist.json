@@ -1,10 +1,10 @@
 {
-  "pack_name": "TechQuest: Industrial Frontier — Optimized",
-  "version": "0.2.0-alpha",
+  "pack_name": "TechQuest: Industrial Frontier — Optimized 0.3",
+  "version": "0.3.0-alpha",
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.259",
-  "description": "Единая оптимизированная техническая RPG-сборка для NeoForge 1.21.1: BuildCraft, IC2, Create, Mekanism, приключения, война и улучшенный FPS",
+  "description": "Единая оптимизированная сборка NeoForge 1.21.1: BuildCraft, IC2, Create, Mekanism, миникарта, здоровье мобов и внутриигровой путеводитель",
   "mods": [
     {
       "project": "buildcraft-community-edition",
@@ -216,6 +216,39 @@
       "project": "dynamic-fps",
       "group": "Оптимизация",
       "required": true
+    },
+    {
+      "project": "xaeros-minimap",
+      "group": "Карта и интерфейс",
+      "required": true,
+      "client_only": true
+    },
+    {
+      "project": "xaeros-world-map",
+      "group": "Карта и интерфейс",
+      "required": true,
+      "client_only": true
+    },
+    {
+      "project": "new-health-bars",
+      "group": "Карта и интерфейс",
+      "required": true,
+      "client_only": true
+    },
+    {
+      "project": "patchouli",
+      "group": "Руководства",
+      "required": true
+    },
+    {
+      "project": "open-loader",
+      "group": "Руководства",
+      "required": true
+    },
+    {
+      "project": "lithium",
+      "group": "Оптимизация",
+      "required": false
     }
   ],
   "manual_mods": [
@@ -239,14 +272,14 @@
   "performance_profile": {
     "unified": true,
     "shader_loader_included": false,
-    "notes": "Все прежние Lite-оптимизации теперь включены в единственный профиль. Клиент и сервер используют те же игровые моды. Прирост FPS не гарантирован без тестирования.",
+    "notes": "Одна сборка с клиентскими оптимизациями и серверным снижением дальности симуляции; карта/HP только на клиенте, внутриигровое руководство Patchouli. Проверить производительность Spark.",
     "video_defaults": {
       "graphicsMode": "fast",
       "renderDistance": 6,
       "simulationDistance": 5,
       "entityDistanceScaling": 0.5,
       "particles": 2,
-      "maxFps": 60,
+      "maxFps": 120,
       "biomeBlendRadius": 0,
       "mipmapLevels": 1
     }
