@@ -65,7 +65,7 @@ class GuideTests(unittest.TestCase):
         for slug in ("patchouli","open-loader"):
             self.assertTrue(mods[slug]["required"])
             self.assertFalse(mods[slug].get("client_only",False))
-        self.assertEqual(cfg["version"],"0.3.2-alpha")
+        self.assertEqual(cfg["version"],"0.3.3-alpha")
 
 if __name__=="__main__":
     unittest.main()

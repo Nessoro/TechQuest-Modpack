@@ -56,7 +56,11 @@ def install_guide_overrides(archive, game_dir):
         if relative.endswith("/"):
             continue
         if not (relative.startswith(allowed_prefix)
-                or relative in (allowed_datapack, "TECHQUEST_INGAME_GUIDE.txt")):
+                or relative in (allowed_datapack, "mods/techquest-compat-1.0.0.jar",
+                                "options.txt", "TECHQUEST_OPTIMIZED.txt",
+                                "TECHQUEST_INGAME_GUIDE.txt",
+                                "TECHQUEST_OPTIONAL_LOCAL_MODS.json",
+                                 "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json")):
             continue
         parts = Path(relative).parts
         if ".." in parts or any(x in relative for x in ("\\", "\x00", ":")):
@@ -89,7 +93,8 @@ def install(pack: Path, game_dir: Path, dry_run=False):
     with zipfile.ZipFile(pack) as archive:
         install_guide_overrides(archive, destination)
     (destination / "TECHQUEST_LAUNCHER_README.txt").write_text(
-        "Client mods installed with SHA-1/SHA-512 verification.\n"
+        "TechQuest 0.3.3-alpha: client mods installed with SHA-1/SHA-512 verification.\n"
+        "First-party Create-IC2 recipe patch installed.\n"
         "Install Minecraft Java 1.21.1 and NeoForge 21.1.264 in the OFFICIAL launcher.\n"
         "Create/edit a NeoForge installation; set Game Directory to this folder.\n"
         "Use Java 21. Allocate about 6-8 GiB if the PC has enough RAM.\n"

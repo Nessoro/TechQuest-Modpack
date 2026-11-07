@@ -5,10 +5,12 @@ on:
     paths:
       - modlist.json
       - build_pack.py
+      - compat/**
       - scripts/install_server.py
       - scripts/install_client.py
       - windows-installer/**
       - scripts/security_audit.py
+      - scripts/audit_jar_metadata.py
       - scripts/guide_assets.py
       - tests/**
       - .github/workflows/build-alpha.yml
@@ -53,6 +55,8 @@ jobs:
           PY
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
+      - name: Check built JAR game ranges and required mod presence
+        run: python scripts/audit_jar_metadata.py
       - name: Create server bootstrap (no redistributed third-party JARs)
         if: success()
         run: |
@@ -78,7 +82,8 @@ jobs:
           with zipfile.ZipFile(p,"w",zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_server.py")
               z.write("build_pack.py")
-              z.write(out/"TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack",arcname="TechQuest.mrpack")
+              z.write("scripts/guide_assets.py")
+              z.write(out/"TechQuest_1.21.1_0.3.3_ALPHA.mrpack",arcname="TechQuest.mrpack")
               z.writestr("SERVER_INSTALL_README.txt",readme)
           print("Created",p,p.stat().st_size,"bytes")
           PY
@@ -89,7 +94,7 @@ jobs:
           from pathlib import Path
           import zipfile
           out=Path("output")
-          readme="""TECHQUEST 0.3.2 OPTIMIZED — Minecraft Official Launcher
+          readme="""TECHQUEST 0.3.3 ALPHA — Minecraft Official Launcher
 
           Non-technical Windows players should use TechQuestInstaller.exe GUI
           from the Windows GUI artifact instead. This ZIP is an optional
@@ -106,8 +111,30 @@ jobs:
                                zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_client.py")
               z.write("build_pack.py")
-              z.write(out/"TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack",arcname="TechQuest_Optimized.mrpack")
+              z.write("scripts/guide_assets.py")
+              z.write(out/"TechQuest_1.21.1_0.3.3_ALPHA.mrpack",arcname="TechQuest_Optimized.mrpack")
               z.writestr("OFFICIAL_LAUNCHER_INSTALL.txt", readme)
+          PY
+      - name: Test both extracted bootstrap archives in isolation
+        run: |
+          python - <<'PY'
+          import os, subprocess, sys, tempfile, zipfile
+          from pathlib import Path
+          env = dict(os.environ)
+          env.pop("PYTHONPATH", None)
+          for kind in ("Client", "Server"):
+              with tempfile.TemporaryDirectory() as folder:
+                  root = Path(folder)
+                  with zipfile.ZipFile(f"output/TechQuest_{kind}_Bootstrap.zip") as archive:
+                      archive.extractall(root)
+                  script = root / "scripts" / f"install_{kind.lower()}.py"
+                  pack = next(root.glob("*.mrpack"))
+                  target = root / "test-install"
+                  flag = "--game-dir" if kind == "Client" else "--target"
+                  subprocess.run([sys.executable, str(script), "--pack", str(pack),
+                                  flag, str(target), "--dry-run"],
+                                 cwd=root, env=env, check=True)
+                  assert not target.exists(), "Dry-run modified the installation directory"
           PY
       - name: Publish downloadable manifests and bootstrap
         if: always()
@@ -120,6 +147,7 @@ jobs:
             output/TechQuest_Client_Bootstrap.zip
             output/versions-lock.json
             output/BUILD_STATUS.json
+            output/jar-metadata-audit.json
           if-no-files-found: warn
           retention-days: 30
       - name: Summarize build
@@ -163,7 +191,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - name: Get the Full and Lite packs from this workflow
+      - name: Get the alpha pack from this workflow
         uses: actions/download-artifact@v4
         with:
           name: TechQuest-1.21.1-alpha-build
@@ -172,7 +200,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force windows-installer/assets | Out-Null
-          Copy-Item client-packages/TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack windows-installer/assets/TechQuest_Optimized.mrpack
+          Copy-Item client-packages/TechQuest_1.21.1_0.3.3_ALPHA.mrpack windows-installer/assets/TechQuest_Optimized.mrpack
           Add-Type -AssemblyName System.IO.Compression
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           $zip = [IO.Compression.ZipFile]::OpenRead("$PWD/windows-installer/assets/TechQuest_Optimized.mrpack")
@@ -186,11 +214,13 @@ jobs:
               if(-not ($paths | Where-Object { $_ -match $mustHave })) { throw "Missing required mod: $mustHave" }
             }
             if($paths | Where-Object { $_ -match '^mods/iris-' }) { throw 'Optimized pack contains Iris unexpectedly' }
+            if($index.versionId -ne '0.3.3-alpha') { throw "Unexpected version $($index.versionId)" }
             if(-not ($zip.Entries | Where-Object FullName -EQ 'overrides/options.txt')) { throw 'Missing low-lag video settings' }
             foreach ($required in @(
               'overrides/patchouli_books/techquest_guide/book.json',
               'overrides/patchouli_books/techquest_guide/en_us/entries/start.json',
-              'overrides/config/openloader/packs/techquest_starter_guide.zip'
+              'overrides/config/openloader/packs/techquest_starter_guide.zip',
+              'overrides/mods/techquest-compat-1.0.0.jar'
             )) {
               if(-not ($zip.Entries | Where-Object FullName -EQ $required)) { throw "Missing in-game book: $required" }
             }
@@ -244,7 +274,7 @@ jobs:
       - name: Verify source, JAR integrity and every checksum
         run: |
           python scripts/security_audit.py \
-            --pack security-work/manifests/TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack \
+            --pack security-work/manifests/TechQuest_1.21.1_0.3.3_ALPHA.mrpack \
             --mods-dir security-work/mods --reports security-work/reports
           test -s security-work/installer/TechQuestInstaller.exe
           sha256sum security-work/installer/TechQuestInstaller.exe | tee security-work/reports/windows-installer-sha256.txt

@@ -1,0 +1,30 @@
+modLoader="lowcodefml"
+loaderVersion="[1,)"
+license="MIT"
+
+[[mods]]
+modId="techquest_compat"
+version="1.0.0"
+displayName="TechQuest Compatibility"
+description="Create recipes for Industrial Craft 2: Nostalgia."
+
+[[dependencies.techquest_compat]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.techquest_compat]]
+modId="create"
+type="required"
+versionRange="[6.0.10,6.1)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.techquest_compat]]
+modId="ic2"
+type="required"
+versionRange="[21.1.0-local.26]"
+ordering="AFTER"
+side="BOTH"

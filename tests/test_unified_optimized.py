@@ -17,7 +17,7 @@ class UnifiedOptimizedTests(unittest.TestCase):
         cls.cfg = json.loads((ROOT / "modlist.json").read_text(encoding="utf-8"))
 
     def test_single_profile_with_core_and_optimizations(self):
-        self.assertEqual(self.cfg["version"], "0.3.2-alpha")
+        self.assertEqual(self.cfg["version"], "0.3.3-alpha")
         self.assertNotIn("lite_profile", self.cfg)
         mods = {mod["project"]: mod for mod in self.cfg["mods"]}
         for name in ("buildcraft-community-edition", "create", "mekanism",
@@ -45,9 +45,9 @@ class UnifiedOptimizedTests(unittest.TestCase):
                 index = json.loads(z.read("modrinth.index.json"))
                 settings = z.read("overrides/options.txt").decode("utf-8")
                 guide = z.read("overrides/TECHQUEST_OPTIMIZED.txt").decode("utf-8")
-            self.assertEqual(index["versionId"], "0.3.2-alpha")
+            self.assertEqual(index["versionId"], "0.3.3-alpha")
             self.assertIn("renderDistance:6", settings)
-            self.assertIn("graphicsMode:fast", settings)
+            self.assertIn("graphicsMode:0", settings)
             self.assertIn("particles:2", settings)
             self.assertIn("Iris", guide)
 

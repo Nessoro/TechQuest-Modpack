@@ -36,6 +36,7 @@ jobs:
           mkdir -p smoke
           cp -r output/server/mods smoke/
           cp output/server/server.properties smoke/
+          cp -r output/server/config output/server/patchouli_books smoke/
           cd smoke
           curl -fsSL --retry 3 "$url" -o installer.jar
           curl -fsSL --retry 3 "$url.sha512" -o installer.jar.sha512
@@ -69,7 +70,11 @@ jobs:
             echo "Server did not finish starting: examine artifact logs."
             exit 1
           fi
-          echo "Server launched WITH IndustrialCraft 2: Nostalgia. Multiplayer testing still required."
+          if grep -Eq 'Parsing error loading recipe create:(smelting|blasting)/ingot_(tin|silver|uranium|aluminium)_compat_ic2|ClientLevel.*invalid dist DEDICATED_SERVER|ClientLevelMixin from mod superbwarfare' startup.log; then
+             echo "TechQuest recipe or server mixin compatibility regression detected."
+             exit 1
+           fi
+           echo "Server launched WITH IndustrialCraft 2: Nostalgia. Multiplayer testing still required."
       - name: Upload smoke-test reports
         if: always()
         uses: actions/upload-artifact@v4
