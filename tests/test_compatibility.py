@@ -16,6 +16,13 @@ spec.loader.exec_module(installer)
 
 
 class CompatibilityTests(unittest.TestCase):
+    def test_forgematica_primary_sources_cannot_replace_runtime_jar(self):
+        files = [{"filename": "forgematica-0.4.3+mc1.21.1-sources.jar", "primary": True},
+                 {"filename": "forgematica-0.4.3+mc1.21.1.jar", "primary": False}]
+        self.assertEqual(builder.select_mod_file({"files": files}), files[1])
+        with self.assertRaisesRegex(builder.BuildError, "no runtime JAR"):
+            builder.select_mod_file({"files": files[:1]})
+
     def test_rebuild_removes_old_sodium_without_removing_other_files(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -98,6 +105,49 @@ class CompatibilityTests(unittest.TestCase):
             self.assertIn("online-mode=true", lines)
             self.assertIn("enforce-whitelist=true", lines)
             self.assertFalse(any("\\n" in line for line in lines))
+            self.assertIn("view-distance=6", lines)
+            self.assertIn("simulation-distance=5", lines)
+
+    def test_same_client_options_and_server_book_are_installed_without_overwriting(self):
+        import scripts.install_client as client
+        cfg = builder.load_cfg()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            pack = root / "pack.mrpack"
+            builder.make_mrpack(cfg, [], pack)
+            game, server = root / "game", root / "server"
+            with zipfile.ZipFile(pack) as archive:
+                client.install_guide_overrides(archive, game)
+            settings = (game / "options.txt").read_bytes()
+            self.assertEqual(settings, builder.client_options(cfg))
+            self.assertIn(b"graphicsMode:0\n", settings)
+            self.assertIn(b"maxFps:60\n", settings)
+            (game / "options.txt").write_text("player-settings")
+            with zipfile.ZipFile(pack) as archive:
+                client.install_guide_overrides(archive, game)
+            self.assertEqual((game / "options.txt").read_text(), "player-settings")
+            installer.install_guide_overrides(pack, server)
+            book = server / "patchouli_books/techquest_guide/book.json"
+            self.assertTrue(book.is_file())
+            self.assertTrue((server / "config/openloader/packs/techquest_starter_guide.zip").is_file())
+            book.write_text("operator-edited-book")
+            installer.install_guide_overrides(pack, server)
+            self.assertEqual(book.read_text(), "operator-edited-book")
+
+    def test_reviewed_lithostitched_side_override_survives_modrinth_server_only_tag(self):
+        cfg = builder.load_cfg()
+        entry = next(row for row in cfg["mods"] if row["project"] == "lithostitched")
+        self.assertEqual(entry["version_id"], "sPmtDq1X")
+        version = {"id": "sPmtDq1X", "version_number": "1.8.0-neoforge-21.1",
+                   "version_type": "release", "files": [{"filename": "lithostitched.jar"}]}
+        def fetch(path, args=None):
+            if path.endswith("/version"):
+                return [version]
+            return {"id": "litho-id", "project_type": "mod", "client_side": "unsupported", "server_side": "required"}
+        with patch.object(builder, "get_json", side_effect=fetch):
+            rows, skipped = builder.resolve_manifest(dict(cfg, mods=[entry]))
+        self.assertFalse(skipped)
+        self.assertEqual(rows[0]["environment"], {"client": "required", "server": "required"})
 
 
 class ExactDependencyTests(unittest.TestCase):

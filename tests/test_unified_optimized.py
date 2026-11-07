@@ -47,7 +47,7 @@ class UnifiedOptimizedTests(unittest.TestCase):
                 guide = z.read("overrides/TECHQUEST_OPTIMIZED.txt").decode("utf-8")
             self.assertEqual(index["versionId"], "0.3.3-alpha")
             self.assertIn("renderDistance:6", settings)
-            self.assertIn("graphicsMode:fast", settings)
+            self.assertIn("graphicsMode:0", settings)
             self.assertIn("particles:2", settings)
             self.assertIn("Iris", guide)
 

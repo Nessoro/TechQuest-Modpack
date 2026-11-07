@@ -284,7 +284,10 @@
       "project": "lithostitched",
       "group": "Библиотеки",
       "required": true,
-      "version_prefix": "1.8.0-neoforge-21.1"
+      "version_prefix": "1.8.0-neoforge-21.1",
+      "version_id": "sPmtDq1X",
+      "environment": {"client": "required", "server": "required"},
+      "note": "Terralith требует Lithostitched на BOTH; закреплённый NeoForge JAR с Apollib нужен также встроенному серверу клиента, несмотря на общую серверную метку Modrinth."
     },
     {
       "project": "irons-lib",
@@ -370,12 +373,12 @@
     "shader_loader_included": false,
     "notes": "Одна сборка с клиентскими оптимизациями и серверным снижением дальности симуляции; карта/HP только на клиенте, внутриигровое руководство Patchouli. Проверить производительность Spark.",
     "video_defaults": {
-      "graphicsMode": "fast",
+      "graphicsMode": 0,
       "renderDistance": 6,
       "simulationDistance": 5,
       "entityDistanceScaling": 0.5,
       "particles": 2,
-      "maxFps": 120,
+      "maxFps": 60,
       "biomeBlendRadius": 0,
       "mipmapLevels": 1
     }

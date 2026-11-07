@@ -73,6 +73,17 @@ def select_version(versions, prefix="", version_id=""):
     stable = [v for v in options if v.get("version_type") == "release"]
     return max(stable or options, key=lambda v: v.get("date_published", ""))
 
+
+def select_mod_file(version):
+    # Some authors mark their sources JAR primary (Forgematica 0.4.3 does).
+    # A source/documentation archive is never a playable mod binary.
+    files = [file for file in version.get("files", [])
+             if file["filename"].lower().endswith(".jar")
+             and not file["filename"].lower().endswith(("-sources.jar", "-javadoc.jar"))]
+    if not files:
+        raise BuildError("Version has no runtime JAR (sources/javadoc are not mods)")
+    return next((file for file in files if file.get("primary")), files[0])
+
 def resolve_manifest(cfg):
     found = {}
     skipped = []
@@ -105,10 +116,7 @@ def resolve_manifest(cfg):
                     raise BuildError("Version conflict for %s: resolved %s but requested %s" %
                                      (project, found[canonical_id]["version"], prefix))
                 return
-            modfiles = [f for f in version.get("files", []) if f["filename"].endswith(".jar")]
-            if not modfiles:
-                raise BuildError("Version has no JAR")
-            selected = next((f for f in modfiles if f.get("primary")), modfiles[0])
+            selected = select_mod_file(version)
             safe_filename(selected["filename"])
             side = {"client": meta.get("client_side", "required"),
                     "server": meta.get("server_side", "required")}
@@ -143,7 +151,14 @@ def resolve_manifest(cfg):
         add(entry["project"], entry.get("required", True), entry.get("version_prefix", ""),
             version_id=entry.get("version_id", ""))
     client_only = {entry["project"] for entry in cfg["mods"] if entry.get("client_only")}
+    side_overrides = {entry["project"]: entry["environment"] for entry in cfg["mods"]
+                      if entry.get("environment")}
     for item in found.values():
+        override = side_overrides.get(item["requested"], {})
+        if any(side not in ("client", "server") or value not in ("required", "optional", "unsupported")
+               for side, value in override.items()):
+            raise BuildError("Invalid reviewed environment override: " + item["requested"])
+        item["environment"].update(override)
         if item["requested"] in client_only:
             if item["environment"]["client"] == "unsupported":
                 raise BuildError("Client-only mod is not client-compatible: " + item["requested"])
@@ -353,8 +368,7 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
         archive.writestr("modrinth.index.json", json.dumps(idx, ensure_ascii=False, indent=2))
         video = cfg.get("performance_profile", {}).get("video_defaults", {})
         if video:
-            lines = ["%s:%s" % (key, value) for key, value in video.items()]
-            archive.writestr("overrides/options.txt", "\n".join(lines) + "\n")
+            archive.writestr("overrides/options.txt", client_options(cfg))
             archive.writestr("overrides/TECHQUEST_OPTIMIZED.txt",
                 "Unified optimized TechQuest client. Iris shaders are not included. "
                 "Gameplay mods are preserved. Set graphics Fast, view distance 4-6, "
@@ -384,6 +398,12 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
                              json.dumps(gunpacks, ensure_ascii=False, indent=2) + "\n")
         archive.writestr("overrides/mods/" + COMPAT_JAR_NAME, compatibility_jar())
     return len(files)
+
+
+def client_options(cfg):
+    """One options.txt source for .mrpack, generated client and Windows GUI."""
+    video = cfg.get("performance_profile", {}).get("video_defaults", {})
+    return ("\n".join("%s:%s" % item for item in video.items()) + "\n").encode("utf-8") if video else b""
 
 def main():
     argp = argparse.ArgumentParser(description="TechQuest client/server pack generator")
@@ -445,11 +465,13 @@ def main():
         (directory / COMPAT_JAR_NAME).write_bytes(compat_bytes)
     for jar in server.glob("superbwarfare-*.jar"):
         patch_superb_server_jar(jar)
+    if client_options(cfg):
+        (out / "client" / "options.txt").write_bytes(client_options(cfg))
     for relative, data in guide_overrides().items():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
-        if relative.startswith("config/openloader/"):
+        if relative.startswith(("config/openloader/", "patchouli_books/techquest_guide/")):
             server_target = out / "server" / relative
             server_target.parent.mkdir(parents=True, exist_ok=True)
             server_target.write_bytes(data)

@@ -63,8 +63,8 @@ def prepare_properties(target):
             "white-list=true\n"
             "enforce-whitelist=true\n"
             "enable-rcon=false\n"
-            "view-distance=8\n"
-            "simulation-distance=6\n"
+            "view-distance=6\n"
+            "simulation-distance=5\n"
             "allow-flight=true\n", encoding="utf-8")
 
 def install_compatibility(pack_path, mods):
@@ -75,6 +75,24 @@ def install_compatibility(pack_path, mods):
             (mods / packbuilder.COMPAT_JAR_NAME).write_bytes(archive.read(entry))
     for path in mods.glob("superbwarfare-*.jar"):
         packbuilder.patch_superb_server_jar(path)
+
+
+def install_guide_overrides(pack_path, target):
+    """Install the book definition and its server datapack, preserving local edits."""
+    with zipfile.ZipFile(pack_path) as archive:
+        for entry in archive.infolist():
+            if not entry.filename.startswith("overrides/") or entry.is_dir():
+                continue
+            relative = entry.filename[len("overrides/"):]
+            if not (relative.startswith("patchouli_books/techquest_guide/") or
+                    relative == "config/openloader/packs/techquest_starter_guide.zip"):
+                continue
+            if ".." in Path(relative).parts or any(c in relative for c in ("\\", "\x00", ":")):
+                raise packbuilder.BuildError("Unsafe guide override path: " + relative)
+            destination = target / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            if not destination.exists():
+                destination.write_bytes(archive.read(entry))
 
 def install_neoforge(target, version):
     if not shutil.which("java"):
@@ -122,15 +140,7 @@ def main():
         print(f"[{i}/{len(files)}] {info['file']['filename']}", flush=True)
         packbuilder.download_checked(info, mods)
     install_compatibility(args.pack, mods)
-    # Open Loader first-join guide pack is needed on dedicated servers too.
-    # Never overwrite an existing operator-maintained datapack.
-    with zipfile.ZipFile(args.pack) as archive:
-        guide_name = "overrides/config/openloader/packs/techquest_starter_guide.zip"
-        if guide_name in archive.namelist():
-            guide_target = target / "config/openloader/packs/techquest_starter_guide.zip"
-            guide_target.parent.mkdir(parents=True, exist_ok=True)
-            if not guide_target.exists():
-                guide_target.write_bytes(archive.read(guide_name))
+    install_guide_overrides(args.pack, target)
     # Preserve first-party metadata for optional author-hosted manual imports.
     with zipfile.ZipFile(args.pack) as archive:
         metadata = "overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json"

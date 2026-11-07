@@ -36,6 +36,7 @@ jobs:
           mkdir -p smoke
           cp -r output/server/mods smoke/
           cp output/server/server.properties smoke/
+          cp -r output/server/config output/server/patchouli_books smoke/
           cd smoke
           curl -fsSL --retry 3 "$url" -o installer.jar
           curl -fsSL --retry 3 "$url.sha512" -o installer.jar.sha512

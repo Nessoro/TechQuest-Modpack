@@ -195,6 +195,21 @@ internal sealed class InstallerForm : Form
                 archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null ||
                  archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null)
                 return 7;
+            string probe = Path.Combine(Path.GetTempPath(), "TechQuest-self-test-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                InstallGuideOverrides(probe);
+                string options = File.ReadAllText(Path.Combine(probe, "options.txt"));
+                if (!options.Split('\n').Contains("graphicsMode:0") ||
+                    !options.Split('\n').Contains("maxFps:60")) return 8;
+                File.WriteAllText(Path.Combine(probe, "options.txt"), "existing-player-settings");
+                InstallGuideOverrides(probe);
+                if (File.ReadAllText(Path.Combine(probe, "options.txt")) != "existing-player-settings") return 9;
+            }
+            finally
+            {
+                if (Directory.Exists(probe)) Directory.Delete(probe, recursive: true);
+            }
             return 0;
         }
         catch { return 5; }
@@ -297,6 +312,8 @@ internal sealed class InstallerForm : Form
                 relative == "config/openloader/packs/techquest_starter_guide.zip" ||
                  relative == "mods/techquest-compat-1.0.0.jar" ||
                 relative == "TECHQUEST_INGAME_GUIDE.txt" ||
+                relative == "options.txt" ||
+                relative == "TECHQUEST_OPTIMIZED.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json" ||
                 relative == "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json";
             if (!allowed || relative.EndsWith("/", StringComparison.Ordinal))
@@ -499,12 +516,6 @@ internal sealed class InstallerForm : Form
             Directory.Move(staging, mods);
             InstallGuideOverrides(target);
             installedGameDir = target;
-            var optionsFile = Path.Combine(target, "options.txt");
-            if (!File.Exists(optionsFile))
-                File.WriteAllText(optionsFile,
-                    "graphicsMode:fast\nrenderDistance:6\nsimulationDistance:5\n" +
-                    "entityDistanceScaling:0.5\nparticles:2\nmaxFps:120\n" +
-                    "biomeBlendRadius:0\nmipmapLevels:1\n", new UTF8Encoding(false));
             File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
                 "TechQuest 0.3.3 Alpha\n" +
                 "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +
