@@ -108,6 +108,12 @@
       "required": false
     },
     {
+      "project": "aquamirae",
+      "group": "Мир и приключения",
+      "required": false,
+      "version_prefix": "7.2.13"
+    },
+    {
       "project": "waystones",
       "group": "Комфорт",
       "required": true
