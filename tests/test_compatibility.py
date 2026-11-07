@@ -149,6 +149,17 @@ class CompatibilityTests(unittest.TestCase):
         self.assertFalse(skipped)
         self.assertEqual(rows[0]["environment"], {"client": "required", "server": "required"})
 
+    def test_structure_generators_are_pinned_and_included_for_singleplayer(self):
+        cfg = builder.load_cfg()
+        mods = {row["project"]: row for row in cfg["mods"]}
+        for slug in ("when-dungeons-arise", "yungs-better-strongholds",
+                     "yungs-better-nether-fortresses", "yungs-better-dungeons",
+                     "yungs-better-mineshafts"):
+            with self.subTest(project=slug):
+                row = mods[slug]
+                self.assertTrue(row["version_id"])
+                self.assertEqual(row["environment"], {"client": "required", "server": "required"})
+
 
 class ExactDependencyTests(unittest.TestCase):
     def version(self, project, version_id, number, date, deps=()):

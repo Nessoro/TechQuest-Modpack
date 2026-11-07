@@ -8,6 +8,8 @@
 Для проверки используйте **новый EXE из последнего полного успешного запуска**, установите в
 новую папку. Первое испытание проведите без AMW и дополнительных gunpack; пользовательские
 старые настройки не должны влиять на оценку нового профиля (Fast, 6/5 чанков, 60 FPS).
+When Dungeons Arise и четыре YUNG's теперь устанавливаются также на клиент для генерации
+структур в одиночном мире. Их появление проверяйте в **новом обычном мире**, в новых чанках.
 
 1. Откройте [GitHub Actions — Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml), выберите ветку `feat/bosses-parcool-0.3.3-prep` и **последний полностью успешный** запуск. Скачайте `TechQuest-Windows-GUI-Installer` внизу страницы (Artifacts). Распакуйте ZIP и запустите `TechQuestInstaller.exe`. Для оценки безопасности есть отдельный `TechQuest-Security-Audit` из **того же запуска**.
 2. Откройте официальный Minecraft Launcher, войдите в учётную запись и убедитесь, что доступен Minecraft Java Edition 1.21.1.
