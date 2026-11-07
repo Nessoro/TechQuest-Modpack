@@ -25,6 +25,20 @@ jobs:
           curl --proto '=https' --proto-redir '=https' -fL --retry 2 --connect-timeout 15 --max-time 240 --max-filesize 268435456 \
             'https://cdn.mcww3.com/raw/McWW3-Bundle-v2.1-beta.zip?download=true' \
             -o work/mcww3/original.zip
+      - name: Require the same bundle as the recorded inspection
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          recorded = json.loads(Path('experiments/mcww3/reports/2.1-beta-preflight.json').read_text())
+          digest = hashlib.sha256()
+          with Path('work/mcww3/original.zip').open('rb') as stream:
+              while chunk := stream.read(1024 * 1024):
+                  digest.update(chunk)
+          if digest.hexdigest() != recorded['bundle_sha256_observed']:
+              raise SystemExit('Author bundle changed: review provenance before replacing the observed digest')
+          print('Matches the previously inspected HTTPS download; not an author signature or license grant.')
+          PY
       - name: Inspect Forge metadata and API coupling
         run: |
           python experiments/mcww3/inspect_bundle.py --bundle work/mcww3/original.zip \

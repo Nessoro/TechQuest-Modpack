@@ -1,0 +1,97 @@
+{
+  "status": "PREFLIGHT_ONLY_NOT_PORTED",
+  "port_completed": false,
+  "runtime_tested": false,
+  "source_page": "https://mcww3.com/download/2.1-beta",
+  "source_download_url": "https://cdn.mcww3.com/raw/McWW3-Bundle-v2.1-beta.zip?download=true",
+  "target": {
+    "minecraft": "1.21.1",
+    "loader": "neoforge",
+    "loader_version": "21.1.264",
+    "java": 21
+  },
+  "bundle_size": 141336165,
+  "bundle_sha256_observed": "37426de682ff4e1f925fe0ed5703c4a18093b6f55a978c9128b2ab5bfdc98b90",
+  "hash_provenance": "Computed after HTTPS download; not an independently published author checksum",
+  "jars": [
+    {
+      "file": "ww3-2.1-beta.jar",
+      "size": 47227327,
+      "sha256_observed": "021a8e235fec60b8577e2e838f6e67761c9a9cc85ec1235181a85243c2b37b26",
+      "metadata_path": "META-INF/mods.toml",
+      "mod_loader": "javafml",
+      "loader_range": "[47,)",
+      "declared_license": "All Rights Reserved",
+      "mods": [
+        {
+          "modId": "ww3",
+          "version": "${file.jarVersion}",
+          "displayName": "McWW3",
+          "authors": "Voy7, ChampPG",
+          "displayURL": "https://mcww3.com"
+        }
+      ],
+      "dependencies": {
+        "ww3": [
+          {
+            "modId": "forge",
+            "mandatory": true,
+            "versionRange": "[47.4.10,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "mandatory": true,
+            "versionRange": "[1.20,1.21)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "distanthorizons",
+            "mandatory": true,
+            "versionRange": "[3.3.3]",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          }
+        ]
+      },
+      "class_count": 2606,
+      "class_file_major_versions": {
+        "61": 2136,
+        "49": 299,
+        "50": 47,
+        "53": 4,
+        "52": 120
+      },
+      "top_level_package_class_counts": {
+        "ww3": 2136,
+        "com": 299,
+        "javax": 47,
+        "META-INF": 4,
+        "org": 120
+      },
+      "classes_referencing_api_namespace": {
+        "forge": 546,
+        "minecraft": 1141,
+        "distant_horizons": 15,
+        "lwjgl": 41
+      },
+      "license_notice_paths": [
+        "META-INF/maven/org.xerial/sqlite-jdbc/LICENSE",
+        "META-INF/maven/org.xerial/sqlite-jdbc/LICENSE.zentus"
+      ],
+      "source_file_count": 0,
+      "source_file_examples": [],
+      "native_file_count": 23
+    }
+  ],
+  "source_file_count": 0,
+  "source_files_detected": false,
+  "buildable_source_project_verified": false,
+  "source_review": "File presence alone does not establish a complete buildable project or modification rights",
+  "bundle_source_examples": [],
+  "content_pack_file_count": 1158,
+  "distribution_permission_verified": false,
+  "next_requirement": "Obtain a complete mod source/build project and review the actual modification/distribution terms"
+}
