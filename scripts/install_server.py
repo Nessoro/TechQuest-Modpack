@@ -57,15 +57,24 @@ def prepare_properties(target):
     props = target / "server.properties"
     if not props.exists():
         props.write_text(
-            "motd=TechQuest Industrial Frontier\\n"
-            "max-players=8\\n"
-            "online-mode=true\\n"
-            "white-list=true\\n"
-            "enforce-whitelist=true\\n"
-            "enable-rcon=false\\n"
-            "view-distance=6\\n"
-            "simulation-distance=5\\n"
-            "allow-flight=true\\n", encoding="utf-8")
+            "motd=TechQuest Industrial Frontier\n"
+            "max-players=8\n"
+            "online-mode=true\n"
+            "white-list=true\n"
+            "enforce-whitelist=true\n"
+            "enable-rcon=false\n"
+            "view-distance=8\n"
+            "simulation-distance=6\n"
+            "allow-flight=true\n", encoding="utf-8")
+
+def install_compatibility(pack_path, mods):
+    # Extract only our known resource mod, never arbitrary paths from an archive.
+    with zipfile.ZipFile(pack_path) as archive:
+        entry = "overrides/mods/" + packbuilder.COMPAT_JAR_NAME
+        if entry in archive.namelist():
+            (mods / packbuilder.COMPAT_JAR_NAME).write_bytes(archive.read(entry))
+    for path in mods.glob("superbwarfare-*.jar"):
+        packbuilder.patch_superb_server_jar(path)
 
 def install_neoforge(target, version):
     if not shutil.which("java"):
@@ -112,6 +121,7 @@ def main():
     for i, info in enumerate(files, 1):
         print(f"[{i}/{len(files)}] {info['file']['filename']}", flush=True)
         packbuilder.download_checked(info, mods)
+    install_compatibility(args.pack, mods)
     # Open Loader first-join guide pack is needed on dedicated servers too.
     # Never overwrite an existing operator-maintained datapack.
     with zipfile.ZipFile(args.pack) as archive:
@@ -138,9 +148,11 @@ def main():
     if not args.skip_neoforge:
         install_neoforge(target, ver)
     (target / "TECHQUEST_README.txt").write_text(
-        "TechQuest 0.3.0-alpha (UNTESTED).\\n"
+        "TechQuest 0.3.3-alpha (PC test candidate).\\n"
         "IndustrialCraft 2: Nostalgia is installed from pinned SHA-checked URL.\\n"
         "Open Loader starter guide datapack placed in config/openloader/packs.\\n"
+        "Create-IC2 compatibility recipes installed automatically.\\n"
+        "Superb Warfare common client mixin removed only in dedicated server copy.\\n"
         "Check all mod versions before playing. Back up the world.\\n"
         "Read Minecraft EULA. If you accept, set eula=true in eula.txt.\\n"
         "To start on Linux: ./run.sh nogui. On Windows: run.bat nogui.\\n"

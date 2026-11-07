@@ -15,7 +15,8 @@
     {
       "project": "create",
       "group": "Технологии",
-      "required": true
+      "required": true,
+      "version_id": "UjX6dr61"
     },
     {
       "project": "mekanism",
@@ -258,7 +259,8 @@
       "project": "superb-warfare",
       "group": "Военная техника",
       "required": true,
-      "version_prefix": "0.8.9.2"
+      "version_prefix": "0.8.9.2",
+      "version_id": "bl7W8fjU"
     },
     {
       "project": "timeless-and-classics-zero",

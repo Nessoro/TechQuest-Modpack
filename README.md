@@ -12,6 +12,12 @@ TechQuest — большая комплексная сборка вокруг **
 
 > **Схемы, другие драконы, гиганты:** в тестовый PR #5 добавлены Wyrmroost 1.4.1, Legendary Monsters 2.2.3, Twisted Mobs и клиентские Forgematica/MaFgLib 0.4.3. IceAndFire CE удалён. Инструкция: [план и риски](docs/SCHEMATICS_DRAGONS_GIANTS_RU.md). Ben's Titans остаётся неподтверждённым кандидатом и в сборку не добавлен.
 
+### Тестовая версия TechQuest 0.3.3 для Windows 11
+
+Альфа 0.3.3 собирается в [GitHub Actions — Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml) на ветке `feat/bosses-parcool-0.3.3-prep`. Найдите **успешный запуск последнего коммита**, артефакт `TechQuest-Windows-GUI-Installer` → `TechQuestInstaller.exe`. Версия 0.3.3 пока **не объединена с main**. Отчёт `TechQuest-Security-Audit` должен относиться к тому же commit SHA.
+
+GUI устанавливает единый Optimized-профиль без Python/консоли, включая первый собственный мод `TechQuest Compatibility` (рецепты Create–IC2). TaCZ уже внутри 0.3.3, четыре gunpack ZIP импортируются отдельно. Выбирайте новую пустую папку, установите Java 21 и NeoForge 21.1.264, укажите Game Directory в официальном Launcher. Подробные шаги: [Установка тестовой 0.3.3](docs/INSTALL_0.3.3_PC_RU.md). На сервере Superb Warfare локально исправляется после проверки оригинального SHA. Стабильная 0.3.2 не меняется.
+
 > **TaCZ входит в экспериментальную TechQuest 0.3.3:** официальный TaCZ 1.2.0 для NeoForge 1.21.1 включён в состав. Четыре gunpack ZIP импортируются через Windows Installer без Python; совместимость исходных ZIP для 1.20.1 ещё требует проверки. [Инструкция по TaCZ](docs/TACZ_OFFICIAL_RU.md). Рабочая 0.3.2 не затронута.
 
 ## Навигация

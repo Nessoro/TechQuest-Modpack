@@ -125,7 +125,7 @@ internal sealed class InstallerForm : Form
             title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
             browse, safety, install, neoforge, gunpacks, openFolder, help, cancel, importAmw, progress, status
         });
-        location.Text = Path.Combine(baseDir, "Optimized_0.3");
+        location.Text = Path.Combine(baseDir, "TechQuest_0.3.3_Alpha");
     }
 
     private void SetBusy(bool busy, bool cancellable)
@@ -192,7 +192,8 @@ internal sealed class InstallerForm : Form
             using var zipStream = GetEmbeddedPack();
             using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
             if (archive.GetEntry("overrides/patchouli_books/techquest_guide/book.json") is null ||
-                archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null)
+                archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null ||
+                 archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null)
                 return 7;
             return 0;
         }
@@ -294,6 +295,7 @@ internal sealed class InstallerForm : Form
             bool allowed =
                 relative.StartsWith("patchouli_books/techquest_guide/", StringComparison.Ordinal) ||
                 relative == "config/openloader/packs/techquest_starter_guide.zip" ||
+                 relative == "mods/techquest-compat-1.0.0.jar" ||
                 relative == "TECHQUEST_INGAME_GUIDE.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json" ||
                 relative == "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json";
@@ -504,7 +506,7 @@ internal sealed class InstallerForm : Form
                     "entityDistanceScaling:0.5\nparticles:2\nmaxFps:120\n" +
                     "biomeBlendRadius:0\nmipmapLevels:1\n", new UTF8Encoding(false));
             File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
-                "TechQuest 0.3.2 Optimized\n" +
+                "TechQuest 0.3.3 Alpha\n" +
                 "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +
                 "Установите официальный NeoForge (кнопка в установщике).\n" +
                 "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +

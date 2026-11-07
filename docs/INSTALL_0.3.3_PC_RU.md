@@ -1,0 +1,19 @@
+# TechQuest 0.3.3-alpha: установка на Windows 11
+
+Это **кандидат для тестирования**, не стабильный релиз. Minecraft Java **1.21.1**, **NeoForge 21.1.264**, **Java 21**, один профиль Optimized. Клиенту не нужны Python, Docker, Prism Launcher и консоль.
+
+1. Откройте [GitHub Actions — Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml), выберите ветку `feat/bosses-parcool-0.3.3-prep` и **последний полностью успешный** запуск. Скачайте `TechQuest-Windows-GUI-Installer` внизу страницы (Artifacts). Распакуйте ZIP и запустите `TechQuestInstaller.exe`. Для оценки безопасности есть отдельный `TechQuest-Security-Audit` из **того же запуска**.
+2. Откройте официальный Minecraft Launcher, войдите в учётную запись и убедитесь, что доступен Minecraft Java Edition 1.21.1.
+3. В GUI TechQuest выберите **новую пустую папку** (например `C:\Games\TechQuest_0.3.3_Alpha`). Не указывайте текущий `.minecraft` и не смешивайте со старыми модами 0.3.2.
+4. Нажмите **«1. Установить моды»**. Установщик скачает JAR, проверит SHA и добавит внутриигровую книгу и собственный ресурсный мод `techquest-compat-1.0.0.jar` с исправлением рецептов Create–IC2.
+5. Установите **Java 21**. Нажмите **«2. Установить NeoForge»**, в открывшемся официальном установщике выберите **Install client**. Нужная версия NeoForge — `21.1.264`.
+6. Minecraft Launcher → **Установки** → профиль **NeoForge 21.1.264** → **Изменить** → **Папка игры / Game Directory** → укажите папку из шага 3. При необходимости выберите Java 21. Для 16 ГБ системной RAM начните с `-Xmx6G`; для 32 ГБ можно попробовать `-Xmx8G`. Не выделяйте всю память игре.
+7. Запустите профиль **NeoForge**, а не обычный Minecraft. Создайте **новый обычный мир**, не Superflat. Начните **без** пользовательских AMW и gunpack ZIP.
+8. Проверьте наличие `techquest-compat-1.0.0.jar`, TaCZ, Create, IC2, ParCool. Исследуйте новые структуры, Aether, Deeper and Darker, протестируйте боссов. После первого стабильного запуска можно добавить **необязательные** TaCZ gunpack через кнопку «4. Импорт TaCZ ZIP». Старые ZIP для 1.20.1 могут потребовать `/tacz convert universal`. Cyber Armorer зависит от TaCZ:FCE; это не проверено.
+9. Если игра вылетает, сохраните `logs/latest.log` и `crash-reports/`, сообщите версию Java/NeoForge и [создайте отчёт](https://github.com/Nessoro/TechQuest-Modpack/issues/new?template=bug_report.yml). Перед публикацией удалите из логов личные данные/токены.
+
+**Для сервера:** артефакт `TechQuest-1.21.1-alpha-build` содержит `.mrpack` и `TechQuest_Server_Bootstrap.zip`. Для запуска bootstrap администратору пока нужен Python 3.9+; клиенту он **не нужен**. Прочитайте и примите Minecraft EULA вручную, затем включайте whitelist и online-mode. Оригинальный Superb Warfare проверяется по хешу и исправляется **только в серверной копии** — не переносите её поверх клиентского JAR.
+
+**Ограничения:** успешные CI/ClamAV означают успешную сборку и отсутствие обнаруженных сигнатур в проверенных файлах, но не доказанную игровую совместимость или абсолютную безопасность. Используйте новый мир и резервные копии. На слабых ПК начните с Fast и 4–6 чанков, FPS/TPS фиксируйте отдельно.
+
+После реальных клиентских/серверных тестов можно утверждать тестовую 0.3.3 как релизную, затем переходить к [Horizon Port Lab](https://github.com/Nessoro/TechQuest-Modpack/pull/8): Java NeoForge JAR нельзя просто скопировать в Horizon.
