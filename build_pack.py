@@ -290,6 +290,20 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
                 "particles minimal. The settings are not a guarantee of FPS gains.\n")
         for relative, data in guide_overrides().items():
             archive.writestr("overrides/" + relative, data)
+        # CurseForge-only, All Rights Reserved additions stay user-supplied.
+        # Include metadata for the GUI and server operator, never the author JAR.
+        local_mods = cfg.get("optional_local_mods", [])
+        if local_mods:
+            for local_mod in local_mods:
+                if (local_mod.get("install_mode") != "manual_user_import" or
+                    local_mod.get("loader") != cfg["loader"] or
+                    local_mod.get("minecraft") != cfg["minecraft"] or
+                    not local_mod.get("source", "").startswith(
+                        "https://www.curseforge.com/minecraft/mc-mods/")):
+                    raise BuildError("Invalid optional manual mod metadata")
+                safe_filename(local_mod["file_name"])
+            archive.writestr("overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json",
+                             json.dumps(local_mods, ensure_ascii=False, indent=2) + "\n")
     return len(files)
 
 def main():

@@ -180,6 +180,11 @@
       "required": false
     },
     {
+      "project": "geckolib",
+      "group": "Библиотеки",
+      "required": true
+    },
+    {
       "project": "superb-warfare",
       "group": "Военная техника",
       "required": true,
@@ -309,6 +314,27 @@
       "file_size": 23250455,
       "required": true,
       "note": "Официальный GitHub-релиз автора ZentixUA (GPLv3). Клиент и сервер, NeoForge >=21.1.264. Большие ядерные взрывы очень требовательны к CPU/GPU и создают разрушения."
+    }
+  ],
+  "optional_local_mods": [
+    {
+      "id": "acceleratedmcwarfare",
+      "name": "AcceleratedMcWarfare (AMW)",
+      "file_name": "acceleratedMcWarfare-1.0.4..jar",
+      "version": "1.0.4-alpha",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "side": "both",
+      "required": false,
+      "install_mode": "manual_user_import",
+      "source": "https://www.curseforge.com/minecraft/mc-mods/amw/files/9298161",
+      "curseforge_project_id": 1711633,
+      "curseforge_file_id": 9298161,
+      "license": "All Rights Reserved",
+      "dependencies": [
+        "geckolib"
+      ],
+      "note": "The official file is client+server but downloads require the publisher's delivery channel. This JAR is not bundled or redistributed by TechQuest. Import the original JAR using the GUI, and copy the same file to the dedicated server. Compatibility with Incoming/Superb Warfare/Explosion Overhaul is untested."
     }
   ]
 }

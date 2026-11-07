@@ -121,6 +121,13 @@ def main():
             guide_target.parent.mkdir(parents=True, exist_ok=True)
             if not guide_target.exists():
                 guide_target.write_bytes(archive.read(guide_name))
+    # Preserve first-party metadata for optional author-hosted manual imports.
+    with zipfile.ZipFile(args.pack) as archive:
+        metadata = "overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json"
+        if metadata in archive.namelist():
+            dest = target / "TECHQUEST_OPTIONAL_LOCAL_MODS.json"
+            if not dest.exists():
+                dest.write_bytes(archive.read(metadata))
     prepare_properties(target)
     if not args.skip_neoforge:
         install_neoforge(target, ver)
