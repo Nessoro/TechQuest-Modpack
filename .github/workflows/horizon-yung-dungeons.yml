@@ -1,0 +1,72 @@
+name: Horizon YUNG Better Dungeons data carry experiment
+
+on:
+  push:
+    branches: ["experiment/horizon-port-lab"]
+    paths:
+      - ".github/workflows/horizon-yung-dungeons.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  test-yung-data-port:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+      TARGET_MOD: yungs-better-dungeons
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get original hash-verified TechQuest pack (manifest artifact)
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          run-id: 42372848633
+          path: source-artifact
+          github-token: ${{ github.token }}
+      - name: Find modpack
+        run: |
+          set -euo pipefail
+          pack="$(find source-artifact -type f -name '*.mrpack' -print -quit)"
+          test -n "$pack"
+          echo "PACK_PATH=$GITHUB_WORKSPACE/$pack" >> "$GITHUB_ENV"
+      - name: Checkout official pinned Horizon upstream
+        uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Compile official port tool
+        run: cargo build --manifest-path upstream-horizon/Cargo.toml -p horizon-port-pack --release --locked
+      - name: Import, fetch only YUNG's Better Dungeons, carry its data and report
+        run: |
+          set -euo pipefail
+          tool="$GITHUB_WORKSPACE/upstream-horizon/target/release/horizon-port-pack"
+          work="$GITHUB_WORKSPACE/horizon/out/yung-trial"
+          mkdir -p "$work"
+          "$tool" import "$PACK_PATH" "$work"
+          "$tool" inventory "$work"
+          "$tool" fetch "$work" "$TARGET_MOD"
+          "$tool" carry "$work" "$TARGET_MOD"
+          "$tool" report "$work"
+          test -s "$work/coverage.md"
+          echo "---- Target mod coverage ----"
+          grep -F "| $TARGET_MOD |" "$work/coverage.md" || true
+          echo "---- Local converted files count (NOT UPLOADED) ----"
+          if [ -d "$work/mods" ]; then find "$work/mods" -type f | wc -l; fi
+      - name: Publish reports only (exclude JARs, assets, generated hmods)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-YUNG-Dungeons-Coverage-ONLY
+          path: |
+            horizon/out/yung-trial/coverage.json
+            horizon/out/yung-trial/coverage.md
+            horizon/out/yung-trial/fetch.json
+          retention-days: 14
