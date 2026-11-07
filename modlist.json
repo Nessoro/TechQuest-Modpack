@@ -102,8 +102,7 @@
     {
       "project": "legendary-monsters",
       "group": "Боссы",
-      "required": true,
-      "version_prefix": "2.2.3"
+      "required": true
     },
     {
       "project": "twisted-mobs",
