@@ -43,6 +43,14 @@ NAMES = {
     "health-indicator-txf": "Health Indicator TXF (HP цифрами)",
     "patchouli": "Patchouli — путеводитель TechQuest",
     "open-loader": "Open Loader",
+    "aether": "The Aether",
+    "deeperdarker": "Deeper and Darker",
+    "artifacts": "Artifacts",
+    "when-dungeons-arise": "When Dungeons Arise",
+    "yungs-better-strongholds": "YUNG's Better Strongholds",
+    "yungs-better-nether-fortresses": "YUNG's Better Nether Fortresses",
+    "lootr": "Lootr",
+    "explorers-compass": "Explorer's Compass",
     "lithium": "Lithium",
 }
 DESCRIPTIONS = {
@@ -71,6 +79,14 @@ DESCRIPTIONS = {
     "health-indicator-txf": "Числовое HP и полоска здоровья мобов при наведении прицела.",
     "patchouli": "Русское внутриигровое руководство по модам TechQuest.",
     "open-loader": "Автоматически подключает datapack выдачи книги в мире.",
+    "aether": "Новое небесное измерение, подземелья, исследование островов и боссы.",
+    "deeperdarker": "Тайны Deep Dark, новые биомы, измерение Otherside и противники.",
+    "artifacts": "Редкие сокровища, уникальные предметы и мимики в структурах.",
+    "when-dungeons-arise": "Крупные враждебные подземелья, крепости, корабли и добыча.",
+    "yungs-better-strongholds": "Новые сложные крепости с секретами и ловушками.",
+    "yungs-better-nether-fortresses": "Переработанные крепости Незера с зонами для исследования.",
+    "lootr": "Персональные сундуки с добычей для каждого игрока сервера.",
+    "explorers-compass": "Поиск обычных и модовых структур через удобный компас.",
     "lithium": "Оптимизация логики и тиков Minecraft; требуется проверка совместимости.",
 }
 mods = []

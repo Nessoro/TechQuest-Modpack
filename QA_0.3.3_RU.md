@@ -50,3 +50,7 @@
 ## Дополнительная ветка испытаний: AcceleratedMcWarfare
 
 AMW 1.0.4 Alpha внедрён как **необязательный пользовательский импорт** в тестовую сборку; оригинальный JAR берётся с CurseForge, отдельно для клиента и сервера. Это не проверенный игровой мод. Подробные действия: [AMW_TESTING_RU.md](docs/AMW_TESTING_RU.md). Не путайте успешную автоматическую сборку без AMW с тестом его запуска.
+
+## Новый приоритет — приключения и исследование
+
+Добавлены 8 NeoForge 1.21.1 модов: Aether, Deeper and Darker, When Dungeons Arise, Artifacts, YUNG's Better Strongholds, YUNG's Better Nether Fortresses, Lootr и Explorer's Compass. После сборки необходима проверка их обязательных зависимостей, игровой генерации нового мира и серверного TPS. Полный тестовый маршрут описан в [docs/ADVENTURE_EXPLORATION_RU.md](docs/ADVENTURE_EXPLORATION_RU.md).
