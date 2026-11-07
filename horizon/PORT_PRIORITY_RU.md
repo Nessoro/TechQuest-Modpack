@@ -67,3 +67,7 @@ GitHub Actions [#42382390837](https://github.com/Nessoro/TechQuest-Modpack/actio
 ## Terralith: отдельный успешный пробный перенос
 
 [Actions #42384762013](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42384762013) создал локальный временный `terralith.hmod` с 1 896 файлами и подтвердил его формат официальным SDK. Теряется/исключается 124 исходных файла (`outside`), генерация мира не тестировалась. Вместе с четырьмя YUNG's это **5 отдельных SDK-валидных partial**, но они не были объединены в один игровой профиль. Изменять показатель официальной инвентаризации «49 модов требуют переноса» без совместного `coverage.json` нельзя.
+
+## Проверено в общей конвертации: 5 partial
+
+[CI #42385201713](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42385201713) даёт **единый `coverage.json`**: 0 ported, **5 partial**, 44 not yet, 37 not needed. Четыре YUNG's и Terralith перенесены на уровне данных в одном workspace и все прошли SDK build/check. Отсутствуют реальные тесты игрового мира и совместной загрузки. Общий namespace `yungsapi` и 132 исключённых файла требуют отдельной проверки.

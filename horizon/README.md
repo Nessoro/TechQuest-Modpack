@@ -76,3 +76,7 @@ GitHub Actions [#42382390837](https://github.com/Nessoro/TechQuest-Modpack/actio
 ## Пробный перенос Terralith
 
 В [CI #42384762013](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42384762013) временный Terralith content-мод (1896 файлов) прошёл официальный SDK. Статус — только `partial`: 124 файла вынесены в `outside`, полноценную генерацию биомов и совместимость с YUNG's не проверяли. Код, JAR, структуры и текстуры Terralith **не публиковались**. См. [TERRALITH_LOCAL_RU.md](TERRALITH_LOCAL_RU.md).
+
+## Совместная проверка пяти портированных наборов данных
+
+[GitHub Actions #42385201713](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42385201713): пять модов (4 YUNG's + Terralith) успешно обработаны в одном `horizon-port-pack` workspace, получили `partial` и прошли индивидуальную SDK-проверку. Общее покрытие 86 компонентов: **5 partial / 44 not yet / 37 not needed / 0 ported**. Это не подтверждённый игровой запуск; см. [COMBINED_WORLDGEN_RU.md](COMBINED_WORLDGEN_RU.md).
