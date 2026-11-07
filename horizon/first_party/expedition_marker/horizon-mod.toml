@@ -1,0 +1,8 @@
+id = "techquest_expedition_marker"
+name = "TechQuest Expedition Marker"
+version = "0.1.0"
+description = "A first-party Horizon content prototype: an expedition marker block; no Java mechanics."
+authors = ["TechQuest contributors"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]

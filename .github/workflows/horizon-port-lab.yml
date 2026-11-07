@@ -1,0 +1,39 @@
+name: Horizon Port Lab (static, not game runtime)
+
+on:
+  push:
+    branches: ["experiment/horizon-port-lab"]
+    paths:
+      - "horizon/**"
+      - ".github/workflows/horizon-port-lab.yml"
+  pull_request:
+    paths:
+      - "horizon/**"
+      - ".github/workflows/horizon-port-lab.yml"
+  workflow_dispatch:
+
+jobs:
+  static-inventory-and-content-structure:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Static Python unit tests (no Horizon game)
+        run: python -m unittest discover -s horizon/tests -v
+      - name: Generate candidate-by-candidate migration inventory
+        run: python horizon/tools/port_inventory.py
+      - name: Package first-party Horizon content module (not game-validated)
+        run: python horizon/tools/build_demo_hmod.py
+      - name: Upload experiment files (NOT A PLAYABLE MODPACK)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-Port-Lab-UNVALIDATED
+          path: |
+            horizon/out/port-inventory.json
+            horizon/out/port-inventory.md
+            horizon/out/techquest_expedition_marker.hmod
+          retention-days: 14
