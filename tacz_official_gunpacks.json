@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "target": {
+    "minecraft": "1.21.1",
+    "loader": "neoforge",
+    "tacz_mod": "Timeless and Classics Zero",
+    "tacz_version": "1.2.0",
+    "tacz_modrinth_project": "timeless-and-classics-zero",
+    "gunpacks_directory": "tacz"
+  },
+  "status": "AUTHOR-LISTED PACKS, NOT YET GAME-TESTED. Source ZIP files list Minecraft 1.20.1. Use the official TaCZ 1.2.0 /tacz convert universal command and validate before multiplayer.",
+  "license_note": "Gunpack copyright and license remain with creators. Download ZIPs from the linked CurseForge pages. TechQuest does not redistribute ZIP binaries or modified assets.",
+  "gunpacks": [
+    {
+      "id": "cyber",
+      "name": "Cyber Armorer",
+      "filename": "Cyber Armorer-1.1.5_for114.zip",
+      "source": "https://www.curseforge.com/minecraft/customization/tacz-cyber-armorer/files/7320211",
+      "curseforge_project_id": 1187336,
+      "curseforge_file_id": 7320211,
+      "source_mc_version": "1.20.1",
+      "requires": [
+        "TaCZ:FCE (NeoForge 1.21.1 availability unconfirmed)"
+      ]
+    },
+    {
+      "id": "create",
+      "name": "Create Armorer",
+      "filename": "Create Armorer-v1.2.0.1-for117.zip",
+      "source": "https://www.curseforge.com/minecraft/customization/tacz-create-armorer-koei/files/7598625",
+      "curseforge_project_id": 1092101,
+      "curseforge_file_id": 7598625,
+      "source_mc_version": "1.20.1",
+      "requires": [
+        "Create"
+      ]
+    },
+    {
+      "id": "applied",
+      "name": "Applied Armorer",
+      "filename": "Applied Armorer-v1.1.4.1-for114+.zip",
+      "source": "https://www.curseforge.com/minecraft/customization/tacz-applied-armorer-koei/files/6085143",
+      "curseforge_file_id": 6085143,
+      "source_mc_version": "1.20.1",
+      "requires": [
+        "Applied Energistics 2"
+      ]
+    },
+    {
+      "id": "immersive",
+      "name": "Immersive Armorer",
+      "filename": "Immersive Armorer-v1.2.1-for117.zip",
+      "source": "https://www.curseforge.com/minecraft/customization/tacz-immersive-armorer-koei/files/7598069",
+      "curseforge_project_id": 1081193,
+      "curseforge_file_id": 7598069,
+      "source_mc_version": "1.20.1",
+      "requires": [
+        "Immersive Engineering (optional TechQuest mod)"
+      ]
+    }
+  ]
+}

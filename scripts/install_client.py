@@ -56,7 +56,8 @@ def install_guide_overrides(archive, game_dir):
         if relative.endswith("/"):
             continue
         if not (relative.startswith(allowed_prefix)
-                or relative in (allowed_datapack, "TECHQUEST_INGAME_GUIDE.txt")):
+                or relative in (allowed_datapack, "TECHQUEST_INGAME_GUIDE.txt",
+                                "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json")):
             continue
         parts = Path(relative).parts
         if ".." in parts or any(x in relative for x in ("\\", "\x00", ":")):

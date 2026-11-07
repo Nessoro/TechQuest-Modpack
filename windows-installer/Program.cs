@@ -32,6 +32,7 @@ internal sealed class InstallerForm : Form
     private readonly Button browse = new() { Text = "Обзор…", Width = 110 };
     private readonly Button install = new() { Text = "1. Установить моды", Width = 205, Height = 45 };
     private readonly Button neoforge = new() { Text = "2. Установить NeoForge", Width = 205, Height = 45 };
+    private readonly Button gunpacks = new() { Text = "3. Импорт TaCZ ZIP", Width = 275, Height = 45 };
     private readonly Button openFolder = new() { Text = "Открыть папку", Width = 150, Height = 37 };
     private readonly Button help = new() { Text = "Инструкция", Width = 130, Height = 37 };
     private readonly Button cancel = new() { Text = "Отмена", Width = 100, Height = 37, Enabled = false };
@@ -91,6 +92,7 @@ internal sealed class InstallerForm : Form
 
         install.Location = new Point(32, 421);
         neoforge.Location = new Point(246, 421);
+        gunpacks.Location = new Point(460, 421);
         openFolder.Location = new Point(32, 488);
         help.Location = new Point(190, 488);
         cancel.Location = new Point(330, 488);
@@ -100,7 +102,7 @@ internal sealed class InstallerForm : Form
         install.ForeColor = Color.FromArgb(18, 33, 18);
         neoforge.BackColor = Color.FromArgb(41, 56, 79);
         neoforge.ForeColor = Color.White;
-        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help })
+        foreach (var button in new[] { install, neoforge, gunpacks, openFolder, browse, cancel, help })
         {
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
@@ -108,6 +110,7 @@ internal sealed class InstallerForm : Form
 
         install.Click += async (_, _) => await InstallAsync();
         neoforge.Click += async (_, _) => await NeoForgeAsync();
+        gunpacks.Click += (_, _) => ImportOfficialTaczGunpacks();
         openFolder.Click += (_, _) => {
             var path = installedGameDir ?? location.Text;
             if (Directory.Exists(path))
@@ -117,7 +120,7 @@ internal sealed class InstallerForm : Form
         help.Click += (_, _) => ShowInstructions();
         Controls.AddRange(new Control[] {
             title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
-            browse, safety, install, neoforge, openFolder, help, cancel, progress, status
+            browse, safety, install, neoforge, gunpacks, openFolder, help, cancel, progress, status
         });
         location.Text = Path.Combine(baseDir, "Optimized_0.3");
     }
@@ -126,6 +129,7 @@ internal sealed class InstallerForm : Form
     {
         install.Enabled = !busy;
         neoforge.Enabled = !busy;
+        gunpacks.Enabled = !busy;
         browse.Enabled = !busy;
         location.ReadOnly = busy;
         cancel.Enabled = busy && cancellable;
@@ -140,7 +144,10 @@ internal sealed class InstallerForm : Form
             "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
             "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
             "5. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
-            "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n\n" +
+            "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
+            "7. Скачайте четыре официальных TaCZ ZIP с CurseForge и нажмите «Импорт TaCZ ZIP».\n" +
+            "8. В TaCZ 1.2.0 при необходимости используйте /tacz convert universal.\n" +
+            "   Совместимость старых паков и TaCZ:FCE необходимо проверить отдельно.\n\n" +
             "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
             "В игре: Xaero Minimap/World Map, здоровье мобов Health Indicator TXF (HP цифрами),\n" +
@@ -281,6 +288,7 @@ internal sealed class InstallerForm : Form
             bool allowed =
                 relative.StartsWith("patchouli_books/techquest_guide/", StringComparison.Ordinal) ||
                 relative == "config/openloader/packs/techquest_starter_guide.zip" ||
+                relative == "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json" ||
                 relative == "TECHQUEST_INGAME_GUIDE.txt";
             if (!allowed || relative.EndsWith("/", StringComparison.Ordinal))
                 continue;
@@ -298,6 +306,85 @@ internal sealed class InstallerForm : Form
             using var source = entry.Open();
             using var output = File.Create(destination);
             source.CopyTo(output);
+        }
+    }
+
+    private static readonly HashSet<string> OfficialTaczGunpackFiles = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Cyber Armorer-1.1.5_for114.zip",
+        "Create Armorer-v1.2.0.1-for117.zip",
+        "Applied Armorer-v1.1.4.1-for114+.zip",
+        "Immersive Armorer-v1.2.1-for117.zip"
+    };
+
+    private static void ValidateUserSuppliedGunpack(string path)
+    {
+        var info = new FileInfo(path);
+        if (!info.Exists || info.Length < 256 || info.Length > 128L * 1024 * 1024)
+            throw new InvalidDataException("Недопустимый размер ZIP: " + info.Name);
+        using var archive = ZipFile.OpenRead(path);
+        if (archive.Entries.Count < 1 || archive.Entries.Count > 15000)
+            throw new InvalidDataException("Недопустимое число файлов внутри ZIP: " + info.Name);
+        long total = 0;
+        foreach (var entry in archive.Entries)
+        {
+            string normalized = entry.FullName.Replace('\\', '/');
+            string[] components = normalized.Split('/');
+            if (normalized.StartsWith("/", StringComparison.Ordinal) ||
+                normalized.Contains(':') || components.Contains("..") || components.Contains("."))
+                throw new InvalidDataException("Небезопасный ZIP путь: " + normalized);
+            if (entry.Length < 0 || entry.Length > 100L * 1024 * 1024)
+                throw new InvalidDataException("Слишком большой файл внутри ZIP: " + normalized);
+            total += entry.Length;
+            if (total > 512L * 1024 * 1024)
+                throw new InvalidDataException("ZIP превышает лимит распаковки.");
+        }
+    }
+
+    private void ImportOfficialTaczGunpacks()
+    {
+        try
+        {
+            string root = Path.GetFullPath(location.Text);
+            string modsDirectory = Path.Combine(root, "mods");
+            if (!Directory.Exists(modsDirectory) ||
+                !Directory.EnumerateFiles(modsDirectory, "tacz-neoforge-1.21.1-1.2.0.jar").Any())
+            {
+                MessageBox.Show(this, "Сначала установите сборку с официальным TaCZ 1.2.0.",
+                    "TaCZ ещё не установлен", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            using var dialog = new OpenFileDialog {
+                Title = "Выберите оригинальные ZIP-паки TaCZ с CurseForge (можно все 4)",
+                Filter = "TaCZ gunpacks (*.zip)|*.zip", Multiselect = true
+            };
+            if (dialog.ShowDialog(this) != DialogResult.OK) return;
+            string dir = Path.Combine(root, "tacz");
+            int copied = 0;
+            foreach (var path in dialog.FileNames)
+            {
+                string name = Path.GetFileName(path);
+                if (!OfficialTaczGunpackFiles.Contains(name))
+                    throw new InvalidDataException("Неизвестный официальный TaCZ ZIP: " + name);
+                ValidateUserSuppliedGunpack(path);
+                Directory.CreateDirectory(dir);
+                string destination = Path.Combine(dir, name);
+                if (File.Exists(destination)) continue; // Never overwrite player data.
+                File.Copy(path, destination, overwrite: false);
+                copied++;
+            }
+            MessageBox.Show(this,
+                "Скопировано пакетов: " + copied + ". ZIP оставлены без изменений.\\n" +
+                "Они рассчитаны на старую версию TaCZ и нуждаются в игровом тесте.\\n" +
+                "В TaCZ 1.2.0 используйте /tacz convert universal при необходимости.\\n" +
+                "Cyber Armorer дополнительно требует TaCZ:FCE; проверить его совместимость.\\n" +
+                "Для сервера нужны те же проверенные ZIP/конвертированные варианты.",
+                "TaCZ — тестовая интеграция", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception exc)
+        {
+            MessageBox.Show(this, exc.Message, "Ошибка импорта TaCZ ZIP",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 

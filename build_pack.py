@@ -290,6 +290,13 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
                 "particles minimal. The settings are not a guarantee of FPS gains.\n")
         for relative, data in guide_overrides().items():
             archive.writestr("overrides/" + relative, data)
+        gunpacks_file = ROOT / "tacz_official_gunpacks.json"
+        if gunpacks_file.is_file():
+            gunpacks = json.loads(gunpacks_file.read_text(encoding="utf-8"))
+            if gunpacks.get("target", {}).get("minecraft") != cfg["minecraft"]:
+                raise BuildError("TaCZ official gunpack manifest game-version mismatch")
+            archive.writestr("overrides/TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json",
+                             json.dumps(gunpacks, ensure_ascii=False, indent=2) + "\n")
     return len(files)
 
 def main():

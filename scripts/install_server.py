@@ -121,6 +121,12 @@ def main():
             guide_target.parent.mkdir(parents=True, exist_ok=True)
             if not guide_target.exists():
                 guide_target.write_bytes(archive.read(guide_name))
+    with zipfile.ZipFile(args.pack) as archive:
+        entry = "overrides/TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"
+        if entry in archive.namelist():
+            info_target = target / "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"
+            if not info_target.exists():
+                info_target.write_bytes(archive.read(entry))
     prepare_properties(target)
     if not args.skip_neoforge:
         install_neoforge(target, ver)
