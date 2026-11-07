@@ -72,3 +72,7 @@ GitHub Actions [#42382390837](https://github.com/Nessoro/TechQuest-Modpack/actio
 ## Достигнутый этап SDK
 
 В [отдельном SDK-прогоне #42384517149](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42384517149) все четыре перенесённых content-пакета YUNG's прошли официальный `cargo-horizon-mod build/check`. **4 SDK-валидных / 4 частичных переноса / 0 доказанно рабочих игровых портов.** Проблема общего namespace `yungsapi` и неучтённых файлов требует отдельного разбора. Подробнее: [YUNG_SDK_VALIDATION_RU.md](YUNG_SDK_VALIDATION_RU.md).
+
+## Пробный перенос Terralith
+
+В [CI #42384762013](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42384762013) временный Terralith content-мод (1896 файлов) прошёл официальный SDK. Статус — только `partial`: 124 файла вынесены в `outside`, полноценную генерацию биомов и совместимость с YUNG's не проверяли. Код, JAR, структуры и текстуры Terralith **не публиковались**. См. [TERRALITH_LOCAL_RU.md](TERRALITH_LOCAL_RU.md).
