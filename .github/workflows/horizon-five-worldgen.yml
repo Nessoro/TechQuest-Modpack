@@ -1,0 +1,113 @@
+name: Horizon combined five worldgen content validation
+
+on:
+  push:
+    branches: ["experiment/horizon-port-lab"]
+    paths:
+      - ".github/workflows/horizon-five-worldgen.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  validate-five-together:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch original NeoForge TechQuest mrpack
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          run-id: 42372848633
+          path: source-artifact
+          github-token: ${{ github.token }}
+      - name: Find source modpack
+        run: |
+          set -euo pipefail
+          pack="$(find source-artifact -type f -name '*.mrpack' -print -quit)"
+          test -n "$pack"
+          echo "PACK_PATH=$GITHUB_WORKSPACE/$pack" >> "$GITHUB_ENV"
+      - name: Checkout pinned official Horizon source
+        uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Compile official Horizon port-pack and cargo-horizon-mod
+        run: cargo build --manifest-path upstream-horizon/Cargo.toml -p horizon-port-pack -p cargo-horizon-mod --release --locked
+      - name: Carry YUNG four and Terralith in one source inventory
+        run: |
+          set -euo pipefail
+          tool="$GITHUB_WORKSPACE/upstream-horizon/target/release/horizon-port-pack"
+          work="$GITHUB_WORKSPACE/horizon/out/five-together"
+          mkdir -p "$work"
+          "$tool" import "$PACK_PATH" "$work"
+          "$tool" inventory "$work"
+          "$tool" fetch "$work" yungs-better-dungeons yungs-better-strongholds yungs-better-mineshafts yungs-better-nether-fortresses terralith
+          "$tool" inventory "$work" --offline
+          "$tool" carry "$work" betterdungeons betterstrongholds bettermineshafts betterfortresses terralith
+          "$tool" report "$work"
+          python - "$work/inventory.json" "$work/coverage.json" <<'PY'
+          import json, sys
+          inv=json.load(open(sys.argv[1],encoding="utf-8"))
+          coverage=json.load(open(sys.argv[2],encoding="utf-8"))
+          ids={"betterdungeons","betterstrongholds","bettermineshafts","betterfortresses","terralith"}
+          available={r.get("key") for r in inv if r.get("jar") and r.get("info")}
+          missing=ids-available
+          assert not missing, f"Five verified source JARs required: {sorted(missing)}"
+          assert coverage, "Nonempty Horizon coverage required"
+          print("Five source JARs resolved in one official Horizon work directory")
+          PY
+      - name: Official SDK validate four YUNG modules plus Terralith
+        run: |
+          set -euo pipefail
+          work="$GITHUB_WORKSPACE/horizon/out/five-together"
+          sdk="$GITHUB_WORKSPACE/upstream-horizon/target/release/cargo-horizon-mod"
+          python horizon/tools/validate_yung_sdk.py --work "$work" --sdk "$sdk" --report "$work/yung-sdk-validation.json"
+          c="$work/mods/terralith/carry"
+          test -f "$c/horizon-mod.toml"
+          (cd "$c" && "$sdk" build && "$sdk" check target/horizon-mod/terralith.hmod --json > "$work/terralith-sdk-check.json")
+          python - "$work" <<'PY'
+          import json, sys
+          from pathlib import Path
+          base=Path(sys.argv[1])
+          y=json.loads((base/"yung-sdk-validation.json").read_text())
+          t=json.loads((base/"terralith-sdk-check.json").read_text())
+          assert y["all_sdk_valid"] and y["sdk_valid_count"]==4
+          assert t["ok"] and t["report"]["id"]=="terralith",t
+          data={
+            "schema":1,
+            "purpose":"five-carried-content-modules-in-one-Horizon-conversion-workdir",
+            "upstream_commit":"c78187dffffb60f31517eadcb87413386e8ce729",
+            "validated_modules":["betterdungeons","betterstrongholds","bettermineshafts","betterfortresses","terralith"],
+            "individual_official_sdk_checks_passed":5,
+            "combined_runtime_load_tested":False,
+            "world_generation_tested":False,
+            "multiplayer_tested":False,
+            "final_gameplay_port_status":"partial",
+            "third_party_files_uploaded":False
+          }
+          (base/"combined-result.json").write_text(json.dumps(data,indent=2)+"\n")
+          print("5/5 individual official SDK checks succeeded within one joint carry. GAME RUNTIME NOT TESTED.")
+          PY
+      - name: Upload metadata reports only; no external JAR, assets, carried data or HMOD
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-5-Worldgen-Combined-METADATA-ONLY
+          path: |
+            horizon/out/five-together/coverage.json
+            horizon/out/five-together/coverage.md
+            horizon/out/five-together/yung-sdk-validation.json
+            horizon/out/five-together/terralith-sdk-check.json
+            horizon/out/five-together/combined-result.json
+          if-no-files-found: warn
+          retention-days: 14
