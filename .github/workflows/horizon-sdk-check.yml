@@ -1,0 +1,49 @@
+name: Horizon SDK - actual content validation
+
+on:
+  push:
+    branches: ["experiment/horizon-port-lab"]
+    paths:
+      - "horizon/first_party/**"
+      - ".github/workflows/horizon-sdk-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-official-content:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      HORIZON_REV: c78187dffffb60f31517eadcb87413386e8ce729
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+    steps:
+      - name: Checkout TechQuest
+        uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Rust versions
+        run: |
+          rustc --version
+          cargo --version
+      - name: Compile official Horizon SDK at pinned revision
+        run: |
+          cargo install --git https://github.com/horizon-rust/horizon --rev "$HORIZON_REV" --bin cargo-horizon-mod --locked
+      - name: Official Horizon content build and check
+        working-directory: horizon/first_party/expedition_marker
+        run: |
+          mkdir -p ../../out
+          cargo horizon-mod build
+          cargo horizon-mod check target/horizon-mod/techquest_expedition_marker.hmod --json > ../../out/sdk-check.json
+          python -m json.tool ../../out/sdk-check.json
+      - name: Upload verified content module
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-SDK-Checked-Expedition-Marker
+          path: |
+            horizon/first_party/expedition_marker/target/horizon-mod/techquest_expedition_marker.hmod
+            horizon/out/sdk-check.json
+          retention-days: 14
