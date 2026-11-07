@@ -1,0 +1,74 @@
+name: Horizon YUNG converted content SDK validation
+
+on:
+  push:
+    branches: ["experiment/horizon-port-lab"]
+    paths:
+      - ".github/workflows/horizon-yung-sdk-validation.yml"
+      - "horizon/tools/validate_yung_sdk.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  validate-four-carried-mods:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+      HORIZON_REV: c78187dffffb60f31517eadcb87413386e8ce729
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch original TechQuest mrpack metadata
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          run-id: 42372848633
+          path: source-artifact
+          github-token: ${{ github.token }}
+      - name: Find original pack
+        run: |
+          set -euo pipefail
+          source_pack="$(find source-artifact -type f -name '*.mrpack' -print -quit)"
+          test -n "$source_pack"
+          echo "PACK_PATH=$GITHUB_WORKSPACE/$source_pack" >> "$GITHUB_ENV"
+      - name: Checkout official Horizon at audited revision
+        uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build official Horizon port-pack and content SDK
+        run: |
+          cargo build --manifest-path upstream-horizon/Cargo.toml -p horizon-port-pack -p cargo-horizon-mod --release --locked
+      - name: Fetch and convert four YUNG mods (local runner only)
+        run: |
+          set -euo pipefail
+          tool="$GITHUB_WORKSPACE/upstream-horizon/target/release/horizon-port-pack"
+          work="$GITHUB_WORKSPACE/horizon/out/yung-sdk"
+          mkdir -p "$work"
+          "$tool" import "$PACK_PATH" "$work"
+          "$tool" inventory "$work"
+          "$tool" fetch "$work" yungs-better-dungeons yungs-better-strongholds yungs-better-mineshafts yungs-better-nether-fortresses
+          "$tool" inventory "$work" --offline
+          "$tool" carry "$work" betterdungeons betterstrongholds bettermineshafts betterfortresses
+          "$tool" report "$work"
+      - name: Validate each carried content module with the official Horizon SDK
+        run: |
+          python horizon/tools/validate_yung_sdk.py --work horizon/out/yung-sdk --sdk upstream-horizon/target/release/cargo-horizon-mod --report horizon/out/yung-sdk/sdk-validation.json
+      - name: Publish metadata and validation reports ONLY (never third-party source or HMOD)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-YUNG-SDK-Validation-METADATA-ONLY
+          path: |
+            horizon/out/yung-sdk/coverage.json
+            horizon/out/yung-sdk/coverage.md
+            horizon/out/yung-sdk/sdk-validation.json
+          if-no-files-found: warn
+          retention-days: 14
