@@ -30,7 +30,7 @@ jobs:
           cargo --version
       - name: Compile official Horizon SDK at pinned revision
         run: |
-          cargo install --git https://github.com/horizon-rust/horizon --rev "$HORIZON_REV" --bin cargo-horizon-mod --locked
+          cargo install --git https://github.com/horizon-rust/horizon --rev "$HORIZON_REV" cargo-horizon-mod --locked
       - name: Official Horizon content build and check
         working-directory: horizon/first_party/expedition_marker
         run: |
