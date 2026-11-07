@@ -128,6 +128,12 @@ def main():
             dest = target / "TECHQUEST_OPTIONAL_LOCAL_MODS.json"
             if not dest.exists():
                 dest.write_bytes(archive.read(metadata))
+    with zipfile.ZipFile(args.pack) as archive:
+        entry = "overrides/TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"
+        if entry in archive.namelist():
+            info_target = target / "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"
+            if not info_target.exists():
+                info_target.write_bytes(archive.read(entry))
     prepare_properties(target)
     if not args.skip_neoforge:
         install_neoforge(target, ver)

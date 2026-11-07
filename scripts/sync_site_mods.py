@@ -34,6 +34,7 @@ NAMES = {
     "dynamic-fps": "Dynamic FPS",
     "spark": "spark",
     "superb-warfare": "Superb Warfare",
+    "timeless-and-classics-zero": "TaCZ 1.2.0",
     "burnt": "Burnt + Additions",
     "explosion-overhaul-a-new-level-of-destruction": "Explosion Overhaul",
     "lithostitched": "Lithostitched",
@@ -74,6 +75,7 @@ DESCRIPTIONS = {
 
     "yungs-better-dungeons": "Новые вариации подземелий.",
     "superb-warfare": "Огнестрельное оружие, артиллерия, самолёты и бронетехника.",
+    "timeless-and-classics-zero": "TaCZ 1.2.0: огнестрельное оружие; четыре официальных ZIP импортируются отдельно и требуют проверки 1.21.1.",
     "burnt": "Реалистичные пожары, обугленные блоки и распространение огня.",
     "explosion-overhaul-a-new-level-of-destruction": "Мощные взрывы, звуковые эффекты и ударные волны. NeoForge alpha.",
     "lithostitched": "Библиотека генерации мира, необходимая Terralith.",

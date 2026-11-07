@@ -66,3 +66,16 @@ AMW 1.0.4 Alpha внедрён как **необязательный польз�
 - [ ] Проверить FPS/TPS для 1/3/5 больших существ, общую игру через Tailscale, сохранения и повторный вход.
 
 Подробный чек-лист: [SCHEMATICS_DRAGONS_GIANTS_RU.md](docs/SCHEMATICS_DRAGONS_GIANTS_RU.md). Ben's Titans пока не добавлен из-за неопределённости с совместимостью и зависимостями.
+
+## TaCZ в единой TechQuest 0.3.3
+
+- [x] Официальный TaCZ 1.2.0 (`timeless-and-classics-zero`) включён в обязательную часть экспериментальной 0.3.3.
+- [x] Сохранён импорт AMW и добавлен отдельный импорт четырёх TaCZ gunpack ZIP в Windows GUI.
+- [x] Добавлены метаданные `.mrpack`, сайта, серверного пакета и внутриигрового Patchouli. Авторские ZIP не распространяются.
+- [ ] Проверить CI, Windows GUI Installer, зависимости и Security Audit объединённой сборки.
+- [ ] Реальный импорт оригинальных gunpack ZIP для Minecraft 1.20.1, `/tacz convert universal` и рецепты на NeoForge 1.21.1.
+- [ ] Cyber Armorer требует TaCZ:FCE: проверить наличие версии под 1.21.1, при несовместимости не активировать.
+- [ ] Проверить конфликт клавиш, анимации и производительность с ParCool, Incoming, Superb Warfare, AMW, Forgematica.
+- [ ] Проверить игровой клиент, обычный мир, выделенный сервер и Tailscale.
+
+Подробности: [docs/TACZ_OFFICIAL_RU.md](docs/TACZ_OFFICIAL_RU.md).

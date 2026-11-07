@@ -57,7 +57,8 @@ def install_guide_overrides(archive, game_dir):
             continue
         if not (relative.startswith(allowed_prefix)
                 or relative in (allowed_datapack, "TECHQUEST_INGAME_GUIDE.txt",
-                                "TECHQUEST_OPTIONAL_LOCAL_MODS.json")):
+                                "TECHQUEST_OPTIONAL_LOCAL_MODS.json",
+                                 "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json")):
             continue
         parts = Path(relative).parts
         if ".." in parts or any(x in relative for x in ("\\", "\x00", ":")):

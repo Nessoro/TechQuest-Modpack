@@ -1,6 +1,6 @@
 {
-  "pack_name": "TechQuest: Industrial Frontier — Optimized 0.3.2",
-  "version": "0.3.2-alpha",
+  "pack_name": "TechQuest: Industrial Frontier — Adventure 0.3.3 Alpha",
+  "version": "0.3.3-alpha",
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
@@ -259,6 +259,12 @@
       "group": "Военная техника",
       "required": true,
       "version_prefix": "0.8.9.2"
+    },
+    {
+      "project": "timeless-and-classics-zero",
+      "group": "Военная техника",
+      "required": true,
+      "version_prefix": "1.2.0"
     },
     {
       "project": "burnt",

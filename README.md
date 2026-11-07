@@ -12,6 +12,8 @@ TechQuest — большая комплексная сборка вокруг **
 
 > **Схемы, другие драконы, гиганты:** в тестовый PR #5 добавлены Wyrmroost 1.4.1, Legendary Monsters 2.2.3, Twisted Mobs и клиентские Forgematica/MaFgLib 0.4.3. IceAndFire CE удалён. Инструкция: [план и риски](docs/SCHEMATICS_DRAGONS_GIANTS_RU.md). Ben's Titans остаётся неподтверждённым кандидатом и в сборку не добавлен.
 
+> **TaCZ входит в экспериментальную TechQuest 0.3.3:** официальный TaCZ 1.2.0 для NeoForge 1.21.1 включён в состав. Четыре gunpack ZIP импортируются через Windows Installer без Python; совместимость исходных ZIP для 1.20.1 ещё требует проверки. [Инструкция по TaCZ](docs/TACZ_OFFICIAL_RU.md). Рабочая 0.3.2 не затронута.
+
 ## Навигация
 
 | Раздел | Для чего |

@@ -304,6 +304,13 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
                 safe_filename(local_mod["file_name"])
             archive.writestr("overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                              json.dumps(local_mods, ensure_ascii=False, indent=2) + "\n")
+        gunpacks_file = ROOT / "tacz_official_gunpacks.json"
+        if gunpacks_file.is_file():
+            gunpacks = json.loads(gunpacks_file.read_text(encoding="utf-8"))
+            if gunpacks.get("target", {}).get("minecraft") != cfg["minecraft"]:
+                raise BuildError("TaCZ official gunpack manifest game-version mismatch")
+            archive.writestr("overrides/TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json",
+                             json.dumps(gunpacks, ensure_ascii=False, indent=2) + "\n")
     return len(files)
 
 def main():
