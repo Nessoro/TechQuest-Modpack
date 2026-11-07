@@ -40,7 +40,7 @@ class ValidatorTests(unittest.TestCase):
             sdk.write_text(
                 "#!" + sys.executable + "\n"
                 "import json, pathlib, sys\n"
-                "id = pathlib.Path.cwd().name\n"
+                "id = pathlib.Path.cwd().parent.name\n"
                 "if sys.argv[1] == 'build':\n"
                 "  p = pathlib.Path('target/horizon-mod')\n"
                 "  p.mkdir(parents=True, exist_ok=True)\n"
