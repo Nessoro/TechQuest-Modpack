@@ -51,3 +51,20 @@ Horizon умеет локально импортировать только не
 Документация: [Horizon Modpacks](https://playhorizon.dev/docs/modpacks), [Horizon Mods](https://github.com/horizon-rust/horizon/blob/main/docs/mods.md).
 
 **Лицензии:** чужие JAR/ассеты не хранятся в ветке, никакой декомпиляции или републикации. Миры NeoForge/Horizon хранить отдельно.
+
+
+## Результат первого группового переноса данных — 7 ноября 2026
+
+GitHub Actions [#42382390837](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42382390837) **завершился успешно**. Официальный `horizon-port-pack` скачал оригинальные JAR из источников Modrinth (с проверкой хешей), обработал 4 мода YUNG's и создал отдельные локальные каталоги данных Horizon:
+
+| Мод | Файлов в промежуточном пакете | Worldgen-файлов | Статус |
+| --- | ---: | ---: | --- |
+| Better Dungeons | 313 | 282 | **partial** |
+| Better Strongholds | 137 | 120 | **partial** |
+| Better Mineshafts | 33 | 14 | **partial** |
+| Better Nether Fortresses | 203 | 187 | **partial** |
+| **Итого** | **686** | **603** | 4 частичных переноса |
+
+Обновлённое покрытие: **4 partial / 45 not yet / 37 not needed / 0 ported** из 86 компонентов. Дополнительно обработано 27 таблиц лута. Перенесённые данные и чужие JAR **не опубликованы**, в артефакте доступен лишь отчёт [Coverage-ONLY](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42382390837/artifacts/13578440342).
+
+Это **не подтверждённый игровой порт**: не проверялись загрузка в реальном Horizon 26.3, генерация/совместимость структур, YUNG API, поведение процессоров, сервер и Tailscale. Для перехода от `partial` к `ported` нужны отдельные тесты, подтверждение прав на распространение и игровые сравнения.
