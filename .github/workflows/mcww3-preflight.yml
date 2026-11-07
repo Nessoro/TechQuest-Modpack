@@ -1,0 +1,53 @@
+name: McWW3 original bundle preflight (NOT a port)
+on:
+  workflow_dispatch:
+  push:
+    branches: [experiment/mcww3-neoforge-21.1.264]
+    paths:
+      - experiments/mcww3/**
+      - .github/workflows/mcww3-preflight.yml
+permissions:
+  contents: read
+jobs:
+  inspect-original:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test metadata inspector without third-party game code
+        run: python -m unittest discover -s experiments/mcww3/tests -v
+      - name: Download original author bundle (never execute or redistribute)
+        run: |
+          mkdir -p work/mcww3/reports
+          curl --proto '=https' --proto-redir '=https' -fL --retry 2 --connect-timeout 15 --max-time 240 --max-filesize 268435456 \
+            'https://cdn.mcww3.com/raw/McWW3-Bundle-v2.1-beta.zip?download=true' \
+            -o work/mcww3/original.zip
+      - name: Inspect Forge metadata and API coupling
+        run: |
+          python experiments/mcww3/inspect_bundle.py --bundle work/mcww3/original.zip \
+            --report work/mcww3/reports/preflight.json
+      - name: Publish metadata only (no original JAR, source or content packs)
+        uses: actions/upload-artifact@v4
+        with:
+          name: McWW3-preflight-metadata-NOT-PORTED
+          path: work/mcww3/reports/preflight.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Summarize the actual preflight result
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          r = json.loads(Path('work/mcww3/reports/preflight.json').read_text())
+          print('# McWW3 preflight — not a NeoForge port')
+          print('- Target: Minecraft 1.21.1 / NeoForge 21.1.264 / Java 21')
+          print('- Source files in distribution:', r['source_file_count'])
+          print('- Bundle SHA-256 (observed, not author-published):', r['bundle_sha256_observed'])
+          for jar in r['jars']:
+              print('- JAR:', jar['file'], '| license:', jar['declared_license'], '| classes:', jar['class_count'])
+          print('- No game/JAR execution, no port compilation, no Minecraft runtime test.')
+          print('- Original JAR and content packs are not included in this artifact.')
+          PY
