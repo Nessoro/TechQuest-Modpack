@@ -18,7 +18,8 @@ jobs:
     env:
       CARGO_BUILD_JOBS: "2"
       CARGO_INCREMENTAL: "0"
-      TARGET_MOD: yungs-better-dungeons
+      TARGET_SLUG: yungs-better-dungeons
+      TARGET_MOD_ID: betterdungeons
     steps:
       - uses: actions/checkout@v4
       - name: Get original hash-verified TechQuest pack (manifest artifact)
@@ -52,11 +53,19 @@ jobs:
           mkdir -p "$work"
           "$tool" import "$PACK_PATH" "$work"
           "$tool" inventory "$work"
-          "$tool" fetch "$work" "$TARGET_MOD"
+          "$tool" fetch "$work" "$TARGET_SLUG"
           # Horizon's inventory stores the discovered jar path; refresh after fetch.
           "$tool" inventory "$work" --offline
-          "$tool" carry "$work" "$TARGET_MOD"
-          carried="$work/mods/$TARGET_MOD/carry"
+          python - "$work/inventory.json" "$TARGET_MOD_ID" <<'PY'
+          import json, sys
+          rows = json.load(open(sys.argv[1], encoding="utf-8"))
+          found = [r for r in rows if r.get("key") == sys.argv[2]]
+          if len(found) != 1 or not found[0].get("jar") or not found[0].get("info"):
+              raise SystemExit("Expected a readable JAR with the canonical mod id: " + sys.argv[2])
+          print("Resolved internal NeoForge mod id:", found[0]["key"])
+          PY
+          "$tool" carry "$work" "$TARGET_MOD_ID"
+          carried="$work/mods/$TARGET_MOD_ID/carry"
           test -d "$carried"
           count="$(find "$carried" -type f | wc -l)"
           test "$count" -gt 0
@@ -64,7 +73,7 @@ jobs:
           "$tool" report "$work"
           test -s "$work/coverage.md"
           echo "---- Target mod coverage ----"
-          grep -F "| $TARGET_MOD |" "$work/coverage.md"
+          grep -F "| $TARGET_MOD_ID |" "$work/coverage.md"
           echo "---- Local converted files count (NOT UPLOADED) ----"
           if [ -d "$work/mods" ]; then find "$work/mods" -type f | wc -l; fi
       - name: Publish reports only (exclude JARs, assets, generated hmods)
