@@ -374,10 +374,10 @@ internal sealed class InstallerForm : Form
                 copied++;
             }
             MessageBox.Show(this,
-                "Скопировано пакетов: " + copied + ". ZIP оставлены без изменений.\\n" +
-                "Они рассчитаны на старую версию TaCZ и нуждаются в игровом тесте.\\n" +
-                "В TaCZ 1.2.0 используйте /tacz convert universal при необходимости.\\n" +
-                "Cyber Armorer дополнительно требует TaCZ:FCE; проверить его совместимость.\\n" +
+                "Скопировано пакетов: " + copied + ". ZIP оставлены без изменений.\n" +
+                "Они рассчитаны на старую версию TaCZ и нуждаются в игровом тесте.\n" +
+                "В TaCZ 1.2.0 используйте /tacz convert universal при необходимости.\n" +
+                "Cyber Armorer дополнительно требует TaCZ:FCE; проверить его совместимость.\n" +
                 "Для сервера нужны те же проверенные ZIP/конвертированные варианты.",
                 "TaCZ — тестовая интеграция", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
