@@ -4,7 +4,7 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3 (эксперимент): приключения, драконы IceAndFire CE, новые измерения, боссы и подземелья при сохранении технологического ядра; без Lootr",
+  "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica",
   "mods": [
     {
       "project": "buildcraft-community-edition",
@@ -94,8 +94,20 @@
       "version_prefix": "1.3.3"
     },
     {
-      "project": "iceandfire-ce",
+      "project": "wyrmroost",
       "group": "Приключения",
+      "required": true,
+      "version_prefix": "1.4.1"
+    },
+    {
+      "project": "legendary-monsters",
+      "group": "Боссы",
+      "required": true,
+      "version_prefix": "2.2.3"
+    },
+    {
+      "project": "twisted-mobs",
+      "group": "Мобы",
       "required": true
     },
     {
@@ -193,6 +205,20 @@
       "project": "mouse-tweaks",
       "group": "Интерфейс",
       "required": false
+    },
+    {
+      "project": "mafglib",
+      "group": "Библиотеки",
+      "required": true,
+      "version_prefix": "0.4.3+mc1.21.1",
+      "client_only": true
+    },
+    {
+      "project": "forgematica",
+      "group": "Интерфейс",
+      "required": true,
+      "version_prefix": "0.4.3+mc1.21.1",
+      "client_only": true
     },
     {
       "project": "ferrite-core",

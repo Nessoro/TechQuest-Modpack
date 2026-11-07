@@ -15,7 +15,7 @@ spec.loader.exec_module(builder)
 NEW_MODS = {
     "aether", "deeperdarker", "artifacts", "when-dungeons-arise",
     "yungs-better-strongholds", "yungs-better-nether-fortresses",
-    "iceandfire-ce", "explorers-compass"
+    "wyrmroost", "legendary-monsters", "twisted-mobs", "explorers-compass"
 }
 TECH = {"Технологии", "Хранение"}
 ADVENTURE = {"RPG", "Мобы", "Боссы", "Мир", "Приключения"}
@@ -41,9 +41,19 @@ class AdventureRebalanceTests(unittest.TestCase):
 
     def test_no_lootr_or_duplicate_dragon_ports(self):
         self.assertNotIn("lootr", self.mods)
-        self.assertIn("iceandfire-ce", self.mods)
+        self.assertNotIn("iceandfire-ce", self.mods)
+        self.assertIn("wyrmroost", self.mods)
+        self.assertIn("legendary-monsters", self.mods)
+        self.assertIn("twisted-mobs", self.mods)
         self.assertNotIn("ice-and-fire-dragons", self.mods)
         self.assertNotIn("ice-and-fire-unofficial-port", self.mods)
+
+    def test_client_only_forgematica(self):
+        for slug in ("forgematica", "mafglib"):
+            with self.subTest(slug=slug):
+                m = self.mods[slug]
+                self.assertTrue(m["client_only"])
+                self.assertEqual(m["version_prefix"], "0.4.3+mc1.21.1")
 
     def test_gameplay_genre_distribution(self):
         counts = Counter(m["group"] for m in self.cfg["mods"])
@@ -55,14 +65,14 @@ class AdventureRebalanceTests(unittest.TestCase):
         exploration = sum(counts[g] for g in EXPLORATION)
         military = sum(counts[g] for g in MILITARY)
         total = tech + adventure + exploration + military
-        self.assertEqual((tech, adventure, exploration, military), (11, 18, 4, 6))
-        self.assertEqual(total, 39)
+        self.assertEqual((tech, adventure, exploration, military), (11, 20, 4, 6))
+        self.assertEqual(total, 41)
         self.assertLess(tech / total, 0.30)
         self.assertGreater((adventure + exploration) / total, 0.55)
 
     def test_documentation_for_exploration(self):
         from scripts.guide_assets import ENTRIES
-        for key in ("expedition_route", "aether_expedition", "deeper_expedition", "fortress_expedition", "dragon_expedition"):
+        for key in ("expedition_route", "aether_expedition", "deeper_expedition", "fortress_expedition", "dragon_expedition", "colossal_enemies", "schematics"):
             with self.subTest(key=key):
                 self.assertIn(key, ENTRIES)
 
