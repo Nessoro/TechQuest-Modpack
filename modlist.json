@@ -299,6 +299,14 @@
       "version_prefix": "1.2.0"
     },
     {
+      "project": "physicsmod",
+      "group": "Визуальная физика",
+      "required": true,
+      "version_id": "wudTG1nk",
+      "client_only": true,
+      "note": "Эксперимент Physics Mod Lite 3.0.35 для NeoForge 1.21.1: только клиентские обломки, преднастройка 128 объектов / 16 блоков / Blocky, собственное обрушение выключено. Не проверен запуском Minecraft в составе TechQuest. Перед входом в мир проверьте настройки в GUI; инструкции docs/PHYSICS_TESTING_RU.md. Серверный JAR не устанавливается."
+    },
+    {
       "project": "burnt",
       "group": "Разрушения",
       "required": true,

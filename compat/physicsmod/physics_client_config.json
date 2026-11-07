@@ -1,0 +1,42 @@
+{
+  "maxPhysicsObjects": 128,
+  "blockPhysicsRange": 16.0,
+  "cpuThreads": 1,
+  "blockSettings": {
+    "Physics Type": 1,
+    "Lifetime": 2.0,
+    "Lifetime Variance": 0.0,
+    "Scale": 1.0,
+    "Animation": -1
+  },
+  "vinePhysics": false,
+  "capePhysics": false,
+  "itemPhysics": false,
+  "fishingRodPhysics": false,
+  "leashPhysics": false,
+  "bannerPhysics": false,
+  "liquidPhysics": false,
+  "snowPhysics": false,
+  "smokePhysics": false,
+  "smokeVolumetricPhysics": false,
+  "fireVfx": false,
+  "mobFireVfx": false,
+  "fireSmokeParticles": false,
+  "windPhysics": false,
+  "weatherParticles": false,
+  "oceanPhysics": false,
+  "crackPhysicsParticles": false,
+  "sprintingPhysicsParticles": false,
+  "eatingPhysicsParticles": false,
+  "serverBlockPhysicsParticles": true,
+  "minecraftBlockBreakParticles": false,
+  "itemBreakPhysics": false,
+  "firePhysicsRigidBodiesV2": false,
+  "quickSetupNormalComplete": true,
+  "mobSettings": {
+    "Physics Type": 4,
+    "Lifetime": 2.0,
+    "Lifetime Variance": 0.0,
+    "Animation": -1
+  }
+}
