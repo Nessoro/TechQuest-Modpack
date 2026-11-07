@@ -14,3 +14,18 @@
 Если какая-либо проверка не пройдёт, workflow завершится ошибкой и опубликует причину для каждого мода в JSON; это диагностический результат, а не потеря уже конвертированных данных.
 
 Исходный NeoForge 0.3.2 и 0.3.3 PR #5 не изменяются.
+
+## Подтверждённый результат проверки (7 ноября 2026)
+
+[GitHub Actions #42384517149](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42384517149) завершился **успешно: официальный Horizon SDK принял все 4/4 промежуточных content-модуля**.
+
+| Исходный NeoForge мод | Временных файлов в папке carry | Официальный SDK |
+| --- | ---: | --- |
+| YUNG's Better Dungeons (`betterdungeons`) | 313 | `sdk_validated` |
+| YUNG's Better Strongholds (`betterstrongholds`) | 137 | `sdk_validated` |
+| YUNG's Better Mineshafts (`bettermineshafts`) | 33 | `sdk_validated` |
+| YUNG's Better Nether Fortresses (`betterfortresses`) | 203 | `sdk_validated` |
+
+CI-артефакт: [TechQuest-Horizon-YUNG-SDK-Validation-METADATA-ONLY](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42384517149/artifacts/13578703994), без копий сторонних файлов.
+
+**Ограничение:** официальный конвертер обнаружил общий namespace `yungsapi`, который запрашивали Better Dungeons и Better Fortresses, и не включил его ни в один мод, чтобы исключить конфликт владельцев. В отчёте конвертации также отмечены 8 файлов как `outside` (суммарно по четырём модам); эти потери надо изучить перед реальным запуском. Формат проверен, но генерация, зависимости и игровые механики ещё **не проверены**. Статус покрытия остается `partial`, не `ported`.

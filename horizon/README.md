@@ -68,3 +68,7 @@ GitHub Actions [#42382390837](https://github.com/Nessoro/TechQuest-Modpack/actio
 Обновлённое покрытие: **4 partial / 45 not yet / 37 not needed / 0 ported** из 86 компонентов. Дополнительно обработано 27 таблиц лута. Перенесённые данные и чужие JAR **не опубликованы**, в артефакте доступен лишь отчёт [Coverage-ONLY](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42382390837/artifacts/13578440342).
 
 Это **не подтверждённый игровой порт**: не проверялись загрузка в реальном Horizon 26.3, генерация/совместимость структур, YUNG API, поведение процессоров, сервер и Tailscale. Для перехода от `partial` к `ported` нужны отдельные тесты, подтверждение прав на распространение и игровые сравнения.
+
+## Достигнутый этап SDK
+
+В [отдельном SDK-прогоне #42384517149](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42384517149) все четыре перенесённых content-пакета YUNG's прошли официальный `cargo-horizon-mod build/check`. **4 SDK-валидных / 4 частичных переноса / 0 доказанно рабочих игровых портов.** Проблема общего namespace `yungsapi` и неучтённых файлов требует отдельного разбора. Подробнее: [YUNG_SDK_VALIDATION_RU.md](YUNG_SDK_VALIDATION_RU.md).
