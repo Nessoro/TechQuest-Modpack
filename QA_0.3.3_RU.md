@@ -53,4 +53,14 @@ AMW 1.0.4 Alpha внедрён как **необязательный польз�
 
 ## Новый приоритет — приключения и исследование
 
-Добавлены 8 NeoForge 1.21.1 модов: Aether, Deeper and Darker, When Dungeons Arise, Artifacts, YUNG's Better Strongholds, YUNG's Better Nether Fortresses, Lootr и Explorer's Compass. После сборки необходима проверка их обязательных зависимостей, игровой генерации нового мира и серверного TPS. Полный тестовый маршрут описан в [docs/ADVENTURE_EXPLORATION_RU.md](docs/ADVENTURE_EXPLORATION_RU.md).
+Добавлены 8 NeoForge 1.21.1 модов: Aether, Deeper and Darker, When Dungeons Arise, Artifacts, YUNG's Better Strongholds, YUNG's Better Nether Fortresses, IceAndFire CE и Explorer's Compass. После сборки необходима проверка их обязательных зависимостей, игровой генерации нового мира и серверного TPS. Полный тестовый маршрут описан в [docs/ADVENTURE_EXPLORATION_RU.md](docs/ADVENTURE_EXPLORATION_RU.md).
+
+## Изменение списка модов — драконы вместо Lootr
+
+- [x] Удалён Lootr из manifest, внутриигровой книги и сайта. Персональных сундуков больше нет; добыча в обычных сундуках общая для всех участников.
+- [x] Добавлен `iceandfire-ce` для NeoForge 1.21.1 (обязательный для тестовой ветки клиент/сервер), зависимости проверяет Modrinth resolver. Не добавляем параллельно иной Ice and Fire Port, чтобы избежать двойных сущностей и конфликтов генерации.
+- [ ] Проверить фактическую выбранную версию IceAndFire CE из `versions-lock.json`, его зависимости (GeckoLib/Uranus/Jupiter в зависимости от выпуска) и API NeoForge.
+- [ ] В новом обычном мире проверить появление логов, огненных/ледяных/грозовых драконов, дроп, яйца, управление полётом и поведение в группе.
+- [ ] Проверить FPS/TPS при генерации логов и присутствии 1, 3 и 5 взрослых драконов рядом с игроками; протестировать взаимодействие огня/взрывов с Incoming и Superb Warfare.
+- [ ] Проверить настройки разрушений и генерации в `config/iceandfire/iaf-common.json` после первого запуска (не угадывать имена параметров).
+- [ ] Проверить server+client с Tailscale, повторные подключения, сохранение мира и изменение чанков. Перед обновлением мира создать копию.

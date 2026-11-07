@@ -15,7 +15,7 @@ spec.loader.exec_module(builder)
 NEW_MODS = {
     "aether", "deeperdarker", "artifacts", "when-dungeons-arise",
     "yungs-better-strongholds", "yungs-better-nether-fortresses",
-    "lootr", "explorers-compass"
+    "iceandfire-ce", "explorers-compass"
 }
 TECH = {"Технологии", "Хранение"}
 ADVENTURE = {"RPG", "Мобы", "Боссы", "Мир", "Приключения"}
@@ -39,6 +39,12 @@ class AdventureRebalanceTests(unittest.TestCase):
         for slug in ("buildcraft-community-edition", "create", "mekanism", "modern-industrialization", "ae2"):
             self.assertTrue(self.mods[slug]["required"])
 
+    def test_no_lootr_or_duplicate_dragon_ports(self):
+        self.assertNotIn("lootr", self.mods)
+        self.assertIn("iceandfire-ce", self.mods)
+        self.assertNotIn("ice-and-fire-dragons", self.mods)
+        self.assertNotIn("ice-and-fire-unofficial-port", self.mods)
+
     def test_gameplay_genre_distribution(self):
         counts = Counter(m["group"] for m in self.cfg["mods"])
         counts.update(m.get("group", "Технологии") for m in self.cfg.get("manual_mods", []))
@@ -49,14 +55,14 @@ class AdventureRebalanceTests(unittest.TestCase):
         exploration = sum(counts[g] for g in EXPLORATION)
         military = sum(counts[g] for g in MILITARY)
         total = tech + adventure + exploration + military
-        self.assertEqual((tech, adventure, exploration, military), (11, 17, 5, 6))
+        self.assertEqual((tech, adventure, exploration, military), (11, 18, 4, 6))
         self.assertEqual(total, 39)
         self.assertLess(tech / total, 0.30)
         self.assertGreater((adventure + exploration) / total, 0.55)
 
     def test_documentation_for_exploration(self):
         from scripts.guide_assets import ENTRIES
-        for key in ("expedition_route", "aether_expedition", "deeper_expedition", "fortress_expedition"):
+        for key in ("expedition_route", "aether_expedition", "deeper_expedition", "fortress_expedition", "dragon_expedition"):
             with self.subTest(key=key):
                 self.assertIn(key, ENTRIES)
 

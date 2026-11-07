@@ -8,7 +8,7 @@ TechQuest — большая комплексная сборка вокруг **
 
 **Дополнение для тестирования 0.3.3:** AcceleratedMcWarfare 1.0.4 Alpha (NeoForge 1.21.1) доступен через кнопку ручного импорта в экспериментальном Windows Installer; основной JAR скачивается пользователем с официальной страницы CurseForge. Файл не распространяется в TechQuest из-за ограничений CDN и лицензии. Подробности: [AMW — установка и тесты](docs/AMW_TESTING_RU.md).
 
-> **Новый экспериментальный курс TechQuest 0.3.3:** больше приключений и исследования без удаления BuildCraft, IC2, Create и Mekanism. В PR #5 добавлены The Aether, Deeper and Darker, When Dungeons Arise, Artifacts, Lootr, Explorer's Compass и крепости YUNG's. Подробности в [плане Adventure & Exploration](docs/ADVENTURE_EXPLORATION_RU.md). Это тестовая ветка, не стабильный релиз.
+> **Новый экспериментальный курс TechQuest 0.3.3:** больше приключений и исследования без удаления BuildCraft, IC2, Create и Mekanism. В PR #5 добавлены The Aether, Deeper and Darker, When Dungeons Arise, Artifacts, IceAndFire CE (драконы), Explorer's Compass и крепости YUNG's. Подробности в [плане Adventure & Exploration](docs/ADVENTURE_EXPLORATION_RU.md). Это тестовая ветка, не стабильный релиз.
 
 ## Навигация
 

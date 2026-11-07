@@ -4,7 +4,7 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3 (эксперимент): приключения и исследование, Aether, новые подземелья и боссы при сохранении технологического ядра",
+  "description": "TechQuest 0.3.3 (эксперимент): приключения, драконы IceAndFire CE, новые измерения, боссы и подземелья при сохранении технологического ядра; без Lootr",
   "mods": [
     {
       "project": "buildcraft-community-edition",
@@ -94,6 +94,11 @@
       "version_prefix": "1.3.3"
     },
     {
+      "project": "iceandfire-ce",
+      "group": "Приключения",
+      "required": true
+    },
+    {
       "project": "mowzies-mobs",
       "group": "Мобы",
       "required": false
@@ -158,11 +163,6 @@
       "group": "Передвижение",
       "required": true,
       "version_prefix": "1.21.1-3.4.3.3"
-    },
-    {
-      "project": "lootr",
-      "group": "Исследование",
-      "required": true
     },
     {
       "project": "explorers-compass",
