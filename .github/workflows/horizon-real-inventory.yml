@@ -1,0 +1,74 @@
+name: Horizon real modpack inventory (official upstream)
+
+on:
+  push:
+    branches: ["experiment/horizon-port-lab"]
+    paths:
+      - ".github/workflows/horizon-real-inventory.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  import-mrpack-metadata:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      HORIZON_REV: c78187dffffb60f31517eadcb87413386e8ce729
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+    steps:
+      - name: Checkout TechQuest
+        uses: actions/checkout@v4
+      - name: Fetch verified .mrpack artifact from TechQuest NeoForge CI
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          run-id: 42372848633
+          path: source-artifact
+          github-token: ${{ github.token }}
+      - name: Find source .mrpack (do not fetch Java JARs)
+        run: |
+          set -euo pipefail
+          pack="$(find source-artifact -type f -name '*.mrpack' -print -quit)"
+          test -n "$pack"
+          echo "PACK_PATH=$GITHUB_WORKSPACE/$pack" >> "$GITHUB_ENV"
+          echo "Original TechQuest pack found (metadata only): $pack"
+      - name: Checkout official Horizon source at fixed revision
+        uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Build official horizon-port-pack utility
+        run: |
+          cargo build --manifest-path upstream-horizon/Cargo.toml -p horizon-port-pack --release --locked
+      - name: Import and classify the actual TechQuest .mrpack
+        run: |
+          set -euo pipefail
+          work="$GITHUB_WORKSPACE/horizon/out/official-coverage"
+          tool="$GITHUB_WORKSPACE/upstream-horizon/target/release/horizon-port-pack"
+          mkdir -p "$work"
+          "$tool" import "$PACK_PATH" "$work"
+          "$tool" inventory "$work"
+          "$tool" report "$work"
+          test -s "$work/coverage.json"
+          test -s "$work/coverage.md"
+          echo "Official coverage generated without fetching/carrying third-party Java files."
+          sed -n "1,125p" "$work/coverage.md"
+      - name: Publish analysis ONLY - no JAR or third-party converted content
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-Official-Coverage-Report-ONLY
+          path: |
+            horizon/out/official-coverage/coverage.json
+            horizon/out/official-coverage/coverage.md
+            horizon/out/official-coverage/inventory.json
+            horizon/out/official-coverage/inventory.csv
+          retention-days: 14
