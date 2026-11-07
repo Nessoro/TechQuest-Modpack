@@ -53,11 +53,18 @@ jobs:
           "$tool" import "$PACK_PATH" "$work"
           "$tool" inventory "$work"
           "$tool" fetch "$work" "$TARGET_MOD"
+          # Horizon's inventory stores the discovered jar path; refresh after fetch.
+          "$tool" inventory "$work" --offline
           "$tool" carry "$work" "$TARGET_MOD"
+          carried="$work/mods/$TARGET_MOD/carry"
+          test -d "$carried"
+          count="$(find "$carried" -type f | wc -l)"
+          test "$count" -gt 0
+          echo "Carried $count source/content files into a local Horizon staging folder."
           "$tool" report "$work"
           test -s "$work/coverage.md"
           echo "---- Target mod coverage ----"
-          grep -F "| $TARGET_MOD |" "$work/coverage.md" || true
+          grep -F "| $TARGET_MOD |" "$work/coverage.md"
           echo "---- Local converted files count (NOT UPLOADED) ----"
           if [ -d "$work/mods" ]; then find "$work/mods" -type f | wc -l; fi
       - name: Publish reports only (exclude JARs, assets, generated hmods)
