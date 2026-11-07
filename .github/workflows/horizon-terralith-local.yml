@@ -1,0 +1,89 @@
+name: Horizon Terralith local data-port validation
+
+on:
+  push:
+    branches: ["experiment/horizon-port-lab"]
+    paths:
+      - ".github/workflows/horizon-terralith-local.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  terralith-content-analysis-only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get TechQuest mrpack from successful NeoForge CI
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          run-id: 42372848633
+          path: source-artifact
+          github-token: ${{ github.token }}
+      - name: Find source pack
+        run: |
+          set -euo pipefail
+          pack="$(find source-artifact -type f -name '*.mrpack' -print -quit)"
+          test -n "$pack"
+          echo "PACK_PATH=$GITHUB_WORKSPACE/$pack" >> "$GITHUB_ENV"
+      - name: Checkout official pinned Horizon source
+        uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Compile official Horizon port and SDK
+        run: cargo build --manifest-path upstream-horizon/Cargo.toml -p horizon-port-pack -p cargo-horizon-mod --release --locked
+      - name: Fetch Terralith, carry data locally, validate with SDK
+        run: |
+          set -euo pipefail
+          port="$GITHUB_WORKSPACE/upstream-horizon/target/release/horizon-port-pack"
+          sdk="$GITHUB_WORKSPACE/upstream-horizon/target/release/cargo-horizon-mod"
+          work="$GITHUB_WORKSPACE/horizon/out/terralith-local"
+          mkdir -p "$work"
+          "$port" import "$PACK_PATH" "$work"
+          "$port" inventory "$work"
+          "$port" fetch "$work" terralith
+          "$port" inventory "$work" --offline
+          python - "$work/inventory.json" <<'PY'
+          import json, sys
+          rows = json.load(open(sys.argv[1], encoding="utf-8"))
+          matches = [r for r in rows if r.get("key") == "terralith" and r.get("jar") and r.get("info")]
+          if len(matches) != 1:
+              raise SystemExit("Terralith original JAR not found by official inventory")
+          print("Terralith locally downloaded from verified source")
+          PY
+          "$port" carry "$work" terralith
+          "$port" report "$work"
+          carry="$work/mods/terralith/carry"
+          test -s "$carry/horizon-mod.toml"
+          count="$(find "$carry" -type f | wc -l)"
+          test "$count" -gt 0
+          echo "Terralith intermediate content files: $count"
+          (cd "$carry" && "$sdk" build && "$sdk" check target/horizon-mod/terralith.hmod --json > "$work/sdk-check.json")
+          python - "$work/sdk-check.json" <<'PY'
+          import json, sys
+          data = json.load(open(sys.argv[1], encoding="utf-8"))
+          assert data.get("ok") and data["report"].get("id") == "terralith", data
+          print("Terralith SDK format accepted; world generation NOT tested.")
+          PY
+      - name: Publish metadata reports ONLY, no protected third-party content
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-Terralith-LOCAL-SDK-Report-ONLY
+          path: |
+            horizon/out/terralith-local/coverage.json
+            horizon/out/terralith-local/coverage.md
+            horizon/out/terralith-local/sdk-check.json
+          if-no-files-found: warn
+          retention-days: 14
