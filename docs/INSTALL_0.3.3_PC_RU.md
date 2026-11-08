@@ -11,7 +11,7 @@
 When Dungeons Arise и четыре YUNG's теперь устанавливаются также на клиент для генерации
 структур в одиночном мире. Их появление проверяйте в **новом обычном мире**, в новых чанках.
 
-1. Откройте [GitHub Actions — Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml), выберите ветку `feat/bosses-parcool-0.3.3-prep` и **последний полностью успешный** запуск. Скачайте `TechQuest-Windows-GUI-Installer` внизу страницы (Artifacts). Распакуйте ZIP и запустите `TechQuestInstaller.exe`. Для оценки безопасности есть отдельный `TechQuest-Security-Audit` из **того же запуска**.
+1. Откройте [GitHub Actions — Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml), выберите **полностью успешный** запуск 0.3.3 из `main` или [проверенный запуск `74cb3cb`](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42485789742). Скачайте `TechQuest-Windows-GUI-Installer` внизу страницы (Artifacts). Распакуйте ZIP и запустите `TechQuestInstaller.exe`. Для оценки безопасности есть отдельный `TechQuest-Security-Audit` из **того же запуска**.
 2. Откройте официальный Minecraft Launcher, войдите в учётную запись и убедитесь, что доступен Minecraft Java Edition 1.21.1.
 3. В GUI TechQuest выберите **новую пустую папку** (например `C:\Games\TechQuest_0.3.3_Alpha`). Не указывайте текущий `.minecraft` и не смешивайте со старыми модами 0.3.2.
 4. Нажмите **«1. Установить моды»**. Установщик скачает JAR, проверит SHA и добавит внутриигровую книгу и собственный ресурсный мод `techquest-compat-1.0.0.jar` с исправлением рецептов Create–IC2.

@@ -5,8 +5,9 @@ These are persistent instructions for Codex and other coding agents working in t
 ## 1. Project identity and source of truth
 
 - Repository: `Nessoro/TechQuest-Modpack`. **Continue the existing project; do not recreate or replace it.**
-- Current documented baseline (check the repository before every change): **TechQuest 0.3.2-alpha Optimized**, Minecraft Java **1.21.1**, NeoForge **21.1.264**, Java **21**.
+- Current documented baseline (check the repository before every change): **TechQuest 0.3.3-alpha Optimized**, Minecraft Java **1.21.1**, NeoForge **21.1.264**, Java **21**.
 - There is **one unified Optimized client profile**, not separate Lite and Full releases. Preserve gameplay content while improving performance for weaker and stronger PCs.
+- `modrinth_lock` freezes the selected versions, filenames, SHA-512 and sides. Review coordinated lock changes before changing the selected dependency graph; never bypass a lock failure with an unreviewed upgrade.
 - Treat `modlist.json` as the configuration source of truth for the pack, its exact version pins, required/optional mods, client-only mods, and download records. The README may describe intentions or unverified functionality; do not treat descriptions as proof of a successful game launch.
 - Read before relevant work: `README.md`, `MODPACK_README_RU.md`, `CONTRIBUTING.md`, `modlist.json`, `build_pack.py`, the affected `scripts/`, `windows-installer/`, `tests/`, and `.github/workflows/`.
 - Start each task by checking the current branch, recent changes, and affected files. Avoid overwriting unrelated user or contributor changes.
@@ -44,6 +45,7 @@ Relevant workflows:
 - `.github/workflows/validate.yml` — repository validation and unit tests.
 - `.github/workflows/audit-mods.yml` — remote mod availability / metadata audit; **not** a runtime compatibility test.
 - `.github/workflows/build-alpha.yml` — build artifacts, manifest/download checks, Windows installer; **not** proof Minecraft actually starts.
+- `.github/workflows/smoke-client.yml` — real client to the main menu with a temporary CI-only observer, screenshot and settings checks; **not** world, flight, multiplayer or performance validation.
 - `.github/workflows/smoke-server.yml` — opt-in NeoForge dedicated-server boot check; requires the invoking user to explicitly accept the Minecraft EULA through workflow input. **Do not bypass that consent gate or assert success without a successful run.**
 
 When needed and network/environment permits, run `python scripts/audit_modlist.py` and `python build_pack.py`; explain network dependencies and failures. Avoid massive downloads/builds when the task only changes instructions.
