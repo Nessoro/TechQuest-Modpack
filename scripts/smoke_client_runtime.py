@@ -107,7 +107,8 @@ def observe(profile, parent, launcher, game, report):
             for name in archive.namelist():
                 if name.endswith(".so"):
                     (native_dir / Path(name).name).write_bytes(archive.read(name))
-    classpath.append(launcher / "versions/1.21.1/1.21.1.jar")
+    # forgeclient locates the installer-generated patched Minecraft under libraries.
+    # The original obfuscated client is an installer input, not a second runtime module.
     assets = launcher / "assets"
     index_file = assets / "indexes" / (parent["assetIndex"]["id"] + ".json")
     download(parent["assetIndex"], index_file)
