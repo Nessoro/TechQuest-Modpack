@@ -195,6 +195,23 @@ def observe(profile, parent, launcher, game, report):
                                     "jadeHealth": False, "jadeArmor": False,
                                     "concussionDuration": 0.25, "incomingScreenEffects": 0.35,
                                     "incomingCameraShake": 0.35, "incomingTinnitus": False}:
+                # Diagnose the EXACT runtime config that the mod loaded, rather
+                # than mistaking the .mrpack manifest for successful application.
+                configs = []
+                for path in sorted((game / "config").rglob("*.toml")):
+                    if "explosionoverhaul" not in str(path).lower():
+                        continue
+                    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+                    candidates = [line.strip() for line in lines
+                                  if any(token in line.lower() for token in
+                                         ("concussion", "durationmultiplier", "loaded"))]
+                    configs.append({"path": str(path.relative_to(game)),
+                                    "size": path.stat().st_size,
+                                    "concussion_lines": candidates[:30]})
+                print("DIAGNOSTIC EXPLOSION CONFIG FILES:", json.dumps(configs), flush=True)
+                (report / "explosion-config-diagnostic.json").write_text(
+                    json.dumps({"observed": ready["hudBlast"],
+                                "files": configs}, ensure_ascii=False, indent=2))
                 raise RuntimeError("HUD/blast presets were not loaded by the real client: " + str(ready["hudBlast"]))
             (report / "stop").touch()
             if process.wait(timeout=45) != 0:

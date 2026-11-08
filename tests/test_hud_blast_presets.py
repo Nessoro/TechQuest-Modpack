@@ -2,6 +2,7 @@
 import copy
 import json
 import tempfile
+import tomllib
 import unittest
 import zipfile
 from pathlib import Path
@@ -21,6 +22,9 @@ class HudBlastPresets(unittest.TestCase):
         self.assertEqual(json.loads(expected["config/jade/plugins.json"])["minecraft"],
                          {"entity_health": False, "entity_armor": False})
         self.assertIn("config/explosionoverhaul/explosionoverhaul-client.toml", expected)
+        concussion = tomllib.loads(expected["config/explosionoverhaul/explosionoverhaul-client.toml"].decode())
+        self.assertEqual(concussion["Wind System"]["Concussion"]["concussionDurationMultiplier"], 0.25)
+        self.assertNotIn("Concussion", concussion)
         self.assertNotIn("config/explosionoverhaul-client.toml", expected)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
