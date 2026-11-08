@@ -58,6 +58,8 @@ def install_guide_overrides(archive, game_dir):
         if not (relative.startswith(allowed_prefix)
                 or relative in (allowed_datapack, "mods/techquest-compat-1.0.0.jar",
                                 "options.txt", "TECHQUEST_OPTIMIZED.txt",
+                                "config/physicsmod/physics_client_config.json",
+                                "config/physicsmod/physics_server_config.json",
                                 "TECHQUEST_INGAME_GUIDE.txt",
                                 "TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                                  "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json")):

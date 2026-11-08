@@ -205,6 +205,22 @@ internal sealed class InstallerForm : Form
                 File.WriteAllText(Path.Combine(probe, "options.txt"), "existing-player-settings");
                 InstallGuideOverrides(probe);
                 if (File.ReadAllText(Path.Combine(probe, "options.txt")) != "existing-player-settings") return 9;
+                if (fileNames.Any(n => n.StartsWith("physics-mod-")))
+                {
+                    string configDir = Path.Combine(probe, "config", "physicsmod");
+                    string clientConfig = Path.Combine(configDir, "physics_client_config.json");
+                    string localServerConfig = Path.Combine(configDir, "physics_server_config.json");
+                    using var clientJson = JsonDocument.Parse(File.ReadAllText(clientConfig));
+                    using var serverJson = JsonDocument.Parse(File.ReadAllText(localServerConfig));
+                    if (clientJson.RootElement.GetProperty("maxPhysicsObjects").GetInt32() != 128 ||
+                        clientJson.RootElement.GetProperty("blockPhysicsRange").GetDouble() != 16 ||
+                        serverJson.RootElement.GetProperty("collapse").GetBoolean()) return 10;
+                    File.WriteAllText(clientConfig, "existing-physics-settings");
+                    File.WriteAllText(localServerConfig, "existing-collapse-settings");
+                    InstallGuideOverrides(probe);
+                    if (File.ReadAllText(clientConfig) != "existing-physics-settings" ||
+                        File.ReadAllText(localServerConfig) != "existing-collapse-settings") return 11;
+                }
             }
             finally
             {
@@ -313,6 +329,8 @@ internal sealed class InstallerForm : Form
                  relative == "mods/techquest-compat-1.0.0.jar" ||
                 relative == "TECHQUEST_INGAME_GUIDE.txt" ||
                 relative == "options.txt" ||
+                relative == "config/physicsmod/physics_client_config.json" ||
+                relative == "config/physicsmod/physics_server_config.json" ||
                 relative == "TECHQUEST_OPTIMIZED.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json" ||
                 relative == "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json";

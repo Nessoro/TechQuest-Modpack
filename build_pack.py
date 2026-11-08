@@ -331,6 +331,18 @@ def remove_stale_generated_jars(directory, expected):
             print("Removed obsolete generated mod:", path.name)
 
 
+def client_config_overrides(cfg):
+    """Version-reviewed client presets; the server-named file is for singleplayer."""
+    physics = next((mod for mod in cfg.get("mods", [])
+                    if mod["project"] == "physicsmod"), None)
+    if not physics:
+        return {}
+    if physics.get("version_id") != "wudTG1nk" or not physics.get("client_only"):
+        raise BuildError("Review Physics Mod client preset before changing its version or side")
+    return {"config/physicsmod/" + name: (ROOT / "compat" / "physicsmod" / name).read_bytes()
+            for name in ("physics_client_config.json", "physics_server_config.json")}
+
+
 def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
     files = []
     for rec in mods:
@@ -374,6 +386,8 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
                 "Gameplay mods are preserved. Set graphics Fast, view distance 4-6, "
                 "particles minimal. The settings are not a guarantee of FPS gains.\n")
         for relative, data in guide_overrides().items():
+            archive.writestr("overrides/" + relative, data)
+        for relative, data in client_config_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
         # CurseForge-only, All Rights Reserved additions stay user-supplied.
         # Include metadata for the GUI and server operator, never the author JAR.
@@ -467,6 +481,10 @@ def main():
         patch_superb_server_jar(jar)
     if client_options(cfg):
         (out / "client" / "options.txt").write_bytes(client_options(cfg))
+    for relative, data in client_config_overrides(cfg).items():
+        target = out / "client" / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
     for relative, data in guide_overrides().items():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
