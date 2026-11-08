@@ -25,7 +25,6 @@ internal static class Program
 internal sealed class InstallerForm : Form
 {
     private const string NeoForgeVersion = "21.1.264";
-    private const string NeoForgeUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.1.264/neoforge-21.1.264-installer.jar";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
 
     private readonly TextBox location = new() { Width = 540 };
@@ -34,6 +33,8 @@ internal sealed class InstallerForm : Form
     private readonly Button neoforge = new() { Text = "2. Установить NeoForge", Width = 205, Height = 45 };
     private readonly Button openFolder = new() { Text = "Открыть папку", Width = 150, Height = 37 };
     private readonly Button help = new() { Text = "Инструкция", Width = 130, Height = 37 };
+    private readonly Button importAmw = new() { Text = "3. Добавить AMW", Width = 205, Height = 37 };
+    private readonly Button gunpacks = new() { Text = "4. Импорт TaCZ ZIP", Width = 205, Height = 45 };
     private readonly Button cancel = new() { Text = "Отмена", Width = 100, Height = 37, Enabled = false };
     private readonly ProgressBar progress = new() { Width = 695, Height = 19 };
     private readonly Label status = new() { Text = "Готово к установке. Minecraft Launcher и Java 21 устанавливаются отдельно.", AutoSize = false, Width = 710, Height = 45 };
@@ -61,7 +62,7 @@ internal sealed class InstallerForm : Form
         var subtitle = new Label { Text = "Minecraft Java 1.21.1  •  NeoForge " + NeoForgeVersion +
             "  •  BuildCraft + IndustrialCraft", Left = 32, Top = 78, Width = 710, Height = 30,
             ForeColor = Color.FromArgb(175, 194, 212) };
-        var heading = new Label { Text = "TechQuest 0.3.2 — карта, HP, путеводитель и оптимизация", Left = 32, Top = 126,
+        var heading = new Label { Text = "TechQuest 0.3.3 — приключения, физика и оптимизация", Left = 32, Top = 126,
             Width = 700, Height = 30, Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
         var liteDesc = new Label { Text = "Сохранены все игровые моды. Ускорение: Sodium, ImmediatelyFast, More Culling,",
             Left = 36, Top = 168, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
@@ -91,16 +92,18 @@ internal sealed class InstallerForm : Form
 
         install.Location = new Point(32, 421);
         neoforge.Location = new Point(246, 421);
+        gunpacks.Location = new Point(462, 421);
         openFolder.Location = new Point(32, 488);
         help.Location = new Point(190, 488);
         cancel.Location = new Point(330, 488);
+        importAmw.Location = new Point(462, 488);
         progress.Location = new Point(32, 535);
         status.Location = new Point(32, 557);
         install.BackColor = Color.FromArgb(168, 227, 117);
         install.ForeColor = Color.FromArgb(18, 33, 18);
         neoforge.BackColor = Color.FromArgb(41, 56, 79);
         neoforge.ForeColor = Color.White;
-        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help })
+        foreach (var button in new[] { install, neoforge, gunpacks, openFolder, browse, cancel, help, importAmw })
         {
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
@@ -115,17 +118,21 @@ internal sealed class InstallerForm : Form
         };
         cancel.Click += (_, _) => cancellation?.Cancel();
         help.Click += (_, _) => ShowInstructions();
+        importAmw.Click += (_, _) => ImportAcceleratedMcWarfare();
+        gunpacks.Click += (_, _) => ImportOfficialTaczGunpacks();
         Controls.AddRange(new Control[] {
             title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
-            browse, safety, install, neoforge, openFolder, help, cancel, progress, status
+            browse, safety, install, neoforge, gunpacks, openFolder, help, cancel, importAmw, progress, status
         });
-        location.Text = Path.Combine(baseDir, "Optimized_0.3");
+        location.Text = Path.Combine(baseDir, "TechQuest_0.3.3_Alpha");
     }
 
     private void SetBusy(bool busy, bool cancellable)
     {
         install.Enabled = !busy;
         neoforge.Enabled = !busy;
+        importAmw.Enabled = !busy;
+        gunpacks.Enabled = !busy;
         browse.Enabled = !busy;
         location.ReadOnly = busy;
         cancel.Enabled = busy && cancellable;
@@ -140,7 +147,12 @@ internal sealed class InstallerForm : Form
             "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
             "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
             "5. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
-            "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n\n" +
+            "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
+            "7. AMW (необязательно): скачайте официальный JAR с CurseForge, затем нажмите «3. Добавить AMW».\n" +
+            "   Для сервера положите тот же JAR в mods и проверьте совместимость с Incoming.\n" +
+            "8. TaCZ: скачайте оригинальные gunpack ZIP с CurseForge и нажмите «4. Импорт TaCZ ZIP».\n" +
+            "9. Для TaCZ 1.2.0 при необходимости используйте /tacz convert universal.\n" +
+            "   ZIP для 1.20.1 и TaCZ:FCE требуют отдельного теста NeoForge 1.21.1.\n\n" +
             "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
             "В игре: Xaero Minimap/World Map, здоровье мобов Health Indicator TXF (HP цифрами),\n" +
@@ -179,8 +191,52 @@ internal sealed class InstallerForm : Form
             using var zipStream = GetEmbeddedPack();
             using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
             if (archive.GetEntry("overrides/patchouli_books/techquest_guide/book.json") is null ||
-                archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null)
+                archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null ||
+                 archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null)
                 return 7;
+            string probe = Path.Combine(Path.GetTempPath(), "TechQuest-self-test-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                InstallGuideOverrides(probe);
+                string options = File.ReadAllText(Path.Combine(probe, "options.txt"));
+                if (!options.Split('\n').Contains("graphicsMode:0") ||
+                    !options.Split('\n').Contains("maxFps:60")) return 8;
+                File.WriteAllText(Path.Combine(probe, "options.txt"), "existing-player-settings");
+                InstallGuideOverrides(probe);
+                if (File.ReadAllText(Path.Combine(probe, "options.txt")) != "existing-player-settings") return 9;
+                if (fileNames.Any(n => n.StartsWith("betterzoom-")))
+                {
+                    if (!options.Split('\n').Contains("key_key.betterzoom.zoom:key.keyboard.z") ||
+                        !options.Split('\n').Contains("key_key.tacz.refit.desc:key.keyboard.f8") ||
+                        !options.Split('\n').Contains("key_gui.xaero_enlarge_map:key.keyboard.f9") ||
+                        !options.Split('\n').Contains("key_key.sophisticatedbackpacks.toggle_upgrade_1:key.keyboard.f10")) return 12;
+                    string zoomConfig = Path.Combine(probe, "config", "betterzoom-client.toml");
+                    if (!File.ReadAllText(zoomConfig).Contains("holdToZoom = true")) return 13;
+                    File.WriteAllText(zoomConfig, "existing-player-zoom-settings");
+                    InstallGuideOverrides(probe);
+                    if (File.ReadAllText(zoomConfig) != "existing-player-zoom-settings") return 14;
+                }
+                if (fileNames.Any(n => n.StartsWith("physics-mod-")))
+                {
+                    string configDir = Path.Combine(probe, "config", "physicsmod");
+                    string clientConfig = Path.Combine(configDir, "physics_client_config.json");
+                    string localServerConfig = Path.Combine(configDir, "physics_server_config.json");
+                    using var clientJson = JsonDocument.Parse(File.ReadAllText(clientConfig));
+                    using var serverJson = JsonDocument.Parse(File.ReadAllText(localServerConfig));
+                    if (clientJson.RootElement.GetProperty("maxPhysicsObjects").GetInt32() != 128 ||
+                        clientJson.RootElement.GetProperty("blockPhysicsRange").GetDouble() != 16 ||
+                        serverJson.RootElement.GetProperty("collapse").GetBoolean()) return 10;
+                    File.WriteAllText(clientConfig, "existing-physics-settings");
+                    File.WriteAllText(localServerConfig, "existing-collapse-settings");
+                    InstallGuideOverrides(probe);
+                    if (File.ReadAllText(clientConfig) != "existing-physics-settings" ||
+                        File.ReadAllText(localServerConfig) != "existing-collapse-settings") return 11;
+                }
+            }
+            finally
+            {
+                if (Directory.Exists(probe)) Directory.Delete(probe, recursive: true);
+            }
             return 0;
         }
         catch { return 5; }
@@ -281,7 +337,15 @@ internal sealed class InstallerForm : Form
             bool allowed =
                 relative.StartsWith("patchouli_books/techquest_guide/", StringComparison.Ordinal) ||
                 relative == "config/openloader/packs/techquest_starter_guide.zip" ||
-                relative == "TECHQUEST_INGAME_GUIDE.txt";
+                 relative == "mods/techquest-compat-1.0.0.jar" ||
+                relative == "TECHQUEST_INGAME_GUIDE.txt" ||
+                relative == "options.txt" ||
+                relative == "config/physicsmod/physics_client_config.json" ||
+                relative == "config/physicsmod/physics_server_config.json" ||
+                relative == "config/betterzoom-client.toml" ||
+                relative == "TECHQUEST_OPTIMIZED.txt" ||
+                relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json" ||
+                relative == "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json";
             if (!allowed || relative.EndsWith("/", StringComparison.Ordinal))
                 continue;
             if (relative.Contains("..", StringComparison.Ordinal) ||
@@ -298,6 +362,154 @@ internal sealed class InstallerForm : Form
             using var source = entry.Open();
             using var output = File.Create(destination);
             source.CopyTo(output);
+        }
+    }
+
+
+    private void ImportAcceleratedMcWarfare()
+    {
+        const string expectedName = "acceleratedMcWarfare-1.0.4..jar";
+        const string releaseUrl = "https://www.curseforge.com/minecraft/mc-mods/amw/files/9298161";
+        try
+        {
+            string gameDir = Path.GetFullPath(location.Text);
+            string modsDir = Path.Combine(gameDir, "mods");
+            if (!Directory.Exists(modsDir) || !Directory.EnumerateFiles(modsDir, "*.jar").Any())
+            {
+                MessageBox.Show(this, "Сначала установите TechQuest в отдельную папку.",
+                    "Установка AMW", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (!Directory.EnumerateFiles(modsDir, "*.jar").Any(f =>
+                    Path.GetFileName(f).Contains("geckolib", StringComparison.OrdinalIgnoreCase)))
+            {
+                MessageBox.Show(this, "Не найдена обязательная библиотека GeckoLib. Сначала установите полный модпак.",
+                    "AMW: не хватает GeckoLib", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            using var dialog = new OpenFileDialog
+            {
+                Title = "Выберите официальный acceleratedMcWarfare-1.0.4..jar из CurseForge",
+                Filter = "Minecraft NeoForge мод (*.jar)|*.jar",
+                Multiselect = false
+            };
+            if (dialog.ShowDialog(this) != DialogResult.OK)
+                return;
+            string source = dialog.FileName;
+            if (!string.Equals(Path.GetFileName(source), expectedName, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("Файл должен быть оригинальным " + expectedName);
+            var file = new FileInfo(source);
+            if (file.Length < 1024 * 1024 || file.Length > 100L * 1024 * 1024)
+                throw new InvalidDataException("Размер JAR не соответствует ожидаемым ограничениям.");
+            using (var archive = ZipFile.OpenRead(source))
+            {
+                if (archive.Entries.Count == 0 || archive.Entries.Count > 30000 ||
+                    !archive.Entries.Any(e =>
+                        e.FullName is "META-INF/neoforge.mods.toml" or "META-INF/mods.toml"))
+                    throw new InvalidDataException("Файл не похож на NeoForge мод.");
+            }
+            string destination = Path.Combine(modsDir, expectedName);
+            if (File.Exists(destination))
+                throw new IOException("AMW уже установлен. Не перезаписываем существующий мод.");
+            string fingerprint;
+            using (var stream = File.OpenRead(source))
+                fingerprint = Convert.ToHexString(SHA256.HashData(stream));
+            File.Copy(source, destination, overwrite: false);
+            string receipt = "AMW 1.0.4 Alpha (user imported)\n" +
+                "Official source: " + releaseUrl + "\nSHA-256 (local fingerprint, NOT independently verified): " +
+                fingerprint + "\nServer: copy the exact same JAR to server/mods.\n";
+            File.WriteAllText(Path.Combine(gameDir, "TECHQUEST_AMW_IMPORT.txt"),
+                receipt, Encoding.UTF8);
+            MessageBox.Show(this,
+                "AMW добавлен в этот тестовый профиль.\n" +
+                "Для сервера скопируйте тот же JAR в mods.\n" +
+                "Требуется проверить GeckoLib, радары, ракеты и конфликт с Incoming/Superb Warfare.\n" +
+                "SHA-256 сохранён как локальный отпечаток, не как доказательство подлинности.",
+                "AMW: импорт завершён", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message,
+                "AMW: ошибка импорта", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private static readonly HashSet<string> OfficialTaczGunpackFiles = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Cyber Armorer-1.1.5_for114.zip",
+        "Create Armorer-v1.2.0.1-for117.zip",
+        "Applied Armorer-v1.1.4.1-for114+.zip",
+        "Immersive Armorer-v1.2.1-for117.zip"
+    };
+
+    private static void ValidateUserSuppliedGunpack(string path)
+    {
+        var info = new FileInfo(path);
+        if (!info.Exists || info.Length < 256 || info.Length > 128L * 1024 * 1024)
+            throw new InvalidDataException("Недопустимый размер ZIP: " + info.Name);
+        using var archive = ZipFile.OpenRead(path);
+        if (archive.Entries.Count < 1 || archive.Entries.Count > 15000)
+            throw new InvalidDataException("Недопустимое число файлов внутри ZIP: " + info.Name);
+        long total = 0;
+        foreach (var entry in archive.Entries)
+        {
+            string normalized = entry.FullName.Replace('\\', '/');
+            string[] components = normalized.Split('/');
+            if (normalized.StartsWith("/", StringComparison.Ordinal) ||
+                normalized.Contains(':') || components.Contains("..") || components.Contains("."))
+                throw new InvalidDataException("Небезопасный ZIP путь: " + normalized);
+            if (entry.Length < 0 || entry.Length > 100L * 1024 * 1024)
+                throw new InvalidDataException("Слишком большой файл внутри ZIP: " + normalized);
+            total += entry.Length;
+            if (total > 512L * 1024 * 1024)
+                throw new InvalidDataException("ZIP превышает лимит распаковки.");
+        }
+    }
+
+    private void ImportOfficialTaczGunpacks()
+    {
+        try
+        {
+            string root = Path.GetFullPath(location.Text);
+            string modsDirectory = Path.Combine(root, "mods");
+            if (!Directory.Exists(modsDirectory) ||
+                !Directory.EnumerateFiles(modsDirectory, "tacz-neoforge-1.21.1-1.2.0.jar").Any())
+            {
+                MessageBox.Show(this, "Сначала установите сборку с официальным TaCZ 1.2.0.",
+                    "TaCZ ещё не установлен", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            using var dialog = new OpenFileDialog {
+                Title = "Выберите оригинальные ZIP-паки TaCZ с CurseForge (можно все 4)",
+                Filter = "TaCZ gunpacks (*.zip)|*.zip", Multiselect = true
+            };
+            if (dialog.ShowDialog(this) != DialogResult.OK) return;
+            string dir = Path.Combine(root, "tacz");
+            int copied = 0;
+            foreach (var path in dialog.FileNames)
+            {
+                string name = Path.GetFileName(path);
+                if (!OfficialTaczGunpackFiles.Contains(name))
+                    throw new InvalidDataException("Неизвестный официальный TaCZ ZIP: " + name);
+                ValidateUserSuppliedGunpack(path);
+                Directory.CreateDirectory(dir);
+                string destination = Path.Combine(dir, name);
+                if (File.Exists(destination)) continue; // Never overwrite player data.
+                File.Copy(path, destination, overwrite: false);
+                copied++;
+            }
+            MessageBox.Show(this,
+                "Скопировано пакетов: " + copied + ". ZIP оставлены без изменений.\n" +
+                "Они рассчитаны на старую версию TaCZ и нуждаются в игровом тесте.\n" +
+                "В TaCZ 1.2.0 используйте /tacz convert universal при необходимости.\n" +
+                "Cyber Armorer дополнительно требует TaCZ:FCE; проверить его совместимость.\n" +
+                "Для сервера нужны те же проверенные ZIP/конвертированные варианты.",
+                "TaCZ — тестовая интеграция", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception exc)
+        {
+            MessageBox.Show(this, exc.Message, "Ошибка импорта TaCZ ZIP",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -334,14 +546,8 @@ internal sealed class InstallerForm : Form
             Directory.Move(staging, mods);
             InstallGuideOverrides(target);
             installedGameDir = target;
-            var optionsFile = Path.Combine(target, "options.txt");
-            if (!File.Exists(optionsFile))
-                File.WriteAllText(optionsFile,
-                    "graphicsMode:fast\nrenderDistance:6\nsimulationDistance:5\n" +
-                    "entityDistanceScaling:0.5\nparticles:2\nmaxFps:120\n" +
-                    "biomeBlendRadius:0\nmipmapLevels:1\n", new UTF8Encoding(false));
             File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
-                "TechQuest 0.3.2 Optimized\n" +
+                "TechQuest 0.3.3 Alpha\n" +
                 "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +
                 "Установите официальный NeoForge (кнопка в установщике).\n" +
                 "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +
@@ -377,20 +583,22 @@ internal sealed class InstallerForm : Form
 
     private async Task NeoForgeAsync()
     {
-        SetBusy(true, false);
+        using var folder = new FolderBrowserDialog {
+            Description = "Выберите папку официального Minecraft Launcher (.minecraft), где уже установлена обычная 1.21.1. Это НЕ отдельная папка модпака.",
+            SelectedPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft"),
+            ShowNewFolderButton = false
+        };
+        if (folder.ShowDialog(this) != DialogResult.OK) return;
+        string launcherRoot = Path.GetFullPath(folder.SelectedPath);
+        cancellation = new CancellationTokenSource();
+        SetBusy(true, true);
         try
         {
-            status.Text = "Загрузка официального установщика NeoForge...";
-            var destination = Path.Combine(Path.GetTempPath(), $"neoforge-{NeoForgeVersion}-installer.jar");
-            var url = new Uri(NeoForgeUrl);
-            var sumText = await Client.GetStringAsync(NeoForgeUrl + ".sha512");
-            var expectedHash = sumText.Split((char[]?)null,
-                StringSplitOptions.RemoveEmptyEntries)[0].Trim();
-            if (expectedHash.Length != 128) throw new InvalidDataException("Неверный SHA-512 NeoForge");
-            var bytes = await Client.GetByteArrayAsync(url);
-            if (!SHA512.HashData(bytes).AsSpan().SequenceEqual(Convert.FromHexString(expectedHash)))
-                throw new InvalidDataException("SHA-512 NeoForge не совпал. Запуск отменён.");
-            await File.WriteAllBytesAsync(destination, bytes);
+            using var manifest = Assembly.GetExecutingAssembly().GetManifestResourceStream("TechQuest.NeoForge.bootstrap.json")
+                ?? throw new InvalidDataException("Не найден закреплённый план установки NeoForge.");
+            var bootstrap = new NeoForgeBootstrap(Client, text => status.Text = text);
+            string destination = await bootstrap.PrepareAsync(NeoForgeBootstrap.ReadPlan(manifest), launcherRoot,
+                Path.Combine(baseDir, "neoforge-" + NeoForgeVersion), cancellation.Token);
             try
             {
                 var start = new ProcessStartInfo("javaw.exe") {
@@ -401,7 +609,10 @@ internal sealed class InstallerForm : Form
                 start.ArgumentList.Add("-jar");
                 start.ArgumentList.Add(destination);
                 Process.Start(start);
-                status.Text = "Установщик NeoForge открыт. Выберите Install client.";
+                status.Text = "NeoForge открыт. Выберите Install client и папку Launcher: " + launcherRoot;
+                MessageBox.Show(this, "Установщик и 70 библиотек проверены.\nВ окне NeoForge выберите Install client и эту папку:\n" +
+                    launcherRoot + "\n\nПосле установки укажите отдельную папку модпака как Game Directory в Minecraft Launcher.",
+                    "Далее — официальный установщик", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception)
             {
@@ -415,12 +626,21 @@ internal sealed class InstallerForm : Form
                     { UseShellExecute = true });
             }
         }
+        catch (OperationCanceledException)
+        {
+            status.Text = "Подготовка NeoForge отменена. Проверенные библиотеки сохранены для повторной попытки.";
+        }
         catch (Exception ex)
         {
             status.Text = "Ошибка установки NeoForge: " + ex.Message;
             MessageBox.Show(this, ex.Message, "Ошибка NeoForge", MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
-        finally { SetBusy(false, false); }
+        finally
+        {
+            SetBusy(false, false);
+            cancellation?.Dispose();
+            cancellation = null;
+        }
     }
 }

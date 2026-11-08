@@ -40,5 +40,54 @@ class ResolverPinsTests(unittest.TestCase):
         self.assertEqual({x["requested"]:x["version"] for x in result}["library"],
                          "1.0-fixed")
 
+    def locked_fixture(self, exact_dependency=""):
+        def version(identity, project, dependencies=()):
+            return {"id": identity, "project_id": project, "version_number": identity,
+                    "version_type": "release", "date_published": "2026-01-01" if "old" in identity else "2026-11-08",
+                    "files": [{"filename": identity + ".jar", "hashes": {"sha1": "a" * 40, "sha512": "a" * 128}}],
+                    "dependencies": list(dependencies)}
+        dep = {"project_id": "LibraryID", "dependency_type": "required", "version_id": exact_dependency or None}
+        def api(path, args=None):
+            project = path.split("/")[2]
+            library = project == "LibraryID"
+            if path.endswith("/version"):
+                return ([version("library-new", "LibraryID"), version("library-old", "LibraryID")] if library
+                        else [version("parent-new", "ParentID"), version("parent-old", "ParentID", [dep])])
+            return {"id": "LibraryID" if library else "ParentID", "title": project, "project_type": "mod",
+                    "client_side": "required", "server_side": "required"}
+        cfg = {"loader": "neoforge", "minecraft": "1.21.1", "mods": [{"project": "parent"}],
+               "modrinth_lock": {project: {"version_id": version, "filename": version + ".jar", "sha512": "a" * 128,
+                                            "environment": {"client": "required", "server": "required"}}
+                                 for project, version in (("ParentID", "parent-old"), ("LibraryID", "library-old"))}}
+        return cfg, api
+
+    def test_project_locks_freeze_roots_and_unlisted_transitive_dependencies(self):
+        cfg, api = self.locked_fixture()
+        with patch.object(builder, "get_json", side_effect=api):
+            records, skipped = builder.resolve_manifest(cfg)
+        self.assertFalse(skipped)
+        self.assertEqual({r["id"]: r["version_id"] for r in records},
+                         {"ParentID": "parent-old", "LibraryID": "library-old"})
+
+    def test_dependency_constraint_cannot_silently_override_a_lock(self):
+        cfg, api = self.locked_fixture("library-new")
+        with patch.object(builder, "get_json", side_effect=api):
+            with self.assertRaisesRegex(builder.BuildError, "Exact version pin conflict"):
+                builder.resolve_manifest(cfg)
+
+    def test_lock_rejects_replaced_file_even_when_version_id_is_unchanged(self):
+        cfg, api = self.locked_fixture()
+        cfg["modrinth_lock"]["LibraryID"]["sha512"] = "b" * 128
+        with patch.object(builder, "get_json", side_effect=api):
+            with self.assertRaisesRegex(builder.BuildError, "file is missing or changed"):
+                builder.resolve_manifest(cfg)
+
+    def test_optional_failures_cannot_silently_shrink_a_locked_profile(self):
+        cfg, api = self.locked_fixture("library-new")
+        cfg["mods"][0]["required"] = False
+        with patch.object(builder, "get_json", side_effect=api):
+            with self.assertRaisesRegex(builder.BuildError, "Locked profile is incomplete"):
+                builder.resolve_manifest(cfg)
+
 if __name__=="__main__":
     unittest.main()

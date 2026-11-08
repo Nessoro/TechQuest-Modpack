@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parent
 API = "https://api.modrinth.com/v2"
 UA = "TechQuest-Modpack/0.1 (modpack installer)"
 MAX_DOWNLOAD = 256 * 1024 * 1024
+COMPAT_JAR_NAME = "techquest-compat-1.0.0.jar"
 
 class BuildError(Exception):
     pass
@@ -63,20 +64,51 @@ def safe_filename(name):
         raise BuildError("Unsafe JAR filename: %r" % name)
     return name
 
-def select_version(versions, prefix=""):
-    options = [v for v in versions if not prefix or v.get("version_number", "").startswith(prefix)]
+def select_version(versions, prefix="", version_id=""):
+    options = [v for v in versions
+               if (not prefix or v.get("version_number", "").startswith(prefix))
+               and (not version_id or v.get("id") == version_id)]
     if not options:
         raise BuildError("No matching NeoForge 1.21.1 version")
     stable = [v for v in options if v.get("version_type") == "release"]
     return max(stable or options, key=lambda v: v.get("date_published", ""))
 
+
+def select_mod_file(version):
+    # Some authors mark their sources JAR primary (Forgematica 0.4.3 does).
+    # A source/documentation archive is never a playable mod binary.
+    files = [file for file in version.get("files", [])
+             if file["filename"].lower().endswith(".jar")
+             and not file["filename"].lower().endswith(("-sources.jar", "-javadoc.jar"))]
+    if not files:
+        raise BuildError("Version has no runtime JAR (sources/javadoc are not mods)")
+    return next((file for file in files if file.get("primary")), files[0])
+
 def resolve_manifest(cfg):
+    pins = cfg.get("modrinth_lock", {})
+    if not isinstance(pins, dict):
+        raise BuildError("Invalid Modrinth lock")
+    for identity, lock in pins.items():
+        if (not isinstance(identity, str) or not isinstance(lock, dict)
+                or not isinstance(lock.get("version_id"), str) or not lock["version_id"]
+                or not isinstance(lock.get("filename"), str)
+                or not isinstance(lock.get("sha512"), str) or len(lock["sha512"]) != 128
+                or any(c not in "0123456789abcdef" for c in lock["sha512"])
+                or not isinstance(lock.get("environment"), dict)
+                or set(lock.get("environment", {})) != {"client", "server"}
+                or any(v not in ("required", "optional", "unsupported") for v in lock["environment"].values())):
+            raise BuildError("Invalid Modrinth lock entry: " + str(identity))
     found = {}
+    canonical_ids = {}
     skipped = []
     visiting = set()
-    def add(project, required=True, prefix="", parent="modlist"):
+    def add(project, required=True, prefix="", parent="modlist", version_id=""):
         project = str(project)
         if project in visiting:
+            for record in found.values():
+                if project in (record["requested"], record["id"]):
+                    if version_id and record["version_id"] != version_id:
+                        raise BuildError("Exact dependency conflict in cycle for " + project)
             return
         visiting.add(project)
         previous = set(found)
@@ -85,20 +117,36 @@ def resolve_manifest(cfg):
                 "loaders": json.dumps([cfg["loader"]]),
                 "game_versions": json.dumps([cfg["minecraft"]])
             })
-            version = select_version(versions, prefix)
             meta = get_json("/project/" + urllib.parse.quote(project, safe=""))
             canonical_id = meta["id"]
+            canonical_ids[project] = canonical_id
+            lock = pins.get(canonical_id, {})
+            if pins and not lock:
+                raise BuildError("Unlocked Modrinth project requires review: " + project)
+            locked = lock.get("version_id", "")
+            if locked and version_id and locked != version_id:
+                raise BuildError("Exact version pin conflict for %s: locked %s but %s requires %s" %
+                                 (project, locked, parent, version_id))
+            version_id = locked or version_id
+            version = select_version(versions, prefix, version_id)
             if meta.get("project_type") != "mod":
                 raise BuildError("Project is not a mod")
             if canonical_id in found:
+                if version_id and found[canonical_id]["version_id"] != version_id:
+                    raise BuildError("Exact dependency conflict for %s: resolved %s but %s requires %s" %
+                                     (project, found[canonical_id]["version_id"], parent, version_id))
                 if prefix and not found[canonical_id]["version"].startswith(prefix):
                     raise BuildError("Version conflict for %s: resolved %s but requested %s" %
                                      (project, found[canonical_id]["version"], prefix))
                 return
-            modfiles = [f for f in version.get("files", []) if f["filename"].endswith(".jar")]
-            if not modfiles:
-                raise BuildError("Version has no JAR")
-            selected = next((f for f in modfiles if f.get("primary")), modfiles[0])
+            if lock:
+                files = [f for f in version.get("files", []) if f.get("filename") == lock["filename"]
+                         and f.get("hashes", {}).get("sha512") == lock["sha512"]]
+                if not files:
+                    raise BuildError("Locked Modrinth file is missing or changed: " + project)
+                selected = select_mod_file(dict(version, files=files))
+            else:
+                selected = select_mod_file(version)
             safe_filename(selected["filename"])
             side = {"client": meta.get("client_side", "required"),
                     "server": meta.get("server_side", "required")}
@@ -115,7 +163,7 @@ def resolve_manifest(cfg):
                     dependency_id = dv.get("project_id")
                 if not dependency_id:
                     raise BuildError("Unknown mandatory dependency in " + project)
-                add(dependency_id, True, parent=project)
+                add(dependency_id, True, parent=project, version_id=dep.get("version_id") or "")
             print("  +", meta.get("title", project), version["version_number"])
         except (KeyError, TypeError, ValueError, BuildError) as exc:
             for key in set(found) - previous:
@@ -128,15 +176,31 @@ def resolve_manifest(cfg):
             visiting.discard(project)
     # Resolve explicitly pinned entries first, so a transitive dependency does not
     # silently select a different release before its own version_prefix is applied.
-    ordered = sorted(cfg["mods"], key=lambda item: not bool(item.get("version_prefix")))
+    ordered = sorted(cfg["mods"], key=lambda item: not bool(item.get("version_prefix") or item.get("version_id")))
     for entry in ordered:
-        add(entry["project"], entry.get("required", True), entry.get("version_prefix", ""))
-    client_only = {entry["project"] for entry in cfg["mods"] if entry.get("client_only")}
+        add(entry["project"], entry.get("required", True), entry.get("version_prefix", ""),
+            version_id=entry.get("version_id", ""))
+    # A dependency may have been resolved first via a Modrinth ID rather than
+    # the explicit slug. Apply reviewed sides to the canonical project identity.
+    client_only = {canonical_ids[entry["project"]] for entry in cfg["mods"]
+                   if entry.get("client_only") and entry["project"] in canonical_ids}
+    side_overrides = {canonical_ids[entry["project"]]: entry["environment"] for entry in cfg["mods"]
+                      if entry.get("environment") and entry["project"] in canonical_ids}
     for item in found.values():
-        if item["requested"] in client_only:
+        override = side_overrides.get(item["id"], {})
+        if any(side not in ("client", "server") or value not in ("required", "optional", "unsupported")
+               for side, value in override.items()):
+            raise BuildError("Invalid reviewed environment override: " + item["requested"])
+        item["environment"].update(override)
+        if item["id"] in client_only:
             if item["environment"]["client"] == "unsupported":
                 raise BuildError("Client-only mod is not client-compatible: " + item["requested"])
             item["environment"]["server"] = "unsupported"
+        lock = pins.get(item["id"])
+        if lock and item["environment"] != lock["environment"]:
+            raise BuildError("Locked Modrinth environment changed: " + item["requested"])
+    if pins and set(found) != set(pins):
+        raise BuildError("Locked profile is incomplete; missing projects: " + ", ".join(sorted(set(pins) - set(found))))
     return list(found.values()), skipped
 
 def verify(data, hashes):
@@ -245,6 +309,84 @@ def external_records(cfg):
     return records
 
 
+def compatibility_jar():
+    """Package our data-only NeoForge mod; no third-party binary is embedded."""
+    import io
+    source = ROOT / "compat" / "techquest-compat"
+    if not (source / "META-INF" / "neoforge.mods.toml").is_file():
+        raise BuildError("Missing TechQuest compatibility resources")
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(source.rglob("*")):
+            if path.is_file():
+                # Fixed timestamps make repeated builds byte-identical.
+                info = zipfile.ZipInfo(path.relative_to(source).as_posix(), (2026, 1, 1, 0, 0, 0))
+                info.compress_type = zipfile.ZIP_DEFLATED
+                archive.writestr(info, path.read_bytes())
+    return buffer.getvalue()
+
+
+def patch_superb_server_jar(path):
+    """Remove a client mixin from SBW 0.8.9.2's common list, on servers only.
+
+    Call only AFTER verifying the original download hash. The original remains
+    unchanged in the client and .mrpack download manifest; no patched JAR is published.
+    """
+    path = Path(path)
+    if not path.name.startswith("superbwarfare-0.8.9.2-"):
+        return False
+    config_name = "mixins.superbwarfare.json"
+    with zipfile.ZipFile(path) as source:
+        config = json.loads(source.read(config_name))
+        if "ClientLevelMixin" not in config.get("client", []):
+            raise BuildError("Unexpected Superb Warfare mixin layout; review workaround")
+        if "ClientLevelMixin" not in config.get("mixins", []):
+            return False
+        if any(name.upper().endswith((".SF", ".RSA", ".DSA"))
+               for name in source.namelist() if name.startswith("META-INF/")):
+            raise BuildError("Refusing to patch a signed Superb Warfare JAR")
+        config["mixins"].remove("ClientLevelMixin")
+        temporary = path.with_suffix(".jar.tmp")
+        try:
+            with zipfile.ZipFile(temporary, "w") as target:
+                for info in source.infolist():
+                    data = (json.dumps(config, indent=2).encode("utf-8")
+                            if info.filename == config_name else source.read(info.filename))
+                    target.writestr(info, data)
+        except Exception:
+            temporary.unlink(missing_ok=True)
+            raise
+    temporary.replace(path)
+    print("Applied server-only Superb Warfare ClientLevelMixin fix:", path.name)
+    return True
+
+
+def remove_stale_generated_jars(directory, expected):
+    """Generated output must not retain older mod versions after rebuilding."""
+    for path in directory.glob("*.jar"):
+        if path.name not in expected:
+            path.unlink()
+            print("Removed obsolete generated mod:", path.name)
+
+
+def client_config_overrides(cfg):
+    """Version-reviewed client presets; the server-named file is for singleplayer."""
+    result = {}
+    physics = next((mod for mod in cfg.get("mods", [])
+                    if mod["project"] == "physicsmod"), None)
+    if physics:
+        if physics.get("version_id") != "wudTG1nk" or not physics.get("client_only"):
+            raise BuildError("Review Physics Mod client preset before changing its version or side")
+        result.update({"config/physicsmod/" + name: (ROOT / "compat" / "physicsmod" / name).read_bytes()
+                       for name in ("physics_client_config.json", "physics_server_config.json")})
+    zoom = next((mod for mod in cfg.get("mods", []) if mod["project"] == "better-zoom"), None)
+    if zoom:
+        if zoom.get("version_id") != "NwwnadOr" or not zoom.get("client_only"):
+            raise BuildError("Review Better Zoom client preset before changing its version or side")
+        result["config/betterzoom-client.toml"] = (ROOT / "compat/client-controls/betterzoom-client.toml").read_bytes()
+    return result
+
+
 def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
     files = []
     for rec in mods:
@@ -280,17 +422,57 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("modrinth.index.json", json.dumps(idx, ensure_ascii=False, indent=2))
-        video = cfg.get("performance_profile", {}).get("video_defaults", {})
-        if video:
-            lines = ["%s:%s" % (key, value) for key, value in video.items()]
-            archive.writestr("overrides/options.txt", "\n".join(lines) + "\n")
+        settings = client_options(cfg)
+        if settings:
+            archive.writestr("overrides/options.txt", settings)
             archive.writestr("overrides/TECHQUEST_OPTIMIZED.txt",
                 "Unified optimized TechQuest client. Iris shaders are not included. "
                 "Gameplay mods are preserved. Set graphics Fast, view distance 4-6, "
                 "particles minimal. The settings are not a guarantee of FPS gains.\n")
         for relative, data in guide_overrides().items():
             archive.writestr("overrides/" + relative, data)
+        for relative, data in client_config_overrides(cfg).items():
+            archive.writestr("overrides/" + relative, data)
+        # CurseForge-only, All Rights Reserved additions stay user-supplied.
+        # Include metadata for the GUI and server operator, never the author JAR.
+        local_mods = cfg.get("optional_local_mods", [])
+        if local_mods:
+            for local_mod in local_mods:
+                if (local_mod.get("install_mode") != "manual_user_import" or
+                    local_mod.get("loader") != cfg["loader"] or
+                    local_mod.get("minecraft") != cfg["minecraft"] or
+                    not local_mod.get("source", "").startswith(
+                        "https://www.curseforge.com/minecraft/mc-mods/")):
+                    raise BuildError("Invalid optional manual mod metadata")
+                safe_filename(local_mod["file_name"])
+            archive.writestr("overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json",
+                             json.dumps(local_mods, ensure_ascii=False, indent=2) + "\n")
+        gunpacks_file = ROOT / "tacz_official_gunpacks.json"
+        if gunpacks_file.is_file():
+            gunpacks = json.loads(gunpacks_file.read_text(encoding="utf-8"))
+            if gunpacks.get("target", {}).get("minecraft") != cfg["minecraft"]:
+                raise BuildError("TaCZ official gunpack manifest game-version mismatch")
+            archive.writestr("overrides/TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json",
+                             json.dumps(gunpacks, ensure_ascii=False, indent=2) + "\n")
+        archive.writestr("overrides/mods/" + COMPAT_JAR_NAME, compatibility_jar())
     return len(files)
+
+
+def client_options(cfg):
+    """One options.txt source for .mrpack, generated client and Windows GUI."""
+    profile = cfg.get("performance_profile", {})
+    lines = ["%s:%s" % item for item in profile.get("video_defaults", {}).items()]
+    for name, value in profile.get("key_defaults", {}).items():
+        if any(character in name + value for character in ("\n", "\r")) or ":" in name:
+            raise BuildError("Invalid keybinding default: " + name)
+        lines.append("key_%s:%s" % (name, value))
+    if lines:
+        # Without this header Minecraft applies pre-1.13 integer-key migrations to
+        # modern key.keyboard.* strings and discards the generated options.
+        if cfg.get("minecraft") != "1.21.1":
+            raise BuildError("Review options.txt DataVersion for this Minecraft version")
+        lines.insert(0, "version:3955")
+    return ("\n".join(lines) + "\n").encode("utf-8") if lines else b""
 
 def main():
     argp = argparse.ArgumentParser(description="TechQuest client/server pack generator")
@@ -317,7 +499,7 @@ def main():
                            "hashes": row["hashes"]}
                           for row in external]})
     if not args.no_mrpack:
-        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack", manual, external)
+        n = make_mrpack(cfg, resolved, out / "TechQuest_1.21.1_0.3.3_ALPHA.mrpack", manual, external)
         print("Generated Modrinth manifest:", n, "files")
     if args.resolve_only:
         print("Version resolution done. Minecraft startup is NOT verified.")
@@ -326,6 +508,12 @@ def main():
     server = out / "server" / "mods"
     client.mkdir(parents=True, exist_ok=True)
     server.mkdir(parents=True, exist_ok=True)
+    for side, directory in (("client", client), ("server", server)):
+        expected = {rec["filename"] for rec in resolved if rec["environment"][side] != "unsupported"}
+        expected.update(local["filename"] for local in manual)
+        expected.update(extra["filename"] for extra in external)
+        expected.add(COMPAT_JAR_NAME)
+        remove_stale_generated_jars(directory, expected)
     for rec in resolved:
         env = rec["environment"]
         if env["client"] != "unsupported":
@@ -341,11 +529,22 @@ def main():
     for extra in external:
         (client / extra["filename"]).write_bytes(extra["data"])
         (server / extra["filename"]).write_bytes(extra["data"])
+    compat_bytes = compatibility_jar()
+    for directory in (client, server):
+        (directory / COMPAT_JAR_NAME).write_bytes(compat_bytes)
+    for jar in server.glob("superbwarfare-*.jar"):
+        patch_superb_server_jar(jar)
+    if client_options(cfg):
+        (out / "client" / "options.txt").write_bytes(client_options(cfg))
+    for relative, data in client_config_overrides(cfg).items():
+        target = out / "client" / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
     for relative, data in guide_overrides().items():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
-        if relative.startswith("config/openloader/"):
+        if relative.startswith(("config/openloader/", "patchouli_books/techquest_guide/")):
             server_target = out / "server" / relative
             server_target.parent.mkdir(parents=True, exist_ok=True)
             server_target.write_bytes(data)

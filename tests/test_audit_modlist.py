@@ -37,5 +37,15 @@ class AuditTests(unittest.TestCase):
         self.assertEqual([row["status"] for row in result], ["missing", "available"])
         self.assertIn("Проблемных обязательных:** 1", audit.render_markdown(cfg, result))
 
+    def test_audit_reports_locked_release_instead_of_a_newer_available_one(self):
+        cfg = {"minecraft": "1.21.1", "loader": "neoforge", "mods": [{"project": "example"}],
+               "modrinth_lock": {"ProjectID": {"version_id": "old", "filename": "old.jar", "sha512": "a" * 128}}}
+        versions = [{"id": "new", "project_id": "ProjectID", "version_number": "2.0", "date_published": "2026-11-08"},
+                    {"id": "old", "project_id": "ProjectID", "version_number": "1.0", "date_published": "2026-01-01",
+                     "files": [{"filename": "old.jar", "hashes": {"sha512": "a" * 128}}]}]
+        with patch.object(audit.time, "sleep"):
+            rows = audit.audit(cfg, lambda *_: versions)
+        self.assertEqual((rows[0]["status"], rows[0]["version"]), ("available", "1.0"))
+
 if __name__ == "__main__":
     unittest.main()
