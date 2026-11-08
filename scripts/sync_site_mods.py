@@ -152,5 +152,14 @@ if end < 0:
     raise SystemExit("inline mod data terminator is missing")
 payload = json.dumps(mods, ensure_ascii=False, indent=2).replace("</", "<\\/")
 source = source[:start] + marker + payload + source[end:]
+pack_marker = "window.TQ_PACK = "
+start = source.find(pack_marker)
+if start < 0:
+    raise SystemExit("inline pack metadata marker is missing")
+end = source.find(";\n", start)
+if end < 0:
+    raise SystemExit("inline pack metadata terminator is missing")
+pack = {"version": cfg["version"], "minecraft": cfg["minecraft"], "neoforge": cfg["loader_version"]}
+source = source[:start] + pack_marker + json.dumps(pack, ensure_ascii=False) + source[end:]
 index.write_text(source, encoding="utf-8")
 print("Updated inline catalog:", len(mods), "mods")
