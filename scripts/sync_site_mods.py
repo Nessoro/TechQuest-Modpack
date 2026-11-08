@@ -6,6 +6,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 cfg = json.loads((ROOT / "modlist.json").read_text(encoding="utf-8"))
 NAMES = {
+    "aquamirae": "Aquamirae — тестовый кандидат",
+    "fragmentum": "Fragmentum",
     "mcheli-modern-port": "MCHeli Modern Port — тест авиации",
     "better-zoom": "Better Zoom",
     "controlling": "Controlling",
@@ -64,6 +66,8 @@ NAMES = {
     "lithium": "Lithium",
 }
 DESCRIPTIONS = {
+    "aquamirae": "Океанские структуры, существа и босс; отдельный тестовый PR #15, игровой запуск не подтверждён.",
+    "fragmentum": "Обязательная библиотека Aquamirae, версия 5.4.0.",
     "mcheli-modern-port": "Тестовая авиация: F-22A, F-14D, F-35 и другие модели. Сначала Creative; полёт и сервер не проверены.",
     "better-zoom": "Клиентский зум Z + колесо с плавным возвратом FOV.",
     "controlling": "Поиск назначений, конфликтов и свободных клавиш.",

@@ -197,6 +197,16 @@
       "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
     },
     {
+      "project": "aquamirae",
+      "group": "Приключения",
+      "required": true,
+      "version_id": "lKu7coya",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    {
       "project": "waystones",
       "group": "Комфорт",
       "required": true
@@ -417,6 +427,16 @@
       "group": "Военная техника",
       "required": true,
       "version_id": "5LbFIXGp",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    {
+      "project": "fragmentum",
+      "group": "Библиотеки",
+      "required": true,
+      "version_id": "kCXNhuIV",
       "environment": {
         "client": "required",
         "server": "required"
