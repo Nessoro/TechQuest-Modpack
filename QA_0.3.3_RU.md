@@ -34,6 +34,8 @@
 
 Дополнительная ветка `fix/neoforge-zoom-controls-0.3.3`: задачи #9, #13, #18. Автоматические тесты загрузчика и реальных источников, Windows client-profile smoke-test и новые клиентские назначения описаны в [NEOFORGE_FALLBACK_RU.md](docs/NEOFORGE_FALLBACK_RU.md) и [CONTROLS_RU.md](docs/CONTROLS_RU.md). Игровой тест зума/Controlify, Xbox/джойстика и полный разбор конфликтов **не выполнены**; эти задачи не закрываются по одному успешному CI.
 
+Для коммита `c41b984` [Windows client-profile smoke-test](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906563) прошёл: официальный NeoForge Installer создал версию и профиль Launcher при намеренно недоступном основном Maven. Прошли также 89 Python-тестов, C# проверки, аудит 94 клиентских / 76 серверных JAR (0 ошибок), статическая карта 159 конструкторов / 110 разобранных назначений, Windows EXE/self-test. Это проверка установки и статических данных, **не запуск Minecraft**. Отдельная проверка загрузки и инициализации SDL3 на Windows также не заменяет тест Xbox/джойстика.
+
 ## Историческая проверка предыдущей версии
 
 - Предыдущая версия TechQuest запускалась.

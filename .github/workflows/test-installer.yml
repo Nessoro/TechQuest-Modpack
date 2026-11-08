@@ -7,6 +7,8 @@ on:
       - tests/neoforge-bootstrap/**
       - scripts/check_neoforge_bootstrap.py
       - scripts/smoke_launcher_install.py
+      - scripts/smoke_controller_native.py
+      - compat/client-controls/verified-mods.json
       - .github/workflows/test-installer.yml
 permissions:
   contents: read
@@ -47,3 +49,5 @@ jobs:
           java-version: '21'
       - name: Install real NeoForge client profile with primary Maven unavailable
         run: python scripts/smoke_launcher_install.py
+      - name: Load exact bundled Controlify SDL3 on Windows (no physical device test)
+        run: python scripts/smoke_controller_native.py
