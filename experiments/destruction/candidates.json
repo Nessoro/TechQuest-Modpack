@@ -1,0 +1,195 @@
+{
+  "reviewed_on": "2026-11-07",
+  "base_commit": "535de72501f92616c32e29ec7fab1c4adadf417e",
+  "target": {
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.264",
+    "java": 21
+  },
+  "installed_in_pack": false,
+  "runtime_tested": false,
+  "candidates": [
+    {
+      "project": "physicsmod",
+      "project_id": "Xy8aRQKS",
+      "version_id": "wudTG1nk",
+      "version": "3.0.35",
+      "version_type": "release",
+      "client_side": "required",
+      "server_side": "unsupported",
+      "license": {
+        "id": "LicenseRef-All-Rights-Reserved",
+        "name": "",
+        "url": null
+      },
+      "source_url": null,
+      "published_dependencies": [],
+      "verified_files": [
+        {
+          "filename": "physics-mod-3.0.35-mc-1.21.1-neoforge.jar",
+          "url": "https://cdn.modrinth.com/data/Xy8aRQKS/versions/wudTG1nk/physics-mod-3.0.35-mc-1.21.1-neoforge.jar",
+          "size": 94154385,
+          "hashes": {
+            "sha512": "230aa7bc8c9860c4fe57dd2aabfdc468fea6ccee416f1097223bed2c5f50e2d4371b123fdf885baeef7812dc7bed670044f8cfe7c5167b54764c80570de30d3e",
+            "sha1": "5f6a543eecb4db12de389779596d575004033437"
+          }
+        }
+      ],
+      "declared_dependencies": {
+        "physicsmod": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.1.219,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21.1,1.22)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          }
+        ]
+      },
+      "mixin_class_presence": [
+        {
+          "config": "physicsmod.mixins.json",
+          "listed_classes": 137,
+          "missing_classes": [
+            "net/diebuddies/mixins/create/MixinAbstractContraptionEntity.class"
+          ]
+        }
+      ],
+      "scope": "Static metadata, archive and hash inspection; no Minecraft launch."
+    },
+    {
+      "project": "physicsmod",
+      "project_id": "Xy8aRQKS",
+      "version_id": "ZhWEOiAq",
+      "version": "3.0.34",
+      "version_type": "release",
+      "client_side": "required",
+      "server_side": "unsupported",
+      "license": {
+        "id": "LicenseRef-All-Rights-Reserved",
+        "name": "",
+        "url": null
+      },
+      "source_url": null,
+      "published_dependencies": [],
+      "verified_files": [
+        {
+          "filename": "physics-mod-3.0.34-mc-1.21.1-neoforge.jar",
+          "url": "https://cdn.modrinth.com/data/Xy8aRQKS/versions/ZhWEOiAq/physics-mod-3.0.34-mc-1.21.1-neoforge.jar",
+          "size": 94081649,
+          "hashes": {
+            "sha1": "fd6dc39b8bf434690ab7bbf911a22c38c3443b82",
+            "sha512": "267fd1cd77fff1673af254caeadd8ebdd6126d97454a124ceec3f718a4d2ca51b3c2098ba21101a0e408978d1a62a8c4f82cfb4f43d808303574cd43711057ec"
+          }
+        }
+      ],
+      "declared_dependencies": {
+        "physicsmod": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.1.219,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21.1,1.22)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          }
+        ]
+      },
+      "mixin_class_presence": [
+        {
+          "config": "physicsmod.mixins.json",
+          "listed_classes": 137,
+          "missing_classes": [
+            "net/diebuddies/mixins/create/MixinAbstractContraptionEntity.class"
+          ]
+        }
+      ],
+      "scope": "Static metadata, archive and hash inspection; no Minecraft launch."
+    },
+    {
+      "project": "fbp-renewed",
+      "project_id": "S2guHrs2",
+      "version_id": "iHU2F7zM",
+      "version": "21.1.6.0+neoforge",
+      "version_type": "release",
+      "client_side": "required",
+      "server_side": "unsupported",
+      "license": {
+        "id": "GPL-3.0-only",
+        "name": "GNU General Public License v3.0 only",
+        "url": "https://github.com/Hantonik/FancyBlockParticles/blob/1.20.4/LICENSE.md"
+      },
+      "source_url": "https://github.com/Hantonik/FancyBlockParticles",
+      "published_dependencies": [],
+      "verified_files": [
+        {
+          "filename": "FancyBlockParticles-1.21.1-neoforge-21.1.6.0.jar",
+          "url": "https://cdn.modrinth.com/data/S2guHrs2/versions/iHU2F7zM/FancyBlockParticles-1.21.1-neoforge-21.1.6.0.jar",
+          "size": 311413,
+          "hashes": {
+            "sha1": "e27f4641138331f4b3371923dc4853c7cac4707f",
+            "sha512": "5c3ca6d57e601b47ffdbc39291ea80b6a3a57a2b2ba85d4651d3f2f918f2993a1ccf196358f12cfdbb10b29ec72d513cdb429944ba2aed2b44e12b1cfd435b47"
+          }
+        },
+        {
+          "filename": "FancyBlockParticles-1.21.1-neoforge-21.1.6.0-sources.jar",
+          "url": "https://cdn.modrinth.com/data/S2guHrs2/versions/iHU2F7zM/FancyBlockParticles-1.21.1-neoforge-21.1.6.0-sources.jar",
+          "size": 165830,
+          "hashes": {
+            "sha1": "8a4474a53321ba5d01156f2ad439458214f24968",
+            "sha512": "c52ab97f135e2d93fb5374c3bc14612fd91057bb560a92d5bda8d3f1b13c339d602b052976b56bdfc95031c10542298e3bbc28fa2d759198e1ba5f064bd7c159"
+          }
+        }
+      ],
+      "declared_dependencies": {
+        "fbp": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.1,)",
+            "ordering": "NONE",
+            "side": "CLIENT"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21.1,1.22)",
+            "ordering": "NONE",
+            "side": "CLIENT"
+          }
+        ]
+      },
+      "mixin_class_presence": [
+        {
+          "config": "fbp.mixins.json",
+          "listed_classes": 7,
+          "missing_classes": []
+        },
+        {
+          "config": "fbp.neoforge.mixins.json",
+          "listed_classes": 5,
+          "missing_classes": []
+        }
+      ],
+      "scope": "Static metadata, archive and hash inspection; no Minecraft launch."
+    }
+  ],
+  "physicsmod_create_warning": {
+    "issue": "https://github.com/haubna/PhysicsMod/issues/1264",
+    "follow_up": "https://github.com/haubna/PhysicsMod/issues/1264#issuecomment-6620285385",
+    "status": "Issue closed; reporter attributed crash to another mod. Missing class is observed, a crash is not proven."
+  }
+}

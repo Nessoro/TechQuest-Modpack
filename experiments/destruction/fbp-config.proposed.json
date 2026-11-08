@@ -1,0 +1,34 @@
+{
+  "global": {
+    "enabled": true,
+    "cullParticles": true,
+    "freezeEffect": false,
+    "infiniteDuration": false
+  },
+  "terrain": {
+    "fancyBreakingParticles": true,
+    "fancyCrackingParticles": false,
+    "fancyFallingDustParticles": false,
+    "particlesPerAxis": 2,
+    "minLifetime": 10,
+    "maxLifetime": 25,
+    "spawnWhileFrozen": false,
+    "infiniteDuration": false,
+    "restOnFloor": true,
+    "bounceOffWalls": true,
+    "entityCollision": false,
+    "waterPhysics": false
+  },
+  "flame": {"enabled": false},
+  "smoke": {"enabled": false},
+  "campfireSmoke": {"enabled": false},
+  "rain": {"enabled": false},
+  "snow": {"enabled": false},
+  "drip": {"enabled": false},
+  "misc": {
+    "fancySnowballParticles": false,
+    "fancySlimeParticles": false,
+    "fancyBreakingSplashPotionParticles": false
+  },
+  "animations": {"enabled": false}
+}
