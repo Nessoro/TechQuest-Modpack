@@ -52,7 +52,16 @@ def audit(cfg, fetch=fetch_versions):
                "status": "unknown", "version": None, "reason": None}
         try:
             versions = fetch(slug, cfg["minecraft"], cfg["loader"])
-            version = choose_version(versions, item.get("version_prefix", ""), item.get("version_id", ""))
+            canonical = next((v["project_id"] for v in versions if v.get("project_id")), slug)
+            lock = cfg.get("modrinth_lock", {}).get(canonical, {})
+            locked = lock.get("version_id", "")
+            declared = item.get("version_id", "")
+            if locked and declared and locked != declared:
+                raise ValueError("Explicit version conflicts with the locked project version")
+            version = choose_version(versions, item.get("version_prefix", ""), locked or declared)
+            if version and lock and not any(f.get("filename") == lock["filename"]
+                    and f.get("hashes", {}).get("sha512") == lock["sha512"] for f in version.get("files", [])):
+                raise ValueError("Locked runtime file is missing or changed")
             if version is None:
                 row["status"] = "missing"
                 row["reason"] = "No matching loader/Minecraft version, pinned prefix or version ID"

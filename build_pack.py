@@ -85,6 +85,19 @@ def select_mod_file(version):
     return next((file for file in files if file.get("primary")), files[0])
 
 def resolve_manifest(cfg):
+    pins = cfg.get("modrinth_lock", {})
+    if not isinstance(pins, dict):
+        raise BuildError("Invalid Modrinth lock")
+    for identity, lock in pins.items():
+        if (not isinstance(identity, str) or not isinstance(lock, dict)
+                or not isinstance(lock.get("version_id"), str) or not lock["version_id"]
+                or not isinstance(lock.get("filename"), str)
+                or not isinstance(lock.get("sha512"), str) or len(lock["sha512"]) != 128
+                or any(c not in "0123456789abcdef" for c in lock["sha512"])
+                or not isinstance(lock.get("environment"), dict)
+                or set(lock.get("environment", {})) != {"client", "server"}
+                or any(v not in ("required", "optional", "unsupported") for v in lock["environment"].values())):
+            raise BuildError("Invalid Modrinth lock entry: " + str(identity))
     found = {}
     canonical_ids = {}
     skipped = []
@@ -104,10 +117,18 @@ def resolve_manifest(cfg):
                 "loaders": json.dumps([cfg["loader"]]),
                 "game_versions": json.dumps([cfg["minecraft"]])
             })
-            version = select_version(versions, prefix, version_id)
             meta = get_json("/project/" + urllib.parse.quote(project, safe=""))
             canonical_id = meta["id"]
             canonical_ids[project] = canonical_id
+            lock = pins.get(canonical_id, {})
+            if pins and not lock:
+                raise BuildError("Unlocked Modrinth project requires review: " + project)
+            locked = lock.get("version_id", "")
+            if locked and version_id and locked != version_id:
+                raise BuildError("Exact version pin conflict for %s: locked %s but %s requires %s" %
+                                 (project, locked, parent, version_id))
+            version_id = locked or version_id
+            version = select_version(versions, prefix, version_id)
             if meta.get("project_type") != "mod":
                 raise BuildError("Project is not a mod")
             if canonical_id in found:
@@ -118,7 +139,14 @@ def resolve_manifest(cfg):
                     raise BuildError("Version conflict for %s: resolved %s but requested %s" %
                                      (project, found[canonical_id]["version"], prefix))
                 return
-            selected = select_mod_file(version)
+            if lock:
+                files = [f for f in version.get("files", []) if f.get("filename") == lock["filename"]
+                         and f.get("hashes", {}).get("sha512") == lock["sha512"]]
+                if not files:
+                    raise BuildError("Locked Modrinth file is missing or changed: " + project)
+                selected = select_mod_file(dict(version, files=files))
+            else:
+                selected = select_mod_file(version)
             safe_filename(selected["filename"])
             side = {"client": meta.get("client_side", "required"),
                     "server": meta.get("server_side", "required")}
@@ -168,6 +196,11 @@ def resolve_manifest(cfg):
             if item["environment"]["client"] == "unsupported":
                 raise BuildError("Client-only mod is not client-compatible: " + item["requested"])
             item["environment"]["server"] = "unsupported"
+        lock = pins.get(item["id"])
+        if lock and item["environment"] != lock["environment"]:
+            raise BuildError("Locked Modrinth environment changed: " + item["requested"])
+    if pins and set(found) != set(pins):
+        raise BuildError("Locked profile is incomplete; missing projects: " + ", ".join(sorted(set(pins) - set(found))))
     return list(found.values()), skipped
 
 def verify(data, hashes):
@@ -433,6 +466,12 @@ def client_options(cfg):
         if any(character in name + value for character in ("\n", "\r")) or ":" in name:
             raise BuildError("Invalid keybinding default: " + name)
         lines.append("key_%s:%s" % (name, value))
+    if lines:
+        # Without this header Minecraft applies pre-1.13 integer-key migrations to
+        # modern key.keyboard.* strings and discards the generated options.
+        if cfg.get("minecraft") != "1.21.1":
+            raise BuildError("Review options.txt DataVersion for this Minecraft version")
+        lines.insert(0, "version:3955")
     return ("\n".join(lines) + "\n").encode("utf-8") if lines else b""
 
 def main():

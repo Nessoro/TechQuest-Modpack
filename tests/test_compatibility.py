@@ -145,7 +145,7 @@ class CompatibilityTests(unittest.TestCase):
                 return [version]
             return {"id": "litho-id", "project_type": "mod", "client_side": "unsupported", "server_side": "required"}
         with patch.object(builder, "get_json", side_effect=fetch):
-            rows, skipped = builder.resolve_manifest(dict(cfg, mods=[entry]))
+            rows, skipped = builder.resolve_manifest(dict(cfg, mods=[entry], modrinth_lock={}))
         self.assertFalse(skipped)
         self.assertEqual(rows[0]["environment"], {"client": "required", "server": "required"})
 

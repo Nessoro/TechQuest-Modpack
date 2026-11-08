@@ -33,7 +33,7 @@ class PhysicsClientTests(unittest.TestCase):
             return {"id": "Xy8aRQKS", "title": "Physics Mod", "project_type": "mod",
                     "client_side": "required", "server_side": "required"}
 
-        cfg = dict(self.cfg, mods=[self.entry])
+        cfg = dict(self.cfg, mods=[self.entry], modrinth_lock={})
         with patch.object(builder, "get_json", side_effect=metadata):
             records, skipped = builder.resolve_manifest(cfg)
         self.assertFalse(skipped)

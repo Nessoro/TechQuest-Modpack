@@ -143,7 +143,10 @@ def observe(profile, parent, launcher, game, report):
     }
     jvm = arguments(parent["arguments"]["jvm"] + profile["arguments"]["jvm"], variables)
     game_args = arguments(parent["arguments"]["game"] + profile["arguments"]["game"], variables)
-    command = ["java", "-Xms1G", "-Xmx5G", "-Dtechquest.probe.dir=" + str(report), *jvm,
+    cfg = json.loads((ROOT / "modlist.json").read_text())
+    wanted_keys = cfg["performance_profile"]["key_defaults"]
+    command = ["java", "-Xms1G", "-Xmx5G", "-Dtechquest.probe.dir=" + str(report),
+               "-Dtechquest.probe.bindings=" + ",".join(wanted_keys), *jvm,
                profile["mainClass"], *game_args, "--width", "960", "--height", "600"]
     with (report / "console.log").open("w") as log:
         process = subprocess.Popen(command, cwd=game, stdout=log, stderr=subprocess.STDOUT)
@@ -157,6 +160,16 @@ def observe(profile, parent, launcher, game, report):
             ready = json.loads((report / "ready.json").read_text())
             if ready.get("screen") != "TitleScreen" or ready.get("overlay") is not False:
                 raise RuntimeError("Invalid client readiness observation")
+            observed = ready["options"]
+            expected = cfg["performance_profile"]["video_defaults"]
+            if (observed["renderDistance"] != expected["renderDistance"]
+                    or observed["simulationDistance"] != expected["simulationDistance"]
+                    or observed["maxFps"] != expected["maxFps"] or observed["graphics"].lower() != "fast"):
+                raise RuntimeError("Generated performance settings were not applied by the real client")
+            if ready["bindings"] != wanted_keys:
+                raise RuntimeError("Generated key bindings were not applied by the real client: " + str(ready["bindings"]))
+            if any(value != "NONE" for value in ready["modifiers"].values()):
+                raise RuntimeError("A default key modifier survived the generated plain-key assignment")
             (report / "stop").touch()
             if process.wait(timeout=45) != 0:
                 raise RuntimeError("Client exited with failure after reaching the menu")
@@ -180,6 +193,9 @@ def main():
         raise SystemExit("Only an isolated Linux GitHub Actions runner with Xvfb is supported")
     report = ROOT / "output/runtime-client"
     report.mkdir(parents=True, exist_ok=False)
+    shutil.copy2(ROOT / "output/versions-lock.json", report / "versions-lock.json")
+    with zipfile.ZipFile(next((ROOT / "output").glob("*.mrpack"))) as archive:
+        (report / "download-index.json").write_bytes(archive.read("modrinth.index.json"))
     (report / "scope.json").write_text(json.dumps({"scope": "real client menu only, plus CI observation mod",
         "world_tested": False, "server_tested": False, "performance_benchmark": False,
         "account_login_tested": False, "commit": os.environ.get("GITHUB_SHA")}, indent=2))
@@ -193,6 +209,12 @@ def main():
         download(entry, version / "1.21.1.json")
         parent = json.loads((version / "1.21.1.json").read_text())
         download(parent["downloads"]["client"], version / "1.21.1.jar")
+        with zipfile.ZipFile(version / "1.21.1.jar") as archive:
+            data_version = json.loads(archive.read("version.json"))["world_version"]
+        defaults = (ROOT / "output/client/options.txt").read_text()
+        if ("version:" + str(data_version)) not in defaults.splitlines():
+            raise ValueError("Generated options DataVersion does not match the verified official client")
+        (report / "minecraft-data-version.json").write_text(json.dumps({"game": "1.21.1", "data_version": data_version}))
         (launcher / "launcher_profiles.json").write_text('{"profiles":{}}')
         plan = json.loads((ROOT / "windows-installer/assets/neoforge-21.1.264-bootstrap.json").read_text())
         installer = Path(tmp) / "installer.jar"
@@ -203,6 +225,10 @@ def main():
         profile = json.loads((launcher / "versions/neoforge-21.1.264/neoforge-21.1.264.json").read_text())
         game = Path(tmp) / "game"
         shutil.copytree(ROOT / "output/client", game)
+        # CI fixture preference only: skip Minecraft's first-run accessibility welcome.
+        # Ordinary player options remain unchanged and no license prompt is accepted.
+        with (game / "options.txt").open("a") as options:
+            options.write("onboardAccessibility:false\n")
         observe(profile, parent, launcher, game, report)
 
 

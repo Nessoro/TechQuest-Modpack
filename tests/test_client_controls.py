@@ -59,6 +59,7 @@ class ClientControlsTests(unittest.TestCase):
                 self.assertEqual(list(install_server.server_records(index)), [])
                 options = archive.read("overrides/options.txt")
                 self.assertEqual(options, build_pack.client_options(cfg))
+                self.assertTrue(options.startswith(b"version:3955\n"))
                 self.assertIn(b"key_key.betterzoom.zoom:key.keyboard.z\n", options)
                 self.assertIn(b"key_key.tacz.refit.desc:key.keyboard.f8\n", options)
                 self.assertIn(b"key_gui.xaero_enlarge_map:key.keyboard.f9\n", options)
@@ -99,6 +100,10 @@ class ClientControlsTests(unittest.TestCase):
         rows[-1] = dict(rows[-1], id=None)
         with self.assertRaisesRegex(ValueError, "Unresolved constructor"):
             audit_keybinds.verify_zoom(audit_keybinds.analyze(rows, overrides))
+
+    def test_options_header_is_not_silently_reused_for_another_game_version(self):
+        with self.assertRaisesRegex(build_pack.BuildError, "DataVersion"):
+            build_pack.client_options({"minecraft": "different", "performance_profile": {"video_defaults": {"renderDistance": 6}}})
 
     def test_zoom_preset_requires_reviewed_version(self):
         cfg = {"mods": [{"project": "better-zoom", "client_only": True, "version_id": "unreviewed"}]}
