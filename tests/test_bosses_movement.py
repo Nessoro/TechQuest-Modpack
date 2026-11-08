@@ -25,7 +25,6 @@ class BossesAndMovementTests(unittest.TestCase):
         self.assertEqual(self.cfg["loader"], "neoforge")
         expected = {
             "bosses-of-mass-destruction-forge": "1.3.3",
-            "parcool": "1.21.1-3.4.3.3",
         }
         for slug, prefix in expected.items():
             with self.subTest(slug=slug):
@@ -33,17 +32,18 @@ class BossesAndMovementTests(unittest.TestCase):
                 self.assertTrue(mod["required"])
                 self.assertEqual(mod["version_prefix"], prefix)
                 self.assertFalse(mod.get("client_only", False))
-        self.assertNotIn("crawl", self.mods, "Do not duplicate ParCool's crawling action")
+        self.assertNotIn("parcool", self.mods, "Removed at owner request: не нужен")
+        self.assertNotIn("crawl", self.mods, "No additional crawling mod requested")
 
     def test_guides_cover_new_mods(self):
-        for entry_id in ("bomd", "parcool"):
+        for entry_id in ("bomd",):
             with self.subTest(entry_id=entry_id):
                 self.assertIn(entry_id, ENTRIES)
                 self.assertTrue(ENTRIES[entry_id][3])
 
     def test_pack_declares_both_mods_on_client_and_server(self):
         records = []
-        for slug in ("bosses-of-mass-destruction-forge", "parcool"):
+        for slug in ("bosses-of-mass-destruction-forge",):
             records.append({
                 "file": {
                     "filename": slug + ".jar",
@@ -55,7 +55,7 @@ class BossesAndMovementTests(unittest.TestCase):
             })
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory) / "test.mrpack"
-            self.assertEqual(build_pack.make_mrpack(self.cfg, records, target), 2)
+            self.assertEqual(build_pack.make_mrpack(self.cfg, records, target), 1)
             with zipfile.ZipFile(target) as archive:
                 index = json.loads(archive.read("modrinth.index.json"))
                 files = index["files"]
@@ -63,7 +63,7 @@ class BossesAndMovementTests(unittest.TestCase):
                     self.assertEqual(entry["env"], {
                         "client": "required", "server": "required"
                     })
-                self.assertIn(
+                self.assertNotIn(
                     "overrides/patchouli_books/techquest_guide/en_us/entries/parcool.json",
                     archive.namelist(),
                 )

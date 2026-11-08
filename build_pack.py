@@ -384,6 +384,16 @@ def client_config_overrides(cfg):
         if zoom.get("version_id") != "NwwnadOr" or not zoom.get("client_only"):
             raise BuildError("Review Better Zoom client preset before changing its version or side")
         result["config/betterzoom-client.toml"] = (ROOT / "compat/client-controls/betterzoom-client.toml").read_bytes()
+    pmmo = next((mod for mod in cfg.get("mods", [])
+                 if mod["project"] == "project-mmo"), None)
+    if pmmo:
+        # The installed version is pinned in the Modrinth lock (not in the root mod row).
+        lock = cfg.get("modrinth_lock", {}).get("KFQYC1Uy", {})
+        if (lock.get("version_id") != "9lu4zNd1" or
+                lock.get("filename") != "pmmo-1.21.1-2.10.47.jar"):
+            raise BuildError("Review Project MMO HUD preset before changing its version")
+        result["config/pmmo-client.toml"] = (
+            ROOT / "compat/client-hud/pmmo-client.toml").read_bytes()
     return result
 
 
@@ -447,13 +457,6 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
                 safe_filename(local_mod["file_name"])
             archive.writestr("overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                              json.dumps(local_mods, ensure_ascii=False, indent=2) + "\n")
-        gunpacks_file = ROOT / "tacz_official_gunpacks.json"
-        if gunpacks_file.is_file():
-            gunpacks = json.loads(gunpacks_file.read_text(encoding="utf-8"))
-            if gunpacks.get("target", {}).get("minecraft") != cfg["minecraft"]:
-                raise BuildError("TaCZ official gunpack manifest game-version mismatch")
-            archive.writestr("overrides/TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json",
-                             json.dumps(gunpacks, ensure_ascii=False, indent=2) + "\n")
         archive.writestr("overrides/mods/" + COMPAT_JAR_NAME, compatibility_jar())
     return len(files)
 

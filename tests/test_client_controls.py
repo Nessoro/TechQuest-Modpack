@@ -61,36 +61,46 @@ class ClientControlsTests(unittest.TestCase):
                 self.assertEqual(options, build_pack.client_options(cfg))
                 self.assertTrue(options.startswith(b"version:3955\n"))
                 self.assertIn(b"key_key.betterzoom.zoom:key.keyboard.z\n", options)
-                self.assertIn(b"key_key.tacz.refit.desc:key.keyboard.f8\n", options)
                 self.assertIn(b"key_gui.xaero_enlarge_map:key.keyboard.f9\n", options)
                 preset = tomllib.loads(archive.read("overrides/config/betterzoom-client.toml").decode())
                 self.assertTrue(preset["holdToZoom"])
                 self.assertTrue(preset["smoothZoom"])
                 self.assertEqual(preset["zoomMode"], "WHEEL")
                 self.assertFalse(preset["hideGui"])
+                pmmo = tomllib.loads(archive.read("overrides/config/pmmo-client.toml").decode())["Client"]["GUI"]
+                self.assertFalse(pmmo["Display Skill List"])
+                self.assertTrue(pmmo["Skill List Use Icons"])
+                self.assertEqual(pmmo["Skill List Xoffset"], 0.70)
+                self.assertEqual(pmmo["Skill List Yoffset"], 0.05)
+                self.assertTrue(pmmo["Display Gain List"])
                 install_client.install_guide_overrides(archive, root / "client")
                 (root / "client/options.txt").write_text("player-options")
                 target = root / "client/config/betterzoom-client.toml"
                 target.write_text("player-zoom-options")
+                pmmo_target = root / "client/config/pmmo-client.toml"
+                self.assertTrue(pmmo_target.exists())
+                pmmo_target.write_text("player-pmmo-options")
                 install_client.install_guide_overrides(archive, root / "client")
                 self.assertEqual((root / "client/options.txt").read_text(), "player-options")
                 self.assertEqual(target.read_text(), "player-zoom-options")
+                self.assertEqual(pmmo_target.read_text(), "player-pmmo-options")
             install_server.install_guide_overrides(pack, root / "server")
             self.assertFalse((root / "server/config/betterzoom-client.toml").exists())
+            self.assertFalse((root / "server/config/pmmo-client.toml").exists())
 
     def test_static_report_keeps_unknowns_and_verifies_only_observed_zoom_bindings(self):
         overrides = build_pack.load_cfg()["performance_profile"]["key_defaults"]
         rows = [{"id": name, "code": code, "modifier": None, "input": None, "context": None,
                  "origin": "fixture.jar", "method": "Fixture"}
-                for name, code in (("key.betterzoom.zoom", 67), ("key.tacz.refit.desc", 90),
+                for name, code in (("key.betterzoom.zoom", 67),
                                    ("gui.xaero_enlarge_map", 90),
                                    ("key.sophisticatedbackpacks.toggle_upgrade_1", 90), (None, None))]
         rows[-2]["modifier"] = "ALT"
         report = audit_keybinds.analyze(rows, overrides)
         audit_keybinds.verify_zoom(report)
         self.assertFalse(report["runtime_verified"])
-        self.assertEqual(report["constructors"], 5)
-        self.assertEqual(report["resolved"], 4)
+        self.assertEqual(report["constructors"], 4)
+        self.assertEqual(report["resolved"], 3)
         self.assertFalse(report["bindings"][-1]["resolved"])
         self.assertEqual(report["bindings"][-2]["default_modifier"], "ALT")
         self.assertEqual(report["bindings"][-2]["modifier"], "NONE")
@@ -104,6 +114,12 @@ class ClientControlsTests(unittest.TestCase):
     def test_options_header_is_not_silently_reused_for_another_game_version(self):
         with self.assertRaisesRegex(build_pack.BuildError, "DataVersion"):
             build_pack.client_options({"minecraft": "different", "performance_profile": {"video_defaults": {"renderDistance": 6}}})
+
+    def test_pmmo_preset_requires_reviewed_version(self):
+        cfg = build_pack.load_cfg()
+        cfg["modrinth_lock"]["KFQYC1Uy"]["version_id"] = "unreviewed"
+        with self.assertRaisesRegex(build_pack.BuildError, "Review Project MMO"):
+            build_pack.client_config_overrides(cfg)
 
     def test_zoom_preset_requires_reviewed_version(self):
         cfg = {"mods": [{"project": "better-zoom", "client_only": True, "version_id": "unreviewed"}]}

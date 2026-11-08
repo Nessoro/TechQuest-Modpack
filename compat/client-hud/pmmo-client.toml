@@ -1,0 +1,10 @@
+# TechQuest Project MMO 2.10.47 client-only HUD preset.
+# Applied only when config/pmmo-client.toml does not already exist.
+# Hide the large skill list on startup; Left Alt toggles it.
+# Icons and a right-side position are ready when the list is enabled.
+[Client.GUI]
+"Display Skill List" = false
+"Skill List Use Icons" = true
+"Skill List Xoffset" = 0.70
+"Skill List Yoffset" = 0.05
+"Display Gain List" = true
