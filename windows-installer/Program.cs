@@ -235,7 +235,7 @@ internal sealed class InstallerForm : Form
                 if (fileNames.Any(n => n.StartsWith("healthindicatortxf-")))
                 {
                     string[] presets = { "healthindicatortxf.json5", "jade/plugins.json",
-                        "explosionoverhaul-client.toml", "incoming-client.toml" };
+                        "explosionoverhaul/explosionoverhaul-client.toml", "incoming-client.toml" };
                     using var hud = JsonDocument.Parse(File.ReadAllText(Path.Combine(probe, "config", presets[0])));
                     if (hud.RootElement.GetProperty("position").GetString() != "TOP_CENTER" ||
                         !hud.RootElement.GetProperty("showHealth").GetBoolean()) return 15;
@@ -360,7 +360,7 @@ internal sealed class InstallerForm : Form
                 relative == "config/betterzoom-client.toml" ||
                 relative == "config/healthindicatortxf.json5" ||
                 relative == "config/jade/plugins.json" ||
-                relative == "config/explosionoverhaul-client.toml" ||
+                relative == "config/explosionoverhaul/explosionoverhaul-client.toml" ||
                 relative == "config/incoming-client.toml" ||
                 relative == "TECHQUEST_OPTIMIZED.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json" ||

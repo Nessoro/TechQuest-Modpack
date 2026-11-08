@@ -63,7 +63,7 @@ def install_guide_overrides(archive, game_dir):
                                 "config/betterzoom-client.toml",
                                 "config/healthindicatortxf.json5",
                                 "config/jade/plugins.json",
-                                "config/explosionoverhaul-client.toml",
+                                "config/explosionoverhaul/explosionoverhaul-client.toml",
                                 "config/incoming-client.toml",
                                 "TECHQUEST_INGAME_GUIDE.txt",
                                 "TECHQUEST_OPTIONAL_LOCAL_MODS.json",

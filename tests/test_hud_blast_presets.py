@@ -20,6 +20,8 @@ class HudBlastPresets(unittest.TestCase):
         self.assertEqual(health["position"], "TOP_CENTER")
         self.assertEqual(json.loads(expected["config/jade/plugins.json"])["minecraft"],
                          {"entity_health": False, "entity_armor": False})
+        self.assertIn("config/explosionoverhaul/explosionoverhaul-client.toml", expected)
+        self.assertNotIn("config/explosionoverhaul-client.toml", expected)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             pack = root / "test.mrpack"

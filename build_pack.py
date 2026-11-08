@@ -390,7 +390,7 @@ def client_config_overrides(cfg):
         ("health-indicator-txf", "N56hoqkq", "xGqsX1go", "healthindicatortxf.json5", "healthindicatortxf.json5"),
         ("jade", "nvQzSEkH", "eYz2YBGT", "jade-plugins.json", "jade/plugins.json"),
         ("explosion-overhaul-a-new-level-of-destruction", "sOxnTLKl", "mxfQE01f",
-         "explosionoverhaul-client.toml", "explosionoverhaul-client.toml"),
+         "explosionoverhaul-client.toml", "explosionoverhaul/explosionoverhaul-client.toml"),
     )
     projects = {mod["project"] for mod in cfg.get("mods", [])}
     for project, project_id, version_id, source, destination in reviewed:
