@@ -1,6 +1,6 @@
 # Установка NeoForge при недоступном Maven — задача #9
 
-Изменения тестовой ветки `fix/neoforge-zoom-controls-0.3.3`. Платформа остаётся **Minecraft 1.21.1 / NeoForge 21.1.264 / Java 21**. Клиент устанавливается через Windows GUI и официальный Minecraft Launcher, без Python и консоли.
+Изменения PR #19 включены в общую тестовую ветку `feat/bosses-parcool-0.3.3-prep`. Платформа остаётся **Minecraft 1.21.1 / NeoForge 21.1.264 / Java 21**. Клиент устанавливается через Windows GUI и официальный Minecraft Launcher, без Python и консоли.
 
 ## Как устанавливать
 

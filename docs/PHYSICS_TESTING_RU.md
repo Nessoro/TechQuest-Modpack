@@ -1,10 +1,10 @@
 # TechQuest 0.3.3 — тест Physics Mod Lite
 
-Ветка: **`experiment/physicsmod-0.3.3`**. Minecraft **1.21.1**, NeoForge **21.1.264**, Java **21**, единый Optimized-профиль. Это экспериментальный клиент с Physics Mod Lite **3.0.35** (`wudTG1nk`), а не проверенный игровой выпуск. Работа одиночной игры, которую подтвердил владелец на `535de72`, ещё не подтверждает этот эксперимент.
+Общая ветка после объединения PR #11: **`feat/bosses-parcool-0.3.3-prep`**. Minecraft **1.21.1**, NeoForge **21.1.264**, Java **21**, единый Optimized-профиль. Это экспериментальный клиент с Physics Mod Lite **3.0.35** (`wudTG1nk`), а не проверенный игровой выпуск. Работа одиночной игры, которую подтвердил владелец на `535de72`, ещё не подтверждает этот эксперимент.
 
 ## Установка через GUI и официальный Launcher
 
-1. Откройте [Actions этой ветки](https://github.com/Nessoro/TechQuest-Modpack/actions?query=branch%3Aexperiment%2Fphysicsmod-0.3.3). Выберите успешный **Build TechQuest alpha**, относящийся к последнему изменению состава/установщика этой ветки. Проверьте Windows EXE и Security Audit того же commit SHA.
+1. Откройте [Actions этой ветки](https://github.com/Nessoro/TechQuest-Modpack/actions?query=branch%3Afeat%2Fbosses-parcool-0.3.3-prep). Выберите успешный **Build TechQuest alpha**, относящийся к последнему изменению состава/установщика этой ветки. Проверьте Windows EXE и Security Audit того же commit SHA.
 2. Скачайте артефакт **TechQuest-Windows-GUI-Installer**, извлеките `TechQuestInstaller.exe`. Установите в **новую пустую папку**, например `TechQuest-Physics-Test`. Сохраните прежнюю рабочую установку для сравнения.
 3. Используйте графическую установку Java 21 / NeoForge 21.1.264 и официальный Minecraft Launcher, как в [основной инструкции](INSTALL_0.3.3_PC_RU.md). В отдельной установке Launcher укажите новую папку игры. Python и консоль для установки клиента/запуска не нужны.
 4. Сначала создайте новый тестовый мир. Существующий мир используйте только как отдельную резервную копию. Не добавляйте FBP, другие физические моды, AMW или новые gunpack одновременно: сначала нужно проверить единственное изменение.

@@ -6,6 +6,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 cfg = json.loads((ROOT / "modlist.json").read_text(encoding="utf-8"))
 NAMES = {
+    "mcheli-modern-port": "MCHeli Modern Port — тест авиации",
+    "better-zoom": "Better Zoom",
+    "controlling": "Controlling",
+    "searchables": "Searchables",
+    "physicsmod": "Physics Mod Lite",
     "buildcraft-community-edition": "BuildCraft Community Edition",
     "ae2": "Applied Energistics 2",
     "irons-spells-n-spellbooks": "Iron's Spells 'n Spellbooks",
@@ -59,6 +64,11 @@ NAMES = {
     "lithium": "Lithium",
 }
 DESCRIPTIONS = {
+    "mcheli-modern-port": "Тестовая авиация: F-22A, F-14D, F-35 и другие модели. Сначала Creative; полёт и сервер не проверены.",
+    "better-zoom": "Клиентский зум Z + колесо с плавным возвратом FOV.",
+    "controlling": "Поиск назначений, конфликтов и свободных клавиш.",
+    "searchables": "Клиентская библиотека поиска для Controlling.",
+    "physicsmod": "Ограниченная клиентская физика обломков; игровой тест ещё требуется.",
     "buildcraft-community-edition": "Классическая автоматизация, карьеры, трубы и двигатели.",
     "create": "Шестерни, вращение и автоматизированные производства.",
     "mekanism": "Техническая энергетика и многоуровневая переработка руд.",

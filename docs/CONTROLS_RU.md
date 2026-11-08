@@ -1,12 +1,12 @@
 # Управление, Xbox/джойстик и зум — задачи #13 и #18
 
-Тестовая ветка **`fix/neoforge-zoom-controls-0.3.3`** продолжает Optimized 0.3.3 на Minecraft 1.21.1 / NeoForge 21.1.264 / Java 21. Это один клиентский профиль. Новые моды управления и конфиги **не проверены запуском Minecraft**; успешная игра на базе `535de72` на них не распространяется.
+Общая тестовая ветка **`feat/bosses-parcool-0.3.3-prep`** после объединения PR #19 продолжает Optimized 0.3.3 на Minecraft 1.21.1 / NeoForge 21.1.264 / Java 21. Это один клиентский профиль. Новые моды управления и конфиги **не проверены запуском Minecraft**; успешная игра на базе `535de72` на них не распространяется.
 
 ## Новая установка и зум
 
 Снимок этого этапа, **08.11.2026 / `c41b984`**: [скачать Windows GUI Installer](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906573/artifacts/13609975723), [Security Audit](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906573/artifacts/13610139169), [полный успешный запуск CI](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906573). Этот исторический пакет содержит общий Controlify и не соответствует уточнению «геймпад только для самолёта». В текущем составе Controlify и его YACL исключены; старый артефакт не обновляется задним числом.
 
-Скачайте `TechQuest-Windows-GUI-Installer` из успешного [Actions этой ветки](https://github.com/Nessoro/TechQuest-Modpack/actions?query=branch%3Afix%2Fneoforge-zoom-controls-0.3.3), извлеките EXE и установите в новую папку. Python и консоль не нужны. Дальнейшие шаги официального Launcher: [установка NeoForge](NEOFORGE_FALLBACK_RU.md).
+Скачайте `TechQuest-Windows-GUI-Installer` из успешного [Actions этой ветки](https://github.com/Nessoro/TechQuest-Modpack/actions?query=branch%3Afeat%2Fbosses-parcool-0.3.3-prep), извлеките EXE и установите в новую папку. Python и консоль не нужны. Дальнейшие шаги официального Launcher: [установка NeoForge](NEOFORGE_FALLBACK_RU.md).
 
 | Действие на новой установке | Назначение |
 | --- | --- |
