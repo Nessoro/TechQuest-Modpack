@@ -25,7 +25,6 @@ internal static class Program
 internal sealed class InstallerForm : Form
 {
     private const string NeoForgeVersion = "21.1.264";
-    private const string NeoForgeUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/21.1.264/neoforge-21.1.264-installer.jar";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
 
     private readonly TextBox location = new() { Width = 540 };
@@ -63,7 +62,7 @@ internal sealed class InstallerForm : Form
         var subtitle = new Label { Text = "Minecraft Java 1.21.1  •  NeoForge " + NeoForgeVersion +
             "  •  BuildCraft + IndustrialCraft", Left = 32, Top = 78, Width = 710, Height = 30,
             ForeColor = Color.FromArgb(175, 194, 212) };
-        var heading = new Label { Text = "TechQuest 0.3.2 — карта, HP, путеводитель и оптимизация", Left = 32, Top = 126,
+        var heading = new Label { Text = "TechQuest 0.3.3 — приключения, физика и оптимизация", Left = 32, Top = 126,
             Width = 700, Height = 30, Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
         var liteDesc = new Label { Text = "Сохранены все игровые моды. Ускорение: Sodium, ImmediatelyFast, More Culling,",
             Left = 36, Top = 168, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
@@ -205,6 +204,18 @@ internal sealed class InstallerForm : Form
                 File.WriteAllText(Path.Combine(probe, "options.txt"), "existing-player-settings");
                 InstallGuideOverrides(probe);
                 if (File.ReadAllText(Path.Combine(probe, "options.txt")) != "existing-player-settings") return 9;
+                if (fileNames.Any(n => n.StartsWith("betterzoom-")))
+                {
+                    if (!options.Split('\n').Contains("key_key.betterzoom.zoom:key.keyboard.z") ||
+                        !options.Split('\n').Contains("key_key.tacz.refit.desc:key.keyboard.f8") ||
+                        !options.Split('\n').Contains("key_gui.xaero_enlarge_map:key.keyboard.f9") ||
+                        !options.Split('\n').Contains("key_key.sophisticatedbackpacks.toggle_upgrade_1:key.keyboard.f10")) return 12;
+                    string zoomConfig = Path.Combine(probe, "config", "betterzoom-client.toml");
+                    if (!File.ReadAllText(zoomConfig).Contains("holdToZoom = true")) return 13;
+                    File.WriteAllText(zoomConfig, "existing-player-zoom-settings");
+                    InstallGuideOverrides(probe);
+                    if (File.ReadAllText(zoomConfig) != "existing-player-zoom-settings") return 14;
+                }
                 if (fileNames.Any(n => n.StartsWith("physics-mod-")))
                 {
                     string configDir = Path.Combine(probe, "config", "physicsmod");
@@ -331,6 +342,7 @@ internal sealed class InstallerForm : Form
                 relative == "options.txt" ||
                 relative == "config/physicsmod/physics_client_config.json" ||
                 relative == "config/physicsmod/physics_server_config.json" ||
+                relative == "config/betterzoom-client.toml" ||
                 relative == "TECHQUEST_OPTIMIZED.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json" ||
                 relative == "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json";
@@ -571,20 +583,22 @@ internal sealed class InstallerForm : Form
 
     private async Task NeoForgeAsync()
     {
-        SetBusy(true, false);
+        using var folder = new FolderBrowserDialog {
+            Description = "Выберите папку официального Minecraft Launcher (.minecraft), где уже установлена обычная 1.21.1. Это НЕ отдельная папка модпака.",
+            SelectedPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft"),
+            ShowNewFolderButton = false
+        };
+        if (folder.ShowDialog(this) != DialogResult.OK) return;
+        string launcherRoot = Path.GetFullPath(folder.SelectedPath);
+        cancellation = new CancellationTokenSource();
+        SetBusy(true, true);
         try
         {
-            status.Text = "Загрузка официального установщика NeoForge...";
-            var destination = Path.Combine(Path.GetTempPath(), $"neoforge-{NeoForgeVersion}-installer.jar");
-            var url = new Uri(NeoForgeUrl);
-            var sumText = await Client.GetStringAsync(NeoForgeUrl + ".sha512");
-            var expectedHash = sumText.Split((char[]?)null,
-                StringSplitOptions.RemoveEmptyEntries)[0].Trim();
-            if (expectedHash.Length != 128) throw new InvalidDataException("Неверный SHA-512 NeoForge");
-            var bytes = await Client.GetByteArrayAsync(url);
-            if (!SHA512.HashData(bytes).AsSpan().SequenceEqual(Convert.FromHexString(expectedHash)))
-                throw new InvalidDataException("SHA-512 NeoForge не совпал. Запуск отменён.");
-            await File.WriteAllBytesAsync(destination, bytes);
+            using var manifest = Assembly.GetExecutingAssembly().GetManifestResourceStream("TechQuest.NeoForge.bootstrap.json")
+                ?? throw new InvalidDataException("Не найден закреплённый план установки NeoForge.");
+            var bootstrap = new NeoForgeBootstrap(Client, text => status.Text = text);
+            string destination = await bootstrap.PrepareAsync(NeoForgeBootstrap.ReadPlan(manifest), launcherRoot,
+                Path.Combine(baseDir, "neoforge-" + NeoForgeVersion), cancellation.Token);
             try
             {
                 var start = new ProcessStartInfo("javaw.exe") {
@@ -595,7 +609,10 @@ internal sealed class InstallerForm : Form
                 start.ArgumentList.Add("-jar");
                 start.ArgumentList.Add(destination);
                 Process.Start(start);
-                status.Text = "Установщик NeoForge открыт. Выберите Install client.";
+                status.Text = "NeoForge открыт. Выберите Install client и папку Launcher: " + launcherRoot;
+                MessageBox.Show(this, "Установщик и 70 библиотек проверены.\nВ окне NeoForge выберите Install client и эту папку:\n" +
+                    launcherRoot + "\n\nПосле установки укажите отдельную папку модпака как Game Directory в Minecraft Launcher.",
+                    "Далее — официальный установщик", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception)
             {
@@ -609,12 +626,21 @@ internal sealed class InstallerForm : Form
                     { UseShellExecute = true });
             }
         }
+        catch (OperationCanceledException)
+        {
+            status.Text = "Подготовка NeoForge отменена. Проверенные библиотеки сохранены для повторной попытки.";
+        }
         catch (Exception ex)
         {
             status.Text = "Ошибка установки NeoForge: " + ex.Message;
             MessageBox.Show(this, ex.Message, "Ошибка NeoForge", MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
-        finally { SetBusy(false, false); }
+        finally
+        {
+            SetBusy(false, false);
+            cancellation?.Dispose();
+            cancellation = null;
+        }
     }
 }

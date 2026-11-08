@@ -17,5 +17,6 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="assets/TechQuest_Optimized.mrpack" LogicalName="TechQuest.Optimized.mrpack" />
+    <EmbeddedResource Include="assets/neoforge-21.1.264-bootstrap.json" LogicalName="TechQuest.NeoForge.bootstrap.json" />
   </ItemGroup>
 </Project>

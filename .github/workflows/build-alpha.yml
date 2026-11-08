@@ -11,6 +11,8 @@ on:
       - windows-installer/**
       - scripts/security_audit.py
       - scripts/audit_jar_metadata.py
+      - scripts/audit_keybinds.py
+      - scripts/KeymapAudit.java
       - scripts/guide_assets.py
       - tests/**
       - .github/workflows/build-alpha.yml
@@ -57,6 +59,12 @@ jobs:
         run: python build_pack.py
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Audit observed key defaults and the Z zoom plan
+        run: python scripts/audit_keybinds.py
       - name: Create server bootstrap (no redistributed third-party JARs)
         if: success()
         run: |
@@ -148,6 +156,8 @@ jobs:
             output/versions-lock.json
             output/BUILD_STATUS.json
             output/jar-metadata-audit.json
+            output/keybindings-audit.json
+            output/keybindings-audit.md
           if-no-files-found: warn
           retention-days: 30
       - name: Summarize build
