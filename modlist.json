@@ -198,9 +198,13 @@
     },
     {
       "project": "aquamirae",
-      "group": "Мир и приключения",
-      "required": false,
-      "version_prefix": "7.2.13"
+      "group": "Приключения",
+      "required": true,
+      "version_id": "lKu7coya",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
     },
     {
       "project": "waystones",
@@ -423,6 +427,16 @@
       "group": "Военная техника",
       "required": true,
       "version_id": "5LbFIXGp",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    {
+      "project": "fragmentum",
+      "group": "Библиотеки",
+      "required": true,
+      "version_id": "kCXNhuIV",
       "environment": {
         "client": "required",
         "server": "required"
