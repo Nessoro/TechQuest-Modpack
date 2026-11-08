@@ -4,6 +4,8 @@
 
 ## Новая установка и зум
 
+Снимок этого этапа, **08.11.2026 / `c41b984`**: [скачать Windows GUI Installer](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906573/artifacts/13609975723), [Security Audit](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906573/artifacts/13610139169), [полный успешный запуск CI](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906573). Это пакет для игрового теста, а не подтверждённый стабильный релиз.
+
 Скачайте `TechQuest-Windows-GUI-Installer` из успешного [Actions этой ветки](https://github.com/Nessoro/TechQuest-Modpack/actions?query=branch%3Afix%2Fneoforge-zoom-controls-0.3.3), извлеките EXE и установите в новую папку. Python и консоль не нужны. Дальнейшие шаги официального Launcher: [установка NeoForge](NEOFORGE_FALLBACK_RU.md).
 
 | Действие на новой установке | Назначение |
