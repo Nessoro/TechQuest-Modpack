@@ -411,20 +411,6 @@
       "required": true,
       "client_only": true,
       "version_id": "iEE85X0w"
-    },
-    {
-      "project": "controlify",
-      "group": "Управление",
-      "required": true,
-      "client_only": true,
-      "version_id": "RqsNKKLK"
-    },
-    {
-      "project": "yacl",
-      "group": "Библиотеки",
-      "required": true,
-      "client_only": true,
-      "version_id": "7TVdVtxF"
     }
   ],
   "manual_mods": [

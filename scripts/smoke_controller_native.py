@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""CI-only SDL3 load/init check for the exact Controlify JAR. No game/device test."""
+"""CI-only SDL3 check for an excluded research candidate. No game/device/flight test."""
 import ctypes
 import hashlib
 import io
@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     if os.name != "nt" or os.environ.get("GITHUB_ACTIONS") != "true":
         raise SystemExit("This native-library smoke test requires an isolated Windows Actions runner")
-    snapshot = json.loads((ROOT / "compat/client-controls/verified-mods.json").read_text())
+    snapshot = json.loads((ROOT / "compat/client-controls/controller-research.json").read_text())
     mod = next(m for m in snapshot["mods"] if m["project"] == "controlify")
     file = mod["file"]
     with urllib.request.urlopen(file["url"], timeout=60) as response:
@@ -50,7 +50,7 @@ def main():
             if devices:
                 sdl.SDL_free.argtypes = [ctypes.c_void_p]
                 sdl.SDL_free(devices)
-            print("PASS: exact bundled Windows x64 SDL3 loaded; version", version,
+            print("PASS: research candidate Windows x64 SDL3 loaded; version", version,
                   "; gamepad subsystem initialized; runner device count", count.value)
             print("No Minecraft, physical Xbox controller, joystick axes or flight integration was tested.")
         finally:

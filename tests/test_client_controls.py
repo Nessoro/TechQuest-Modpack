@@ -55,7 +55,7 @@ class ClientControlsTests(unittest.TestCase):
             build_pack.make_mrpack(cfg, records, pack)
             with zipfile.ZipFile(pack) as archive:
                 index = json.loads(archive.read("modrinth.index.json"))
-                self.assertEqual(len(install_client.client_records(index)), 5)
+                self.assertEqual(len(install_client.client_records(index)), 3)
                 self.assertEqual(list(install_server.server_records(index)), [])
                 options = archive.read("overrides/options.txt")
                 self.assertEqual(options, build_pack.client_options(cfg))

@@ -90,67 +90,6 @@
       "id": "fuuu3xnx",
       "client_side": "required",
       "server_side": "unsupported"
-    },
-    {
-      "project": "controlify",
-      "version_id": "RqsNKKLK",
-      "version": "3.0.1+lts",
-      "license": {
-        "id": "LGPL-3.0-or-later",
-        "name": "GNU Lesser General Public License v3.0 or later",
-        "url": null
-      },
-      "source_url": "https://github.com/isXander/Controlify",
-      "published_dependencies": [
-        {
-          "version_id": null,
-          "project_id": "1eAoo2KR",
-          "file_name": null,
-          "dependency_type": "required"
-        }
-      ],
-      "file": {
-        "id": "wSC5T0tN",
-        "hashes": {
-          "sha512": "cfffb25b9e62ca39cd6f54ab0b83902feda23a763ae9e345a11609f0138de1b6c3ab7a78c8fd5b7b309795e5c6d4911fd37cd7f8722a72cca6ad18e32cec461e",
-          "sha1": "6d904472e1c95bd9d8b5e7c5421b8db628915e20"
-        },
-        "url": "https://cdn.modrinth.com/data/DOUdJVEm/versions/RqsNKKLK/controlify-3.0.1%2Blts%2B1.21.1-neoforge.jar",
-        "filename": "controlify-3.0.1+lts+1.21.1-neoforge.jar",
-        "primary": true,
-        "size": 7981721,
-        "file_type": null
-      },
-      "id": "DOUdJVEm",
-      "client_side": "required",
-      "server_side": "optional"
-    },
-    {
-      "project": "yacl",
-      "version_id": "7TVdVtxF",
-      "version": "3.8.2+1.21.1-neoforge",
-      "license": {
-        "id": "LGPL-3.0-or-later",
-        "name": "GNU Lesser General Public License v3.0 or later",
-        "url": null
-      },
-      "source_url": "https://github.com/isXander/YetAnotherConfigLib",
-      "published_dependencies": [],
-      "file": {
-        "id": "tKjdtK77",
-        "hashes": {
-          "sha1": "fe270c9f6e0a8142cf316944087f5109cef08bbb",
-          "sha512": "583de19b927ce8050c2b7d5e60b75accc69e325e5aac85c27994c82a9dec2e4e078343fa1d4c3a10d4bd7e0e524e0b3b246a18cf03db01e363a1e6f865adcf48"
-        },
-        "url": "https://cdn.modrinth.com/data/1eAoo2KR/versions/7TVdVtxF/yet_another_config_lib_v3-3.8.2%2B1.21.1-neoforge.jar",
-        "filename": "yet_another_config_lib_v3-3.8.2+1.21.1-neoforge.jar",
-        "primary": true,
-        "size": 1118651,
-        "file_type": null
-      },
-      "id": "1eAoo2KR",
-      "client_side": "optional",
-      "server_side": "optional"
     }
   ]
 }
