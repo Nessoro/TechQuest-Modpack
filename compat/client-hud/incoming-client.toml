@@ -1,2 +1,6 @@
 # Visual concussion intensity only; no server damage or destruction changes.
 screen_effects = 0.35
+camera_shake = 0.35
+# Incoming exposes prolonged hearing damage as a switch, not a duration slider.
+# Keep ordinary blast sounds/muffling and the shorter Explosion Overhaul effect.
+nuke_tinnitus = false

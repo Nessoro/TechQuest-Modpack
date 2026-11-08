@@ -137,7 +137,9 @@ public final class TechQuestRuntimeProbe {
                     + ",\"jadeHealth\":" + plugins.getMethod("get", location).invoke(jade, healthId)
                     + ",\"jadeArmor\":" + plugins.getMethod("get", location).invoke(jade, armorId)
                     + ",\"concussionDuration\":" + configValue(explosion, "concussionDurationMultiplier")
-                    + ",\"incomingScreenEffects\":" + configValue(incoming, "screenEffects") + "}";
+                    + ",\"incomingScreenEffects\":" + configValue(incoming, "screenEffects")
+                    + ",\"incomingCameraShake\":" + configValue(incoming, "cameraShake")
+                    + ",\"incomingTinnitus\":" + configValue(incoming, "nukeTinnitus") + "}";
                 Files.writeString(report.resolve("ready.tmp"),
                     "{\"screen\":\"TitleScreen\",\"overlay\":false,\"stable_ticks\":40,"
                     + "\"world_loaded\":false,\"scope\":\"client main menu only\","

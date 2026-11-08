@@ -193,7 +193,8 @@ def observe(profile, parent, launcher, game, report):
                 raise RuntimeError("Physics setup wizard was not marked complete")
             if ready["hudBlast"] != {"position": "TOP_CENTER", "showHealth": True, "format": "BOTH",
                                     "jadeHealth": False, "jadeArmor": False,
-                                    "concussionDuration": 0.25, "incomingScreenEffects": 0.35}:
+                                    "concussionDuration": 0.25, "incomingScreenEffects": 0.35,
+                                    "incomingCameraShake": 0.35, "incomingTinnitus": False}:
                 raise RuntimeError("HUD/blast presets were not loaded by the real client: " + str(ready["hudBlast"]))
             (report / "stop").touch()
             if process.wait(timeout=45) != 0:
