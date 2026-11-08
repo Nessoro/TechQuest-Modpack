@@ -8,7 +8,6 @@ cfg = json.loads((ROOT / "modlist.json").read_text(encoding="utf-8"))
 NAMES = {
     "aquamirae": "Aquamirae",
     "fragmentum": "Fragmentum",
-    "mcheli-modern-port": "MCHeli Modern Port — тест авиации",
     "better-zoom": "Better Zoom",
     "controlling": "Controlling",
     "searchables": "Searchables",
@@ -41,7 +40,6 @@ NAMES = {
     "dynamic-fps": "Dynamic FPS",
     "spark": "spark",
     "superb-warfare": "Superb Warfare",
-    "timeless-and-classics-zero": "TaCZ 1.2.0",
     "burnt": "Burnt + Additions",
     "explosion-overhaul-a-new-level-of-destruction": "Explosion Overhaul",
     "lithostitched": "Lithostitched",
@@ -68,7 +66,6 @@ NAMES = {
 DESCRIPTIONS = {
     "aquamirae": "Океанские структуры, существа и босс в общей тестовой 0.3.3; игровые механики ещё требуют проверки.",
     "fragmentum": "Обязательная библиотека Aquamirae, версия 5.4.0.",
-    "mcheli-modern-port": "Тестовая авиация: F-22A, F-14D, F-35 и другие модели. Сначала Creative; полёт и сервер не проверены.",
     "better-zoom": "Клиентский зум Z + колесо с плавным возвратом FOV.",
     "controlling": "Поиск назначений, конфликтов и свободных клавиш.",
     "searchables": "Клиентская библиотека поиска для Controlling.",
@@ -89,7 +86,6 @@ DESCRIPTIONS = {
 
     "yungs-better-dungeons": "Новые вариации подземелий.",
     "superb-warfare": "Огнестрельное оружие, артиллерия, самолёты и бронетехника.",
-    "timeless-and-classics-zero": "TaCZ 1.2.0: огнестрельное оружие; четыре официальных ZIP импортируются отдельно и требуют проверки 1.21.1.",
     "burnt": "Реалистичные пожары, обугленные блоки и распространение огня.",
     "explosion-overhaul-a-new-level-of-destruction": "Мощные взрывы, звуковые эффекты и ударные волны. NeoForge alpha.",
     "lithostitched": "Библиотека генерации мира, необходимая Terralith.",

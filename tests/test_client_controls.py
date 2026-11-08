@@ -61,7 +61,6 @@ class ClientControlsTests(unittest.TestCase):
                 self.assertEqual(options, build_pack.client_options(cfg))
                 self.assertTrue(options.startswith(b"version:3955\n"))
                 self.assertIn(b"key_key.betterzoom.zoom:key.keyboard.z\n", options)
-                self.assertIn(b"key_key.tacz.refit.desc:key.keyboard.f8\n", options)
                 self.assertIn(b"key_gui.xaero_enlarge_map:key.keyboard.f9\n", options)
                 preset = tomllib.loads(archive.read("overrides/config/betterzoom-client.toml").decode())
                 self.assertTrue(preset["holdToZoom"])
@@ -82,15 +81,15 @@ class ClientControlsTests(unittest.TestCase):
         overrides = build_pack.load_cfg()["performance_profile"]["key_defaults"]
         rows = [{"id": name, "code": code, "modifier": None, "input": None, "context": None,
                  "origin": "fixture.jar", "method": "Fixture"}
-                for name, code in (("key.betterzoom.zoom", 67), ("key.tacz.refit.desc", 90),
+                for name, code in (("key.betterzoom.zoom", 67),
                                    ("gui.xaero_enlarge_map", 90),
                                    ("key.sophisticatedbackpacks.toggle_upgrade_1", 90), (None, None))]
         rows[-2]["modifier"] = "ALT"
         report = audit_keybinds.analyze(rows, overrides)
         audit_keybinds.verify_zoom(report)
         self.assertFalse(report["runtime_verified"])
-        self.assertEqual(report["constructors"], 5)
-        self.assertEqual(report["resolved"], 4)
+        self.assertEqual(report["constructors"], 4)
+        self.assertEqual(report["resolved"], 3)
         self.assertFalse(report["bindings"][-1]["resolved"])
         self.assertEqual(report["bindings"][-2]["default_modifier"], "ALT")
         self.assertEqual(report["bindings"][-2]["modifier"], "NONE")

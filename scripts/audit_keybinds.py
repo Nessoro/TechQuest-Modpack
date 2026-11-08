@@ -67,7 +67,7 @@ def analyze(rows, overrides):
 
 def verify_zoom(report):
     found = {b["id"]: b for b in report["bindings"] if b["id"]}
-    expected = {"key.betterzoom.zoom": "key.keyboard.z", "key.tacz.refit.desc": "key.keyboard.f8",
+    expected = {"key.betterzoom.zoom": "key.keyboard.z",
                 "gui.xaero_enlarge_map": "key.keyboard.f9",
                 "key.sophisticatedbackpacks.toggle_upgrade_1": "key.keyboard.f10"}
     for name, key in expected.items():
@@ -77,7 +77,7 @@ def verify_zoom(report):
         users = {b["id"] for b in report["bindings"] if b["resolved"] and b["effective_key"] == key}
         if users != {name}:
             raise ValueError("Other observed bindings use reserved key " + key + ": " + str(users))
-    for code, name in ((90, "key.betterzoom.zoom"), (297, "key.tacz.refit.desc"),
+    for code, name in ((90, "key.betterzoom.zoom"),
                        (298, "gui.xaero_enlarge_map"), (299, "key.sophisticatedbackpacks.toggle_upgrade_1")):
         if any(b["id"] is None and b["code"] == code for b in report["bindings"]):
             raise ValueError("Unresolved constructor may conflict with " + name)

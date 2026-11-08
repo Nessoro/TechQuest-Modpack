@@ -5,6 +5,10 @@
   "loader": "neoforge",
   "loader_version": "21.1.264",
   "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica",
+  "removed_mods": [
+    {"project": "mcheli-modern-port", "reason": "не нужен"},
+    {"project": "timeless-and-classics-zero", "reason": "не нужен"}
+  ],
   "mods": [
     {
       "project": "buildcraft-community-edition",
@@ -304,12 +308,6 @@
       "version_id": "bl7W8fjU"
     },
     {
-      "project": "timeless-and-classics-zero",
-      "group": "Военная техника",
-      "required": true,
-      "version_prefix": "1.2.0"
-    },
-    {
       "project": "physicsmod",
       "group": "Визуальная физика",
       "required": true,
@@ -423,16 +421,6 @@
       "version_id": "iEE85X0w"
     },
     {
-      "project": "mcheli-modern-port",
-      "group": "Военная техника",
-      "required": true,
-      "version_id": "5LbFIXGp",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      }
-    },
-    {
       "project": "fragmentum",
       "group": "Библиотеки",
       "required": true,
@@ -480,7 +468,6 @@
       "key.betterzoom.config": "key.keyboard.unknown",
       "key.betterzoom.zoom_in": "key.keyboard.unknown",
       "key.betterzoom.zoom_out": "key.keyboard.unknown",
-      "key.tacz.refit.desc": "key.keyboard.f8",
       "gui.xaero_enlarge_map": "key.keyboard.f9",
       "key.sophisticatedbackpacks.toggle_upgrade_1": "key.keyboard.f10"
     }
@@ -1005,17 +992,6 @@
         "server": "unsupported"
       }
     },
-    "SzzJttH8": {
-      "title": "[TaCZ] Timeless and Classics Zero",
-      "version": "1.2.0",
-      "version_id": "O2Pfsh6w",
-      "filename": "tacz-neoforge-1.21.1-1.2.0.jar",
-      "sha512": "8f54d0b620040cd4451329ee62fa2b2ede153220d85a8722ef9ffe6e31b9aaeff9f3a55a9bc92df29f1769ea751a50d36110139eacc809a84d5ca4186fdcc461",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      }
-    },
     "TUsZUXeu": {
       "title": "Twisted Mobs",
       "version": "1.9.2",
@@ -1110,17 +1086,6 @@
       "version_id": "oNRbcwIE",
       "filename": "YungsBetterNetherFortresses-1.21.1-NeoForge-3.1.4.jar",
       "sha512": "6741fa2810b1f11e875e538752cf5c68682ba015254fce3a33bd6262895a56efb2c5725b9df92ee9f028539a807839105b202e3658b51801d72029f995109bfd",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      }
-    },
-    "ZwSE3PTi": {
-      "title": "MCHeli [MODERN PORT]",
-      "version": "1.0.0",
-      "version_id": "5LbFIXGp",
-      "filename": "MCHeli-1.21.1-1.1.0.jar",
-      "sha512": "bd17f2681bfbf57f22a77e9929978b6e1708e8a663acc777bb334d9b2e48b395092103a9b226f98c012b7ffbaf6abae37ce369f29b8086633cf8c94c70a22d6e",
       "environment": {
         "client": "required",
         "server": "required"
