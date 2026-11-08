@@ -67,15 +67,26 @@ class ClientControlsTests(unittest.TestCase):
                 self.assertTrue(preset["smoothZoom"])
                 self.assertEqual(preset["zoomMode"], "WHEEL")
                 self.assertFalse(preset["hideGui"])
+                pmmo = tomllib.loads(archive.read("overrides/config/pmmo-client.toml").decode())["Client"]["GUI"]
+                self.assertFalse(pmmo["Display Skill List"])
+                self.assertTrue(pmmo["Skill List Use Icons"])
+                self.assertEqual(pmmo["Skill List Xoffset"], 0.70)
+                self.assertEqual(pmmo["Skill List Yoffset"], 0.05)
+                self.assertTrue(pmmo["Display Gain List"])
                 install_client.install_guide_overrides(archive, root / "client")
                 (root / "client/options.txt").write_text("player-options")
                 target = root / "client/config/betterzoom-client.toml"
                 target.write_text("player-zoom-options")
+                pmmo_target = root / "client/config/pmmo-client.toml"
+                self.assertTrue(pmmo_target.exists())
+                pmmo_target.write_text("player-pmmo-options")
                 install_client.install_guide_overrides(archive, root / "client")
                 self.assertEqual((root / "client/options.txt").read_text(), "player-options")
                 self.assertEqual(target.read_text(), "player-zoom-options")
+                self.assertEqual(pmmo_target.read_text(), "player-pmmo-options")
             install_server.install_guide_overrides(pack, root / "server")
             self.assertFalse((root / "server/config/betterzoom-client.toml").exists())
+            self.assertFalse((root / "server/config/pmmo-client.toml").exists())
 
     def test_static_report_keeps_unknowns_and_verifies_only_observed_zoom_bindings(self):
         overrides = build_pack.load_cfg()["performance_profile"]["key_defaults"]
@@ -103,6 +114,12 @@ class ClientControlsTests(unittest.TestCase):
     def test_options_header_is_not_silently_reused_for_another_game_version(self):
         with self.assertRaisesRegex(build_pack.BuildError, "DataVersion"):
             build_pack.client_options({"minecraft": "different", "performance_profile": {"video_defaults": {"renderDistance": 6}}})
+
+    def test_pmmo_preset_requires_reviewed_version(self):
+        cfg = build_pack.load_cfg()
+        cfg["modrinth_lock"]["KFQYC1Uy"]["version_id"] = "unreviewed"
+        with self.assertRaisesRegex(build_pack.BuildError, "Review Project MMO"):
+            build_pack.client_config_overrides(cfg)
 
     def test_zoom_preset_requires_reviewed_version(self):
         cfg = {"mods": [{"project": "better-zoom", "client_only": True, "version_id": "unreviewed"}]}

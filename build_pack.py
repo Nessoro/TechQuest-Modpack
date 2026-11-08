@@ -384,6 +384,16 @@ def client_config_overrides(cfg):
         if zoom.get("version_id") != "NwwnadOr" or not zoom.get("client_only"):
             raise BuildError("Review Better Zoom client preset before changing its version or side")
         result["config/betterzoom-client.toml"] = (ROOT / "compat/client-controls/betterzoom-client.toml").read_bytes()
+    pmmo = next((mod for mod in cfg.get("mods", [])
+                 if mod["project"] == "project-mmo"), None)
+    if pmmo:
+        # The installed version is pinned in the Modrinth lock (not in the root mod row).
+        lock = cfg.get("modrinth_lock", {}).get("KFQYC1Uy", {})
+        if (lock.get("version_id") != "9lu4zNd1" or
+                lock.get("filename") != "pmmo-1.21.1-2.10.47.jar"):
+            raise BuildError("Review Project MMO HUD preset before changing its version")
+        result["config/pmmo-client.toml"] = (
+            ROOT / "compat/client-hud/pmmo-client.toml").read_bytes()
     return result
 
 

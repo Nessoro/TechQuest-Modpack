@@ -150,7 +150,8 @@ internal sealed class InstallerForm : Form
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
             "В игре: Xaero Minimap/World Map, здоровье мобов Health Indicator TXF (HP цифрами),\n" +
             "книга «Путеводитель TechQuest» через Patchouli (в творческом режиме).\n" +
-            "В режиме выживания руководство выдаётся при первом входе в мир.\n\n" +
+            "В режиме выживания руководство выдаётся при первом входе в мир.\n" +
+            "Project MMO: большой список навыков скрыт; Left Alt — показать/скрыть.\n\n" +
             "Сервер общий; все игровые механики сохранены. Тестируйте новый мир.",
             "Как запустить TechQuest", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
@@ -207,6 +208,17 @@ internal sealed class InstallerForm : Form
                     File.WriteAllText(zoomConfig, "existing-player-zoom-settings");
                     InstallGuideOverrides(probe);
                     if (File.ReadAllText(zoomConfig) != "existing-player-zoom-settings") return 14;
+                }
+                if (fileNames.Any(n => n.StartsWith("pmmo-", StringComparison.OrdinalIgnoreCase)))
+                {
+                    string pmmoConfig = Path.Combine(probe, "config", "pmmo-client.toml");
+                    string pmmoText = File.ReadAllText(pmmoConfig);
+                    if (!pmmoText.Contains("\"Display Skill List\" = false") ||
+                        !pmmoText.Contains("\"Skill List Use Icons\" = true") ||
+                        !pmmoText.Contains("\"Display Gain List\" = true")) return 15;
+                    File.WriteAllText(pmmoConfig, "existing-player-pmmo-settings");
+                    InstallGuideOverrides(probe);
+                    if (File.ReadAllText(pmmoConfig) != "existing-player-pmmo-settings") return 16;
                 }
                 if (fileNames.Any(n => n.StartsWith("physics-mod-")))
                 {
@@ -335,6 +347,7 @@ internal sealed class InstallerForm : Form
                 relative == "config/physicsmod/physics_client_config.json" ||
                 relative == "config/physicsmod/physics_server_config.json" ||
                 relative == "config/betterzoom-client.toml" ||
+                relative == "config/pmmo-client.toml" ||
                 relative == "TECHQUEST_OPTIMIZED.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json";
             if (!allowed || relative.EndsWith("/", StringComparison.Ordinal))
