@@ -9,7 +9,7 @@
 
 ## Новые драконы и массивные существа
 - [Wyrmroost 1.4.1](https://modrinth.com/mod/wyrmroost/version/1.4.1) — разнообразные драконы, приручение, полёт и исследования. Клиент и сервер. **IceAndFire CE удалён**, это альтернатива.
-- [Legendary Monsters 2.2.3](https://modrinth.com/mod/legendary-monsters/version/Dfoikvr0) — большие боссы, включая Skeletosaurus, Lava Eater, Cloud Golem и других.
+- [Legendary Monsters 2.2.4](https://modrinth.com/mod/legendary-monsters/version/zkH9rSlF) — большие боссы, включая Skeletosaurus, Lava Eater, Cloud Golem и других.
 - [Twisted Mobs](https://modrinth.com/mod/twisted-mobs) — гигантские/титанические зомби и Goliath.
 - [Ben's Titans](https://modrinth.com/mod/bens-titans-unoffical-neoforge-port-) **не включён**: неофициальный молодой порт 1.21.1, оригинальный мод зависит от Alex's Caves для Forge 1.20.1. Нужны отдельные проверки API, лицензий, производительности и фактической совместимости.
 

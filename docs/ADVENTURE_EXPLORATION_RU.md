@@ -13,7 +13,7 @@
 | [YUNG's Better Strongholds](https://modrinth.com/mod/yungs-better-strongholds) | Более сложные крепости и исследование пути в Энд | `1.21.1-NeoForge-5.1.3` |
 | [YUNG's Better Nether Fortresses](https://modrinth.com/mod/yungs-better-nether-fortresses) | Переработанные крепости Незера, интеграция с Create | `1.21.1-NeoForge-3.1.4` |
 | [Wyrmroost](https://modrinth.com/mod/wyrmroost) | Разнообразные драконы, приручение и полёты | 1.4.1, NeoForge 1.21.1 |
-| [Legendary Monsters](https://modrinth.com/mod/legendary-monsters) | Крупные боссы | 2.2.3, NeoForge 1.21.1 |
+| [Legendary Monsters](https://modrinth.com/mod/legendary-monsters) | Крупные боссы | 2.2.4, NeoForge 1.21.1 |
 | [Twisted Mobs](https://modrinth.com/mod/twisted-mobs) | Гигантские мобы, Titan, Goliath | Подбор NeoForge 1.21.1 |
 | [Explorer's Compass](https://modrinth.com/mod/explorers-compass) | Поиск зарегистрированных структур, включая модовые | Версия NeoForge 1.21.1 выбирается сборщиком |
 
@@ -55,4 +55,4 @@
 
 ## После обновления: Wyrmroost и большие монстры
 
-**Lootr по-прежнему исключён.** IceAndFire CE заменён на Wyrmroost. Добавлены Legendary Monsters, Twisted Mobs и клиентские Forgematica + MaFgLib. [План тестов и настройки](SCHEMATICS_DRAGONS_GIANTS_RU.md). В отдельном кандидате #15 после включения MCHeli и Aquamirae в игровом составе 44 позиции (включая TaCZ и необязательный AMW): технологии 11 (25,0%), приключения/боссы 21 (47,7%), исследование/комфорт 4 (9,1%), военная техника 8 (18,2%). MCHeli учитывается в существующей категории военной техники.
+**Lootr по-прежнему исключён.** IceAndFire CE заменён на Wyrmroost. Добавлены Legendary Monsters, Twisted Mobs и клиентские Forgematica + MaFgLib. [План тестов и настройки](SCHEMATICS_DRAGONS_GIANTS_RU.md). В общей 0.3.3 после объединения #15 и включения MCHeli и Aquamirae в игровом составе 44 позиции (включая TaCZ и необязательный AMW): технологии 11 (25,0%), приключения/боссы 21 (47,7%), исследование/комфорт 4 (9,1%), военная техника 8 (18,2%). MCHeli учитывается в существующей категории военной техники.
