@@ -49,6 +49,11 @@ class PhysicsClientTests(unittest.TestCase):
 
     def test_client_presets_are_identical_preserved_and_excluded_from_server(self):
         expected = builder.client_config_overrides(self.cfg)
+        physics = json.loads(expected["config/physicsmod/physics_client_config.json"])
+        self.assertTrue(physics["quickSetupNormalComplete"])
+        self.assertTrue(physics["quickSetupProCompleteV2"])
+        self.assertFalse(physics["oceanPhysics"])
+        self.assertFalse(physics["liquidPhysics"])
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             pack = root / "test.mrpack"

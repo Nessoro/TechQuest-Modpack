@@ -152,7 +152,16 @@ def observe(profile, parent, launcher, game, report):
         process = subprocess.Popen(command, cwd=game, stdout=log, stderr=subprocess.STDOUT)
         try:
             deadline = time.monotonic() + 600
+            setup_since = None
             while process.poll() is None and not (report / "ready.json").exists() and time.monotonic() < deadline:
+                state_file = report / "screen-state.txt"
+                state = state_file.read_text() if state_file.exists() else ""
+                if "physics.settings.QuickSetupScreen:overlay=false" in state:
+                    setup_since = setup_since or time.monotonic()
+                    if time.monotonic() - setup_since > 15:
+                        break  # Capture the actual unwanted wizard instead of waiting ten minutes.
+                else:
+                    setup_since = None
                 time.sleep(1)
             subprocess.run(["import", "-window", "root", str(report / "screen.png")], check=True, timeout=20)
             if not (report / "ready.json").exists():
@@ -170,6 +179,13 @@ def observe(profile, parent, launcher, game, report):
                 raise RuntimeError("Generated key bindings were not applied by the real client: " + str(ready["bindings"]))
             if any(value != "NONE" for value in ready["modifiers"].values()):
                 raise RuntimeError("A default key modifier survived the generated plain-key assignment")
+            expected_physics = json.loads((ROOT / "compat/physicsmod/physics_client_config.json").read_text())
+            observed_physics = ready["physics"]
+            for name in ("maxPhysicsObjects", "blockPhysicsRange", "cpuThreads", "oceanPhysics", "liquidPhysics", "windPhysics"):
+                if observed_physics[name] != expected_physics[name]:
+                    raise RuntimeError("Physics preset was not applied by the real client: " + name)
+            if observed_physics["showSetup"]:
+                raise RuntimeError("Physics setup wizard was not marked complete")
             (report / "stop").touch()
             if process.wait(timeout=45) != 0:
                 raise RuntimeError("Client exited with failure after reaching the menu")

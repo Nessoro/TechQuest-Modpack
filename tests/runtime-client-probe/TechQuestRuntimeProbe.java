@@ -75,11 +75,19 @@ public final class TechQuestRuntimeProbe {
                     + ",\"simulationDistance\":" + option(options, "simulationDistance")
                     + ",\"maxFps\":" + option(options, "framerateLimit")
                     + ",\"graphics\":" + quote(option(options, "graphicsMode")) + "}";
+                Class<?> physics = Class.forName("net.diebuddies.config.ConfigClient");
+                String physicsSettings = "{\"maxPhysicsObjects\":" + physics.getField("maxPhysicsObjects").get(null)
+                    + ",\"blockPhysicsRange\":" + physics.getField("blockPhysicsRange").get(null)
+                    + ",\"cpuThreads\":" + physics.getField("cpuThreads").get(null)
+                    + ",\"oceanPhysics\":" + physics.getField("oceanPhysics").get(null)
+                    + ",\"liquidPhysics\":" + physics.getField("liquidPhysics").get(null)
+                    + ",\"windPhysics\":" + physics.getField("windPhysics").get(null)
+                    + ",\"showSetup\":" + physics.getMethod("shouldShowQuickSetup").invoke(null) + "}";
                 Files.writeString(report.resolve("ready.tmp"),
                     "{\"screen\":\"TitleScreen\",\"overlay\":false,\"stable_ticks\":40,"
                     + "\"world_loaded\":false,\"scope\":\"client main menu only\","
                     + "\"options\":" + settings + ",\"bindings\":{" + entries
-                    + "},\"modifiers\":{" + modifierEntries + "}}\n");
+                    + "},\"modifiers\":{" + modifierEntries + "},\"physics\":" + physicsSettings + "}\n");
                 Files.move(report.resolve("ready.tmp"), report.resolve("ready.json"), StandardCopyOption.ATOMIC_MOVE);
                 recorded = true;
             }
