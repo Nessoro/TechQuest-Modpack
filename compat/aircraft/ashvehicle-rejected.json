@@ -1,0 +1,42 @@
+{
+  "project": "ashvehicle",
+  "version_id": "SIPuXN84",
+  "file": {
+    "id": "gWAMHls5",
+    "hashes": {
+      "sha512": "86538821ff8c6da5bb4827adf740d89cdeed261ed98ace5e5d2177c6b1b4fd4859b2c4134a7a0ba9686040376255d60cdced812db1e611a3e65a1f15af731657",
+      "sha1": "817e965bf40439f4b846354a57096c88f29da10b"
+    },
+    "url": "https://cdn.modrinth.com/data/j7CRHkQ6/versions/SIPuXN84/ashvehicle-1.21.1-4.6-8.9.jar",
+    "filename": "ashvehicle-1.21.1-4.6-8.9.jar",
+    "primary": true,
+    "size": 18725273,
+    "file_type": null
+  },
+  "status": "not added: static API incompatibilities with pinned Superb Warfare 0.8.9.2",
+  "runtime_tested": false,
+  "verified_examples": [
+    {
+      "caller": "Aru.Aru.ashvehicle.client.model.vehicle.F22Model",
+      "expected": "VehicleEntity.gearRot(float):float",
+      "actual": "No matching method in pinned Superb Warfare; model uses invokevirtual"
+    },
+    {
+      "caller": "Aru.Aru.ashvehicle.client.model.VehicleModel",
+      "expected": "RenderHelper.isInGui():boolean",
+      "actual": "Method is in RenderDistanceHelper instead"
+    },
+    {
+      "caller": "Aru.Aru.ashvehicle.entity.projectile.Aim120Entity",
+      "expected": "ProjectileTool.causeCustomExplode(ThrowableItemProjectile, DamageSource, Entity, float, float)",
+      "actual": "Available overload takes Projectile, not ThrowableItemProjectile; JVM descriptor differs"
+    },
+    {
+      "caller": "Aru.Aru.ashvehicle.entity.projectile.NukeBombEntity",
+      "expected": "CustomExplosion.Builder.damageMultiplier(float)",
+      "actual": "No matching method; damage(float) is not assumed semantically equivalent"
+    }
+  ],
+  "upstream_source_candidate": "https://github.com/AshViper/AshVehicle-neoforge/tree/0484c2794dc850bd75e8a0d15192af34c5b3b2bc",
+  "note": "Source branch contains migration work but is not the published JAR and was not built/tested here; do not downgrade Superb Warfare to install this release."
+}

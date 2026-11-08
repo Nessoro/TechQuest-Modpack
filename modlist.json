@@ -411,6 +411,16 @@
       "required": true,
       "client_only": true,
       "version_id": "iEE85X0w"
+    },
+    {
+      "project": "mcheli-modern-port",
+      "group": "Военная авиация",
+      "required": true,
+      "version_id": "5LbFIXGp",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
     }
   ],
   "manual_mods": [
