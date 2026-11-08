@@ -78,7 +78,7 @@ class PhysicsClientTests(unittest.TestCase):
 
     def test_presets_require_the_reviewed_mod_version_and_side(self):
         without_physics = dict(self.cfg, mods=[])
-        self.assertEqual(builder.client_config_overrides(without_physics), {})
+        self.assertFalse(any("physicsmod/" in path for path in builder.client_config_overrides(without_physics)))
         for changes in ({"version_id": "unreviewed"}, {"client_only": False}):
             cfg = copy.deepcopy(self.cfg)
             next(m for m in cfg["mods"] if m["project"] == "physicsmod").update(changes)

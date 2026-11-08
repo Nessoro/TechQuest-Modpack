@@ -191,6 +191,10 @@ def observe(profile, parent, launcher, game, report):
                     raise RuntimeError("Physics preset was not applied by the real client: " + name)
             if observed_physics["showSetup"]:
                 raise RuntimeError("Physics setup wizard was not marked complete")
+            if ready["hudBlast"] != {"position": "TOP_CENTER", "showHealth": True, "format": "BOTH",
+                                    "jadeHealth": False, "jadeArmor": False,
+                                    "concussionDuration": 0.25, "incomingScreenEffects": 0.35}:
+                raise RuntimeError("HUD/blast presets were not loaded by the real client: " + str(ready["hudBlast"]))
             (report / "stop").touch()
             if process.wait(timeout=45) != 0:
                 raise RuntimeError("Client exited with failure after reaching the menu")

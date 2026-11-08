@@ -232,6 +232,21 @@ internal sealed class InstallerForm : Form
                     if (File.ReadAllText(clientConfig) != "existing-physics-settings" ||
                         File.ReadAllText(localServerConfig) != "existing-collapse-settings") return 11;
                 }
+                if (fileNames.Any(n => n.StartsWith("healthindicatortxf-")))
+                {
+                    string[] presets = { "healthindicatortxf.json5", "jade/plugins.json",
+                        "explosionoverhaul-client.toml", "incoming-client.toml" };
+                    using var hud = JsonDocument.Parse(File.ReadAllText(Path.Combine(probe, "config", presets[0])));
+                    if (hud.RootElement.GetProperty("position").GetString() != "TOP_CENTER" ||
+                        !hud.RootElement.GetProperty("showHealth").GetBoolean()) return 15;
+                    using var jade = JsonDocument.Parse(File.ReadAllText(Path.Combine(probe, "config", presets[1])));
+                    if (jade.RootElement.GetProperty("minecraft").GetProperty("entity_health").GetBoolean()) return 16;
+                    foreach (string relative in presets)
+                        File.WriteAllText(Path.Combine(probe, "config", relative), "existing-player-settings");
+                    InstallGuideOverrides(probe);
+                    foreach (string relative in presets)
+                        if (File.ReadAllText(Path.Combine(probe, "config", relative)) != "existing-player-settings") return 17;
+                }
             }
             finally
             {
@@ -343,6 +358,10 @@ internal sealed class InstallerForm : Form
                 relative == "config/physicsmod/physics_client_config.json" ||
                 relative == "config/physicsmod/physics_server_config.json" ||
                 relative == "config/betterzoom-client.toml" ||
+                relative == "config/healthindicatortxf.json5" ||
+                relative == "config/jade/plugins.json" ||
+                relative == "config/explosionoverhaul-client.toml" ||
+                relative == "config/incoming-client.toml" ||
                 relative == "TECHQUEST_OPTIMIZED.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json" ||
                 relative == "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json";

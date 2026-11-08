@@ -61,6 +61,10 @@ def install_guide_overrides(archive, game_dir):
                                 "config/physicsmod/physics_client_config.json",
                                 "config/physicsmod/physics_server_config.json",
                                 "config/betterzoom-client.toml",
+                                "config/healthindicatortxf.json5",
+                                "config/jade/plugins.json",
+                                "config/explosionoverhaul-client.toml",
+                                "config/incoming-client.toml",
                                 "TECHQUEST_INGAME_GUIDE.txt",
                                 "TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                                  "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json")):
