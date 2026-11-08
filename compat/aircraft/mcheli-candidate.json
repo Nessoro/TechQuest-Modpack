@@ -1,0 +1,252 @@
+{
+  "minecraft": "1.21.1",
+  "neoforge": "21.1.264",
+  "runtime_verified": false,
+  "status": "experimental; creative aircraft testing first; no controller work",
+  "project": "mcheli-modern-port",
+  "project_id": "ZwSE3PTi",
+  "source_url": "https://github.com/ThatSoulyGuy/MCHeli",
+  "modrinth_license": {
+    "id": "LGPL-3.0-only",
+    "name": "GNU Lesser General Public License v3.0 only",
+    "url": null
+  },
+  "jar_license": "All Rights Reserved",
+  "license_note": "Conflicting notices retained verbatim. TechQuest only references the original Modrinth download; no third-party JAR/assets/source redistributed or relicensed.",
+  "version_id": "5LbFIXGp",
+  "published_version": "1.0.0",
+  "jar_version": "1.0.0",
+  "filename_note": "Published version and JAR metadata say 1.0.0; original filename says 1.1.0. Pins identify the exact bytes, not an assumed newer release.",
+  "published_dependencies": [],
+  "file": {
+    "id": "XjxGxtaG",
+    "hashes": {
+      "sha1": "9e0331a69088efe9252b0aef742380c0c11bf8a4",
+      "sha512": "bd17f2681bfbf57f22a77e9929978b6e1708e8a663acc777bb334d9b2e48b395092103a9b226f98c012b7ffbaf6abae37ce369f29b8086633cf8c94c70a22d6e"
+    },
+    "url": "https://cdn.modrinth.com/data/ZwSE3PTi/versions/5LbFIXGp/MCHeli-1.21.1-1.1.0.jar",
+    "filename": "MCHeli-1.21.1-1.1.0.jar",
+    "primary": true,
+    "size": 74240768,
+    "file_type": null
+  },
+  "required_sides": [
+    "client",
+    "server"
+  ],
+  "jar_required_ranges": {
+    "minecraft": "[1.21.1]",
+    "neoforge": "[21.1.235,)"
+  },
+  "plane_directory_entries": [
+    {
+      "resource": "assets/mcheli/planes/bqm_74e.txt",
+      "display_name": "BQM-74E CHUKAR III(Target drone)"
+    },
+    {
+      "resource": "assets/mcheli/planes/an2.txt",
+      "display_name": "An-2"
+    },
+    {
+      "resource": "assets/mcheli/planes/fuel_truck.txt",
+      "display_name": "Fuel truck"
+    },
+    {
+      "resource": "assets/mcheli/planes/macchi_m33.txt",
+      "display_name": "Macchi M33"
+    },
+    {
+      "resource": "assets/mcheli/planes/f1m.txt",
+      "display_name": "F1M Pate"
+    },
+    {
+      "resource": "assets/mcheli/planes/stinger_390x.txt",
+      "display_name": "Chris Craft Stinger 390x"
+    },
+    {
+      "resource": "assets/mcheli/planes/emb314.txt",
+      "display_name": "EMB 314 Super Tucano"
+    },
+    {
+      "resource": "assets/mcheli/planes/su-33.txt",
+      "display_name": "Su-33 Flanker-D"
+    },
+    {
+      "resource": "assets/mcheli/planes/mig29.txt",
+      "display_name": "MiG-29 Fulcrum"
+    },
+    {
+      "resource": "assets/mcheli/planes/pzl-m18.txt",
+      "display_name": "PZL M-18 Dromader"
+    },
+    {
+      "resource": "assets/mcheli/planes/harrier.txt",
+      "display_name": "AV-8B Harrier II"
+    },
+    {
+      "resource": "assets/mcheli/planes/zodiac.txt",
+      "display_name": "Zodiac Boat"
+    },
+    {
+      "resource": "assets/mcheli/planes/skylark.txt",
+      "display_name": "Elbit Skylark"
+    },
+    {
+      "resource": "assets/mcheli/planes/fa18f.txt",
+      "display_name": "F/A-18F"
+    },
+    {
+      "resource": "assets/mcheli/planes/su37.txt",
+      "display_name": "Su-37 Terminator"
+    },
+    {
+      "resource": "assets/mcheli/planes/mqm170.txt",
+      "display_name": "MQM-170 Outlaw(Target drone)"
+    },
+    {
+      "resource": "assets/mcheli/planes/f-15e.txt",
+      "display_name": "F-15E Strike Eagle"
+    },
+    {
+      "resource": "assets/mcheli/planes/h8k.txt",
+      "display_name": "Kawanishi H8K"
+    },
+    {
+      "resource": "assets/mcheli/planes/f-35a.txt",
+      "display_name": "F-35A Lightning II"
+    },
+    {
+      "resource": "assets/mcheli/planes/n1k1.txt",
+      "display_name": "Rex N1K1"
+    },
+    {
+      "resource": "assets/mcheli/planes/f-35c.txt",
+      "display_name": "F-35C Lightning II"
+    },
+    {
+      "resource": "assets/mcheli/planes/f4a.txt",
+      "display_name": "F-4A PhantomII"
+    },
+    {
+      "resource": "assets/mcheli/planes/harrier_en.txt",
+      "display_name": "BAe Harrier II"
+    },
+    {
+      "resource": "assets/mcheli/planes/ac-130.txt",
+      "display_name": "AC-130H Spectre"
+    },
+    {
+      "resource": "assets/mcheli/planes/f-35b.txt",
+      "display_name": "F-35B Lightning II"
+    },
+    {
+      "resource": "assets/mcheli/planes/us-2.txt",
+      "display_name": "US-2"
+    },
+    {
+      "resource": "assets/mcheli/planes/su-47.txt",
+      "display_name": "Su-47 Berkut"
+    },
+    {
+      "resource": "assets/mcheli/planes/mark5.txt",
+      "display_name": "Mk.5 Special Operations Craft"
+    },
+    {
+      "resource": "assets/mcheli/planes/a-10.txt",
+      "display_name": "A-10 Thunderbolt II"
+    },
+    {
+      "resource": "assets/mcheli/planes/macchi_mc72.txt",
+      "display_name": "macchi_M.C.72"
+    },
+    {
+      "resource": "assets/mcheli/planes/f14d.txt",
+      "display_name": "F-14D Super Tomcat"
+    },
+    {
+      "resource": "assets/mcheli/planes/tornado-gr4.txt",
+      "display_name": "Panavia Tornado GR.4"
+    },
+    {
+      "resource": "assets/mcheli/planes/f22a.txt",
+      "display_name": "F-22A Raptor"
+    },
+    {
+      "resource": "assets/mcheli/planes/md90.txt",
+      "display_name": "MD-90-30"
+    },
+    {
+      "resource": "assets/mcheli/planes/fi167.txt",
+      "display_name": "Fieseler Fi167"
+    },
+    {
+      "resource": "assets/mcheli/planes/tornado-ids.txt",
+      "display_name": "Panavia Tornado IDS"
+    },
+    {
+      "resource": "assets/mcheli/planes/mq-9.txt",
+      "display_name": "MQ-9 Reaper"
+    },
+    {
+      "resource": "assets/mcheli/planes/c5.txt",
+      "display_name": "C5A galaxy"
+    },
+    {
+      "resource": "assets/mcheli/planes/cb90.txt",
+      "display_name": "CB90 Combat Boat"
+    },
+    {
+      "resource": "assets/mcheli/planes/x-47b.txt",
+      "display_name": "X-47B Pegasus"
+    },
+    {
+      "resource": "assets/mcheli/planes/p-51d.txt",
+      "display_name": "P-51D Mustang"
+    },
+    {
+      "resource": "assets/mcheli/planes/p180.txt",
+      "display_name": "Piaggio P.180 Avanti II"
+    },
+    {
+      "resource": "assets/mcheli/planes/mv-22.txt",
+      "display_name": "MV-22 Osprey"
+    },
+    {
+      "resource": "assets/mcheli/planes/cessna172.txt",
+      "display_name": "Cessna 172"
+    },
+    {
+      "resource": "assets/mcheli/planes/f-15s_mtd.txt",
+      "display_name": "F-15 S/MTD"
+    },
+    {
+      "resource": "assets/mcheli/planes/project1204.txt",
+      "display_name": "Project1204 Shmel Partol-Boat"
+    },
+    {
+      "resource": "assets/mcheli/planes/t-4.txt",
+      "display_name": "T-4(Trainer)"
+    },
+    {
+      "resource": "assets/mcheli/planes/b29.txt",
+      "display_name": "B-29 Superfortress"
+    },
+    {
+      "resource": "assets/mcheli/planes/a6m2.txt",
+      "display_name": "ZERO type21"
+    },
+    {
+      "resource": "assets/mcheli/planes/b-2a.txt",
+      "display_name": "B-2A Spirit"
+    },
+    {
+      "resource": "assets/mcheli/planes/e767.txt",
+      "display_name": "E767"
+    }
+  ],
+  "limitations": [
+    "Creative-spawn vehicles; no built-in survival aircraft recipes",
+    "Gameplay, client/server interoperability, performance and destruction effects untested",
+    "Aircraft directory also contains boats/service vehicles; count is not a count of verified flyable aircraft"
+  ]
+}
