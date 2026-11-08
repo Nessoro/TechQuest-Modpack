@@ -34,7 +34,7 @@ class IncomingTests(unittest.TestCase):
 
     def test_pin_and_loader_bumped(self):
         self.assertEqual(self.cfg["loader_version"], "21.1.264")
-        self.assertEqual(self.cfg["version"], "0.3.2-alpha")
+        self.assertEqual(self.cfg["version"], "0.3.3-alpha")
         mods = self.cfg["external_mods"]
         self.assertEqual(len(mods), 1)
         self.assertEqual(mods[0]["name"], "Incoming: Air Strikes & Nukes")

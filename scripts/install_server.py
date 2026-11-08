@@ -57,15 +57,42 @@ def prepare_properties(target):
     props = target / "server.properties"
     if not props.exists():
         props.write_text(
-            "motd=TechQuest Industrial Frontier\\n"
-            "max-players=8\\n"
-            "online-mode=true\\n"
-            "white-list=true\\n"
-            "enforce-whitelist=true\\n"
-            "enable-rcon=false\\n"
-            "view-distance=6\\n"
-            "simulation-distance=5\\n"
-            "allow-flight=true\\n", encoding="utf-8")
+            "motd=TechQuest Industrial Frontier\n"
+            "max-players=8\n"
+            "online-mode=true\n"
+            "white-list=true\n"
+            "enforce-whitelist=true\n"
+            "enable-rcon=false\n"
+            "view-distance=6\n"
+            "simulation-distance=5\n"
+            "allow-flight=true\n", encoding="utf-8")
+
+def install_compatibility(pack_path, mods):
+    # Extract only our known resource mod, never arbitrary paths from an archive.
+    with zipfile.ZipFile(pack_path) as archive:
+        entry = "overrides/mods/" + packbuilder.COMPAT_JAR_NAME
+        if entry in archive.namelist():
+            (mods / packbuilder.COMPAT_JAR_NAME).write_bytes(archive.read(entry))
+    for path in mods.glob("superbwarfare-*.jar"):
+        packbuilder.patch_superb_server_jar(path)
+
+
+def install_guide_overrides(pack_path, target):
+    """Install the book definition and its server datapack, preserving local edits."""
+    with zipfile.ZipFile(pack_path) as archive:
+        for entry in archive.infolist():
+            if not entry.filename.startswith("overrides/") or entry.is_dir():
+                continue
+            relative = entry.filename[len("overrides/"):]
+            if not (relative.startswith("patchouli_books/techquest_guide/") or
+                    relative == "config/openloader/packs/techquest_starter_guide.zip"):
+                continue
+            if ".." in Path(relative).parts or any(c in relative for c in ("\\", "\x00", ":")):
+                raise packbuilder.BuildError("Unsafe guide override path: " + relative)
+            destination = target / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            if not destination.exists():
+                destination.write_bytes(archive.read(entry))
 
 def install_neoforge(target, version):
     if not shutil.which("java"):
@@ -112,22 +139,30 @@ def main():
     for i, info in enumerate(files, 1):
         print(f"[{i}/{len(files)}] {info['file']['filename']}", flush=True)
         packbuilder.download_checked(info, mods)
-    # Open Loader first-join guide pack is needed on dedicated servers too.
-    # Never overwrite an existing operator-maintained datapack.
+    install_compatibility(args.pack, mods)
+    install_guide_overrides(args.pack, target)
+    # Preserve first-party metadata for optional author-hosted manual imports.
     with zipfile.ZipFile(args.pack) as archive:
-        guide_name = "overrides/config/openloader/packs/techquest_starter_guide.zip"
-        if guide_name in archive.namelist():
-            guide_target = target / "config/openloader/packs/techquest_starter_guide.zip"
-            guide_target.parent.mkdir(parents=True, exist_ok=True)
-            if not guide_target.exists():
-                guide_target.write_bytes(archive.read(guide_name))
+        metadata = "overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json"
+        if metadata in archive.namelist():
+            dest = target / "TECHQUEST_OPTIONAL_LOCAL_MODS.json"
+            if not dest.exists():
+                dest.write_bytes(archive.read(metadata))
+    with zipfile.ZipFile(args.pack) as archive:
+        entry = "overrides/TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"
+        if entry in archive.namelist():
+            info_target = target / "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"
+            if not info_target.exists():
+                info_target.write_bytes(archive.read(entry))
     prepare_properties(target)
     if not args.skip_neoforge:
         install_neoforge(target, ver)
     (target / "TECHQUEST_README.txt").write_text(
-        "TechQuest 0.3.0-alpha (UNTESTED).\\n"
+        "TechQuest 0.3.3-alpha (PC test candidate).\\n"
         "IndustrialCraft 2: Nostalgia is installed from pinned SHA-checked URL.\\n"
         "Open Loader starter guide datapack placed in config/openloader/packs.\\n"
+        "Create-IC2 compatibility recipes installed automatically.\\n"
+        "Superb Warfare common client mixin removed only in dedicated server copy.\\n"
         "Check all mod versions before playing. Back up the world.\\n"
         "Read Minecraft EULA. If you accept, set eula=true in eula.txt.\\n"
         "To start on Linux: ./run.sh nogui. On Windows: run.bat nogui.\\n"

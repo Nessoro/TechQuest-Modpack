@@ -4,7 +4,30 @@
 
 TechQuest — большая комплексная сборка вокруг **BuildCraft Community Edition** и **Industrial Craft 2: Nostalgia**. Дополнительно в план включены Create, Mekanism, Modern Industrialization, AE2, магия, развитие, новые мобы и миры.
 
-**Статус: `0.3.2-alpha` — единый профиль Optimized / исходники и сайт опубликованы в GitHub. Готовая игровая сборка НЕ проверена запуском клиента/сервера.** Не переносите старый мир без резервной копии. Перечисленные моды — кандидаты, а не подтверждённый полностью совместимый набор.
+**Эта ветка: `0.3.3-alpha` — единый тестовый профиль Optimized. В `main` остаётся 0.3.2.** 07.11.2026 владелец подтвердил одиночный мир и игру на `535de72`. Выделенный сервер, весь набор механик и производительность этой версии ещё не подтверждены. Подробности: [проверки 0.3.3](QA_0.3.3_RU.md). Не переносите старый мир без резервной копии.
+
+**Актуальная тестовая сборка — ветка `feat/bosses-parcool-0.3.3-prep`, PR #5.** В неё объединены PR #10/#11/#19/#20: Physics Mod Lite с ограниченными обломками, резерв установки NeoForge, зум **Z + колесо**, Controlling и тестовый MCHeli Modern Port. Отдельные ветки этих PR — сохранённые этапы работы, а не разные редакции модпака.
+
+**Самолёты — текущий приоритет:** в MCHeli есть данные F-22A, F-14D, F-35, МиГ-29 и других моделей. Первое испытание в Creative: авиационных рецептов выживания пока нет, полёт/сервер/FPS ещё не подтверждены. Геймпад отложен; Controlify исключён из состава. [Самолёты](docs/AIRCRAFT_0.3.3_RU.md) · [Физика](docs/PHYSICS_TESTING_RU.md) · [NeoForge через GUI](docs/NEOFORGE_FALLBACK_RU.md) · [Клавиши и зум](docs/CONTROLS_RU.md) · [Разбор PR и оставшиеся задачи](docs/PR_REVIEW_RU.md).
+
+**Дополнение для тестирования 0.3.3:** AcceleratedMcWarfare 1.0.4 Alpha (NeoForge 1.21.1) доступен через кнопку ручного импорта в экспериментальном Windows Installer; основной JAR скачивается пользователем с официальной страницы CurseForge. Файл не распространяется в TechQuest из-за ограничений CDN и лицензии. Подробности: [AMW — установка и тесты](docs/AMW_TESTING_RU.md).
+
+> **Новый экспериментальный курс TechQuest 0.3.3:** больше приключений и исследования без удаления BuildCraft, IC2, Create и Mekanism. В PR #5 добавлены The Aether, Deeper and Darker, When Dungeons Arise, Artifacts, Wyrmroost (драконы), Legendary Monsters и Twisted Mobs (крупные монстры), Forgematica (схемы), Explorer's Compass и крепости YUNG's. Подробности в [плане Adventure & Exploration](docs/ADVENTURE_EXPLORATION_RU.md). Это тестовая ветка, не стабильный релиз.
+
+> **Схемы, другие драконы, гиганты:** в тестовый PR #5 добавлены Wyrmroost 1.4.1, Legendary Monsters 2.2.3, Twisted Mobs и клиентские Forgematica/MaFgLib 0.4.3. IceAndFire CE удалён. Инструкция: [план и риски](docs/SCHEMATICS_DRAGONS_GIANTS_RU.md). Ben's Titans остаётся неподтверждённым кандидатом и в сборку не добавлен.
+
+### Тестовая версия TechQuest 0.3.3 для Windows 11
+
+Альфа 0.3.3 собирается в [GitHub Actions — Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml) на ветке `feat/bosses-parcool-0.3.3-prep`. Найдите **успешный запуск последнего коммита**, артефакт `TechQuest-Windows-GUI-Installer` → `TechQuestInstaller.exe`. Версия 0.3.3 пока **не объединена с main**. Отчёт `TechQuest-Security-Audit` должен относиться к тому же commit SHA.
+
+GUI устанавливает единый Optimized-профиль без Python/консоли, включая первый собственный мод `TechQuest Compatibility` (рецепты Create–IC2). TaCZ уже внутри 0.3.3, четыре gunpack ZIP импортируются отдельно. Выбирайте новую пустую папку, установите Java 21 и NeoForge 21.1.264, укажите Game Directory в официальном Launcher. Подробные шаги: [Установка тестовой 0.3.3](docs/INSTALL_0.3.3_PC_RU.md). На сервере Superb Warfare локально исправляется после проверки оригинального SHA. Стабильная 0.3.2 не меняется.
+
+Перед выдачей EXE CI проверяет обязательные библиотеки и диапазоны Minecraft/NeoForge внутри JAR,
+включая штатную матрицу совместимости FML 4.0.45. Исправлена установка Lithostitched на клиент
+для Terralith. Все способы установки используют одинаковые настройки Fast/6/5/60 FPS;
+существующий `options.txt` сохраняется. Подробности и ограничения: [проверка совместимости](compat/README.md).
+
+> **TaCZ входит в экспериментальную TechQuest 0.3.3:** официальный TaCZ 1.2.0 для NeoForge 1.21.1 включён в состав. Четыре gunpack ZIP импортируются через Windows Installer без Python; совместимость исходных ZIP для 1.20.1 ещё требует проверки. [Инструкция по TaCZ](docs/TACZ_OFFICIAL_RU.md). Рабочая 0.3.2 не затронута.
 
 ## Навигация
 
@@ -38,14 +61,14 @@ TechQuest — большая комплексная сборка вокруг **
 
 Для локального отчёта: `python scripts/audit_modlist.py`.
 
-## Скачать TechQuest 0.3.2 Optimized (экспериментальная альфа)
+## Скачать TechQuest 0.3.3 Optimized (экспериментальная альфа этой ветки)
 
 Теперь **только ОДНА версия клиента**: Full и Lite объединены в TechQuest Optimized. Сохранены BuildCraft, IC2: Nostalgia, Create, Mekanism, Modern Industrialization, AE2, магия, техника, мир и приключения. По умолчанию установлены клиентские Sodium, ImmediatelyFast, More Culling, BadOptimizations, Dynamic FPS, Entity Culling, FerriteCore и ModernFix; Iris исключён, шейдеры отключены.
 
 На странице [Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml) откройте самый новый **успешный** запуск и скачайте из Artifacts:
 
 - **TechQuest-Windows-GUI-Installer** — обычным игрокам на Windows 10/11: скачайте архив, извлеките `TechQuestInstaller.exe`, запустите двойным щелчком. **Без Python, PowerShell и консоли.**
-- **TechQuest-1.21.1-alpha-build** — один `TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap и диагностические данные.
+- **TechQuest-1.21.1-alpha-build** — один `TechQuest_1.21.1_0.3.3_ALPHA.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap, `jar-metadata-audit.json` и диагностические данные.
 - **TechQuest-Security-Audit** — отчёт проверки хешей, ZIP и ClamAV, если этап безопасности завершился успешно. Проверка антивирусом не гарантирует отсутствие всех угроз.
 
 ### Установка через официальный Minecraft Launcher (без Prism)
@@ -64,7 +87,7 @@ TechQuest — большая комплексная сборка вокруг **
 
 Для серверного TPS требуется отдельное профилирование сервера. Автоматически выключать Superb Warfare, Burnt, Explosion Overhaul или Create мы не стали: это изменило бы геймплей/совместимость, а не только оптимизировало графику.
 
-**Предупреждение:** Minecraft с модами пока не проверен на реальной машине в этом выпуске. Снижение лагов вероятно, но конкретный FPS/совместимость не гарантированы. Для первого запуска используйте новый мир и резервные копии.
+**Проверка игроком:** одиночный мир и игра на `535de72` подтверждены владельцем; воспроизводимых замеров FPS/TPS пока нет. Для первого запуска используйте новый мир и резервные копии. После [исследования](experiments/destruction/README_RU.md) в этой экспериментальной ветке включён Physics Mod Lite; эта добавка требует отдельного игрового теста.
 
 ## Incoming: Air Strikes & Nukes — включён в TechQuest 0.3.2
 
@@ -143,7 +166,7 @@ python scripts/sync_site_mods.py       # Обновить каталог сай�
 python -m unittest discover -s tests -v
 ```
 
-Нужны интернет, Python 3.9+ и отдельно установленная Java 21 для Minecraft. IndustrialCraft 2: Nostalgia уже лежит в `manual-mods/` и включается в клиент/сервер через зафиксированный GitHub URL; оригинальная [страница автора на CurseForge](https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244). При распространении важно самостоятельно проверить соблюдение прав на порт и оригинальный IC2. **Не загружайте чужие JAR, файлы сервера или миры в git:** в `.gitignore` есть соответствующие исключения.
+Для сборщика/bootstrap нужны интернет и Python 3.9+; для автотестов и аудита метаданных — Python 3.11+ (CI использует 3.12). Для Minecraft отдельно нужна Java 21. IndustrialCraft 2: Nostalgia уже лежит в `manual-mods/` и включается в клиент/сервер через зафиксированный GitHub URL; оригинальная [страница автора на CurseForge](https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244). При распространении важно самостоятельно проверить соблюдение прав на порт и оригинальный IC2. **Не загружайте чужие JAR, файлы сервера или миры в git:** в `.gitignore` есть соответствующие исключения.
 
 ### Важные ссылки
 

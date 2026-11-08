@@ -1,10 +1,10 @@
 {
-  "pack_name": "TechQuest: Industrial Frontier — Optimized 0.3.2",
-  "version": "0.3.2-alpha",
+  "pack_name": "TechQuest: Industrial Frontier — Adventure 0.3.3 Alpha",
+  "version": "0.3.3-alpha",
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "Единая оптимизированная NeoForge 1.21.1: BuildCraft, IC2, Create, Mekanism, Incoming, авиаудары, миникарта, числовое HP и путеводитель",
+  "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica",
   "mods": [
     {
       "project": "buildcraft-community-edition",
@@ -15,7 +15,8 @@
     {
       "project": "create",
       "group": "Технологии",
-      "required": true
+      "required": true,
+      "version_id": "UjX6dr61"
     },
     {
       "project": "mekanism",
@@ -50,7 +51,8 @@
     {
       "project": "sophisticated-backpacks",
       "group": "Хранение",
-      "required": true
+      "required": true,
+      "version_id": "DY0e8WVr"
     },
     {
       "project": "storagedrawers",
@@ -88,9 +90,48 @@
       "required": true
     },
     {
+      "project": "bosses-of-mass-destruction-forge",
+      "group": "Боссы",
+      "required": true,
+      "version_prefix": "1.3.3"
+    },
+    {
+      "project": "wyrmroost",
+      "group": "Приключения",
+      "required": true,
+      "version_prefix": "1.4.1"
+    },
+    {
+      "project": "legendary-monsters",
+      "group": "Боссы",
+      "required": true
+    },
+    {
+      "project": "twisted-mobs",
+      "group": "Мобы",
+      "required": true
+    },
+    {
       "project": "mowzies-mobs",
       "group": "Мобы",
       "required": false
+    },
+    {
+      "project": "aether",
+      "group": "Приключения",
+      "required": true,
+      "version_prefix": "1.21.1-1.5.9-neoforge"
+    },
+    {
+      "project": "deeperdarker",
+      "group": "Приключения",
+      "required": true,
+      "version_prefix": "1.4.1-neoforge-1.21.1"
+    },
+    {
+      "project": "artifacts",
+      "group": "Приключения",
+      "required": true
     },
     {
       "project": "terralith",
@@ -100,12 +141,60 @@
     {
       "project": "yungs-better-dungeons",
       "group": "Мир",
-      "required": true
+      "required": true,
+      "version_id": "D6aZn0Em",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
     },
     {
       "project": "yungs-better-mineshafts",
       "group": "Мир",
-      "required": false
+      "required": false,
+      "version_id": "Go3nbneL",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
+    },
+    {
+      "project": "when-dungeons-arise",
+      "group": "Мир",
+      "required": true,
+      "version_prefix": "2.1.68",
+      "version_id": "XIRJSFQ0",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
+    },
+    {
+      "project": "yungs-better-strongholds",
+      "group": "Мир",
+      "required": true,
+      "version_prefix": "1.21.1-NeoForge-5.1.3",
+      "version_id": "8U0dIfSM",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
+    },
+    {
+      "project": "yungs-better-nether-fortresses",
+      "group": "Мир",
+      "required": true,
+      "version_prefix": "1.21.1-NeoForge-3.1.4",
+      "version_id": "oNRbcwIE",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
     },
     {
       "project": "aquamirae",
@@ -116,6 +205,17 @@
     {
       "project": "waystones",
       "group": "Комфорт",
+      "required": true
+    },
+    {
+      "project": "parcool",
+      "group": "Передвижение",
+      "required": true,
+      "version_prefix": "1.21.1-3.4.3.3"
+    },
+    {
+      "project": "explorers-compass",
+      "group": "Исследование",
       "required": true
     },
     {
@@ -142,6 +242,20 @@
       "project": "mouse-tweaks",
       "group": "Интерфейс",
       "required": false
+    },
+    {
+      "project": "mafglib",
+      "group": "Библиотеки",
+      "required": true,
+      "version_prefix": "0.4.3+mc1.21.1",
+      "client_only": true
+    },
+    {
+      "project": "forgematica",
+      "group": "Интерфейс",
+      "required": true,
+      "version_prefix": "0.4.3+mc1.21.1",
+      "client_only": true
     },
     {
       "project": "ferrite-core",
@@ -174,10 +288,30 @@
       "required": false
     },
     {
+      "project": "geckolib",
+      "group": "Библиотеки",
+      "required": true
+    },
+    {
       "project": "superb-warfare",
       "group": "Военная техника",
       "required": true,
-      "version_prefix": "0.8.9.2"
+      "version_prefix": "0.8.9.2",
+      "version_id": "bl7W8fjU"
+    },
+    {
+      "project": "timeless-and-classics-zero",
+      "group": "Военная техника",
+      "required": true,
+      "version_prefix": "1.2.0"
+    },
+    {
+      "project": "physicsmod",
+      "group": "Визуальная физика",
+      "required": true,
+      "version_id": "wudTG1nk",
+      "client_only": true,
+      "note": "Эксперимент Physics Mod Lite 3.0.35 для NeoForge 1.21.1: только клиентские обломки, преднастройка 128 объектов / 16 блоков / Blocky, собственное обрушение выключено. Не проверен запуском Minecraft в составе TechQuest. Перед входом в мир проверьте настройки в GUI; инструкции docs/PHYSICS_TESTING_RU.md. Серверный JAR не устанавливается."
     },
     {
       "project": "burnt",
@@ -195,7 +329,13 @@
       "project": "lithostitched",
       "group": "Библиотеки",
       "required": true,
-      "version_prefix": "1.8.0-neoforge-21.1"
+      "version_prefix": "1.8.0-neoforge-21.1",
+      "version_id": "sPmtDq1X",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Terralith требует Lithostitched на BOTH; закреплённый NeoForge JAR с Apollib нужен также встроенному серверу клиента, несмотря на общую серверную метку Modrinth."
     },
     {
       "project": "irons-lib",
@@ -256,6 +396,37 @@
       "project": "lithium",
       "group": "Оптимизация",
       "required": false
+    },
+    {
+      "project": "better-zoom",
+      "group": "Масштабирование камеры",
+      "required": true,
+      "client_only": true,
+      "version_id": "NwwnadOr"
+    },
+    {
+      "project": "controlling",
+      "group": "Управление",
+      "required": true,
+      "client_only": true,
+      "version_id": "FaNppCJJ"
+    },
+    {
+      "project": "searchables",
+      "group": "Библиотеки",
+      "required": true,
+      "client_only": true,
+      "version_id": "iEE85X0w"
+    },
+    {
+      "project": "mcheli-modern-port",
+      "group": "Военная техника",
+      "required": true,
+      "version_id": "5LbFIXGp",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
     }
   ],
   "manual_mods": [
@@ -281,14 +452,23 @@
     "shader_loader_included": false,
     "notes": "Одна сборка с клиентскими оптимизациями и серверным снижением дальности симуляции; карта/HP только на клиенте, внутриигровое руководство Patchouli. Проверить производительность Spark.",
     "video_defaults": {
-      "graphicsMode": "fast",
+      "graphicsMode": 0,
       "renderDistance": 6,
       "simulationDistance": 5,
       "entityDistanceScaling": 0.5,
       "particles": 2,
-      "maxFps": 120,
+      "maxFps": 60,
       "biomeBlendRadius": 0,
       "mipmapLevels": 1
+    },
+    "key_defaults": {
+      "key.betterzoom.zoom": "key.keyboard.z",
+      "key.betterzoom.config": "key.keyboard.unknown",
+      "key.betterzoom.zoom_in": "key.keyboard.unknown",
+      "key.betterzoom.zoom_out": "key.keyboard.unknown",
+      "key.tacz.refit.desc": "key.keyboard.f8",
+      "gui.xaero_enlarge_map": "key.keyboard.f9",
+      "key.sophisticatedbackpacks.toggle_upgrade_1": "key.keyboard.f10"
     }
   },
   "external_mods": [
@@ -303,6 +483,27 @@
       "file_size": 23250455,
       "required": true,
       "note": "Официальный GitHub-релиз автора ZentixUA (GPLv3). Клиент и сервер, NeoForge >=21.1.264. Большие ядерные взрывы очень требовательны к CPU/GPU и создают разрушения."
+    }
+  ],
+  "optional_local_mods": [
+    {
+      "id": "acceleratedmcwarfare",
+      "name": "AcceleratedMcWarfare (AMW)",
+      "file_name": "acceleratedMcWarfare-1.0.4..jar",
+      "version": "1.0.4-alpha",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "side": "both",
+      "required": false,
+      "install_mode": "manual_user_import",
+      "source": "https://www.curseforge.com/minecraft/mc-mods/amw/files/9298161",
+      "curseforge_project_id": 1711633,
+      "curseforge_file_id": 9298161,
+      "license": "All Rights Reserved",
+      "dependencies": [
+        "geckolib"
+      ],
+      "note": "The official file is client+server but downloads require the publisher's delivery channel. This JAR is not bundled or redistributed by TechQuest. Import the original JAR using the GUI, and copy the same file to the dedicated server. Compatibility with Incoming/Superb Warfare/Explosion Overhaul is untested."
     }
   ]
 }
