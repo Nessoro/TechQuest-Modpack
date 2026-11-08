@@ -9,7 +9,7 @@ import build_pack
 from scripts.guide_assets import ENTRIES
 
 ROOT = Path(__file__).resolve().parents[1]
-REMOVED = {"mcheli-modern-port": "ZwSE3PTi", "timeless-and-classics-zero": "SzzJttH8"}
+REMOVED = {"mcheli-modern-port": "ZwSE3PTi", "timeless-and-classics-zero": "SzzJttH8", "parcool": "Fsvx2bdR"}
 
 
 class RemovedModsTests(unittest.TestCase):
@@ -28,6 +28,7 @@ class RemovedModsTests(unittest.TestCase):
         cfg = build_pack.load_cfg()
         self.assertNotIn("aircraft_trial", ENTRIES)
         self.assertNotIn("tacz_weapons", ENTRIES)
+        self.assertNotIn("parcool", ENTRIES)
         with tempfile.TemporaryDirectory() as tmp:
             pack = Path(tmp) / "test.mrpack"
             build_pack.make_mrpack(cfg, [], pack)
