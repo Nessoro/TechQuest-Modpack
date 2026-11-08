@@ -43,15 +43,17 @@ internal sealed class NeoForgeBootstrap(HttpClient client, Action<string> report
     internal static IEnumerable<Uri> Sources(BootstrapFile file)
     {
         yield return new Uri(file.Url);
+        yield return new Uri("https://maven.creeperhost.net/" + file.Path);
         if (new Uri(file.Url).Host == "libraries.minecraft.net")
         {
             yield return new Uri("https://maven.neoforged.net/releases/" + file.Path);
             yield return new Uri("https://repo.maven.apache.org/maven2/" + file.Path);
         }
         // Mirrors are transports only. Hashes always come from the pinned official installer.
+        yield return new Uri("https://mirror.nju.edu.cn/bmclapi/" + file.Path);
         yield return new Uri("https://bmclapi2.bangbang93.com/maven/" + file.Path);
         if (file.Sha512)
-            yield return new Uri("https://bmclapi2.bangbang93.com/neoforge/version/21.1.264/installer");
+            yield return new Uri("https://bmclapi2.bangbang93.com/neoforge/version/21.1.264/download/installer.jar");
     }
 
     private static bool Matches(byte[] bytes, BootstrapFile file) =>
@@ -98,6 +100,11 @@ internal sealed class NeoForgeBootstrap(HttpClient client, Action<string> report
                 failures.Add(source.Host + ": " + (ex.StatusCode?.ToString() ?? "ошибка соединения"));
             }
             catch (InvalidDataException ex) { failures.Add(source.Host + ": " + ex.Message); }
+            catch (IOException ex)
+            {
+                unavailableHosts.Add(source.Host);
+                failures.Add(source.Host + ": ошибка передачи: " + ex.Message);
+            }
         }
         throw new IOException("Не удалось получить проверенный файл:\n" + file.Path + "\n" +
             string.Join("\n", failures.DefaultIfEmpty("Источники недоступны после предыдущего тайм-аута.")) +
