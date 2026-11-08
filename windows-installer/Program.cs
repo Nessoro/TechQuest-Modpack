@@ -204,6 +204,18 @@ internal sealed class InstallerForm : Form
                 File.WriteAllText(Path.Combine(probe, "options.txt"), "existing-player-settings");
                 InstallGuideOverrides(probe);
                 if (File.ReadAllText(Path.Combine(probe, "options.txt")) != "existing-player-settings") return 9;
+                if (fileNames.Any(n => n.StartsWith("betterzoom-")))
+                {
+                    if (!options.Split('\n').Contains("key_key.betterzoom.zoom:key.keyboard.z") ||
+                        !options.Split('\n').Contains("key_key.tacz.refit.desc:key.keyboard.f8") ||
+                        !options.Split('\n').Contains("key_gui.xaero_enlarge_map:key.keyboard.f9") ||
+                        !options.Split('\n').Contains("key_key.sophisticatedbackpacks.toggle_upgrade_1:key.keyboard.f10")) return 12;
+                    string zoomConfig = Path.Combine(probe, "config", "betterzoom-client.toml");
+                    if (!File.ReadAllText(zoomConfig).Contains("holdToZoom = true")) return 13;
+                    File.WriteAllText(zoomConfig, "existing-player-zoom-settings");
+                    InstallGuideOverrides(probe);
+                    if (File.ReadAllText(zoomConfig) != "existing-player-zoom-settings") return 14;
+                }
                 if (fileNames.Any(n => n.StartsWith("physics-mod-")))
                 {
                     string configDir = Path.Combine(probe, "config", "physicsmod");
@@ -330,6 +342,7 @@ internal sealed class InstallerForm : Form
                 relative == "options.txt" ||
                 relative == "config/physicsmod/physics_client_config.json" ||
                 relative == "config/physicsmod/physics_server_config.json" ||
+                relative == "config/betterzoom-client.toml" ||
                 relative == "TECHQUEST_OPTIMIZED.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json" ||
                 relative == "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json";

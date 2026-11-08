@@ -86,6 +86,7 @@ def select_mod_file(version):
 
 def resolve_manifest(cfg):
     found = {}
+    canonical_ids = {}
     skipped = []
     visiting = set()
     def add(project, required=True, prefix="", parent="modlist", version_id=""):
@@ -106,6 +107,7 @@ def resolve_manifest(cfg):
             version = select_version(versions, prefix, version_id)
             meta = get_json("/project/" + urllib.parse.quote(project, safe=""))
             canonical_id = meta["id"]
+            canonical_ids[project] = canonical_id
             if meta.get("project_type") != "mod":
                 raise BuildError("Project is not a mod")
             if canonical_id in found:
@@ -150,16 +152,19 @@ def resolve_manifest(cfg):
     for entry in ordered:
         add(entry["project"], entry.get("required", True), entry.get("version_prefix", ""),
             version_id=entry.get("version_id", ""))
-    client_only = {entry["project"] for entry in cfg["mods"] if entry.get("client_only")}
-    side_overrides = {entry["project"]: entry["environment"] for entry in cfg["mods"]
-                      if entry.get("environment")}
+    # A dependency may have been resolved first via a Modrinth ID rather than
+    # the explicit slug. Apply reviewed sides to the canonical project identity.
+    client_only = {canonical_ids[entry["project"]] for entry in cfg["mods"]
+                   if entry.get("client_only") and entry["project"] in canonical_ids}
+    side_overrides = {canonical_ids[entry["project"]]: entry["environment"] for entry in cfg["mods"]
+                      if entry.get("environment") and entry["project"] in canonical_ids}
     for item in found.values():
-        override = side_overrides.get(item["requested"], {})
+        override = side_overrides.get(item["id"], {})
         if any(side not in ("client", "server") or value not in ("required", "optional", "unsupported")
                for side, value in override.items()):
             raise BuildError("Invalid reviewed environment override: " + item["requested"])
         item["environment"].update(override)
-        if item["requested"] in client_only:
+        if item["id"] in client_only:
             if item["environment"]["client"] == "unsupported":
                 raise BuildError("Client-only mod is not client-compatible: " + item["requested"])
             item["environment"]["server"] = "unsupported"
@@ -333,14 +338,20 @@ def remove_stale_generated_jars(directory, expected):
 
 def client_config_overrides(cfg):
     """Version-reviewed client presets; the server-named file is for singleplayer."""
+    result = {}
     physics = next((mod for mod in cfg.get("mods", [])
                     if mod["project"] == "physicsmod"), None)
-    if not physics:
-        return {}
-    if physics.get("version_id") != "wudTG1nk" or not physics.get("client_only"):
-        raise BuildError("Review Physics Mod client preset before changing its version or side")
-    return {"config/physicsmod/" + name: (ROOT / "compat" / "physicsmod" / name).read_bytes()
-            for name in ("physics_client_config.json", "physics_server_config.json")}
+    if physics:
+        if physics.get("version_id") != "wudTG1nk" or not physics.get("client_only"):
+            raise BuildError("Review Physics Mod client preset before changing its version or side")
+        result.update({"config/physicsmod/" + name: (ROOT / "compat" / "physicsmod" / name).read_bytes()
+                       for name in ("physics_client_config.json", "physics_server_config.json")})
+    zoom = next((mod for mod in cfg.get("mods", []) if mod["project"] == "better-zoom"), None)
+    if zoom:
+        if zoom.get("version_id") != "NwwnadOr" or not zoom.get("client_only"):
+            raise BuildError("Review Better Zoom client preset before changing its version or side")
+        result["config/betterzoom-client.toml"] = (ROOT / "compat/client-controls/betterzoom-client.toml").read_bytes()
+    return result
 
 
 def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
@@ -378,9 +389,9 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("modrinth.index.json", json.dumps(idx, ensure_ascii=False, indent=2))
-        video = cfg.get("performance_profile", {}).get("video_defaults", {})
-        if video:
-            archive.writestr("overrides/options.txt", client_options(cfg))
+        settings = client_options(cfg)
+        if settings:
+            archive.writestr("overrides/options.txt", settings)
             archive.writestr("overrides/TECHQUEST_OPTIMIZED.txt",
                 "Unified optimized TechQuest client. Iris shaders are not included. "
                 "Gameplay mods are preserved. Set graphics Fast, view distance 4-6, "
@@ -416,8 +427,13 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
 
 def client_options(cfg):
     """One options.txt source for .mrpack, generated client and Windows GUI."""
-    video = cfg.get("performance_profile", {}).get("video_defaults", {})
-    return ("\n".join("%s:%s" % item for item in video.items()) + "\n").encode("utf-8") if video else b""
+    profile = cfg.get("performance_profile", {})
+    lines = ["%s:%s" % item for item in profile.get("video_defaults", {}).items()]
+    for name, value in profile.get("key_defaults", {}).items():
+        if any(character in name + value for character in ("\n", "\r")) or ":" in name:
+            raise BuildError("Invalid keybinding default: " + name)
+        lines.append("key_%s:%s" % (name, value))
+    return ("\n".join(lines) + "\n").encode("utf-8") if lines else b""
 
 def main():
     argp = argparse.ArgumentParser(description="TechQuest client/server pack generator")

@@ -8,6 +8,8 @@ TechQuest — большая комплексная сборка вокруг **
 
 **Эксперимент этой ветки — Physics Mod Lite 3.0.35:** добавлен только на клиент с ограничением 128 объектов / 16 блоков и отключённым собственным обрушением. Сборку брать из ветки `experiment/physicsmod-0.3.3`, устанавливать в отдельную папку. Она ещё не проверена запуском Minecraft. [Установка и маршрут теста](docs/PHYSICS_TESTING_RU.md).
 
+**Продолжение в `fix/neoforge-zoom-controls-0.3.3`:** подготовка NeoForge с проверенным резервом для установщика и 70 библиотек, плавный зум **Z + колесо**, Controlling и кандидат поддержки **Xbox/джойстика Controlify**. Для этих изменений скачивайте артефакт именно новой ветки. [Установка NeoForge](docs/NEOFORGE_FALLBACK_RU.md) · [Клавиши, зум и контроллеры](docs/CONTROLS_RU.md). Реальная игра с новыми клиентскими модами пока не проверена; общая схема конфликтов и авиационные оси остаются в испытаниях.
+
 **Дополнение для тестирования 0.3.3:** AcceleratedMcWarfare 1.0.4 Alpha (NeoForge 1.21.1) доступен через кнопку ручного импорта в экспериментальном Windows Installer; основной JAR скачивается пользователем с официальной страницы CurseForge. Файл не распространяется в TechQuest из-за ограничений CDN и лицензии. Подробности: [AMW — установка и тесты](docs/AMW_TESTING_RU.md).
 
 > **Новый экспериментальный курс TechQuest 0.3.3:** больше приключений и исследования без удаления BuildCraft, IC2, Create и Mekanism. В PR #5 добавлены The Aether, Deeper and Darker, When Dungeons Arise, Artifacts, Wyrmroost (драконы), Legendary Monsters и Twisted Mobs (крупные монстры), Forgematica (схемы), Explorer's Compass и крепости YUNG's. Подробности в [плане Adventure & Exploration](docs/ADVENTURE_EXPLORATION_RU.md). Это тестовая ветка, не стабильный релиз.

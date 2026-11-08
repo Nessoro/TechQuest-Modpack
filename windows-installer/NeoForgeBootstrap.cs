@@ -8,9 +8,19 @@ internal sealed record BootstrapFile(string Path, string Url, long Size, string 
 internal sealed record BootstrapPlan(BootstrapFile Installer, IReadOnlyList<BootstrapFile> Libraries);
 
 // No WinForms or game code: the exact GUI download path is also exercised by tests.
-internal sealed class NeoForgeBootstrap(HttpClient client, Action<string> report)
+internal sealed class NeoForgeBootstrap
 {
+    private readonly HttpClient client;
+    private readonly Action<string> report;
     private readonly HashSet<string> unavailableHosts = new(StringComparer.OrdinalIgnoreCase);
+
+    internal NeoForgeBootstrap(HttpClient client, Action<string> report)
+    {
+        this.client = client;
+        this.report = report;
+        if (client.DefaultRequestHeaders.UserAgent.Count == 0)
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("TechQuestInstaller/0.3.3");
+    }
 
     internal static BootstrapPlan ReadPlan(Stream stream)
     {
@@ -50,10 +60,6 @@ internal sealed class NeoForgeBootstrap(HttpClient client, Action<string> report
             yield return new Uri("https://repo.maven.apache.org/maven2/" + file.Path);
         }
         // Mirrors are transports only. Hashes always come from the pinned official installer.
-        yield return new Uri("https://mirror.nju.edu.cn/bmclapi/" + file.Path);
-        yield return new Uri("https://bmclapi2.bangbang93.com/maven/" + file.Path);
-        if (file.Sha512)
-            yield return new Uri("https://bmclapi2.bangbang93.com/neoforge/version/21.1.264/download/installer.jar");
     }
 
     private static bool Matches(byte[] bytes, BootstrapFile file) =>
@@ -126,7 +132,8 @@ internal sealed class NeoForgeBootstrap(HttpClient client, Action<string> report
             token.ThrowIfCancellationRequested();
             if (File.Exists(destination))
             {
-                if (Matches(await File.ReadAllBytesAsync(destination, token), file)) return;
+                if (new FileInfo(destination).Length == file.Size &&
+                    Matches(await File.ReadAllBytesAsync(destination, token), file)) return;
                 if (preserveExisting)
                     throw new IOException("Существующая библиотека отличается от официальной и не перезаписана:\n" +
                         destination + "\nСохраните резервную копию этого файла и проверьте установку Minecraft в Launcher.");

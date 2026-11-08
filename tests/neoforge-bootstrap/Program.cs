@@ -23,6 +23,13 @@ string temporary = Path.Combine(Path.GetTempPath(), "TechQuest-bootstrap-tests-"
 Directory.CreateDirectory(temporary);
 try
 {
+    if (args.Length == 3 && args[0] == "--prepare-client")
+    {
+        using var client = new HttpClient(new OutageHandler(true)) { Timeout = Timeout.InfiniteTimeSpan };
+        await new NeoForgeBootstrap(client, Console.WriteLine).PrepareAsync(actual, args[1], args[2], CancellationToken.None);
+        Console.WriteLine("PASS: prepared real client cache with primary Maven unavailable; installer not run by this harness");
+        return;
+    }
     if (args.Length == 1 && args[0].StartsWith("--probe-"))
     {
         bool outage = args[0] == "--probe-maven-outage";

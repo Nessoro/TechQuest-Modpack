@@ -51,7 +51,8 @@
     {
       "project": "sophisticated-backpacks",
       "group": "Хранение",
-      "required": true
+      "required": true,
+      "version_id": "DY0e8WVr"
     },
     {
       "project": "storagedrawers",
@@ -389,6 +390,41 @@
       "project": "lithium",
       "group": "Оптимизация",
       "required": false
+    },
+    {
+      "project": "better-zoom",
+      "group": "Масштабирование камеры",
+      "required": true,
+      "client_only": true,
+      "version_id": "NwwnadOr"
+    },
+    {
+      "project": "controlling",
+      "group": "Управление",
+      "required": true,
+      "client_only": true,
+      "version_id": "FaNppCJJ"
+    },
+    {
+      "project": "searchables",
+      "group": "Библиотеки",
+      "required": true,
+      "client_only": true,
+      "version_id": "iEE85X0w"
+    },
+    {
+      "project": "controlify",
+      "group": "Управление",
+      "required": true,
+      "client_only": true,
+      "version_id": "RqsNKKLK"
+    },
+    {
+      "project": "yacl",
+      "group": "Библиотеки",
+      "required": true,
+      "client_only": true,
+      "version_id": "7TVdVtxF"
     }
   ],
   "manual_mods": [
@@ -422,6 +458,15 @@
       "maxFps": 60,
       "biomeBlendRadius": 0,
       "mipmapLevels": 1
+    },
+    "key_defaults": {
+      "key.betterzoom.zoom": "key.keyboard.z",
+      "key.betterzoom.config": "key.keyboard.unknown",
+      "key.betterzoom.zoom_in": "key.keyboard.unknown",
+      "key.betterzoom.zoom_out": "key.keyboard.unknown",
+      "key.tacz.refit.desc": "key.keyboard.f8",
+      "gui.xaero_enlarge_map": "key.keyboard.f9",
+      "key.sophisticatedbackpacks.toggle_upgrade_1": "key.keyboard.f10"
     }
   },
   "external_mods": [

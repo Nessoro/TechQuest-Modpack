@@ -1,0 +1,156 @@
+{
+  "minecraft": "1.21.1",
+  "neoforge": "21.1.264",
+  "runtime_verified": false,
+  "mods": [
+    {
+      "project": "better-zoom",
+      "version_id": "NwwnadOr",
+      "version": "3.1.1",
+      "license": {
+        "id": "MIT",
+        "name": "MIT License",
+        "url": null
+      },
+      "source_url": "https://github.com/AwesomeHippo/BetterZoom",
+      "published_dependencies": [],
+      "file": {
+        "id": "C4Lb9P00",
+        "hashes": {
+          "sha512": "53816cea32172548f9f1e97c4ba8864d66d25e2df08e547e4177b04578fc2dc1c1c9bc5ed77e4a872da3c9f35388f08df6480ce5f55873528c4d71315adb43c1",
+          "sha1": "4bb208a98ef0dbe32b406b8ecf5c1c3afa157a95"
+        },
+        "url": "https://cdn.modrinth.com/data/rOY9XqdO/versions/NwwnadOr/betterzoom-neoforge-1.21.1-3.1.1.jar",
+        "filename": "betterzoom-neoforge-1.21.1-3.1.1.jar",
+        "primary": true,
+        "size": 126001,
+        "file_type": null
+      },
+      "id": "rOY9XqdO",
+      "client_side": "required",
+      "server_side": "unsupported"
+    },
+    {
+      "project": "controlling",
+      "version_id": "FaNppCJJ",
+      "version": "19.0.5",
+      "license": {
+        "id": "MIT",
+        "name": "MIT License",
+        "url": null
+      },
+      "source_url": "https://github.com/jaredlll08/Controlling",
+      "published_dependencies": [
+        {
+          "version_id": null,
+          "project_id": "fuuu3xnx",
+          "file_name": null,
+          "dependency_type": "required"
+        }
+      ],
+      "file": {
+        "id": "7BTsaaDL",
+        "hashes": {
+          "sha512": "bd01b2a38a869ea38e5f2a8fcd601e67ea9b132b9883c6ae752bc35dff6e94f6d47b965e31c1ee5c2f6a1221653549680da779fcb5319d199aec261d221d179e",
+          "sha1": "8a34424fc1428778be2fdbfa4da67b21b70bcbfe"
+        },
+        "url": "https://cdn.modrinth.com/data/xv94TkTM/versions/FaNppCJJ/Controlling-neoforge-1.21.1-19.0.5.jar",
+        "filename": "Controlling-neoforge-1.21.1-19.0.5.jar",
+        "primary": true,
+        "size": 77555,
+        "file_type": null
+      },
+      "id": "xv94TkTM",
+      "client_side": "required",
+      "server_side": "unsupported"
+    },
+    {
+      "project": "searchables",
+      "version_id": "iEE85X0w",
+      "version": "1.0.2",
+      "license": {
+        "id": "MIT",
+        "name": "MIT License",
+        "url": null
+      },
+      "source_url": "https://github.com/jaredlll08/searchables",
+      "published_dependencies": [],
+      "file": {
+        "id": "ngN4Hjqv",
+        "hashes": {
+          "sha1": "5b8a0b43a474c066371b2e16f9bfb88622552a74",
+          "sha512": "d0824bac1900142ac9a53e68f7ec3b4c0d33d9366bbd3f1d0d93eed860e5eb6b5e6f5a215a69bfffa70bcb48573ff49b5a12bbaa96096ceac6636000d506027a"
+        },
+        "url": "https://cdn.modrinth.com/data/fuuu3xnx/versions/iEE85X0w/Searchables-neoforge-1.21.1-1.0.2.jar",
+        "filename": "Searchables-neoforge-1.21.1-1.0.2.jar",
+        "primary": true,
+        "size": 77326,
+        "file_type": null
+      },
+      "id": "fuuu3xnx",
+      "client_side": "required",
+      "server_side": "unsupported"
+    },
+    {
+      "project": "controlify",
+      "version_id": "RqsNKKLK",
+      "version": "3.0.1+lts",
+      "license": {
+        "id": "LGPL-3.0-or-later",
+        "name": "GNU Lesser General Public License v3.0 or later",
+        "url": null
+      },
+      "source_url": "https://github.com/isXander/Controlify",
+      "published_dependencies": [
+        {
+          "version_id": null,
+          "project_id": "1eAoo2KR",
+          "file_name": null,
+          "dependency_type": "required"
+        }
+      ],
+      "file": {
+        "id": "wSC5T0tN",
+        "hashes": {
+          "sha512": "cfffb25b9e62ca39cd6f54ab0b83902feda23a763ae9e345a11609f0138de1b6c3ab7a78c8fd5b7b309795e5c6d4911fd37cd7f8722a72cca6ad18e32cec461e",
+          "sha1": "6d904472e1c95bd9d8b5e7c5421b8db628915e20"
+        },
+        "url": "https://cdn.modrinth.com/data/DOUdJVEm/versions/RqsNKKLK/controlify-3.0.1%2Blts%2B1.21.1-neoforge.jar",
+        "filename": "controlify-3.0.1+lts+1.21.1-neoforge.jar",
+        "primary": true,
+        "size": 7981721,
+        "file_type": null
+      },
+      "id": "DOUdJVEm",
+      "client_side": "required",
+      "server_side": "optional"
+    },
+    {
+      "project": "yacl",
+      "version_id": "7TVdVtxF",
+      "version": "3.8.2+1.21.1-neoforge",
+      "license": {
+        "id": "LGPL-3.0-or-later",
+        "name": "GNU Lesser General Public License v3.0 or later",
+        "url": null
+      },
+      "source_url": "https://github.com/isXander/YetAnotherConfigLib",
+      "published_dependencies": [],
+      "file": {
+        "id": "tKjdtK77",
+        "hashes": {
+          "sha1": "fe270c9f6e0a8142cf316944087f5109cef08bbb",
+          "sha512": "583de19b927ce8050c2b7d5e60b75accc69e325e5aac85c27994c82a9dec2e4e078343fa1d4c3a10d4bd7e0e524e0b3b246a18cf03db01e363a1e6f865adcf48"
+        },
+        "url": "https://cdn.modrinth.com/data/1eAoo2KR/versions/7TVdVtxF/yet_another_config_lib_v3-3.8.2%2B1.21.1-neoforge.jar",
+        "filename": "yet_another_config_lib_v3-3.8.2+1.21.1-neoforge.jar",
+        "primary": true,
+        "size": 1118651,
+        "file_type": null
+      },
+      "id": "1eAoo2KR",
+      "client_side": "optional",
+      "server_side": "optional"
+    }
+  ]
+}
