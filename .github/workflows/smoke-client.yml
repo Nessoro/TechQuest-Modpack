@@ -1,0 +1,46 @@
+name: Real client menu smoke (no world or server)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - modlist.json
+      - build_pack.py
+      - compat/**
+      - scripts/smoke_client_runtime.py
+      - tests/runtime-client-probe/**
+      - .github/workflows/smoke-client.yml
+permissions:
+  contents: read
+jobs:
+  client-menu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      LIBGL_ALWAYS_SOFTWARE: 'true'
+      ALSOFT_DRIVERS: 'null'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install headless display and software OpenGL
+        run: sudo apt-get update && sudo apt-get install -y xvfb imagemagick libgl1-mesa-dri libasound2t64
+      - name: Build and audit exact client and server mod sets
+        run: |
+          python -m unittest discover -s tests -v
+          python build_pack.py
+          python scripts/audit_jar_metadata.py
+      - name: Boot real client and observe title screen (offline development identity)
+        run: xvfb-run -a -s '-screen 0 1280x800x24' python scripts/smoke_client_runtime.py
+      - name: Upload logs and screenshot only (no Minecraft or mod binaries)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-real-client-menu
+          path: output/runtime-client/
+          if-no-files-found: warn
+          retention-days: 14
