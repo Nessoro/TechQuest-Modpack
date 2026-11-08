@@ -3,6 +3,7 @@ package org.techquest.ci;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,11 +13,13 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
-/** CI-only observer, excluded from the player pack. No world or server is opened. */
+/** CI-only menu observer and tutorial input, excluded from the player pack. No world/server. */
 @Mod(value = "techquest_runtime_probe", dist = Dist.CLIENT)
 public final class TechQuestRuntimeProbe {
     private int stableTicks;
     private boolean recorded;
+    private boolean skippedGuide;
+    private boolean selectedVanilla;
     private String previousState = "";
     private final Path report = Path.of(System.getProperty("techquest.probe.dir"));
 
@@ -33,6 +36,22 @@ public final class TechQuestRuntimeProbe {
         return Class.forName("net.minecraft.client.OptionInstance").getMethod("get").invoke(instance);
     }
 
+    private static int geometry(Object screen, String name) throws ReflectiveOperationException {
+        var field = screen.getClass().getDeclaredField(name);
+        field.setAccessible(true);
+        return field.getInt(screen);
+    }
+
+    private void clickRectangle(Object screen, String x, String y, String width, String height, String action)
+            throws ReflectiveOperationException, java.io.IOException {
+        double px = geometry(screen, x) + geometry(screen, width) / 2.0;
+        double py = geometry(screen, y) + geometry(screen, height) / 2.0;
+        Object accepted = screen.getClass().getMethod("mouseClicked", double.class, double.class, int.class)
+            .invoke(screen, px, py, 0);
+        if (!Boolean.TRUE.equals(accepted)) throw new IllegalStateException("CI tutorial input was not accepted: " + action);
+        Files.writeString(report.resolve("ui-actions.log"), action + "\n", StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+    }
+
     private void onTick(ClientTickEvent.Post event) {
         try {
             Class<?> type = Class.forName("net.minecraft.client.Minecraft");
@@ -45,6 +64,22 @@ public final class TechQuestRuntimeProbe {
                 Files.writeString(report.resolve("screen-state.txt"), state + "\n");
                 System.out.println("TechQuest CI screen: " + state);
                 previousState = state;
+            }
+            // Known non-license tutorial only, in the disposable CI profile. Geometry
+            // was inspected in the hash-pinned Explosion Overhaul 0.2.3.0 JAR.
+            if (!overlay && screen != null && screen.getClass().getName().equals("com.vinlanx.explosionoverhaul.client.GuideSlidesScreen")) {
+                if (!skippedGuide && Files.exists(report.resolve("guide-before.png"))) {
+                    clickRectangle(screen, "continueButtonX", "continueButtonY", "continueButtonWidth", "continueButtonHeight", "Explosion Overhaul: Skip Guide");
+                    skippedGuide = true;
+                }
+                return;
+            }
+            if (!overlay && screen != null && screen.getClass().getName().equals("com.vinlanx.explosionoverhaul.client.FirstTimeScreen")) {
+                if (!selectedVanilla && Files.exists(report.resolve("mode-before.png"))) {
+                    clickRectangle(screen, "rightBoxX", "rightBoxY", "rightBoxW", "rightBoxH", "Explosion Overhaul: Vanilla-like (existing default, CI only)");
+                    selectedVanilla = true;
+                }
+                return;
             }
             stableTicks = title && !overlay ? stableTicks + 1 : 0;
             if (!recorded && stableTicks >= 40) {

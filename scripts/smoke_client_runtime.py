@@ -2,8 +2,9 @@
 """CI-only real client boot to TitleScreen, with a temporary observation mod.
 
 Uses original official-launcher version metadata and the official NeoForge installer.
-An offline development identity is used solely for the title screen; no login, world,
-server connection, EULA acceptance or player-pack modification is performed.
+An offline development identity is used solely for the title screen. CI clicks the
+hash-pinned Explosion Overhaul tutorial's Skip Guide / Vanilla-like choices in a
+disposable profile. No login, world, server, EULA acceptance or player-pack change.
 """
 import concurrent.futures
 import hashlib
@@ -156,6 +157,10 @@ def observe(profile, parent, launcher, game, report):
             while process.poll() is None and not (report / "ready.json").exists() and time.monotonic() < deadline:
                 state_file = report / "screen-state.txt"
                 state = state_file.read_text() if state_file.exists() else ""
+                for kind, screen_name in (("guide", "GuideSlidesScreen"), ("mode", "FirstTimeScreen")):
+                    snapshot = report / (kind + "-before.png")
+                    if "com.vinlanx.explosionoverhaul.client." + screen_name + ":overlay=false" in state and not snapshot.exists():
+                        subprocess.run(["import", "-window", "root", str(snapshot)], check=True, timeout=20)
                 if "physics.settings.QuickSetupScreen:overlay=false" in state:
                     setup_since = setup_since or time.monotonic()
                     if time.monotonic() - setup_since > 15:
@@ -214,7 +219,7 @@ def main():
         (report / "download-index.json").write_bytes(archive.read("modrinth.index.json"))
     (report / "scope.json").write_text(json.dumps({"scope": "real client menu only, plus CI observation mod",
         "world_tested": False, "server_tested": False, "performance_benchmark": False,
-        "account_login_tested": False, "commit": os.environ.get("GITHUB_SHA")}, indent=2))
+        "account_login_tested": False, "ci_ui_choices": ["accessibility welcome skipped", "Explosion Overhaul Skip Guide / Vanilla-like"], "commit": os.environ.get("GITHUB_SHA")}, indent=2))
     with tempfile.TemporaryDirectory(prefix="techquest-runtime-") as tmp:
         launcher = Path(tmp) / "launcher"
         version = launcher / "versions/1.21.1"
