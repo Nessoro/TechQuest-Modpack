@@ -36,6 +36,11 @@ public final class TechQuestRuntimeProbe {
         return Class.forName("net.minecraft.client.OptionInstance").getMethod("get").invoke(instance);
     }
 
+    private static Object configValue(Object config, String field) throws ReflectiveOperationException {
+        Object value = config.getClass().getField(field).get(config);
+        return value.getClass().getMethod("get").invoke(value);
+    }
+
     private static int geometry(Object screen, String name) throws ReflectiveOperationException {
         var field = screen.getClass().getDeclaredField(name);
         field.setAccessible(true);
@@ -118,11 +123,29 @@ public final class TechQuestRuntimeProbe {
                     + ",\"liquidPhysics\":" + physics.getField("liquidPhysics").get(null)
                     + ",\"windPhysics\":" + physics.getField("windPhysics").get(null)
                     + ",\"showSetup\":" + physics.getMethod("shouldShowQuickSetup").invoke(null) + "}";
+                Class<?> health = Class.forName("com.jahirtrap.healthindicator.init.ModConfig");
+                Class<?> location = Class.forName("net.minecraft.resources.ResourceLocation");
+                Class<?> plugins = Class.forName("snownee.jade.impl.config.PluginConfig");
+                Object jade = plugins.getField("INSTANCE").get(null);
+                Object healthId = location.getMethod("parse", String.class).invoke(null, "minecraft:entity_health");
+                Object armorId = location.getMethod("parse", String.class).invoke(null, "minecraft:entity_armor");
+                Object incoming = Class.forName("ua.zentix.incoming.IncomingConfig").getField("CLIENT").get(null);
+                Object explosion = Class.forName("com.vinlanx.explosionoverhaul.Config").getField("CLIENT").get(null);
+                String hud = "{\"position\":" + quote(health.getField("position").get(null))
+                    + ",\"showHealth\":" + health.getField("showHealth").get(null)
+                    + ",\"format\":" + quote(health.getField("healthTextFormat").get(null))
+                    + ",\"jadeHealth\":" + plugins.getMethod("get", location).invoke(jade, healthId)
+                    + ",\"jadeArmor\":" + plugins.getMethod("get", location).invoke(jade, armorId)
+                    + ",\"concussionDuration\":" + configValue(explosion, "concussionDurationMultiplier")
+                    + ",\"incomingScreenEffects\":" + configValue(incoming, "screenEffects")
+                    + ",\"incomingCameraShake\":" + configValue(incoming, "cameraShake")
+                    + ",\"incomingTinnitus\":" + configValue(incoming, "nukeTinnitus") + "}";
                 Files.writeString(report.resolve("ready.tmp"),
                     "{\"screen\":\"TitleScreen\",\"overlay\":false,\"stable_ticks\":40,"
                     + "\"world_loaded\":false,\"scope\":\"client main menu only\","
                     + "\"options\":" + settings + ",\"bindings\":{" + entries
-                    + "},\"modifiers\":{" + modifierEntries + "},\"physics\":" + physicsSettings + "}\n");
+                    + "},\"modifiers\":{" + modifierEntries + "},\"physics\":" + physicsSettings
+                    + ",\"hudBlast\":" + hud + "}\n");
                 Files.move(report.resolve("ready.tmp"), report.resolve("ready.json"), StandardCopyOption.ATOMIC_MOVE);
                 recorded = true;
             }

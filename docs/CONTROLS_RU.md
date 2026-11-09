@@ -1,12 +1,12 @@
 # Управление, Xbox/джойстик и зум — задачи #13 и #18
 
-Общая тестовая ветка **`feat/bosses-parcool-0.3.3-prep`** после объединения PR #19 продолжает Optimized 0.3.3 на Minecraft 1.21.1 / NeoForge 21.1.264 / Java 21. Это один клиентский профиль. Новые моды управления и конфиги **не проверены запуском Minecraft**; успешная игра на базе `535de72` на них не распространяется.
+Единый Optimized 0.3.3 использует Minecraft 1.21.1 / NeoForge 21.1.264 / Java 21. После #22 MCHeli, TaCZ и ParCool исключены; здесь описан текущий состав. Клиентский smoke проверяет загрузку назначений до меню, но работу зума, колеса, авиационного ввода и конфликтов в мире он не подтверждает. Пользовательская игра на `535de72` относится к прежней базе.
 
 ## Новая установка и зум
 
 Снимок этого этапа, **08.11.2026 / `c41b984`**: [скачать Windows GUI Installer](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906573/artifacts/13609975723), [Security Audit](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906573/artifacts/13610139169), [полный успешный запуск CI](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42460906573). Этот исторический пакет содержит общий Controlify и не соответствует уточнению «геймпад только для самолёта». В текущем составе Controlify и его YACL исключены; старый артефакт не обновляется задним числом.
 
-Скачайте `TechQuest-Windows-GUI-Installer` из успешного [Actions этой ветки](https://github.com/Nessoro/TechQuest-Modpack/actions?query=branch%3Afeat%2Fbosses-parcool-0.3.3-prep), извлеките EXE и установите в новую папку. Python и консоль не нужны. Дальнейшие шаги официального Launcher: [установка NeoForge](NEOFORGE_FALLBACK_RU.md).
+Скачайте `TechQuest-Windows-GUI-Installer` из полностью успешного [Build TechQuest alpha на main](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml?query=branch%3Amain), извлеките EXE и установите в новую папку. Python и консоль не нужны. Дальнейшие шаги официального Launcher: [установка NeoForge](NEOFORGE_FALLBACK_RU.md).
 
 | Действие на новой установке | Назначение |
 | --- | --- |
@@ -15,6 +15,8 @@
 | Возврат обычного FOV | Отпустить Z |
 | Xaero: увеличение миникарты | **F9** вместо Z |
 | Sophisticated Backpacks: первое улучшение | **F10** вместо Alt+Z |
+| Incoming: камера своего снаряда / следующий снаряд | **N** по умолчанию |
+| Incoming: выйти из камеры / изменить вид | **Shift / F5** |
 | Настройки зума | Моды → Better Zoom → Config |
 
 Без активного зума колесо сохраняет обычное переключение предметов. В выбранном `betterzoom-client.toml`: режим `WHEEL`, плавный переход, шаг 2, удерживание клавиши, HUD и рука видимы, звук зума выключен. Дополнительные клавиши Better Zoom для настройки/плюса/минуса по умолчанию не назначены, чтобы не занимать C / Alt+C и цифровую клавиатуру. Их можно назначить в меню управления. Пределы FOV определяются реализацией Better Zoom (от 1 до обычного FOV); отдельного выдуманного параметра минимума/максимума в конфиге нет.

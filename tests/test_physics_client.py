@@ -78,7 +78,11 @@ class PhysicsClientTests(unittest.TestCase):
 
     def test_presets_require_the_reviewed_mod_version_and_side(self):
         without_physics = dict(self.cfg, mods=[])
-        self.assertEqual(builder.client_config_overrides(without_physics), {})
+        # Incoming's client preset is independent of Physics Mod. Removing
+        # Physics must remove only physicsmod files, not unrelated presets.
+        other_presets = builder.client_config_overrides(without_physics)
+        self.assertFalse(any(name.startswith("config/physicsmod/") for name in other_presets))
+        self.assertIn("config/incoming-client.toml", other_presets)
         for changes in ({"version_id": "unreviewed"}, {"client_only": False}):
             cfg = copy.deepcopy(self.cfg)
             next(m for m in cfg["mods"] if m["project"] == "physicsmod").update(changes)

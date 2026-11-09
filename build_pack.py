@@ -394,6 +394,27 @@ def client_config_overrides(cfg):
             raise BuildError("Review Project MMO HUD preset before changing its version")
         result["config/pmmo-client.toml"] = (
             ROOT / "compat/client-hud/pmmo-client.toml").read_bytes()
+    # Schema and keys reviewed against the exact pinned JARs. In particular,
+    # TXF uses .json5 and Jade groups plugin switches by namespace, not full IDs.
+    reviewed = (
+        ("health-indicator-txf", "N56hoqkq", "xGqsX1go", "healthindicatortxf.json5", "healthindicatortxf.json5"),
+        ("jade", "nvQzSEkH", "eYz2YBGT", "jade-plugins.json", "jade/plugins.json"),
+        ("explosion-overhaul-a-new-level-of-destruction", "sOxnTLKl", "mxfQE01f",
+         "explosionoverhaul-client.toml", "explosionoverhaul/explosionoverhaul-client.toml"),
+    )
+    projects = {mod["project"] for mod in cfg.get("mods", [])}
+    for project, project_id, version_id, source, destination in reviewed:
+        if project in projects:
+            if cfg.get("modrinth_lock", {}).get(project_id, {}).get("version_id") != version_id:
+                raise BuildError("Review HUD/blast preset before changing version: " + project)
+            result["config/" + destination] = (ROOT / "compat/client-hud" / source).read_bytes()
+    incoming = next((mod for mod in cfg.get("external_mods", [])
+                     if mod.get("name") == "Incoming: Air Strikes & Nukes"), None)
+    if incoming:
+        if (incoming.get("version") != "3.10.4" or incoming.get("sha256") !=
+                "445c8549f6fec60758b841313adc8d1b58c3770eb4e08bb04c3845e22690d53f"):
+            raise BuildError("Review Incoming client preset before changing its file")
+        result["config/incoming-client.toml"] = (ROOT / "compat/client-hud/incoming-client.toml").read_bytes()
     return result
 
 
