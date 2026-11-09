@@ -2,12 +2,14 @@ name: Validate Pages website
 on:
   push:
     paths:
+      - modlist.json
       - docs/**
       - scripts/sync_site_mods.py
       - scripts/check_site_browser.py
       - .github/workflows/validate-site.yml
   pull_request:
     paths:
+      - modlist.json
       - docs/**
       - scripts/sync_site_mods.py
       - scripts/check_site_browser.py
