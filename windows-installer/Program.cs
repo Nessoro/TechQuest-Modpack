@@ -297,6 +297,10 @@ internal sealed class InstallerForm : Form
                 url.Scheme != Uri.UriSchemeHttps ||
                 (url.Host != "cdn.modrinth.com" &&
                  url.Host != "raw.githubusercontent.com" &&
+                 !(url.Host == "maven.ftb.dev" &&
+                   (url.AbsolutePath == "/releases/dev/ftb/mods/ftb-library-neoforge/2101.1.39/ftb-library-neoforge-2101.1.39.jar" ||
+                    url.AbsolutePath == "/releases/dev/ftb/mods/ftb-ultimine-neoforge/2101.1.15/ftb-ultimine-neoforge-2101.1.15.jar") &&
+                   string.IsNullOrEmpty(url.Query) && string.IsNullOrEmpty(url.Fragment)) &&
                  !(url.Host == "github.com" &&
                    url.AbsolutePath == "/zentixua/incoming/releases/download/v3.10.4/incoming-3.10.4.jar" &&
                    string.IsNullOrEmpty(url.Query) && string.IsNullOrEmpty(url.Fragment))))
