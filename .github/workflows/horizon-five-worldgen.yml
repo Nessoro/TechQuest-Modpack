@@ -1,10 +1,13 @@
-name: Horizon combined five worldgen content validation
+name: Horizon worldgen and shared tags (SDK validation)
 
 on:
   push:
     branches: ["experiment/horizon-port-lab"]
     paths:
       - ".github/workflows/horizon-five-worldgen.yml"
+      - "horizon/tools/assemble_shared_yung_tags.py"
+      - "horizon/tests/test_shared_yung_tags.py"
+      - "horizon/source/**"
   workflow_dispatch:
 
 permissions:
@@ -20,11 +23,16 @@ jobs:
       CARGO_INCREMENTAL: "0"
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test assembly and inventory before SDK compilation
+        run: python -m unittest discover -s horizon/tests -v
       - name: Fetch original NeoForge TechQuest mrpack
         uses: actions/download-artifact@v4
         with:
           name: TechQuest-1.21.1-alpha-build
-          run-id: 42372848633
+          run-id: 42597702544
           path: source-artifact
           github-token: ${{ github.token }}
       - name: Find source modpack
@@ -66,6 +74,10 @@ jobs:
           assert coverage, "Nonempty Horizon coverage required"
           print("Five source JARs resolved in one official Horizon work directory")
           PY
+      - name: Assemble a single owner for shared YUNG tags and audit every outside file
+        run: |
+          work="$GITHUB_WORKSPACE/horizon/out/five-together"
+          python horizon/tools/assemble_shared_yung_tags.py --work "$work" --report "$work/shared-yung-tags.json"
       - name: Official SDK validate four YUNG modules plus Terralith
         run: |
           set -euo pipefail
@@ -75,20 +87,26 @@ jobs:
           c="$work/mods/terralith/carry"
           test -f "$c/horizon-mod.toml"
           (cd "$c" && "$sdk" build && "$sdk" check target/horizon-mod/terralith.hmod --json > "$work/terralith-sdk-check.json")
+          shared="$work/mods/techquest_yungs_shared/carry"
+          (cd "$shared" && "$sdk" build && "$sdk" check target/horizon-mod/techquest_yungs_shared.hmod --json > "$work/shared-tags-sdk-check.json")
           python - "$work" <<'PY'
           import json, sys
           from pathlib import Path
           base=Path(sys.argv[1])
           y=json.loads((base/"yung-sdk-validation.json").read_text())
           t=json.loads((base/"terralith-sdk-check.json").read_text())
+          shared=json.loads((base/"shared-tags-sdk-check.json").read_text())
+          assert shared["ok"] and shared["report"]["id"]=="techquest_yungs_shared",shared
           assert y["all_sdk_valid"] and y["sdk_valid_count"]==4
           assert t["ok"] and t["report"]["id"]=="terralith",t
           data={
             "schema":1,
             "purpose":"five-carried-content-modules-in-one-Horizon-conversion-workdir",
             "upstream_commit":"c78187dffffb60f31517eadcb87413386e8ce729",
-            "validated_modules":["betterdungeons","betterstrongholds","bettermineshafts","betterfortresses","terralith"],
-            "individual_official_sdk_checks_passed":5,
+            "source_main_commit":"918b4bf9ecd133a18eb8a7f57ad2d5da47b2fcb2",
+            "source_build_run":42597702544,
+            "validated_modules":["betterdungeons","betterstrongholds","bettermineshafts","betterfortresses","terralith","techquest_yungs_shared"],
+            "individual_official_sdk_checks_passed":6,
             "combined_runtime_load_tested":False,
             "world_generation_tested":False,
             "multiplayer_tested":False,
@@ -96,7 +114,7 @@ jobs:
             "third_party_files_uploaded":False
           }
           (base/"combined-result.json").write_text(json.dumps(data,indent=2)+"\n")
-          print("5/5 individual official SDK checks succeeded within one joint carry. GAME RUNTIME NOT TESTED.")
+          print("6/6 individual official SDK checks succeeded within one joint carry. GAME RUNTIME NOT TESTED.")
           PY
       - name: Upload metadata reports only; no external JAR, assets, carried data or HMOD
         if: always()
@@ -109,5 +127,7 @@ jobs:
             horizon/out/five-together/yung-sdk-validation.json
             horizon/out/five-together/terralith-sdk-check.json
             horizon/out/five-together/combined-result.json
+            horizon/out/five-together/shared-yung-tags.json
+            horizon/out/five-together/shared-tags-sdk-check.json
           if-no-files-found: warn
           retention-days: 14

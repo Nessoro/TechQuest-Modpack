@@ -1,10 +1,12 @@
 # TechQuest Horizon Port Lab
 
-**Начало экспериментального переноса; НЕ готовая Horizon-сборка.** Создано в отдельной ветке experiment/horizon-port-lab от main. Основной TechQuest 0.3.2 и экспериментальный PR #5 NeoForge 0.3.3 не изменяются.
+**Начало экспериментального переноса; НЕ готовая Horizon-сборка.** Работа продолжается в существующей ветке experiment/horizon-port-lab. Основной NeoForge TechQuest 0.3.3-alpha на main не изменяется. Текущий вход переноса обновлён до main `918b4bf`; MCHeli, TaCZ и ParCool в этот источник не возвращаются.
+
+**Активный этап после закрытия #9/#18:** [восстановление общих тегов yungsapi и аудит потерь](SHARED_YUNG_TAGS_RU.md). Владелец выбрал переход к реализации Horizon; старый порядок «сначала самолёты, затем геймпад» больше не блокирует эту отдельную ветку.
 
 ## Уже сделано
 
-1. [Снимок NeoForge 0.3.3](source/techquest-0.3.3-candidate.json): все моды из PR #5 на 7 ноября 2026 г. (commit 07eb420ca0c7124c7d7d75ebb125508c4d6731fe); это **не** готовый Horizon-модпак.
+1. [Снимок NeoForge 0.3.3](source/techquest-0.3.3-candidate.json): актуальный main `918b4bf`, 89 закреплённых Modrinth-проектов и исходные метаданные. [Происхождение](source/SOURCE.md). Это **не** готовый Horizon-модпак; отчёты ниже о старых 86 компонентах — история прежнего входа.
 2. [План по каждому моду](tools/port_inventory.py): offline JSON/Markdown-отчёт с классификацией. Команда: `python horizon/tools/port_inventory.py`. Все реальные статусы Horizon — **unverified**, количество перенесённых сторонних модов — **0**.
 3. [Первый собственный Horizon-мод](first_party/expedition_marker/): **TechQuest Expedition Marker**, простой блок из ванильных материалов с рецептом, добычей и моделью. API Horizon 0.2, тип content, сторона both. **Это оригинальный прототип, не перенос Create/IC2/Wyrmroost.**
 4. [Структурная сборка демонстрационного ZIP](tools/build_demo_hmod.py) и unit-тесты. **Ни наличие .hmod, ни успешный unit-тест не подтверждают реальную загрузку в Horizon.**
