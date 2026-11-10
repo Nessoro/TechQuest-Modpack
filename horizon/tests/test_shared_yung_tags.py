@@ -2,6 +2,7 @@
 import json
 import sys
 import tempfile
+import tomllib
 import unittest
 from pathlib import Path
 
@@ -29,6 +30,15 @@ class SharedTagsTests(unittest.TestCase):
             root = Path(temp)
             originals = self.prepare(root)
             report = shared.assemble(root)
+            manifest = (root / "mods" / shared.MODULE / "carry/horizon-mod.toml").read_text()
+            meta = tomllib.loads(manifest)
+            # Official API 0.2 denies unknown manifest keys (including "license").
+            allowed = {"id", "name", "version", "description", "authors", "api", "side",
+                       "capabilities", "namespaces", "experimental"}
+            self.assertLessEqual(set(meta), allowed)
+            self.assertEqual(meta["namespaces"], ["yungsapi"])
+            self.assertIn("LGPL-3.0-only", manifest)
+            self.assertEqual(report["source_license"], "LGPL-3.0-only")
             for tag in shared.TAGS:
                 merged = json.loads((root / "mods" / shared.MODULE / "carry" / shared.tag_path(tag)).read_text())
                 self.assertEqual(merged["values"], ["betterdungeons:structure", "betterfortresses:structure"])

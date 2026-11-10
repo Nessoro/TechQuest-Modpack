@@ -99,13 +99,13 @@ def assemble(work: Path) -> dict:
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_bytes(data)
         (carry / "horizon-mod.toml").write_text(
+            '# Local assembly of original YUNG tags; source licence: LGPL-3.0-only.\n'
             'id = "techquest_yungs_shared"\nname = "TechQuest shared YUNG tags"\n'
             'version = "0.1.0"\napi = "0.2"\nside = "both"\n'
-            'capabilities = ["registries"]\nnamespaces = ["yungsapi"]\n'
-            'license = "LGPL-3.0-only"\n', encoding="utf-8")
+            'capabilities = ["registries"]\nnamespaces = ["yungsapi"]\n', encoding="utf-8")
         staging.rename(target)
     return {"schema": 1, "purpose": "local_shared_tag_assembly_and_loss_audit",
-            "module": MODULE, "source_files": source_rows,
+            "module": MODULE, "source_files": source_rows, "source_license": "LGPL-3.0-only",
             "merged_tags": [{"path": path.as_posix(), "sha256": hashlib.sha256(data).hexdigest()}
                             for path, data in merged.items()],
             "outside_count": len(outside), "outside": outside,
