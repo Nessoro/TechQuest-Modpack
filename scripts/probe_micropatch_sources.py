@@ -12,6 +12,7 @@ TARGETS = {
     "inventory-profiles-next": "neoforge-1.21.1-2.2.4",
     "libipn": "neoforge-1.21.1-6.6.3",
     "kotlin-for-forge": "",
+    "architectury-api": "",
 }
 PINNED = set(json.load(open("modlist.json", encoding="utf-8"))["modrinth_lock"])
 
