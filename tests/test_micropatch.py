@@ -48,6 +48,21 @@ class MicroPatchTests(unittest.TestCase):
             self.assertIn("JUMP", cfg["xp_gains"]["player_actions"])
             self.assertIn("DEAL_DAMAGE", cfg["xp_gains"]["damage"])
 
+    def test_betterzoom_startup_mixin_embedded(self):
+        import zipfile
+        from pathlib import Path
+        from build_pack import compatibility_jar
+        class_path = "techquest/compat/mixin/BetterZoomEarlyTickMixin.class"
+        with zipfile.ZipFile(io.BytesIO(compatibility_jar())) as jar:
+            names = jar.namelist()
+            self.assertIn(class_path, names)
+            self.assertIn("techquest-compat.mixins.json", names)
+            config = json.loads(jar.read("techquest-compat.mixins.json"))
+            self.assertEqual(config["client"], ["BetterZoomEarlyTickMixin"])
+            self.assertIn('config="techquest-compat.mixins.json"',
+                          jar.read("META-INF/neoforge.mods.toml").decode())
+            self.assertTrue(jar.read(class_path).startswith(bytes.fromhex("cafebabe")))
+
     def test_global_apotheosis_commands_and_persistent_scoreboard(self):
         with zipfile.ZipFile(io.BytesIO(starter_datapack())) as z:
             load = json.loads(z.read("data/minecraft/tags/function/load.json"))
