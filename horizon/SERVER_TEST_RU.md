@@ -141,10 +141,10 @@ Actions #42597702544 (89 Modrinth-компонентов, 91 запись фай
   в собранном `.hmod`; движок сообщает только 67 биомов. Полноценная генерация
   Terralith не подтверждена. Нужен разбор регистрации биомов и dimension/noise
   данных в закреплённом движке, а не исключение Terralith из требований.
-- Движок пишет `Failed to request Minecraft Services public key`. При этом
-  системный HTTPS-клиент успешно читает discovery и publickeys. Для нативного
-  клиента ещё требуется проверка прокси/CA; вход лицензированного клиента
-  и secure chat не проверены. `online_mode` не отключался.
+- Исходный CI-движок пишет `Failed to request Minecraft Services public key`. При этом
+  системный HTTPS-клиент успешно читает discovery и publickeys. Ниже описаны
+  исправление сборки и повторный серверный прогон; вход лицензированного клиента
+  и secure chat всё ещё не проверены. `online_mode` не отключался.
 
 Машиночитаемый итог без ресурсов, миров и сырых логов:
 [`SERVER_RUNTIME_RESULT.json`](SERVER_RUNTIME_RESULT.json). Это серверный smoke,
@@ -226,3 +226,61 @@ worldgen 1.21.1 → 26.3, затем тест естественных биом�
 повторного открытия мира с этим набором. После этого всё ещё нужны вход
 лицензированного клиента, мультиплеер и нативные игровые механики. Закрытие
 PR #8 как готового модпака по текущим результатам было бы недостоверным.
+
+## Проверка исправления HTTPS-клиента
+
+Тот же нативный `horizon-server-files::profiles::fetch_profile_key_keys` из
+закреплённого upstream успешно получил и разобрал **2 официальных ключа**,
+если собрать его с `ureq/native-certs,ureq/proxy-from-env`. Проверка выполнена
+реальным сетевым запросом, без аккаунтов/сессий и без отключения TLS.
+Без этих feature-флагов серверная сборка не включает доверие системному CA
+и автоматическое использование прокси из окружения.
+
+В `horizon-native-runtime.yml` добавлены оба feature-флага и их запись в
+build-result. Все четыре инструмента затем **пересобраны локально** из того же
+закреплённого upstream за 11 мин 15 с точной командой workflow; tracked-исходники
+upstream не менялись. Новая сборка хранится отдельно в
+`/workspace/horizon-runtime/native-tools-cloud`, со своими SHA-256 и метаданными.
+Ранее скачанные четыре CI-бинарника не заменялись. Новый запуск workflow на
+GitHub не выполнялся и не выдаётся за успешный CI.
+
+Все четыре новых инструмента прошли `--help`; новый preparer прошёл `--check`.
+Полный новый движок загрузил шесть модулей и достиг `Done`. В течение 20 секунд
+наблюдения прежняя ошибка запроса ключей не появилась. В том же изолированном
+мире проверены установка алмазного блока, сохранение, остановка, перезапуск и
+`HORIZON_CLOUD_SAVE_REOPEN_OK`; сервер штатно остановлен. Вход клиента и secure
+chat этим не проверяются.
+
+Для воспроизведения небольшой проверки без компиляции всего движка:
+
+```bash
+mkdir -p /path/to/pinned-horizon/crates/horizon-server-files/examples
+cp horizon/probes/profile_keys.rs \
+  /path/to/pinned-horizon/crates/horizon-server-files/examples/techquest_public_keys.rs
+cargo run --manifest-path /path/to/pinned-horizon/Cargo.toml --profile fast --locked \
+  -p horizon-server-files --example techquest_public_keys \
+  --features ureq/native-certs,ureq/proxy-from-env
+```
+
+Проверка ключей не является входом Microsoft и не доказывает возможность
+подключения игрока. Следующий игровой прогон требует лицензированного клиента
+с выполненным владельцем входом через официальный
+Horizon Launcher; токены и пароли в чат или репозиторий не передаются.
+
+## Локализация несовместимости density functions Terralith
+
+Отдельный нативный диагностический пример в локальном upstream
+`crates/horizon-world/examples/techquest_density.rs` загрузил ванильные bundles
+и поверх них обновлённые функции Terralith: 187 noises и 152 densities.
+Настоящий `DensityRegistry::from_json` отверг набор:
+`unknown density type: minecraft:weird_scaled_sampler`.
+Проверка отдельных графов зависимостей также обнаружила ссылки на отсутствующие
+`minecraft:overworld/continents`, `minecraft:overworld/temperature` и
+`minecraft:overworld/erosion`. Это дополнительная диагностика, не утверждение,
+что найден единственный источник ошибки `field: type` при полном запуске.
+
+Автоматический upgrader 26.2 → 26.3 не обеспечивает полного переноса старых
+графов 1.21.1. Нужны проверенные эквиваленты алгоритмов и полная миграция ссылок;
+подмена константами, случайное переименование ссылок и отключение Terralith
+не считаются исправлением. PR #8 по критерию готового модпака остаётся
+незавершённым: 5 partial / 47 not-yet / 39 not-needed / 0 ported.

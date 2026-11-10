@@ -37,6 +37,7 @@ jobs:
         working-directory: upstream-horizon
         run: |
           cargo build --profile fast --locked --no-default-features \
+            --features ureq/native-certs,ureq/proxy-from-env \
             -p horizon-client --bin horizon-client \
             -p horizon-prepare --bin horizon-prepare \
             -p horizon-server --bin horizon-server \
@@ -66,6 +67,7 @@ jobs:
               'platform': 'linux-x86_64',
               'profile': 'fast',
               'default_features': False,
+              'https_features': ['ureq/native-certs', 'ureq/proxy-from-env'],
               'executable_startup_tested': True,
               'server_boot_tested': False,
               'world_save_reopen_tested': False,

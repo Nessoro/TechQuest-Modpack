@@ -85,6 +85,47 @@
       "error": "invalid world generation field: type"
     },
     "enabled_in_primary_six_module_smoke": false,
-    "server_running": false
-  }
+    "server_running": false,
+    "density_registry_probe": {
+      "noises": 187,
+      "densities": 152,
+      "accepted": false,
+      "unsupported_type": "minecraft:weird_scaled_sampler",
+      "missing_references": [
+        "minecraft:overworld/continents",
+        "minecraft:overworld/temperature",
+        "minecraft:overworld/erosion"
+      ],
+      "not_proven_to_be_only_cause_of_full_boot_failure": true
+    }
+  },
+  "native_https_followup": {
+    "official_server_files_profile_key_function_tested": true,
+    "ureq_features": [
+      "native-certs",
+      "proxy-from-env"
+    ],
+    "official_profile_keys_parsed": 2,
+    "tls_verification_enabled": true,
+    "full_engine_rebuilt_with_features": true,
+    "multiplayer_tested": false,
+    "full_build_seconds": 675,
+    "build_origin": "local pinned upstream, tracked source unchanged",
+    "new_ci_run_performed": false,
+    "executable_help_checks_passed": 4,
+    "official_prepare_check_passed": true,
+    "sha256": {
+      "horizon-engine": "aa491e2bfa0d784b0751ec564ba95a7691e4c5a110631cd9ce1008e96fa398ee",
+      "horizon-prepare": "7ed4b6b61369732e99324886a647804a001a9e6a2c7d6a77ed2f89b2f6097d11",
+      "horizon-server": "d84d9e2c20ffcf4a142c05f144033fb4d0d9fb598092f5e6268e313c716c7f86",
+      "horizon-ctl": "a9bfaee219a2a07fae08c6712a3f4a40423baeeb3c383aa770c76c79b297578b"
+    },
+    "six_content_modules_loaded": true,
+    "boot_done_seconds": 1.25,
+    "profile_key_request_error_observed_in_20_seconds": false,
+    "world_save_reopen_tested": true,
+    "save_probe_marker": "HORIZON_CLOUD_SAVE_REOPEN_OK",
+    "server_stopped_cleanly": true
+  },
+  "initial_smoke_tools": "original CI artifact, prior to HTTPS feature fix"
 }
