@@ -438,7 +438,7 @@
       "project": "sophisticated-storage",
       "group": "Хранение",
       "required": true,
-      "version_id": "q7NjywJv"
+      "version_id": "hC4LaBhJ"
     },
     {
       "project": "inventory-profiles-next",
@@ -1546,10 +1546,10 @@
     },
     "hMlaZH8f": {
       "title": "Sophisticated Storage",
-      "version": "1.21.1-1.4.21.1123",
-      "version_id": "q7NjywJv",
-      "filename": "sophisticatedstorage-1.21.1-1.4.21.1123.jar",
-      "sha512": "588101487a6d5876beb94ee9ab26b2bf9275c853788e7c2c39eb64fd1c1617d07583154c895f1a62a469a8989534e9c54b45011a820a48cc502e0ba64bb56640",
+      "version": "1.21.1-1.6.16.2222",
+      "version_id": "hC4LaBhJ",
+      "filename": "sophisticatedstorage-1.21.1-1.6.16.2222.jar",
+      "sha512": "a3bf3141fd0853b45014a273db67f164af00f96d96a84acc84e34455286f5a7f539ae1408029eec06650d38e1c2f800d839830d4bd6d198250ec102da8feb01b",
       "environment": {
         "client": "required",
         "server": "required"
