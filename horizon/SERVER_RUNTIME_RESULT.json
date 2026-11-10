@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "date": "2026-11-10",
+  "techquest_base_commit": "6dff378",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "minecraft": "26.3",
+  "native_tools_run": 42799185254,
+  "source_mrpack_run": 42597702544,
+  "verified_input_downloads": 5265,
+  "official_prepare_complete": true,
+  "official_prepare_check_passed": true,
+  "eula_consent_provided": true,
+  "bind": "127.0.0.1",
+  "online_mode": true,
+  "whitelist": true,
+  "six_modules_sdk_validated": true,
+  "modules": {
+    "betterdungeons": {
+      "sha256": "23593fae9e7afde7be2f83d257d63e4c1e22d6da7cefa74a93c6570a903b1fa3",
+      "bytes": 296613
+    },
+    "betterfortresses": {
+      "sha256": "823941c9288b0d677677d8c07ecf405cbc4669ee7166389a7efabe3ee3d9992c",
+      "bytes": 455199
+    },
+    "bettermineshafts": {
+      "sha256": "70fb8b82acf31efb592aa4bb61a6192cdd13622689e9a13931ddb33eef681d09",
+      "bytes": 21073
+    },
+    "betterstrongholds": {
+      "sha256": "8d7f2bf43ce2eb4666a649b69681e5aca708f072ead3cd5375c251af80452dea",
+      "bytes": 266366
+    },
+    "techquest_yungs_shared": {
+      "sha256": "7c9245d069b908bc8840b951ff8678b7a92ec833beb1f8a3dc64ee7aa11aacc4",
+      "bytes": 918
+    },
+    "terralith": {
+      "sha256": "1f28d36f9474b08ea8749842b43e1f5f189461c84b58150872febfdf9e24b9b4",
+      "bytes": 2469482
+    }
+  },
+  "server_boot_tested": true,
+  "boot_done_seconds": 2.945,
+  "combined_mod_load_tested": true,
+  "loaded_content_modules": 6,
+  "world_save_reopen_tested": true,
+  "save_probe": "setblock 0 100 0 minecraft:gold_block; save-all flush; stop; start; execute if block 0 100 0 minecraft:gold_block run say HORIZON_SIX_SAVE_REOPEN_OK",
+  "yung_small_dungeon_locate_succeeded": true,
+  "yung_small_dungeon_place_command_succeeded": true,
+  "natural_structure_generation_verified": false,
+  "terralith_biomes_recognized": false,
+  "terralith_failed_probes": [
+    "terralith:alpine_grove",
+    "terralith:arid_highlands"
+  ],
+  "minecraft_services_curl_reachable": true,
+  "native_profile_key_request_succeeded": false,
+  "client_boot_tested": false,
+  "multiplayer_tested": false,
+  "gameplay_ported": false,
+  "servers_stopped_cleanly": true,
+  "notes": [
+    "No client joined. Idle TPS/RAM is not a gameplay benchmark.",
+    "Structure command success is not visual parity or natural generation evidence.",
+    "No third-party assets, worlds, player data or raw logs included."
+  ],
+  "terralith_followup_trials": {
+    "isolated_from_successful_smoke_worlds": true,
+    "biome_only_bridge": {
+      "new_biomes": 95,
+      "overworld_stem_from_outside": true,
+      "boot_succeeded": false,
+      "exit_code": 1,
+      "error": "invalid world generation field: type"
+    },
+    "official_upgrade_bridge": {
+      "input_files": 1683,
+      "source_minecraft": "1.21.1",
+      "upgrader_documented_source": "26.2",
+      "target_minecraft": "26.3",
+      "official_upgrade_command_succeeded": true,
+      "boot_succeeded": false,
+      "exit_code": 1,
+      "error": "invalid world generation field: type"
+    },
+    "enabled_in_primary_six_module_smoke": false,
+    "server_running": false
+  }
+}
