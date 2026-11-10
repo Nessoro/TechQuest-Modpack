@@ -6,7 +6,7 @@ import zipfile
 from pathlib import Path
 
 import build_pack
-from scripts.guide_assets import starter_datapack
+from scripts.guide_assets import micro_patch_datapack, guide_overrides
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -39,8 +39,14 @@ class MicroPatchTests(unittest.TestCase):
             self.assertGreater(mod["file_size"], 100000)
             self.assertTrue(mod["required"])
 
+    def test_additive_datapack_separate_from_existing_guide(self):
+        with zipfile.ZipFile(io.BytesIO(guide_overrides()["config/openloader/packs/techquest_starter_guide.zip"])) as z:
+            self.assertNotIn("data/pmmo/config/server.json", z.namelist())
+            self.assertNotIn("data/minecraft/tags/function/tick.json", z.namelist())
+        self.assertIn("config/openloader/packs/techquest_micropatch_033.zip", guide_overrides())
+
     def test_pmmo_vein_disabled_without_removing_skills(self):
-        with zipfile.ZipFile(io.BytesIO(starter_datapack())) as z:
+        with zipfile.ZipFile(io.BytesIO(micro_patch_datapack())) as z:
             cfg = json.loads(z.read("data/pmmo/config/server.json"))
             self.assertFalse(cfg["vein_miner"]["vein_enabled"])
             self.assertIn("levels", cfg)
@@ -69,7 +75,7 @@ class MicroPatchTests(unittest.TestCase):
             self.assertIn(b"Lorg/spongepowered/asm/mixin/Mixin;", compiled)
 
     def test_global_apotheosis_commands_and_persistent_scoreboard(self):
-        with zipfile.ZipFile(io.BytesIO(starter_datapack())) as z:
+        with zipfile.ZipFile(io.BytesIO(micro_patch_datapack())) as z:
             load = json.loads(z.read("data/minecraft/tags/function/load.json"))
             tick = json.loads(z.read("data/minecraft/tags/function/tick.json"))
             self.assertIn("techquest:worldtier/load", load["values"])

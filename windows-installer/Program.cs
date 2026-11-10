@@ -186,6 +186,7 @@ internal sealed class InstallerForm : Form
             using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
             if (archive.GetEntry("overrides/patchouli_books/techquest_guide/book.json") is null ||
                 archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null ||
+                archive.GetEntry("overrides/config/openloader/packs/techquest_micropatch_033.zip") is null ||
                  archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null)
                 return 7;
             string probe = Path.Combine(Path.GetTempPath(), "TechQuest-self-test-" + Guid.NewGuid().ToString("N"));
@@ -360,6 +361,7 @@ internal sealed class InstallerForm : Form
             bool allowed =
                 relative.StartsWith("patchouli_books/techquest_guide/", StringComparison.Ordinal) ||
                 relative == "config/openloader/packs/techquest_starter_guide.zip" ||
+                relative == "config/openloader/packs/techquest_micropatch_033.zip" ||
                  relative == "mods/techquest-compat-1.0.0.jar" ||
                 relative == "TECHQUEST_INGAME_GUIDE.txt" ||
                 relative == "options.txt" ||
