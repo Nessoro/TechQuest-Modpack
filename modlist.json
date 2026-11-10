@@ -4,7 +4,7 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica",
+  "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica Micro-patch 0.3.3-micro1: Sophisticated Storage, FTB Ultimine, Inventory Profiles Next, shared Apotheosis World Tier.",
   "removed_mods": [
     {
       "project": "mcheli-modern-port",
