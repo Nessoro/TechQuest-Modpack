@@ -499,7 +499,10 @@
       "key.betterzoom.zoom_in": "key.keyboard.unknown",
       "key.betterzoom.zoom_out": "key.keyboard.unknown",
       "gui.xaero_enlarge_map": "key.keyboard.f9",
-      "key.sophisticatedbackpacks.toggle_upgrade_1": "key.keyboard.f10"
+      "key.sophisticatedbackpacks.toggle_upgrade_1": "key.keyboard.f10",
+      "key.pmmo.vein": "key.keyboard.unknown",
+      "key.pmmo.showVein": "key.keyboard.unknown",
+      "key.pmmo.cyclevein": "key.keyboard.unknown"
     }
   },
   "external_mods": [
