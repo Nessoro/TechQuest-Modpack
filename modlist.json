@@ -6,9 +6,18 @@
   "loader_version": "21.1.264",
   "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica",
   "removed_mods": [
-    {"project": "mcheli-modern-port", "reason": "не нужен"},
-    {"project": "timeless-and-classics-zero", "reason": "не нужен"},
-    {"project": "parcool", "reason": "не нужен"}
+    {
+      "project": "mcheli-modern-port",
+      "reason": "не нужен"
+    },
+    {
+      "project": "timeless-and-classics-zero",
+      "reason": "не нужен"
+    },
+    {
+      "project": "parcool",
+      "reason": "не нужен"
+    }
   ],
   "mods": [
     {
@@ -424,6 +433,32 @@
         "client": "required",
         "server": "required"
       }
+    },
+    {
+      "project": "sophisticated-storage",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "q7NjywJv"
+    },
+    {
+      "project": "inventory-profiles-next",
+      "group": "Интерфейс",
+      "required": true,
+      "version_id": "PGkcsaK7",
+      "client_only": true
+    },
+    {
+      "project": "libipn",
+      "group": "Библиотеки",
+      "required": true,
+      "version_id": "BGe4KMlE",
+      "client_only": true
+    },
+    {
+      "project": "architectury-api",
+      "group": "Библиотеки",
+      "required": true,
+      "version_id": "1IiqEQGl"
     }
   ],
   "manual_mods": [
@@ -479,6 +514,30 @@
       "file_size": 23250455,
       "required": true,
       "note": "Официальный GitHub-релиз автора ZentixUA (GPLv3). Клиент и сервер, NeoForge >=21.1.264. Большие ядерные взрывы очень требовательны к CPU/GPU и создают разрушения."
+    },
+    {
+      "name": "FTB Library",
+      "version": "2101.1.39",
+      "file_name": "ftb-library-neoforge-2101.1.39.jar",
+      "source": "https://maven.ftb.dev/releases/",
+      "download_url": "https://maven.ftb.dev/releases/dev/ftb/mods/ftb-library-neoforge/2101.1.39/ftb-library-neoforge-2101.1.39.jar",
+      "sha256": "ca64bd1b5f335406900f74eeafacea5a3580a3933d61de6b6600a64eb12a9a95",
+      "file_size": 1477833,
+      "required": true,
+      "group": "Комфорт",
+      "note": "Official FTB Maven: pinned NeoForge 1.21.1 JAR, client and server."
+    },
+    {
+      "name": "FTB Ultimine",
+      "version": "2101.1.15",
+      "file_name": "ftb-ultimine-neoforge-2101.1.15.jar",
+      "source": "https://maven.ftb.dev/releases/",
+      "download_url": "https://maven.ftb.dev/releases/dev/ftb/mods/ftb-ultimine-neoforge/2101.1.15/ftb-ultimine-neoforge-2101.1.15.jar",
+      "sha256": "1393a85ceb6e4794450d5f06043e3a033278e31b86de8e03950d8b87604b2213",
+      "file_size": 177109,
+      "required": true,
+      "group": "Комфорт",
+      "note": "Official FTB Maven: pinned NeoForge 1.21.1 JAR, client and server."
     }
   ],
   "optional_local_mods": [
@@ -1477,6 +1536,50 @@
       "version_id": "BetMBINi",
       "filename": "BuildCraft-Community-Edition-8.0.23+1.21.1+neoforge.jar",
       "sha512": "445cfc5b02a478d381e038819d3cff216aa9f6e882c3db66eb65588b09006e79d209d7c1071c92f02f151dfec2cf1180b31ce8ff218527874738e55db240db8f",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "hMlaZH8f": {
+      "title": "Sophisticated Storage",
+      "version": "1.21.1-1.4.21.1123",
+      "version_id": "q7NjywJv",
+      "filename": "sophisticatedstorage-1.21.1-1.4.21.1123.jar",
+      "sha512": "588101487a6d5876beb94ee9ab26b2bf9275c853788e7c2c39eb64fd1c1617d07583154c895f1a62a469a8989534e9c54b45011a820a48cc502e0ba64bb56640",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "O7RBXm3n": {
+      "title": "Inventory Profiles Next",
+      "version": "neoforge-1.21.1-2.2.4",
+      "version_id": "PGkcsaK7",
+      "filename": "InventoryProfilesNext-neoforge-1.21.1-2.2.4.jar",
+      "sha512": "10cd7d8608761191581fd151210349d380450deaf98b73ca53b689a54938208224a2bb922251a990640cd72a1eb6ceaddd2026efef2da61a3028fa1b3e7b4d28",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "onSQdWhM": {
+      "title": "libIPN",
+      "version": "neoforge-1.21.1-6.6.3",
+      "version_id": "BGe4KMlE",
+      "filename": "libIPN-neoforge-1.21.1-6.6.3.jar",
+      "sha512": "89383465eb8dfa296e7518dd0e6ddc1a242f4537a3183425f2319c79a3e97843ded0f5e13f86b095f2f09beacd2a1f249f554e0f4e18291209720826031a8b93",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "lhGA9TYQ": {
+      "title": "Architectury API",
+      "version": "13.0.11+neoforge",
+      "version_id": "1IiqEQGl",
+      "filename": "architectury-13.0.11-neoforge.jar",
+      "sha512": "d9f7c3bb8162577dfb461ffdf04bd6a3563c7586934a0e2a744c14421beffb8286f0d88d4c758317003f20f99fe8072a39b9d675af061e036970d36db36027f0",
       "environment": {
         "client": "required",
         "server": "required"
