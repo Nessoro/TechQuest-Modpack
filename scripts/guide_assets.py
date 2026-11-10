@@ -214,6 +214,36 @@ def starter_datapack():
         "data/techquest/loot_table/starter_guide.json": _json(loot),
         "data/techquest/recipe/guide_book.json": _json(recipe),
     }
+    # Server-side Project MMO config: preserve skills, disable duplicate vein miner.
+    # This is a complete CODEC config because its fields are required.
+    data['data/pmmo/config/server.json'] = _json(json.loads("{\"general\":{\"creative_reach\":50,\"salvage_block\":\"minecraft:smithing_table\",\"treasure_enabled\":true,\"brewing_tracked\":true},\"levels\":{\"max_level\":1523,\"static_levels\":[-1],\"loss_on_death\":0.05,\"lose_only_excess\":true,\"global_modifier\":1,\"skill_modifiers\":{\"example_skill\":1},\"xp_min\":200,\"xp_base\":1.025,\"xp_per_level\":1.1},\"requirements\":{\"requirement_enabled\":{}},\"xp_gains\":{\"reuse_penalty\":0,\"perks_plus_config\":false,\"player_actions\":{\"jump\":{\"agility\":2.5},\"sprint_jump\":{\"agility\":2.5},\"crouch_jump\":{\"agility\":2.5},\"breath_change\":{\"endurance\":1},\"health_increase\":{\"endurance\":1},\"health_decrease\":{\"endurance\":1},\"sprinting\":{\"agility\":2},\"submerged\":{\"swimming\":1},\"swimming\":{\"swimming\":1},\"diving\":{\"swimming\":1},\"surfacing\":{\"swimming\":1},\"swim_sprinting\":{\"swimming\":1}},\"damage\":{\"deal_damage\":{\"minecraft:generic_kill\":{\"combat\":1},\"minecraft:player_attack\":{\"combat\":1},\"#minecraft:is_projectile\":{\"archery\":1},\"#pmmo:magic\":{\"magic\":15},\"#pmmo:gun\":{\"gunslinging\":1}},\"receive_damage\":{\"minecraft:generic_kill\":{\"endurance\":1},\"#pmmo:environment\":{\"endurance\":10},\"#pmmo:impact\":{\"endurance\":15},\"#pmmo:magic\":{\"magic\":15},\"#minecraft:is_projectile\":{\"endurance\":15}},\"mitigate_damage\":{\"minecraft:generic_kill\":{\"endurance\":10},\"#pmmo:environment\":{\"endurance\":100},\"#pmmo:impact\":{\"endurance\":150},\"#pmmo:magic\":{\"magic\":150},\"#minecraft:is_projectile\":{\"endurance\":150}}}},\"party\":{\"party_range\":50,\"party_bonus\":{\"combat\":1.05,\"endurance\":1.1}},\"mob_scaling\":{\"mob_scale_enabled\":false,\"scaling_aoe\":150,\"mob_scale_base_level\":0,\"boss_scaling\":1.1,\"use_exponential_formula\":true,\"mob_scale_per_level\":1,\"mob_scale_power_base\":1.104088404342588,\"ratios\":{}},\"vein_miner\":{\"vein_enabled\":false,\"require_settings\":false,\"default_consume\":1,\"charge_modifier\":1,\"blacklist\":[\"silentgear:saw\"]}}"))
+    # Server-global World Tier: scoreboard persists across world restarts.
+    data['data/minecraft/tags/function/load.json'] = _json({'values': ['techquest:worldtier/load']})
+    data['data/minecraft/tags/function/tick.json'] = _json({'values': ['techquest:worldtier/tick']})
+    data['data/techquest/function/worldtier/load.mcfunction'] = (
+        'scoreboard objectives add tq_worldtier dummy\n'
+        'execute unless score #global tq_worldtier matches 0.. run scoreboard players set #global tq_worldtier 0\n'
+        'scoreboard players set #clock tq_worldtier 0\n'
+    ).encode('utf-8')
+    data['data/techquest/function/worldtier/tick.mcfunction'] = (
+        'scoreboard players add #clock tq_worldtier 1\n'
+        'execute if score #clock tq_worldtier matches 20.. run function techquest:worldtier/sync\n'
+    ).encode('utf-8')
+    tiers = ('frontier', 'ascent', 'summit', 'pinnacle')
+    cmds = ['scoreboard players set #clock tq_worldtier 0']
+    for i, tier in enumerate(tiers, 1):
+        nbt = json.dumps({'neoforge:attachments': {'apotheosis:world_tier': tier}}, separators=(',', ':'))
+        data['data/techquest/predicate/worldtier/' + tier + '.json'] = _json({
+            'condition': 'minecraft:entity_properties', 'entity': 'this',
+            'predicate': {'nbt': nbt}})
+        cmds.append('execute as @a if predicate techquest:worldtier/' + tier +
+                    ' if score #global tq_worldtier matches ..' + str(i - 1) +
+                    ' run scoreboard players set #global tq_worldtier ' + str(i))
+    for i, tier in enumerate(tiers, 1):
+        cmds.append('execute as @a if score #global tq_worldtier matches ' + str(i) +
+                    ' unless predicate techquest:worldtier/' + tier +
+                    ' run apoth set_world_tier @s ' + tier)
+    data['data/techquest/function/worldtier/sync.mcfunction'] = ('\n'.join(cmds) + '\n').encode('utf-8')
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as z:
         for path, content in data.items():
