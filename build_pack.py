@@ -276,12 +276,16 @@ def external_records(cfg):
         filename = safe_filename(mod["file_name"])
         url = mod["download_url"]
         parsed = urllib.parse.urlsplit(url)
-        expected_path = (
-            "/zentixua/incoming/releases/download/v3.10.4/"
-            "incoming-3.10.4.jar"
-        )
-        if (parsed.scheme != "https" or parsed.hostname != "github.com"
-                or parsed.path != expected_path or parsed.query or parsed.fragment):
+        trusted = {
+            "incoming-3.10.4.jar": (
+                "github.com", "/zentixua/incoming/releases/download/v3.10.4/incoming-3.10.4.jar"),
+            "ftb-library-neoforge-2101.1.39.jar": (
+                "maven.ftb.dev", "/releases/dev/ftb/mods/ftb-library-neoforge/2101.1.39/ftb-library-neoforge-2101.1.39.jar"),
+            "ftb-ultimine-neoforge-2101.1.15.jar": (
+                "maven.ftb.dev", "/releases/dev/ftb/mods/ftb-ultimine-neoforge/2101.1.15/ftb-ultimine-neoforge-2101.1.15.jar"),
+        }
+        if (parsed.scheme != "https" or (parsed.hostname, parsed.path) != trusted.get(filename)
+                or parsed.query or parsed.fragment):
             raise BuildError("Unexpected author release URL: " + url)
         size = mod["file_size"]
         expected = mod["sha256"]

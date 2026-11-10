@@ -60,6 +60,10 @@ NAMES = {
     "mafglib": "MaFgLib",
     "forgematica": "Forgematica",
     "explorers-compass": "Explorer's Compass",
+    "sophisticated-storage": "Sophisticated Storage",
+    "inventory-profiles-next": "Inventory Profiles Next",
+    "libipn": "libIPN",
+    "architectury-api": "Architectury API",
     "lithium": "Lithium",
 }
 DESCRIPTIONS = {
@@ -105,6 +109,10 @@ DESCRIPTIONS = {
     "mafglib": "Клиентская библиотека Forgematica.",
     "forgematica": "Голограммы чертежей, .litematic и списки материалов; только клиент.",
     "explorers-compass": "Поиск обычных и модовых структур через удобный компас.",
+    "sophisticated-storage": "Улучшаемые сундуки и фильтры; Iron Chests сохранён.",
+    "inventory-profiles-next": "Сортировка инвентаря и сундуков, только клиент.",
+    "libipn": "Библиотека сортировки инвентаря, только клиент.",
+    "architectury-api": "Библиотека NeoForge для FTB Library и Ultimine.",
     "lithium": "Оптимизация логики и тиков Minecraft; требуется проверка совместимости.",
 }
 mods = []
@@ -132,7 +140,9 @@ for row in reversed(cfg.get("external_mods", [])):
     mods.insert(1, {
         "name": row["name"], "group": row.get("group", "Военная техника"),
         "required": row.get("required", False),
-        "description": "Авиаудары, ПВО, ракеты и ядерные взрывы. Может сильно нагружать сервер.",
+        "description": ("Авиаудары, ПВО, ракеты и ядерные взрывы. Может сильно нагружать сервер."
+                        if row["name"].startswith("Incoming") else
+                        "Библиотека или инструмент FTB Ultimine для NeoForge 1.21.1."),
         "url": row["source"],
     })
 index = ROOT / "docs" / "index.html"
