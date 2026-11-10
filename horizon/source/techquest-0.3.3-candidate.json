@@ -1,0 +1,1486 @@
+{
+  "pack_name": "TechQuest: Industrial Frontier — Adventure 0.3.3 Alpha",
+  "version": "0.3.3-alpha",
+  "minecraft": "1.21.1",
+  "loader": "neoforge",
+  "loader_version": "21.1.264",
+  "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica",
+  "removed_mods": [
+    {"project": "mcheli-modern-port", "reason": "не нужен"},
+    {"project": "timeless-and-classics-zero", "reason": "не нужен"},
+    {"project": "parcool", "reason": "не нужен"}
+  ],
+  "mods": [
+    {
+      "project": "buildcraft-community-edition",
+      "group": "Технологии",
+      "required": true,
+      "version_prefix": "8.0.23+1.21.1+neoforge"
+    },
+    {
+      "project": "create",
+      "group": "Технологии",
+      "required": true,
+      "version_id": "UjX6dr61"
+    },
+    {
+      "project": "mekanism",
+      "group": "Технологии",
+      "required": true
+    },
+    {
+      "project": "modern-industrialization",
+      "group": "Технологии",
+      "required": true
+    },
+    {
+      "project": "ae2",
+      "group": "Технологии",
+      "required": true
+    },
+    {
+      "project": "immersiveengineering",
+      "group": "Технологии",
+      "required": false
+    },
+    {
+      "project": "mekanism-generators",
+      "group": "Технологии",
+      "required": false
+    },
+    {
+      "project": "iron-chests",
+      "group": "Хранение",
+      "required": false
+    },
+    {
+      "project": "sophisticated-backpacks",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "DY0e8WVr"
+    },
+    {
+      "project": "storagedrawers",
+      "group": "Хранение",
+      "required": false
+    },
+    {
+      "project": "irons-spells-n-spellbooks",
+      "group": "RPG",
+      "required": true
+    },
+    {
+      "project": "apotheosis",
+      "group": "RPG",
+      "required": true
+    },
+    {
+      "project": "skill-tree",
+      "group": "RPG",
+      "required": false
+    },
+    {
+      "project": "project-mmo",
+      "group": "RPG",
+      "required": false
+    },
+    {
+      "project": "naturalist",
+      "group": "Мобы",
+      "required": true
+    },
+    {
+      "project": "l_enders-cataclysm",
+      "group": "Мобы",
+      "required": true
+    },
+    {
+      "project": "bosses-of-mass-destruction-forge",
+      "group": "Боссы",
+      "required": true,
+      "version_prefix": "1.3.3"
+    },
+    {
+      "project": "wyrmroost",
+      "group": "Приключения",
+      "required": true,
+      "version_prefix": "1.4.1"
+    },
+    {
+      "project": "legendary-monsters",
+      "group": "Боссы",
+      "required": true
+    },
+    {
+      "project": "twisted-mobs",
+      "group": "Мобы",
+      "required": true
+    },
+    {
+      "project": "mowzies-mobs",
+      "group": "Мобы",
+      "required": false
+    },
+    {
+      "project": "aether",
+      "group": "Приключения",
+      "required": true,
+      "version_prefix": "1.21.1-1.5.9-neoforge"
+    },
+    {
+      "project": "deeperdarker",
+      "group": "Приключения",
+      "required": true,
+      "version_prefix": "1.4.1-neoforge-1.21.1"
+    },
+    {
+      "project": "artifacts",
+      "group": "Приключения",
+      "required": true
+    },
+    {
+      "project": "terralith",
+      "group": "Мир",
+      "required": false
+    },
+    {
+      "project": "yungs-better-dungeons",
+      "group": "Мир",
+      "required": true,
+      "version_id": "D6aZn0Em",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
+    },
+    {
+      "project": "yungs-better-mineshafts",
+      "group": "Мир",
+      "required": false,
+      "version_id": "Go3nbneL",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
+    },
+    {
+      "project": "when-dungeons-arise",
+      "group": "Мир",
+      "required": true,
+      "version_prefix": "2.1.68",
+      "version_id": "XIRJSFQ0",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
+    },
+    {
+      "project": "yungs-better-strongholds",
+      "group": "Мир",
+      "required": true,
+      "version_prefix": "1.21.1-NeoForge-5.1.3",
+      "version_id": "8U0dIfSM",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
+    },
+    {
+      "project": "yungs-better-nether-fortresses",
+      "group": "Мир",
+      "required": true,
+      "version_prefix": "1.21.1-NeoForge-3.1.4",
+      "version_id": "oNRbcwIE",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Генерация структур нужна также встроенному серверу одиночной игры; проверенный NeoForge JAR устанавливается на обе стороны."
+    },
+    {
+      "project": "aquamirae",
+      "group": "Приключения",
+      "required": true,
+      "version_id": "lKu7coya",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    {
+      "project": "waystones",
+      "group": "Комфорт",
+      "required": true
+    },
+    {
+      "project": "explorers-compass",
+      "group": "Исследование",
+      "required": true
+    },
+    {
+      "project": "farmers-delight",
+      "group": "Комфорт",
+      "required": false
+    },
+    {
+      "project": "jei",
+      "group": "Интерфейс",
+      "required": true
+    },
+    {
+      "project": "jade",
+      "group": "Интерфейс",
+      "required": true
+    },
+    {
+      "project": "appleskin",
+      "group": "Интерфейс",
+      "required": true
+    },
+    {
+      "project": "mouse-tweaks",
+      "group": "Интерфейс",
+      "required": false
+    },
+    {
+      "project": "mafglib",
+      "group": "Библиотеки",
+      "required": true,
+      "version_prefix": "0.4.3+mc1.21.1",
+      "client_only": true
+    },
+    {
+      "project": "forgematica",
+      "group": "Интерфейс",
+      "required": true,
+      "version_prefix": "0.4.3+mc1.21.1",
+      "client_only": true
+    },
+    {
+      "project": "ferrite-core",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "modernfix",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "sodium",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "entityculling",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "spark",
+      "group": "Сервер",
+      "required": false
+    },
+    {
+      "project": "chunky",
+      "group": "Сервер",
+      "required": false
+    },
+    {
+      "project": "geckolib",
+      "group": "Библиотеки",
+      "required": true
+    },
+    {
+      "project": "superb-warfare",
+      "group": "Военная техника",
+      "required": true,
+      "version_prefix": "0.8.9.2",
+      "version_id": "bl7W8fjU"
+    },
+    {
+      "project": "physicsmod",
+      "group": "Визуальная физика",
+      "required": true,
+      "version_id": "wudTG1nk",
+      "client_only": true,
+      "note": "Эксперимент Physics Mod Lite 3.0.35 для NeoForge 1.21.1: только клиентские обломки, преднастройка 128 объектов / 16 блоков / Blocky, собственное обрушение выключено. Не проверен запуском Minecraft в составе TechQuest. Перед входом в мир проверьте настройки в GUI; инструкции docs/PHYSICS_TESTING_RU.md. Серверный JAR не устанавливается."
+    },
+    {
+      "project": "burnt",
+      "group": "Разрушения",
+      "required": true,
+      "version_prefix": "1.10.2"
+    },
+    {
+      "project": "explosion-overhaul-a-new-level-of-destruction",
+      "group": "Разрушения",
+      "required": true,
+      "version_prefix": "0.2.3.0-neoforge"
+    },
+    {
+      "project": "lithostitched",
+      "group": "Библиотеки",
+      "required": true,
+      "version_prefix": "1.8.0-neoforge-21.1",
+      "version_id": "sPmtDq1X",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Terralith требует Lithostitched на BOTH; закреплённый NeoForge JAR с Apollib нужен также встроенному серверу клиента, несмотря на общую серверную метку Modrinth."
+    },
+    {
+      "project": "irons-lib",
+      "group": "Библиотеки",
+      "required": true,
+      "version_prefix": "1.21.1-2."
+    },
+    {
+      "project": "immediatelyfast",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "moreculling",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "badoptimizations",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "dynamic-fps",
+      "group": "Оптимизация",
+      "required": true
+    },
+    {
+      "project": "xaeros-minimap",
+      "group": "Карта и интерфейс",
+      "required": true,
+      "client_only": true
+    },
+    {
+      "project": "xaeros-world-map",
+      "group": "Карта и интерфейс",
+      "required": true,
+      "client_only": true
+    },
+    {
+      "project": "health-indicator-txf",
+      "group": "Карта и интерфейс",
+      "required": true,
+      "client_only": true,
+      "version_prefix": "1.21.1-1.3."
+    },
+    {
+      "project": "patchouli",
+      "group": "Руководства",
+      "required": true
+    },
+    {
+      "project": "open-loader",
+      "group": "Руководства",
+      "required": true
+    },
+    {
+      "project": "lithium",
+      "group": "Оптимизация",
+      "required": false
+    },
+    {
+      "project": "better-zoom",
+      "group": "Масштабирование камеры",
+      "required": true,
+      "client_only": true,
+      "version_id": "NwwnadOr"
+    },
+    {
+      "project": "controlling",
+      "group": "Управление",
+      "required": true,
+      "client_only": true,
+      "version_id": "FaNppCJJ"
+    },
+    {
+      "project": "searchables",
+      "group": "Библиотеки",
+      "required": true,
+      "client_only": true,
+      "version_id": "iEE85X0w"
+    },
+    {
+      "project": "fragmentum",
+      "group": "Библиотеки",
+      "required": true,
+      "version_id": "kCXNhuIV",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    }
+  ],
+  "manual_mods": [
+    {
+      "name": "Industrial Craft 2: Nostalgia",
+      "file_name": "industrial-craft-2-nostalgia-21.1.0-local.26.jar",
+      "source": "https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244",
+      "required": true,
+      "note": "Обязательный IC2 порт. JAR хранится в репозитории и скачивается по закреплённому GitHub commit с SHA-512/SHA-1 проверкой. Публикация требует отдельного соблюдения лицензий IC2 и автора порта.",
+      "download_url": "https://raw.githubusercontent.com/Nessoro/TechQuest-Modpack/503b0676cb44764ede56e94975f66e9a3c35c6db/manual-mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar"
+    },
+    {
+      "name": "[SBW] DragonRise: Reforge",
+      "group": "Военная техника",
+      "file_name": "dragonrise_reforge-1.5.1-release.jar",
+      "source": "https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025",
+      "required": false,
+      "note": "Выпуск 1.5.1 для NeoForge 1.21.1. Требует Superb Warfare. ОЖИДАЕТ ручного добавления оригинального JAR в manual-mods/ и проверки лицензии; НЕ включён в публичный .mrpack, пока файл не предоставлен."
+    }
+  ],
+  "performance_profile": {
+    "unified": true,
+    "shader_loader_included": false,
+    "notes": "Одна сборка с клиентскими оптимизациями и серверным снижением дальности симуляции; карта/HP только на клиенте, внутриигровое руководство Patchouli. Проверить производительность Spark.",
+    "video_defaults": {
+      "graphicsMode": 0,
+      "renderDistance": 6,
+      "simulationDistance": 5,
+      "entityDistanceScaling": 0.5,
+      "particles": 2,
+      "maxFps": 60,
+      "biomeBlendRadius": 0,
+      "mipmapLevels": 1
+    },
+    "key_defaults": {
+      "key.betterzoom.zoom": "key.keyboard.z",
+      "key.betterzoom.config": "key.keyboard.unknown",
+      "key.betterzoom.zoom_in": "key.keyboard.unknown",
+      "key.betterzoom.zoom_out": "key.keyboard.unknown",
+      "gui.xaero_enlarge_map": "key.keyboard.f9",
+      "key.sophisticatedbackpacks.toggle_upgrade_1": "key.keyboard.f10"
+    }
+  },
+  "external_mods": [
+    {
+      "name": "Incoming: Air Strikes & Nukes",
+      "file_name": "incoming-3.10.4.jar",
+      "version": "3.10.4",
+      "group": "Военная техника",
+      "source": "https://github.com/zentixua/incoming/releases/tag/v3.10.4",
+      "download_url": "https://github.com/zentixua/incoming/releases/download/v3.10.4/incoming-3.10.4.jar",
+      "sha256": "445c8549f6fec60758b841313adc8d1b58c3770eb4e08bb04c3845e22690d53f",
+      "file_size": 23250455,
+      "required": true,
+      "note": "Официальный GitHub-релиз автора ZentixUA (GPLv3). Клиент и сервер, NeoForge >=21.1.264. Большие ядерные взрывы очень требовательны к CPU/GPU и создают разрушения."
+    }
+  ],
+  "optional_local_mods": [
+    {
+      "id": "acceleratedmcwarfare",
+      "name": "AcceleratedMcWarfare (AMW)",
+      "file_name": "acceleratedMcWarfare-1.0.4..jar",
+      "version": "1.0.4-alpha",
+      "minecraft": "1.21.1",
+      "loader": "neoforge",
+      "side": "both",
+      "required": false,
+      "install_mode": "manual_user_import",
+      "source": "https://www.curseforge.com/minecraft/mc-mods/amw/files/9298161",
+      "curseforge_project_id": 1711633,
+      "curseforge_file_id": 9298161,
+      "license": "All Rights Reserved",
+      "dependencies": [
+        "geckolib"
+      ],
+      "note": "The official file is client+server but downloads require the publisher's delivery channel. This JAR is not bundled or redistributed by TechQuest. Import the original JAR using the GUI, and copy the same file to the dedicated server. Compatibility with Incoming/Superb Warfare/Explosion Overhaul is untested."
+    }
+  ],
+  "modrinth_lock": {
+    "1bokaNcj": {
+      "title": "Xaero's Minimap",
+      "version": "neoforge-1.21.1-26.6.0",
+      "version_id": "irjR7dHk",
+      "filename": "xaerominimap-neoforge-1.21.1-26.6.0.jar",
+      "sha512": "d56b93ddb921285624b491d6a85aba23748bec9974867399c881c257eb25a746df92a735473adf3a6875e0928a56ff78245d5238eb9207b0e45c3fec20c896dc",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "46KJle7n": {
+      "title": "L_Ender's Cataclysm",
+      "version": "3.33",
+      "version_id": "PsPYpoCC",
+      "filename": "L_Ender's Cataclysm 1.21.1-3.33.jar",
+      "sha512": "289f6e8364a6e432f34803a47cff8381899a1df0fdc675170323b43fd1c09579b1320d8b4e0de5df65c609b738d450c13c89e240d6d79f607888da26b7724947",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "49C5QgTK": {
+      "title": "Fragmentum",
+      "version": "5.4.0",
+      "version_id": "kCXNhuIV",
+      "filename": "fragmentum-5.4.0+1.21.1-neoforge.jar",
+      "sha512": "426b3a7f2085266ae231d7ef81092baabb0409bbf222b9220472dd3ba482840a0850047aabc4b59d20fd65170ec9920559d29df6527d8119ecf02c69cfa78e53",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "51shyZVL": {
+      "title": "More Culling",
+      "version": "1.0.11",
+      "version_id": "ucyxnpWe",
+      "filename": "moreculling-neoforge-1.21.1-1.0.11.jar",
+      "sha512": "440573d65ac6068aa6adeb4a6851a2a49d40ac86cbb15578e96eeef736fe2967cf12fc0a288b03c0ed4a7bed325d4986c8f5186d3be6b97a57b84be52e963b24",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "5ZwdcRci": {
+      "title": "ImmediatelyFast",
+      "version": "1.6.15+1.21.1-neoforge",
+      "version_id": "EJzmEPZV",
+      "filename": "ImmediatelyFast-NeoForge-1.6.15+1.21.1.jar",
+      "sha512": "c115cad7b060373fc597aae08c685e2d56f173b88b792a4a2c229e222f8da293b99865e9553cf716483d3c3d6a18f31c51c5dd55be22d4625ed2c962d7b94fd0",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "7tEfOcA7": {
+      "title": "MezzConfig",
+      "version": "0.6.11",
+      "version_id": "sPQlt1iR",
+      "filename": "mezz_config-1.21.1-neoforge-0.6.11-standalone.jar",
+      "sha512": "38731fd657625548920c6f30c5d38e88d515888eb7d6f687a8b78d91e5ee18d6c16298432fddb8ae62f05128e560357a7c36f067d1a278c23d44d403534f9b9a",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "8BmcQJ2H": {
+      "title": "Geckolib",
+      "version": "4.9.3",
+      "version_id": "Grwn5rUB",
+      "filename": "geckolib-neoforge-1.21.1-4.9.3.jar",
+      "sha512": "8dfa5f8c57224a5e34e5098367ea9819ca6dc9c11357cd3062c16da3455c8bd1a483098af7383debc4b9ce8e4d7ab3fdc799b415644eb829da83eb72a7335dfd",
+      "environment": {
+        "client": "required",
+        "server": "optional"
+      }
+    },
+    "8DfbfASn": {
+      "title": "When Dungeons Arise",
+      "version": "2.1.68",
+      "version_id": "XIRJSFQ0",
+      "filename": "DungeonsArise-1.21.1-2.1.68-release.jar",
+      "sha512": "cf87e06c8a49c9147fac2cf4d218d0e0eb56bb75819ab85f84ed7ae775bb3e259e2ebd5c423696d4d9026f6a69698babf5e7c82c74e480fbbf107359ef30a97e",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "8dYAmpGw": {
+      "title": "Wyrmroost",
+      "version": "1.4.1",
+      "version_id": "8cPyix5L",
+      "filename": "wyrmroost-1.4.1.jar",
+      "sha512": "8acbe1966894d40979a842dcbba497957b04f50f862b58bcb7a8542433e2d087904ad0933a9da36912beb03369ded7ee6d138c7bb3624ab133ed41f4c9c10279",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "8oi3bsk5": {
+      "title": "Terralith",
+      "version": "2.6.2",
+      "version_id": "IY93YaEe",
+      "filename": "Terralith_1.21.1_v2.6.2_Neoforge.jar",
+      "sha512": "35298f1682567f63dc16658b04cee5498b30819f1c05f9712b4480d7f5eb17059db3b13ab14f81a05fe257149d11ced2cce2030d3727c1747edd8657c53e2a85",
+      "environment": {
+        "client": "optional",
+        "server": "required"
+      }
+    },
+    "8ooWzSQP": {
+      "title": "Spell Power Attributes",
+      "version": "1.6.0+1.21.1-neoforge",
+      "version_id": "RFCD8Aio",
+      "filename": "spell_power-neoforge-1.6.0+1.21.1.jar",
+      "sha512": "b4f9ae2524783a2f1d4f16da73543f1073e17e7cb66a36235c4b54e74495d3b73892a342478cc760ec4c2bcf046578f3077af31013b48b04a9bde7facd48e281",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "9d9Bkqva": {
+      "title": "Legendary Monsters",
+      "version": "2.2.4",
+      "version_id": "zkH9rSlF",
+      "filename": "legendary_monsters-2.2.4 MC 1.21.1.jar",
+      "sha512": "2e6f073d6358778fecde1554a40b8208836bca018156f2abb1ba497d65d15cbe0c37dcc541fe9252cfd16e7b4ff8fdfe668ea230e7ee9ef315e710eb425a90f3",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "9nfaJPtX": {
+      "title": "Iron's Lib",
+      "version": "1.21.1-2.3.0",
+      "version_id": "dgH7P81J",
+      "filename": "irons_lib-1.21.1-2.3.0.jar",
+      "sha512": "74c609a583af1547c36ad39a7f89074a221f106fad5a246810d4921f91d0fc2df5660ef75f47f33e5f546cc51147d78ecbcff883da4a53f24002311697d0a99b",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "9s6osm5g": {
+      "title": "Cloth Config API",
+      "version": "15.0.140+neoforge",
+      "version_id": "izKINKFg",
+      "filename": "cloth-config-15.0.140-neoforge.jar",
+      "sha512": "aaf9b010955b8cd294e5a92f069985b18729fd5e2cf22d351f1dff9680f15488688803ec41e77e941cbde130ceb535014ca4c868047d80ab69c2d508e216654d",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "AANobbMI": {
+      "title": "Sodium",
+      "version": "mc1.21.1-0.8.13-neoforge",
+      "version_id": "uMOpc5uV",
+      "filename": "sodium-neoforge-0.8.13+mc1.21.1.jar",
+      "sha512": "4f537696af95411e9daf15795fb5fcbc49913d488a96fa912fa8f1d7db408710995e8a1461190f3cd0f8217bf9e35e9539176592428ed587ca2d7aa84450a390",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "AqaIIO6D": {
+      "title": "Ranged Weapon API",
+      "version": "3.0.0+1.21.1-neoforge",
+      "version_id": "WxNYN3Zh",
+      "filename": "ranged_weapon_api-neoforge-3.0.0+1.21.1.jar",
+      "sha512": "e6a1c0de80b07f65874e2d9999ef7e98f7b5cce3c871a1bec7cbb74c693b34080563c25bd87c36fccd42f25c51dee183192e97d65ebd2c780a8a08adde13fd68",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "BFbX9xcm": {
+      "title": "Mowzie's Mobs",
+      "version": "1.8.2",
+      "version_id": "xgAXTl17",
+      "filename": "mowziesmobs-1.21.1-1.8.2.jar",
+      "sha512": "ab10d2f759df613d5094bac26c5a8bbe144786699018f7e4ae027fc4a86632aa7f96206f2c8be9970338eadef42539614a19b41d0d70b6216c3ed1c4c4421f0a",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "Cd3DYqzn": {
+      "title": "Superb Warfare",
+      "version": "0.8.9.2",
+      "version_id": "bl7W8fjU",
+      "filename": "superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar",
+      "sha512": "fb035d68d6ee30c17e8eade8de6e2019ccf9f3e517fa467be59441a397553c81bd29778f92fa0406f1ac3aa73f68ad522aed5d65825336c36686714c900877a5",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "Ce6I4WUE": {
+      "title": "Mekanism",
+      "version": "10.7.19.85",
+      "version_id": "5KzzycBT",
+      "filename": "Mekanism-1.21.1-10.7.19.85.jar",
+      "sha512": "66745825330a98f3e4a5ea3a44aff8b00870f715c144edc38dd2f61b4240589600b58ae89efac3b54dbb5aa430b1059dac1a28fd71cac5cc9002bbeb5ba3f22b",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "Ck4E7v7R": {
+      "title": "GuideME",
+      "version": "21.1.22",
+      "version_id": "QeYKsstN",
+      "filename": "guideme-21.1.22.jar",
+      "sha512": "2a7b29143c1bef18375f221c337c6e744d04b79bc3cc10cadac46b7d6bb217ad78c51a3c33cd802b221cc7b38ff04a3f7064bd63d292e53bf9f3e09047eeda24",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "DGaH8Rh0": {
+      "title": "Apothic Attributes",
+      "version": "1.21.1-2.11.0",
+      "version_id": "64fZbLnj",
+      "filename": "ApothicAttributes-1.21.1-2.11.0.jar",
+      "sha512": "568580e68016161151fc0254fb0da949b42cf285fa2bf7c3aec1cd320405c430483e9eb990aaddef537bfac4aa4beb21db82fbff9249131e05b15063b6839611",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "DfxVkOAO": {
+      "title": "Apothic-Spawners",
+      "version": "1.21.1-1.4.0",
+      "version_id": "pWfxcfO2",
+      "filename": "ApothicSpawners-1.21.1-1.4.0.jar",
+      "sha512": "2fdd49cdb3e6610846c3a746ab0730d6d49412eaf8c21e3d0b9d588d80c8cd1a1d0b7e19ade7fc86fd699ac02e270e5fa01fb5cf106d24a7740692ecc1ad8820",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "EsAfCjCV": {
+      "title": "AppleSkin",
+      "version": "3.0.9+mc1.21",
+      "version_id": "uAKA6Laj",
+      "filename": "appleskin-neoforge-mc1.21-3.0.9.jar",
+      "sha512": "f4ea46273e407334b63e262e2555c9a8204f7b5e60f23f272fbaa83ad9e88800e0ee186aca840710df2dbe0a18b37758695fef2ae1a902c10b3706e3de772937",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "F8BQNPWX": {
+      "title": "Naturalist",
+      "version": "2.0.7+1.21.1-neoforge",
+      "version_id": "9Yn8ig4c",
+      "filename": "naturalist-2.0.7-neoforge-1.21.1.jar",
+      "sha512": "5d56ec2d1e5f994c9b63cf7578e9ed1be2cd4f58a055503e32bdd90c80d9802af04d3f6e1eec08394180e196ce32b2c2e71df8ba19d918e77df1694c9007e7e1",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "FoVacERa": {
+      "title": "Lionfish-API",
+      "version": "3.1",
+      "version_id": "fTRMVgyZ",
+      "filename": "lionfishapi-3.1.jar",
+      "sha512": "fdd90f19d0424c3a837111291d6ac1547d62cbcedd43b74d3a8946912f9c5212a5ea239a6969eccf678289bcb77cbb9a937db01fdaf60e57826f9a99893d19cb",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "GkIc6rRo": {
+      "title": "CERBON's API",
+      "version": "1.3.0",
+      "version_id": "5wbxkBQ1",
+      "filename": "CerbonsAPI-NeoForge-1.21-1.3.0.jar",
+      "sha512": "6bd24b718d532cdd0c49150eefc223b4d7c3550bbc81d5c65ed84b704bf3c8e20d3cb3524082688383cc4aba38e190921976b056b84d5755670c5399a7c7e627",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "Gov5Dboq": {
+      "title": "Modern Industrialization",
+      "version": "2.5.12",
+      "version_id": "xGrDqc07",
+      "filename": "Modern-Industrialization-2.5.12.jar",
+      "sha512": "c4816b70ab2530cd087f9aef2b97723ff6e2cdf63163c5c27c1b6ee8153d0826ae8cf413d00a4ac96f8ece2da781409cddb6d8f1f93fc88f255b10be3a6437bc",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "HjmxVlSr": {
+      "title": "YUNG's Better Mineshafts",
+      "version": "1.21.1-NeoForge-5.1.1",
+      "version_id": "Go3nbneL",
+      "filename": "YungsBetterMineshafts-1.21.1-NeoForge-5.1.1.jar",
+      "sha512": "8b01b386f53feeaa55f0c62697578b82e00501e45e428b2a68df6bda34efb6a4b3b4e3582abf13fe767ebcb61aef9368186f53c03999958bef38f31c41a7f8b2",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "KFQYC1Uy": {
+      "title": "Project MMO",
+      "version": "2.10.47",
+      "version_id": "9lu4zNd1",
+      "filename": "pmmo-1.21.1-2.10.47.jar",
+      "sha512": "c5f4c0000bcdb847b36dfe11fc48bfb17bff3696f2be7f44f03a8ed09490c3dd06864eb914321251f65a79059bac4be47a800c427e8bab5e92a949399693c067",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "KwWsINvD": {
+      "title": "Open Loader",
+      "version": "21.1.5",
+      "version_id": "Szobbnyh",
+      "filename": "OpenLoader-neoforge-1.21.1-21.1.5.jar",
+      "sha512": "3a4b0b6605f30b98a9d26954f8e211e6422f1f6402d400a9f9eb32a5af065da808dd3648a839dd60e47e50c8075b6a71624e142e50fb61273a6ba505bf6b1d09",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "LNytGWDc": {
+      "title": "Create",
+      "version": "6.0.10+mc1.21.1",
+      "version_id": "UjX6dr61",
+      "filename": "create-1.21.1-6.0.10.jar",
+      "sha512": "11cc8fc049d2f67f6548c7abfada6b82a3adb5c7ca410a742de04bbca76e03862c518721b88d806f6e6d768a4d68531fdb903a85859b25d1484d550cc7bafd4b",
+      "environment": {
+        "client": "optional",
+        "server": "required"
+      }
+    },
+    "LOpKHB2A": {
+      "title": "Waystones",
+      "version": "21.1.46+neoforge-1.21.1",
+      "version_id": "6Z6MQ6os",
+      "filename": "waystones-neoforge-1.21.1-21.1.46.jar",
+      "sha512": "ca90b58d884d4bc2b08a870484ae7ede397e71d31eaaf01ff2603ad498d584763e099c2094e57031522385339705d2c011ed4910bf36efae688e64935b49ece9",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "LQ3K71Q1": {
+      "title": "Dynamic FPS",
+      "version": "3.11.4",
+      "version_id": "T238FZpQ",
+      "filename": "dynamic-fps-3.11.4+minecraft-1.21.0-neoforge.jar",
+      "sha512": "8eb18a280b265e598540306275b51a165836f4b14c6c703b6ced11fcac50bfab439e4deb69e222f62614a9f15fa0ef58e5bd84e20e37ae57755d9c2f8b134057",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "MBAkmtvl": {
+      "title": "Balm",
+      "version": "21.0.67+neoforge-1.21.1",
+      "version_id": "gMedgtzL",
+      "filename": "balm-neoforge-1.21.1-21.0.67.jar",
+      "sha512": "ad4f4df829b1195446486df818c2c1f0bf6738cb1b30cfdbf9eae4855ce62a66b00f2dc5e0a87409f25ce4eba9bd5c94e1b10d1940af451d5ef7dd7f4b3d8ebd",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "N56hoqkq": {
+      "title": "Health Indicator TXF",
+      "version": "1.21.1-1.3.12-neoforge",
+      "version_id": "xGqsX1go",
+      "filename": "healthindicatortxf-1.21.1-1.3.12-neoforge.jar",
+      "sha512": "34ebae593564aaccaf874e8c0af15f527d49b33effb1067684fca604be4374fa1d73d40ccd4b1c1dd289fd2863780ca9b5a77008ebc76d02f33838061458fdcb",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "NNAgCjsB": {
+      "title": "Entity Culling",
+      "version": "1.11.3",
+      "version_id": "eieYbWYb",
+      "filename": "entityculling-neoforge-1.11.3-mc1.21.1.jar",
+      "sha512": "93e83dd690b91d610be29451b34836c9daa7e08bd952f88ffa07c62d8774bbaac2ff0c6768d2cbf1b14f47d0b86f98cef9fd341e0d29bd37207eaf4aa2abea63",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "NcUtCpym": {
+      "title": "Xaero's World Map",
+      "version": "neoforge-1.21.1-1.47.0",
+      "version_id": "SnQ4SoDe",
+      "filename": "xaeroworldmap-neoforge-1.21.1-1.47.0.jar",
+      "sha512": "4d2d78bc85afa002f682ef344b7284cf1baa4903cc5a11cd1d7bd260ac63952580ae717bab47079540ead633cdd5d8e4fdf230dc99a68bcb7a269500e7dada13",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "OFVYKsAk": {
+      "title": "Mekanism Generators",
+      "version": "10.7.19.85",
+      "version_id": "a6gl7srE",
+      "filename": "MekanismGenerators-1.21.1-10.7.19.85.jar",
+      "sha512": "6c3d5b7ea2f67f43c3d169c97de2855a7085f38019cf426e015ccc8ca9bc4f66e96b1cdf4a9afdc92bef7b2e236f16c81415ed5e48736805d5961d29525316d6",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "P0Mu4wcQ": {
+      "title": "Artifacts",
+      "version": "13.2.5",
+      "version_id": "lMfuK0o7",
+      "filename": "artifacts-neoforge-13.2.5.jar",
+      "sha512": "9079bc8a22c237881b22b38027bbab2a8a2e685a1f49c1e1e0e5796f3e0a5509a130d73753c7b2980f12e4f00845f8e8c967ee969f1eadcd52139c2780afe09d",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "PjDhruSC": {
+      "title": "Skill Tree (RPG Series)",
+      "version": "1.6.1+1.21.1-neoforge",
+      "version_id": "Vr94BeiF",
+      "filename": "skill_tree-neoforge-1.6.1+1.21.1.jar",
+      "sha512": "29c05b2049f2baffe371ea8e039106fb8f68854b6ff2877ff06ee78fb2e8e179eef0fc6850324c3eb2778caaa24de5e269dfc4c2b693c9d163c0d7b49410f3b4",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "R2OftAxM": {
+      "title": "Farmer's Delight",
+      "version": "1.21.1-1.3.4",
+      "version_id": "XTVZDOol",
+      "filename": "FarmersDelight-1.21.1-1.3.4.jar",
+      "sha512": "1f6f8796469f747cff36f477b4f589a3d69613882399f9ee7f86db36c7bca9aa4828731f43db15dc6c7f5a4c1bbe3d4092a232e8cef010b09cec0581848fda90",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "RV1qfVQ8": {
+      "title": "Explorer's Compass",
+      "version": "1.21.1-3.4.0-neoforge",
+      "version_id": "hIJ2Ev1Q",
+      "filename": "ExplorersCompass-1.21.1-3.4.0-neoforge.jar",
+      "sha512": "a1b2e385aaacb547763441fc23e9a33a0b1d67bd32094cd605ded3fbdd1c7a0e5fc4520fdfa090c29d2d3384b685e3ead91b32d20030e45632c94145ee3ec668",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "SKI34J7B": {
+      "title": "MaFgLib",
+      "version": "0.4.3+mc1.21.1",
+      "version_id": "CgDQ0u0Q",
+      "filename": "mafglib-0.4.3+mc1.21.1.jar",
+      "sha512": "b28b0552022ba22a729c917b848d119b84236689b550b99ba1fe11f2353551abcd2d9e23b190689be82376a9b2a47ffc22cdb116f413d6f76a5d19f075a9e78d",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "TUsZUXeu": {
+      "title": "Twisted Mobs",
+      "version": "1.9.2",
+      "version_id": "UrHk2Ln9",
+      "filename": "Twisted Mobs 1.9.2 (MC 1.21.1).jar",
+      "sha512": "3cb444ee8626a46d9573f7ec4dd6267a2a60526159fea71cfdc9ddf035fb9f970bd4a58a28df6ed283a89f57d00c391824feb118e401d35639c52632b6708f02",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "TyCTlI4b": {
+      "title": "Sophisticated Backpacks",
+      "version": "1.21.1-3.26.20.2244",
+      "version_id": "DY0e8WVr",
+      "filename": "sophisticatedbackpacks-1.21.1-3.26.20.2244.jar",
+      "sha512": "b54a2afd4091ddcc5d0104502936dd0f9124a66bf60053a53c8675d7e75f844257b427e3eeb4e5b53fd1a0ec911add1e96506f279d36bf5074420fd586c800eb",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "Ua7DFN59": {
+      "title": "YUNG's API",
+      "version": "1.21.1-NeoForge-5.1.9",
+      "version_id": "2prKITKh",
+      "filename": "YungsApi-1.21.1-NeoForge-5.1.9.jar",
+      "sha512": "7e3cf0b429e8a1c51dca094c2d8eabf12245bb42cbcd8b6e3e54959f931bef93201b81a08d200b417059aaa438e8eb445c3978a09568597bfb588199b7775967",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "XaDC71GB": {
+      "title": "Lithostitched",
+      "version": "1.8.0-neoforge-21.1",
+      "version_id": "sPmtDq1X",
+      "filename": "lithostitched-1.8.0-neoforge-21.1.jar",
+      "sha512": "0ba80383039270dec739f669fe936d091b87027c350972c88085729333e73e723e0c722d734c0592c08ffd6c5a21c16099f2e54cf7cfbcbd3061f5e3cbd62cb4",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "XvoWJaA2": {
+      "title": "Spell Engine",
+      "version": "1.10.9+1.21.1-neoforge",
+      "version_id": "IYoY9AHA",
+      "filename": "spell_engine-neoforge-1.10.9+1.21.1.jar",
+      "sha512": "5b8006be48584abe2354f94ebea066d8f128da052039adcf8bd51247c984462b7755d45dd5dc5e0360afe964973fccc2eb652025cb1e493d036792c05700aec2",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "XxWD5pD3": {
+      "title": "Applied Energistics 2",
+      "version": "19.2.18",
+      "version_id": "KDnFUmMm",
+      "filename": "appliedenergistics2-19.2.18.jar",
+      "sha512": "39bc4cf733a4321631e2637a1a6dfd3527135fdac1b572534e6fd1f9eab7a6dd92d56c5fa066263c95149c9b20cabdd1fd3dff80bea515381b1d2d754cad26c3",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "Xy8aRQKS": {
+      "title": "Physics Mod",
+      "version": "3.0.35",
+      "version_id": "wudTG1nk",
+      "filename": "physics-mod-3.0.35-mc-1.21.1-neoforge.jar",
+      "sha512": "230aa7bc8c9860c4fe57dd2aabfdc468fea6ccee416f1097223bed2c5f50e2d4371b123fdf885baeef7812dc7bed670044f8cfe7c5167b54764c80570de30d3e",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "YhmgMVyu": {
+      "title": "The Aether",
+      "version": "1.21.1-1.5.9-neoforge",
+      "version_id": "cyAfXgWf",
+      "filename": "aether-1.21.1-1.5.9-neoforge.jar",
+      "sha512": "d39ad88698b79399a0ec71f0f7744618b54ab79761765af7f015494da7d0a83b00e02e8afb48d58622cc14fcb5ce84305a66e7361cc870c5c72bf7b03707322c",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "Z2mXHnxP": {
+      "title": "YUNG's Better Nether Fortresses",
+      "version": "1.21.1-NeoForge-3.1.4",
+      "version_id": "oNRbcwIE",
+      "filename": "YungsBetterNetherFortresses-1.21.1-NeoForge-3.1.4.jar",
+      "sha512": "6741fa2810b1f11e875e538752cf5c68682ba015254fce3a33bd6262895a56efb2c5725b9df92ee9f028539a807839105b202e3658b51801d72029f995109bfd",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "aC3cM3Vq": {
+      "title": "Mouse Tweaks",
+      "version": "1.21-2.26.1-neoforge",
+      "version_id": "9I21YYxf",
+      "filename": "MouseTweaks-neoforge-mc1.21-2.26.1.jar",
+      "sha512": "f95c0cc881211ee0442434976775e07aae40b4a2ba4e3a85455bc57ca9d3c991e239cd98374a8abd442dc9c378dcd9001e2caa1bf69991d424b5652dd7f3483b",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "aaRl8GiW": {
+      "title": "Prickle",
+      "version": "21.1.11",
+      "version_id": "EE1FHDyD",
+      "filename": "prickle-neoforge-1.21.1-21.1.11.jar",
+      "sha512": "154d42795ccf1f3e07714775cdb82fd5db17574319286ced13d86b0456b64e4cf5bb89ffbcbfcefce67b73ed0b83e4e2944e493d79d9a385ff9de23006ee7bf5",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "ccKDOlHs": {
+      "title": "oωo (owo-lib)",
+      "version": "0.12.15.6-beta.1+1.21",
+      "version_id": "wbdHEItB",
+      "filename": "owo-lib-neoforge-0.12.15.6-beta.1+1.21.jar",
+      "sha512": "fc843ef350c4af6748d9fd6ecd3c28f96262cf46d46a8329029f49ea4f9eb87238113a8a415e8bba2c4f346c718bf450194f6f5823dfbf1ae7312529a81c3e5c",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "dCKRaeBC": {
+      "title": "Forgematica",
+      "version": "0.4.3+mc1.21.1",
+      "version_id": "PFUOWUDF",
+      "filename": "forgematica-0.4.3+mc1.21.1.jar",
+      "sha512": "babad424d23c39f196d931f4c63ba0d9f35791f59d5dee03daca3b9c3700430e7677f10a580f1567db6ae93e59fa5bd5b59b73a6d0a160e5a7200f7a15c7bdd0",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "fALzjamp": {
+      "title": "Chunky",
+      "version": "1.4.23",
+      "version_id": "LuFhm4eU",
+      "filename": "Chunky-NeoForge-1.4.23.jar",
+      "sha512": "2db769dd723f243a21e1881e7c9f825e9c193da6f2bed454b70cb6fa9e51c57f63fdcf017c0657bbd26f7bba30815413e27c74d3c7be0783390a96ee9baa4bf7",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "fnAffV0n": {
+      "title": "Deeper and Darker",
+      "version": "1.4.1-neoforge-1.21.1",
+      "version_id": "TuD0Zvi3",
+      "filename": "deeperdarker-neoforge-1.21.1-1.4.1.jar",
+      "sha512": "38d8d87878f39a063feb029db17702bedadf7554233ae56db6018c21225b6dff4d4cc31f4b0995254fd488e2a687f3b15bf9647c59dd42b9032791d34316ed0c",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "fuuu3xnx": {
+      "title": "Searchables",
+      "version": "1.0.2",
+      "version_id": "iEE85X0w",
+      "filename": "Searchables-neoforge-1.21.1-1.0.2.jar",
+      "sha512": "d0824bac1900142ac9a53e68f7ec3b4c0d33d9366bbd3f1d0d93eed860e5eb6b5e6f5a215a69bfffa70bcb48573ff49b5a12bbaa96096ceac6636000d506027a",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "g96Z4WVZ": {
+      "title": "BadOptimizations",
+      "version": "2.4.1",
+      "version_id": "S2qthD5S",
+      "filename": "BadOptimizations-2.4.1-1.21.1.jar",
+      "sha512": "2b66428bd98bd5ec0e09f2ec6af801cefb7b9b99cc4f0993daeaffe8d0ccc5ee0c2a73e9f38d4f92540ead0181704d2c9e946837ec05cf710fc3b20fce3b0cac",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "gedNE4y2": {
+      "title": "playerAnimator",
+      "version": "2.0.4+1.21.1-forge",
+      "version_id": "HJZB6bmA",
+      "filename": "player-animation-lib-forge-2.0.4+1.21.1.jar",
+      "sha512": "fc00450fb6c95ec1779021bdc726122dacb5915c6baddaacc981cd221b01b8db35f2a0dfde5d6fa6766d877266dc82f58854f571ea53cc5c4d468b80e1548a5f",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "guitPqEi": {
+      "title": "Storage Drawers",
+      "version": "1.21.1-13.11.4",
+      "version_id": "px0CCB06",
+      "filename": "StorageDrawers-neoforge-1.21.1-13.11.4.jar",
+      "sha512": "df97b8b5053a902264a236a71e7585b78d9d48a0bce585033aa8b169896d775f6fda462cfc77431af79cc596ab356eb9642e0c69a205a46b02d4d6f7ab3e74e9",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "gvQqBUqZ": {
+      "title": "Lithium",
+      "version": "mc1.21.1-0.15.4-neoforge",
+      "version_id": "DDUrRVCA",
+      "filename": "lithium-neoforge-0.15.4+mc1.21.1.jar",
+      "sha512": "2735da2088b88a8bdcd4ad02a2b6fffbfd3925557cefd4fa54b5477dfb9e582ea7f521300c060f57dff1325dd21bff276b7333363ad3371ed6893e3de9eca9cd",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "hFUzfDsn": {
+      "title": "Bosses of Mass Destruction Forge",
+      "version": "1.3.3",
+      "version_id": "snhDYBxP",
+      "filename": "BOMD-NeoForge-1.21-1.3.3.jar",
+      "sha512": "29a35ed7ce6d0832614b526295f33c3b92a136c1c235ccea3ce0312543e05ee7353d22e4814cbad884824e4381d32a7835e73d72d06c0fed53a9f5fc6b275951",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "hqQqvaa4": {
+      "title": "Pufferfish's Skills",
+      "version": "0.19.2",
+      "version_id": "8tfcI2wU",
+      "filename": "puffish_skills-0.19.2-1.21-neoforge.jar",
+      "sha512": "0dd07a6ca391ce00975f5b6c147cd993ce83d4ab3dde634885bc124f2d7fdfdcb631425539e2dbfdf7e0925795737c27bd4560aa5a6940ac0547dbd72c130b7f",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "ilvNBzFn": {
+      "title": "Critical Strike",
+      "version": "1.0.4+1.21.1-neoforge",
+      "version_id": "2LZ76MSH",
+      "filename": "critical_strike-neoforge-1.0.4+1.21.1.jar",
+      "sha512": "80b98158f2ad35c26890282907f0ad720fb2378539ae383ecf69e3c267a3c4cb492703e0c1ec34ba6eaa87e2e4c9b17838955bcc8bf12b475fbf80d35a9efdb5",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "k23mNPhZ": {
+      "title": "Aquamirae",
+      "version": "7.2.13",
+      "version_id": "lKu7coya",
+      "filename": "aquamirae-neoforge-1.21.1-7.2.13.jar",
+      "sha512": "90fe46c41a0f44b1cdc64cf59e4000b7e20af3edbde8695b5c1350fe044123f02f6ba1f2b50f435bd1e12c5587a21be3cf77f078060a2029a943f8da6d9f9395",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "kidLKymU": {
+      "title": "YUNG's Better Strongholds",
+      "version": "1.21.1-NeoForge-5.1.3",
+      "version_id": "8U0dIfSM",
+      "filename": "YungsBetterStrongholds-1.21.1-NeoForge-5.1.3.jar",
+      "sha512": "385d67e07f2c67af5ea387d92d92949d8f671e8f99204457b6396dbe987ac3b14c2bff765df5fcbaa68016604f82a1fc6ec5a69c012ca22ad088d1a7c9bc135d",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "l6YH9Als": {
+      "title": "spark",
+      "version": "1.10.124-neoforge-1.21.1",
+      "version_id": "v5qtqRQi",
+      "filename": "spark-1.10.124-neoforge.jar",
+      "sha512": "f86ce34f2759c69df82578c397ff55b666c84626229a98f598458b960c21b38c95d6bfef4772af7f963c4f4868e5e2d9aef6b99c1d51bab55bf45e0e6e6b5ed4",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "nU0bVIaL": {
+      "title": "Patchouli",
+      "version": "1.21.1-93-neoforge",
+      "version_id": "BIogJv2D",
+      "filename": "Patchouli-1.21.1-93-NEOFORGE.jar",
+      "sha512": "0b5c172db9a6eeecb5ca44b359a83548c3a60be7ff313959acdfc1e5b8039736c18e57e947d435b52d06da31159d2d02ea36e5742668dbc826308a4c99e4039f",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "nmDcB62a": {
+      "title": "ModernFix",
+      "version": "5.27.27+mc1.21.1",
+      "version_id": "ZDZENbHH",
+      "filename": "modernfix-neoforge-5.27.27+mc1.21.1.jar",
+      "sha512": "af14a35e51f1c5d94139c6225ae641e8b0ded5a8c68eb4806cf28025d6c043455ac289902cd6b854a867320ab845ad619b186d02b8341822faf03f4476dec555",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "nmoqTijg": {
+      "title": "Sophisticated Core",
+      "version": "1.21.1-1.5.31.2460",
+      "version_id": "jo2tOOfF",
+      "filename": "sophisticatedcore-1.21.1-1.5.31.2460.jar",
+      "sha512": "f4b5a00864b17c0b1ebb3de22cd4e759b015b79b1cc6f9644545aed0c1bef1471680711de59cac486eac4c1562b0c8eb4b688a26a5fd07b1dbc5983b25057d03",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "nvQzSEkH": {
+      "title": "Jade 🔍",
+      "version": "15.10.6+neoforge",
+      "version_id": "eYz2YBGT",
+      "filename": "Jade-1.21.1-NeoForge-15.10.6.jar",
+      "sha512": "dad9755dce8d85d914fc4df2baa0211f13e5839a71c1925fdd01f69081a95e30a2934e6273f8b01f0169adebe7a9dae57a8d904de0c4cb36dc17369bb474f0f2",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "o1C1Dkj5": {
+      "title": "YUNG's Better Dungeons",
+      "version": "1.21.1-NeoForge-5.1.4",
+      "version_id": "D6aZn0Em",
+      "filename": "YungsBetterDungeons-1.21.1-NeoForge-5.1.4.jar",
+      "sha512": "40513bacd13fa9860abcab507b1fc09dc51649af4b615ce466e0ec361557f02d35e6e44bea1cc17cb4120805f862aad01394eb185f46611e7be63dfd97f272df",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "ordsPcFz": {
+      "title": "Kotlin for Forge",
+      "version": "5.12.0",
+      "version_id": "uhJhCT7X",
+      "filename": "kotlinforforge-5.12.0-all.jar",
+      "sha512": "b8c3942f4d33179edf3f102f3d870b99dd436f8b8236dbbd31aa51b888162c692cfd88927295f24dc8b4375232f4c6c17360c5d6c4823f93cbcd7cf4bdc8bd14",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "pL8MtgqY": {
+      "title": "Apothic-Enchanting",
+      "version": "1.21.1-1.6.4",
+      "version_id": "JAQJkLJ1",
+      "filename": "ApothicEnchanting-1.21.1-1.6.4.jar",
+      "sha512": "b560ed61810030472c42fa39e6199b1db07c19baba8f78d98b44ab3e1d00a1bebff5f69942bd076fea9754f63940df920cfb19906073b77bcc459bb8d88575de",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "rOY9XqdO": {
+      "title": "Better Zoom",
+      "version": "3.1.1",
+      "version_id": "NwwnadOr",
+      "filename": "betterzoom-neoforge-1.21.1-3.1.1.jar",
+      "sha512": "53816cea32172548f9f1e97c4ba8864d66d25e2df08e547e4177b04578fc2dc1c1c9bc5ed77e4a872da3c9f35388f08df6480ce5f55873528c4d71315adb43c1",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "rqFWfVlz": {
+      "title": "Apotheosis",
+      "version": "1.21.1-8.9.0",
+      "version_id": "veL1ccTb",
+      "filename": "Apotheosis-1.21.1-8.9.0.jar",
+      "sha512": "b3022bc31f4e9f99d298c36486e09cad308d4aa87e2aa65a341809aeca41f0067e744086768884959036a46685d4c0babc4274600884ad8962fe9d080d8ef3ee",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "s4OWxYQQ": {
+      "title": "Iron's Spells 'n Spellbooks",
+      "version": "1.21.1-3.16.3",
+      "version_id": "slKLosTb",
+      "filename": "irons_spellbooks-1.21.1-3.16.3.jar",
+      "sha512": "fd782f98c6c59b193c4832f33775291d2a7e639e1e23dd47510bfb494d99d182bec1253566b9394f96c733a0d0108be34bd729614b82dc29e55e096fdeb96f5b",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "sOxnTLKl": {
+      "title": "Explosion Overhaul: A new level of destruction",
+      "version": "0.2.3.0-neoforge",
+      "version_id": "mxfQE01f",
+      "filename": "explosionoverhaul-0.2.3.0-neoforge.jar",
+      "sha512": "5d1428678e5cbfed79d61c2fc1afbca0414d78b387e2f2d5d6ef0e989dd71d5366d9d62a627f7c6a0ec532627c0e3fdd9914f88955a1efee65811bd392f96170",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "tCkE8p2N": {
+      "title": "Placebo",
+      "version": "1.21.1-9.9.4",
+      "version_id": "B5zbSVlT",
+      "filename": "Placebo-1.21.1-9.9.4.jar",
+      "sha512": "4f3a9c5974132f3638c262c56b0c2886df2bc58027c961aa11d06d0ae2e608b63f24f949b2f8c240989e2a1bfe303fd237c5f2d49269453ad6c2ff1f85f2c648",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "tIm2nV03": {
+      "title": "Immersive Engineering",
+      "version": "12.4.2-194",
+      "version_id": "uNRARSH2",
+      "filename": "ImmersiveEngineering-1.21.1-12.4.2-194.jar",
+      "sha512": "862523e84747a8b7eaa65f9b3c337fa832ef9efd0545c27f68e350e01f482c7a1242d0e4bdc2caff3d7eb033508b43a353fcd7150c9b544d0c05765ca2a551b3",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "tsc9D2wh": {
+      "title": "Burnt + Additions",
+      "version": "1.10.2",
+      "version_id": "mHVm4W0U",
+      "filename": "burnt-1.10.2-neoforge-1.21.1.jar",
+      "sha512": "94960aec96d8a21b78c57e441b9713861b780d36d72201f442ad0eccde975930c648d5d63f8206f98e56b04813fd6b0e44aabfa2b1cff1e6edcaeed5bfc76a64",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "u6dRKJwZ": {
+      "title": "Just Enough Items (JEI)",
+      "version": "19.64.0.455",
+      "version_id": "iv3KiVkE",
+      "filename": "jei-1.21.1-neoforge-19.64.0.455.jar",
+      "sha512": "fdd02e57ce4dcf20b69860a5ace1b97d9a771486241179cf9edfe71e30c69bb4003b046d0cce8d8c4913b9689f1d8b04cf0542b0b04a6cf0b3b0465f3bb11702",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "uXXizFIs": {
+      "title": "FerriteCore",
+      "version": "7.0.3-neoforge",
+      "version_id": "x7kQWVju",
+      "filename": "ferritecore-7.0.3-neoforge.jar",
+      "sha512": "19af89a2075bb10a63884fa853ebf84b02c79dc3242430ecdad056fd764fdcde367a7303276b329df01b0736e2ef264c5d80c7dc92c6aebd244f556a230bb417",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "uy4Cnpcm": {
+      "title": "Bookshelf",
+      "version": "21.1.81",
+      "version_id": "1sdJl7J1",
+      "filename": "bookshelf-neoforge-1.21.1-21.1.81.jar",
+      "sha512": "78d4577a8e8fbb241216968475dd73f5b9e5efeb7da802b18a4e6c290e49af6cb4a5676e9855d0d8ff3613f967812e4bd363bbb9196c17c954d19454f84b2214",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "vvuO3ImH": {
+      "title": "Curios API",
+      "version": "9.5.1+1.21.1",
+      "version_id": "yohfFbgD",
+      "filename": "curios-neoforge-9.5.1+1.21.1.jar",
+      "sha512": "5981a267686b744e7e3c227f78cbcd5267c14ac6979a28e814695f4589273998563147207fef4a5cdb7cdbdc39797cd95d9e4abadb55869f18e02a38d0654ae5",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "xv94TkTM": {
+      "title": "Controlling",
+      "version": "19.0.5",
+      "version_id": "FaNppCJJ",
+      "filename": "Controlling-neoforge-1.21.1-19.0.5.jar",
+      "sha512": "bd01b2a38a869ea38e5f2a8fcd601e67ea9b132b9883c6ae752bc35dff6e94f6d47b965e31c1ee5c2f6a1221653549680da779fcb5319d199aec261d221d179e",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "z3Aj5eOl": {
+      "title": "BuildCraft Community Edition",
+      "version": "8.0.23+1.21.1+neoforge",
+      "version_id": "BetMBINi",
+      "filename": "BuildCraft-Community-Edition-8.0.23+1.21.1+neoforge.jar",
+      "sha512": "445cfc5b02a478d381e038819d3cff216aa9f6e882c3db66eb65588b09006e79d209d7c1071c92f02f151dfec2cf1180b31ce8ff218527874738e55db240db8f",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    }
+  }
+}

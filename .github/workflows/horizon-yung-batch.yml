@@ -1,0 +1,90 @@
+name: Horizon YUNG structures batch data carry
+
+on:
+  push:
+    branches: ["experiment/horizon-port-lab"]
+    paths:
+      - ".github/workflows/horizon-yung-batch.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  carry-four-yung-mods:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source TechQuest .mrpack
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          run-id: 42372848633
+          path: source-artifact
+          github-token: ${{ github.token }}
+      - name: Discover .mrpack
+        run: |
+          set -euo pipefail
+          file="$(find source-artifact -type f -name '*.mrpack' -print -quit)"
+          test -n "$file"
+          echo "PACK_PATH=$GITHUB_WORKSPACE/$file" >> "$GITHUB_ENV"
+      - name: Fetch official Horizon upstream, pinned
+        uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build official port pack
+        run: cargo build -p horizon-port-pack --manifest-path upstream-horizon/Cargo.toml --release --locked
+      - name: Fetch and carry all four YUNG data candidates
+        run: |
+          set -euo pipefail
+          tool="$GITHUB_WORKSPACE/upstream-horizon/target/release/horizon-port-pack"
+          work="$GITHUB_WORKSPACE/horizon/out/yung-batch"
+          mkdir -p "$work"
+          "$tool" import "$PACK_PATH" "$work"
+          "$tool" inventory "$work"
+          # Slugs before downloading and NeoForge mod IDs after downloading are different.
+          "$tool" fetch "$work" yungs-better-dungeons yungs-better-strongholds yungs-better-mineshafts yungs-better-nether-fortresses
+          "$tool" inventory "$work" --offline
+          python - "$work/inventory.json" <<'PY'
+          import json, sys
+          rows = json.load(open(sys.argv[1], encoding="utf-8"))
+          ids = ("betterdungeons", "betterstrongholds", "bettermineshafts", "betterfortresses")
+          for ident in ids:
+              found = [r for r in rows if r.get("key") == ident]
+              if len(found) != 1 or not found[0].get("jar") or not found[0].get("info"):
+                  print("Detected YUNG records:", [(r.get("key"), r.get("path")) for r in rows if "yung" in str(r.get("path", "")).lower()])
+                  raise SystemExit("Missing internal mod ID with verified JAR: " + ident)
+          print("All 4 source JARs discovered by official Horizon inventory")
+          PY
+          "$tool" carry "$work" betterdungeons betterstrongholds bettermineshafts betterfortresses
+          for id in betterdungeons betterstrongholds bettermineshafts betterfortresses; do
+            carried="$work/mods/$id/carry"
+            test -d "$carried"
+            count="$(find "$carried" -type f | wc -l)"
+            test "$count" -gt 0
+            echo "$id: $count local staged files (NOT PUBLISHED)"
+          done
+          "$tool" report "$work"
+          test -s "$work/coverage.json"
+          for id in betterdungeons betterstrongholds bettermineshafts betterfortresses; do
+            grep -F "| $id |" "$work/coverage.md"
+          done
+      - name: Publish coverage only (no third-party binaries, textures or worldgen data)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-YUNG-4-Data-Mods-Coverage-ONLY
+          path: |
+            horizon/out/yung-batch/coverage.md
+            horizon/out/yung-batch/coverage.json
+            horizon/out/yung-batch/fetch.json
+          retention-days: 14
