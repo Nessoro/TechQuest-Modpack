@@ -1,0 +1,87 @@
+name: Horizon native server tools (build only)
+
+on:
+  push:
+    branches: ["experiment/horizon-port-lab"]
+    paths:
+      - ".github/workflows/horizon-native-runtime.yml"
+      - "horizon/tools/server_preflight.py"
+      - "horizon/tests/test_server_preflight.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-tools:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m unittest discover -s horizon/tests -v
+      - name: Checkout pinned official Horizon source
+        uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build headless engine, resource preparer, supervisor and control tool
+        working-directory: upstream-horizon
+        run: |
+          cargo build --profile fast --locked --no-default-features \
+            -p horizon-client --bin horizon-client \
+            -p horizon-prepare --bin horizon-prepare \
+            -p horizon-server --bin horizon-server \
+            -p horizon-client-lib --bin horizon-ctl
+      - name: Check executable startup without loading game resources
+        run: |
+          set -euo pipefail
+          mkdir native-tools
+          cp upstream-horizon/target/fast/horizon-client native-tools/horizon-engine
+          for tool in horizon-prepare horizon-server horizon-ctl; do
+            cp "upstream-horizon/target/fast/$tool" native-tools/
+          done
+          for tool in horizon-engine horizon-prepare horizon-server horizon-ctl; do
+            "native-tools/$tool" --help > "native-tools/$tool-help.txt"
+          done
+          native-tools/horizon-engine --launch-api > native-tools/launch-api.json
+          cp upstream-horizon/research-lock.json upstream-horizon/LICENSE native-tools/
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          base = Path('native-tools')
+          json.loads((base/'launch-api.json').read_text())
+          report = {
+              'schema': 1,
+              'upstream_commit': 'c78187dffffb60f31517eadcb87413386e8ce729',
+              'minecraft': '26.3',
+              'platform': 'linux-x86_64',
+              'profile': 'fast',
+              'default_features': False,
+              'executable_startup_tested': True,
+              'server_boot_tested': False,
+              'world_save_reopen_tested': False,
+              'combined_mod_load_tested': False,
+              'multiplayer_tested': False,
+              'minecraft_resources_included': False,
+              'sha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                         for p in base.iterdir() if p.name in
+                         ('horizon-engine', 'horizon-prepare', 'horizon-server', 'horizon-ctl')},
+          }
+          (base/'build-result.json').write_text(json.dumps(report, indent=2)+'\n')
+          PY
+          tar -czf TechQuest-Horizon-native-tools-Linux-BUILD-ONLY.tar.gz native-tools
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-native-tools-Linux-BUILD-ONLY
+          path: TechQuest-Horizon-native-tools-Linux-BUILD-ONLY.tar.gz
+          if-no-files-found: error
+          retention-days: 14
