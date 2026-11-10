@@ -61,7 +61,12 @@ class MicroPatchTests(unittest.TestCase):
             self.assertEqual(config["client"], ["BetterZoomEarlyTickMixin"])
             self.assertIn('config="techquest-compat.mixins.json"',
                           jar.read("META-INF/neoforge.mods.toml").decode())
-            self.assertTrue(jar.read(class_path).startswith(bytes.fromhex("cafebabe")))
+            compiled = jar.read(class_path)
+            self.assertTrue(compiled.startswith(bytes.fromhex("cafebabe")))
+            # SpongePowered Mixin @Mixin is retained in RuntimeInvisibleAnnotations
+            # (RetentionPolicy.CLASS), not RuntimeVisibleAnnotations.
+            self.assertIn(b"RuntimeInvisibleAnnotations", compiled)
+            self.assertIn(b"Lorg/spongepowered/asm/mixin/Mixin;", compiled)
 
     def test_global_apotheosis_commands_and_persistent_scoreboard(self):
         with zipfile.ZipFile(io.BytesIO(starter_datapack())) as z:

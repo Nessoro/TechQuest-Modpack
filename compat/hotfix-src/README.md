@@ -20,3 +20,10 @@ The Mixin is registered in `compat/techquest-compat/META-INF/neoforge.mods.toml`
 as `techquest-compat.mixins.json`. Do not update Better Zoom without
 revalidating the target method and real client startup. A menu-only
 smoke test cannot prove in-game zoom behavior or keyboard conflict freedom.
+
+**Important annotation retention:** SpongePowered `@Mixin` uses
+`RetentionPolicy.CLASS` and must be encoded as a
+`RuntimeInvisibleAnnotations` class attribute. `@Inject` and `@At` remain
+`RetentionPolicy.RUNTIME`. An earlier stub compile accidentally used RUNTIME
+for `@Mixin`, leading to the observable “missing an @Mixin annotation”
+error at launch. The checked-in class uses the correct invisible annotation.
