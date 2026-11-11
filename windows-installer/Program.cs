@@ -300,9 +300,18 @@ internal sealed class InstallerForm : Form
                 new Uri("https://cdn.modrinth.com/data/example.jar"),
                 Convert.ToHexString(SHA512.HashData(sample)), null, sample.Length);
             if (!IsVerifiedLocalJar(sampleMod, cacheTest)) return 24;
+            string cacheStage = Path.Combine(probe, "cached-stage");
+            Directory.CreateDirectory(cacheStage);
+            if (!TryReuseVerifiedJar(sampleMod, probe, Path.Combine(probe, "missing-backup"), cacheStage) ||
+                !IsVerifiedLocalJar(sampleMod, Path.Combine(cacheStage, sampleMod.Name))) return 26;
+            File.Delete(Path.Combine(cacheStage, sampleMod.Name));
             File.WriteAllBytes(cacheTest, Encoding.UTF8.GetBytes("tampered-existing-jar"));
             if (IsVerifiedLocalJar(sampleMod, cacheTest)) return 25;
+            if (TryReuseVerifiedJar(sampleMod, probe, Path.Combine(probe, "missing-backup"), cacheStage)) return 27;
+            Directory.Delete(cacheStage, recursive: true);
+            File.Delete(cacheTest);
             Directory.Delete(updateProbe, recursive: true);
+            Directory.Delete(probe, recursive: true);
             return 0;
         }
         catch { return 5; }
