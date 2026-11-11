@@ -300,7 +300,7 @@ internal sealed class InstallerForm : Form
                 new Uri("https://cdn.modrinth.com/data/example.jar"),
                 Convert.ToHexString(SHA512.HashData(sample)), null, sample.Length);
             if (!IsVerifiedLocalJar(sampleMod, cacheTest)) return 24;
-            File.WriteAllBytes(cacheTest, Encoding.UTF8.GetBytes("invalid-existing-jar"));
+            File.WriteAllBytes(cacheTest, Encoding.UTF8.GetBytes("tampered-existing-jar"));
             if (IsVerifiedLocalJar(sampleMod, cacheTest)) return 25;
             Directory.Delete(updateProbe, recursive: true);
             return 0;
