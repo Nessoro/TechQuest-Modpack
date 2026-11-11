@@ -291,6 +291,17 @@ internal sealed class InstallerForm : Form
             if (!File.Exists(Path.Combine(updateProbe, "mods", "fresh.jar")) ||
                 File.Exists(Path.Combine(updateProbe, "mods", "failed.jar")) ||
                 File.ReadAllText(Path.Combine(updateProbe, "options.txt")) != "controls") return 23;
+            // Caching is only allowed after checking BOTH file size and SHA;
+            // stale or tampered JARs are never reused.
+            byte[] sample = Encoding.UTF8.GetBytes("verified-existing-jar");
+            string cacheTest = Path.Combine(probe, "cache-test.jar");
+            File.WriteAllBytes(cacheTest, sample);
+            var sampleMod = new ModFile("cache-test.jar",
+                new Uri("https://cdn.modrinth.com/data/example.jar"),
+                Convert.ToHexString(SHA512.HashData(sample)), null, sample.Length);
+            if (!IsVerifiedLocalJar(sampleMod, cacheTest)) return 24;
+            File.WriteAllBytes(cacheTest, Encoding.UTF8.GetBytes("invalid-existing-jar"));
+            if (IsVerifiedLocalJar(sampleMod, cacheTest)) return 25;
             Directory.Delete(updateProbe, recursive: true);
             return 0;
         }
@@ -355,6 +366,49 @@ internal sealed class InstallerForm : Form
         return output;
     }
 
+    private static bool IsVerifiedLocalJar(ModFile file, string path)
+    {
+        if (!File.Exists(path) || new FileInfo(path).Length != file.Size)
+            return false;
+        try
+        {
+            if (file.Sha512 is not null)
+            {
+                using var sha = SHA512.Create();
+                using var stream = File.OpenRead(path);
+                if (!sha.ComputeHash(stream).AsSpan().SequenceEqual(Convert.FromHexString(file.Sha512)))
+                    return false;
+            }
+            if (file.Sha1 is not null)
+            {
+                using var sha = SHA1.Create();
+                using var stream = File.OpenRead(path);
+                if (!sha.ComputeHash(stream).AsSpan().SequenceEqual(Convert.FromHexString(file.Sha1)))
+                    return false;
+            }
+            return file.Sha512 is not null || file.Sha1 is not null;
+        }
+        catch (IOException) { return false; }
+        catch (UnauthorizedAccessException) { return false; }
+    }
+
+    private static bool TryReuseVerifiedJar(ModFile file, string existingMods,
+                                             string previousMods, string staging)
+    {
+        foreach (string folder in new[] { existingMods, previousMods })
+        {
+            string candidate = Path.Combine(folder, file.Name);
+            if (!IsVerifiedLocalJar(file, candidate))
+                continue;
+            string destination = Path.Combine(staging, file.Name);
+            File.Copy(candidate, destination, overwrite: true);
+            if (IsVerifiedLocalJar(file, destination))
+                return true;
+            File.Delete(destination);
+        }
+        return false;
+    }
+
     private static async Task DownloadCheckedAsync(ModFile file, string destination, CancellationToken token)
     {
         using var response = await Client.GetAsync(file.Url, HttpCompletionOption.ResponseHeadersRead, token);
@@ -362,21 +416,27 @@ internal sealed class InstallerForm : Form
         await using (var input = await response.Content.ReadAsStreamAsync(token))
         await using (var output = File.Create(destination))
             await input.CopyToAsync(output, token);
-        var info = new FileInfo(destination);
-        if (info.Length != file.Size) throw new InvalidDataException("Неверный размер " + file.Name);
-        if (file.Sha512 is not null)
+        if (!IsVerifiedLocalJar(file, destination))
+            throw new InvalidDataException("Размер или SHA не совпадает: " + file.Name);
+    }
+
+    // Bound retries for temporary CDN/routing problems; do not alter pinned URLs or hashes.
+    private static async Task DownloadWithRetryAsync(ModFile file, string destination, CancellationToken token)
+    {
+        for (int attempt = 1; attempt <= 3; attempt++)
         {
-            using var sha = SHA512.Create();
-            using var stream = File.OpenRead(destination);
-            if (!sha.ComputeHash(stream).AsSpan().SequenceEqual(Convert.FromHexString(file.Sha512)))
-                throw new InvalidDataException("Ошибка SHA-512 у " + file.Name);
-        }
-        if (file.Sha1 is not null)
-        {
-            using var sha = SHA1.Create();
-            using var stream = File.OpenRead(destination);
-            if (!sha.ComputeHash(stream).AsSpan().SequenceEqual(Convert.FromHexString(file.Sha1)))
-                throw new InvalidDataException("Ошибка SHA-1 у " + file.Name);
+            token.ThrowIfCancellationRequested();
+            try
+            {
+                await DownloadCheckedAsync(file, destination, token);
+                return;
+            }
+            catch (Exception ex) when (attempt < 3 &&
+                  (ex is HttpRequestException || ex is IOException || ex is InvalidDataException))
+            {
+                if (File.Exists(destination)) File.Delete(destination);
+                await Task.Delay(TimeSpan.FromMilliseconds(650 * attempt * attempt), token);
+            }
         }
     }
 
@@ -601,14 +661,35 @@ internal sealed class InstallerForm : Form
             progress.Minimum = 0;
             progress.Maximum = list.Count;
             progress.Value = 0;
-            for (int n = 0; n < list.Count; n++)
+            int completed = 0, reused = 0, downloaded = 0;
+            // Progress<T> marshals events to WinForms' UI synchronization context.
+            IProgress<(int done, string name, bool reused)> updates =
+                new Progress<(int done, string name, bool reused)>(item =>
+                {
+                    progress.Value = Math.Min(item.done, list.Count);
+                    status.Text = $"Готово {item.done}/{list.Count}: {item.name}" +
+                                  (item.reused ? " (из локальных файлов)" : " (скачано)");
+                });
+            // A handful of concurrent downloads is faster for many small JARs
+            // without overwhelming the Modrinth CDN or saturating slow links.
+            await Parallel.ForEachAsync(list, new ParallelOptions
             {
-                cancellation.Token.ThrowIfCancellationRequested();
-                var mod = list[n];
-                status.Text = $"Проверенная загрузка {n + 1}/{list.Count}: {mod.Name}";
-                await DownloadCheckedAsync(mod, Path.Combine(staging, mod.Name), cancellation.Token);
-                progress.Value = n + 1;
-            }
+                MaxDegreeOfParallelism = 5,
+                CancellationToken = cancellation.Token
+            }, async (mod, token) =>
+            {
+                string destination = Path.Combine(staging, mod.Name);
+                bool fromCache = TryReuseVerifiedJar(mod, mods,
+                    Path.Combine(target, ".techquest-previous-mods"), staging);
+                if (fromCache)
+                    Interlocked.Increment(ref reused);
+                else
+                {
+                    await DownloadWithRetryAsync(mod, destination, token);
+                    Interlocked.Increment(ref downloaded);
+                }
+                updates.Report((Interlocked.Increment(ref completed), mod.Name, fromCache));
+            });
             // The unchanged filename previously kept an outdated Better Zoom
             // startup fix. Stage the NEW first-party JAR, not the old copy.
             StageFirstPartyCompatibilityJar(staging);
@@ -624,7 +705,7 @@ internal sealed class InstallerForm : Form
                     Encoding.UTF8);
             });
             installedGameDir = target;
-            status.Text = $"TechQuest обновлён: {list.Count} проверенных модов. Профиль Launcher не меняется.";
+            status.Text = $"TechQuest: {list.Count} модов, из локальных файлов {reused}, скачано {downloaded}. Профиль Launcher не меняется.";
             MessageBox.Show(this,
                 (updating ? "TechQuest обновлён в существующей папке!\n\n" :
                              "TechQuest установлен!\n\n") +
