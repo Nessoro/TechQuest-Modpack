@@ -354,6 +354,9 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/fix/micropatch-storage-ultimine-worldtier-033'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: techquest-preview-release
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:
@@ -373,6 +376,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          # Prevent an older successful CI run from replacing a newer preview.
+          CURRENT=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/fix/micropatch-storage-ultimine-worldtier-033" --jq '.object.sha')
+          if [ "$CURRENT" != "$GITHUB_SHA" ]; then
+            echo "Skipping outdated candidate $GITHUB_SHA; branch moved to $CURRENT" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           test -s public/TechQuestInstaller.exe
           test -s public/pack/TechQuest_1.21.1_0.3.3_ALPHA.mrpack
           cp public/pack/TechQuest_1.21.1_0.3.3_ALPHA.mrpack public/TechQuest_Optimized.mrpack
