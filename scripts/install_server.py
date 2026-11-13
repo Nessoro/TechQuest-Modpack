@@ -68,11 +68,13 @@ def prepare_properties(target):
             "allow-flight=true\n", encoding="utf-8")
 
 def install_compatibility(pack_path, mods):
-    """Keep the existing verified server-side Superb Warfare patch.
-
-    Historical method name is retained for callers; neither TechQuest-made JAR
-    is installed. This routine does not modify other official mod binaries.
-    """
+    """Install TechQuest Compatibility JAR and preserve the Superb Warfare server workaround."""
+    with zipfile.ZipFile(pack_path) as archive:
+        name = packbuilder.COMPAT_JAR_NAME
+        entry = "overrides/mods/" + name
+        if entry not in archive.namelist():
+            raise packbuilder.BuildError("Missing TechQuest Compatibility JAR: " + name)
+        (mods / name).write_bytes(archive.read(entry))
     for path in mods.glob("superbwarfare-*.jar"):
         packbuilder.patch_superb_server_jar(path)
 
