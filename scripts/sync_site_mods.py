@@ -63,8 +63,14 @@ NAMES = {
     "sophisticated-storage": "Sophisticated Storage",
     "architectury-api": "Architectury API",
     "lithium": "Lithium",
+    "trash-cans": "Trash Cans",
+    "pretty-pipes": "Pretty Pipes",
+    "colossal-reactors": "Colossal Reactors",
 }
 DESCRIPTIONS = {
+    "trash-cans": "Мусорки для предметов, жидкостей и энергии с фильтрами; удаляют содержимое, подключаются к трубам.",
+    "pretty-pipes": "Транспортировка предметов и блоков как вещей по трубам без двигателей, маршрутизация и фильтры.",
+    "colossal-reactors": "Большой многоблочный ядерный реактор из семейства FTB Evolution 2; топливо, тепло, турбины и производство энергии.",
     "aquamirae": "Океанские структуры, существа и босс в общей тестовой 0.3.3; игровые механики ещё требуют проверки.",
     "fragmentum": "Обязательная библиотека Aquamirae, версия 5.4.0.",
     "better-zoom": "Клиентский зум Z + колесо с плавным возвратом FOV.",
