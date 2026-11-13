@@ -1,3 +1,7 @@
+# Micro2: обновление в прежней папке
+
+Для следующего тестового обновления используйте публичный предрелиз [v0.3.3-micro2-preview](https://github.com/Nessoro/TechQuest-Modpack/releases/tag/v0.3.3-micro2-preview) **только после его публикации по успешному CI**. Миры и пользовательские настройки сохраняются, Project MMO заменён на TechQuest RPG Core. [Подробная инструкция](MICROPATCH_MICRO2_RU.md).
+
 # TechQuest 0.3.3-alpha: установка на Windows 11
 
 Это **кандидат для тестирования**, не стабильный релиз. Minecraft Java **1.21.1**, **NeoForge 21.1.264**, **Java 21**, один профиль Optimized. Клиенту не нужны Python, Docker, Prism Launcher и консоль.
