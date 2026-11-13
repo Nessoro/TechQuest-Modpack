@@ -59,7 +59,7 @@ def install_guide_overrides(archive, game_dir):
         if relative.endswith("/"):
             continue
         if not (relative.startswith(allowed_prefix)
-                or relative in (*allowed_datapacks,
+                or relative in (*allowed_datapacks, "mods/techquest-compat-1.0.0.jar",
                                 "options.txt", "TECHQUEST_OPTIMIZED.txt",
                                 "config/physicsmod/physics_client_config.json",
                                 "config/physicsmod/physics_server_config.json",
