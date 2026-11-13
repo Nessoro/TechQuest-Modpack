@@ -190,9 +190,9 @@ internal sealed class InstallerForm : Form
             if (archive.GetEntry("overrides/patchouli_books/techquest_guide/book.json") is null ||
                 archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null ||
                 archive.GetEntry("overrides/config/openloader/packs/techquest_micropatch_033.zip") is null ||
-                 archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null ||
-                 archive.GetEntry("overrides/mods/techquest-rpg-core-0.1.0.jar") is null ||
-                 fileNames.Any(n => n.StartsWith("pmmo-", StringComparison.OrdinalIgnoreCase)))
+                 fileNames.Any(n => n.StartsWith("pmmo-", StringComparison.OrdinalIgnoreCase)) ||
+                 archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is not null ||
+                 archive.GetEntry("overrides/mods/techquest-rpg-core-0.1.0.jar") is not null)
                 return 7;
             string probe = Path.Combine(Path.GetTempPath(), "TechQuest-self-test-" + Guid.NewGuid().ToString("N"));
             try
@@ -457,8 +457,6 @@ internal sealed class InstallerForm : Form
                 relative.StartsWith("patchouli_books/techquest_guide/", StringComparison.Ordinal) ||
                 relative == "config/openloader/packs/techquest_starter_guide.zip" ||
                 relative == "config/openloader/packs/techquest_micropatch_033.zip" ||
-                 relative == "mods/techquest-compat-1.0.0.jar" ||
-                 relative == "mods/techquest-rpg-core-0.1.0.jar" ||
                 relative == "TECHQUEST_INGAME_GUIDE.txt" ||
                 relative == "options.txt" ||
                 relative == "config/physicsmod/physics_client_config.json" ||
@@ -604,25 +602,6 @@ internal sealed class InstallerForm : Form
         }
     }
 
-    private static void StageFirstPartyCompatibilityJar(string staging)
-    {
-        // Always stage updated first-party JARs from the verified embedded pack.
-        // This replaces PMMO when an existing micro1 profile is updated.
-        using var pack = GetEmbeddedPack();
-        using var archive = new ZipArchive(pack, ZipArchiveMode.Read);
-        foreach (var filename in new[] { "techquest-compat-1.0.0.jar",
-                                         "techquest-rpg-core-0.1.0.jar" })
-        {
-            var item = archive.GetEntry("overrides/mods/" + filename)
-                ?? throw new InvalidDataException("Встроенный TechQuest JAR отсутствует: " + filename);
-            if (item.Length < 64 || item.Length > 8 * 1024 * 1024)
-                throw new InvalidDataException("Некорректный размер TechQuest JAR: " + filename);
-            using var input = item.Open();
-            using var output = File.Create(Path.Combine(staging, filename));
-            input.CopyTo(output);
-        }
-    }
-
     private async Task InstallAsync()
     {
         string target = Path.GetFullPath(location.Text);
@@ -697,14 +676,13 @@ internal sealed class InstallerForm : Form
                 updates.Report((Interlocked.Increment(ref completed), mod.Name, fromCache));
             });
             // The unchanged filename previously kept an outdated Better Zoom
-            // startup fix. Stage the NEW first-party JAR, not the old copy.
-            StageFirstPartyCompatibilityJar(staging);
+            // No custom TechQuest JARs are added in micro3.
             cancellation.Token.ThrowIfCancellationRequested();
             ActivateStagedMods(target, staging, () =>
             {
                 InstallGuideOverrides(target); // existing saves/config/options are untouched
                 File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
-                    "TechQuest 0.3.3-micro2\n" +
+                    "TechQuest 0.3.3-micro3\n" +
                     "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +
                     "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +
                     target + "\nJava 21. Не используйте ванильный профиль.\n",
