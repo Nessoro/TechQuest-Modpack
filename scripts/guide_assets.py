@@ -224,16 +224,14 @@ def starter_datapack():
     return output.getvalue()
 
 def micro_patch_datapack():
-    """Additive Open Loader datapack: disable PMMO Vein Mining and sync Apotheosis tiers.
+    """Additive Open Loader datapack: sync Apotheosis tiers without PMMO.
     Separate from the starter guide so upgrading older TechQuest installs does
     not require overwriting any existing starter guide or player config.
     """
     data = {"pack.mcmeta": _json({
-        "pack": {"pack_format": 48, "description": "TechQuest micro1: server PMMO + Apotheosis tiers"}
+        "pack": {"pack_format": 48, "description": "TechQuest micro2: shared Apotheosis tiers"}
     })}
-    # Server-side Project MMO config: preserve skills, disable duplicate vein miner.
-    # This is a complete CODEC config because its fields are required.
-    data['data/pmmo/config/server.json'] = _json(json.loads("{\"general\":{\"creative_reach\":50,\"salvage_block\":\"minecraft:smithing_table\",\"treasure_enabled\":true,\"brewing_tracked\":true},\"levels\":{\"max_level\":1523,\"static_levels\":[-1],\"loss_on_death\":0.05,\"lose_only_excess\":true,\"global_modifier\":1,\"skill_modifiers\":{\"example_skill\":1},\"xp_min\":200,\"xp_base\":1.025,\"xp_per_level\":1.1},\"requirements\":{\"requirement_enabled\":{}},\"xp_gains\":{\"reuse_penalty\":0,\"perks_plus_config\":false,\"player_actions\":{\"JUMP\":{\"agility\":2.5},\"SPRINT_JUMP\":{\"agility\":2.5},\"CROUCH_JUMP\":{\"agility\":2.5},\"BREATH_CHANGE\":{\"endurance\":1},\"HEALTH_INCREASE\":{\"endurance\":1},\"HEALTH_DECREASE\":{\"endurance\":1},\"SPRINTING\":{\"agility\":2},\"SUBMERGED\":{\"swimming\":1},\"SWIMMING\":{\"swimming\":1},\"DIVING\":{\"swimming\":1},\"SURFACING\":{\"swimming\":1},\"SWIM_SPRINTING\":{\"swimming\":1}},\"damage\":{\"DEAL_DAMAGE\":{\"minecraft:generic_kill\":{\"combat\":1},\"minecraft:player_attack\":{\"combat\":1},\"#minecraft:is_projectile\":{\"archery\":1},\"#pmmo:magic\":{\"magic\":15},\"#pmmo:gun\":{\"gunslinging\":1}},\"RECEIVE_DAMAGE\":{\"minecraft:generic_kill\":{\"endurance\":1},\"#pmmo:environment\":{\"endurance\":10},\"#pmmo:impact\":{\"endurance\":15},\"#pmmo:magic\":{\"magic\":15},\"#minecraft:is_projectile\":{\"endurance\":15}},\"MITIGATE_DAMAGE\":{\"minecraft:generic_kill\":{\"endurance\":10},\"#pmmo:environment\":{\"endurance\":100},\"#pmmo:impact\":{\"endurance\":150},\"#pmmo:magic\":{\"magic\":150},\"#minecraft:is_projectile\":{\"endurance\":150}}}},\"party\":{\"party_range\":50,\"party_bonus\":{\"combat\":1.05,\"endurance\":1.1}},\"mob_scaling\":{\"mob_scale_enabled\":false,\"scaling_aoe\":150,\"mob_scale_base_level\":0,\"boss_scaling\":1.1,\"use_exponential_formula\":true,\"mob_scale_per_level\":1,\"mob_scale_power_base\":1.104088404342588,\"ratios\":{}},\"vein_miner\":{\"vein_enabled\":false,\"require_settings\":false,\"default_consume\":1,\"charge_modifier\":1,\"blacklist\":[\"silentgear:saw\"]}}"))
+    # PMMO removed in micro2: World Tier remains, no PMMO server configuration.
     # Server-global World Tier: scoreboard persists across world restarts.
     data['data/minecraft/tags/function/load.json'] = _json({'values': ['techquest:worldtier/load']})
     data['data/minecraft/tags/function/tick.json'] = _json({'values': ['techquest:worldtier/tick']})
