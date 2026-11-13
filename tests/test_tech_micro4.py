@@ -14,7 +14,7 @@ DEPENDENCIES = {
     "LN9BxssP": ("qKL9jM75", "optional", "optional"),
     "rOUBggPv": ("sLRKmslC", "required", "required"),
     "y16HgCOF": ("TqPQSxui", "required", "required"),
-    "p19vrgc2": ("AYDaLPK8", "required", "unsupported"),
+    "p19vrgc2": ("AYDaLPK8", "required", "required"),
 }
 
 
@@ -46,8 +46,10 @@ class TechnologyExpansionTests(unittest.TestCase):
                 self.assertEqual(lock["environment"], {"client": client, "server": server})
                 self.assertEqual(len(lock["sha512"]), 128)
                 self.assertTrue(lock["filename"].endswith(".jar"))
-        self.assertNotIn("p19vrgc2", {k for k,v in self.lock.items()
-                                    if k == "p19vrgc2" and v["environment"]["server"] != "unsupported"})
+        self.assertIn("fusion-connected-textures", self.mods)
+        self.assertTrue(self.mods["fusion-connected-textures"]["required"])
+        self.assertEqual(self.mods["fusion-connected-textures"]["environment"],
+                         {"client": "required", "server": "required"})
 
     def test_original_core_preserved_and_experimental_solar_not_installed(self):
         for slug in ("buildcraft-community-edition", "create", "mekanism",
