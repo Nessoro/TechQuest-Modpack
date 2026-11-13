@@ -56,6 +56,7 @@ class AdventureRebalanceTests(unittest.TestCase):
                 self.assertEqual(m["version_prefix"], "0.4.3+mc1.21.1")
 
     def test_gameplay_genre_distribution(self):
+        # Micro4 explicitly adds two technologies and one logistics QoL item.
         counts = Counter(m["group"] for m in self.cfg["mods"])
         counts.update(m.get("group", "Технологии") for m in self.cfg.get("manual_mods", []))
         counts.update(m.get("group", "Военная техника") for m in self.cfg.get("external_mods", []))
@@ -65,9 +66,9 @@ class AdventureRebalanceTests(unittest.TestCase):
         exploration = sum(counts[g] for g in EXPLORATION)
         military = sum(counts[g] for g in MILITARY)
         total = tech + adventure + exploration + military
-        self.assertEqual((tech, adventure, exploration, military), (12, 20, 5, 6))
-        self.assertEqual(total, 43)
-        self.assertLess(tech / total, 0.30)
+        self.assertEqual((tech, adventure, exploration, military), (14, 20, 6, 6))
+        self.assertEqual(total, 46)
+        self.assertLess(tech / total, 0.32)
         self.assertGreater((adventure + exploration) / total, 0.55)
 
     def test_documentation_for_exploration(self):
