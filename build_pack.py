@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parent
 API = "https://api.modrinth.com/v2"
 UA = "TechQuest-Modpack/0.1 (modpack installer)"
 MAX_DOWNLOAD = 256 * 1024 * 1024
+COMPAT_JAR_NAME = "techquest-compat-1.0.0.jar"
 
 class BuildError(Exception):
     pass
@@ -312,6 +313,23 @@ def external_records(cfg):
     return records
 
 
+def compatibility_jar():
+    """Package our data-only NeoForge mod; no third-party binary is embedded."""
+    import io
+    source = ROOT / "compat" / "techquest-compat"
+    if not (source / "META-INF" / "neoforge.mods.toml").is_file():
+        raise BuildError("Missing TechQuest compatibility resources")
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(source.rglob("*")):
+            if path.is_file():
+                # Fixed timestamps make repeated builds byte-identical.
+                info = zipfile.ZipInfo(path.relative_to(source).as_posix(), (2026, 1, 1, 0, 0, 0))
+                info.compress_type = zipfile.ZIP_DEFLATED
+                archive.writestr(info, path.read_bytes())
+    return buffer.getvalue()
+
+
 def patch_superb_server_jar(path):
     """Remove a client mixin from SBW 0.8.9.2's common list, on servers only.
 
@@ -464,6 +482,7 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
                 safe_filename(local_mod["file_name"])
             archive.writestr("overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                              json.dumps(local_mods, ensure_ascii=False, indent=2) + "\n")
+        archive.writestr("overrides/mods/" + COMPAT_JAR_NAME, compatibility_jar())
     return len(files)
 
 
@@ -521,6 +540,7 @@ def main():
         expected = {rec["filename"] for rec in resolved if rec["environment"][side] != "unsupported"}
         expected.update(local["filename"] for local in manual)
         expected.update(extra["filename"] for extra in external)
+        expected.add(COMPAT_JAR_NAME)
         remove_stale_generated_jars(directory, expected)
     for rec in resolved:
         env = rec["environment"]
@@ -537,6 +557,9 @@ def main():
     for extra in external:
         (client / extra["filename"]).write_bytes(extra["data"])
         (server / extra["filename"]).write_bytes(extra["data"])
+    compat_bytes = compatibility_jar()
+    for directory in (client, server):
+        (directory / COMPAT_JAR_NAME).write_bytes(compat_bytes)
     for jar in server.glob("superbwarfare-*.jar"):
         patch_superb_server_jar(jar)
     if client_options(cfg):
