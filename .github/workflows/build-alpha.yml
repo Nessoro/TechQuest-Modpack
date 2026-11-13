@@ -78,6 +78,26 @@ jobs:
               assert not any(row["path"].startswith("mods/pmmo-") for row in index)
           print("micro3: Compatibility retained, RPG Core and PMMO excluded")
           PY
+      - name: Confirm micro4 client/server JARs and correct dependency sides
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import build_pack
+          cfg = build_pack.load_cfg()
+          mods = cfg["modrinth_lock"]
+          pair = ("4QrnfueM", "LN9BxssP", "rOUBggPv", "XExdLWCQ",
+                  "x18RjbsF", "y16HgCOF", "p19vrgc2")
+          for project_id in pair:
+              x = mods[project_id]
+              for side in ("client", "server"):
+                  f = Path("output") / side / "mods" / x["filename"]
+                  expected = x["environment"][side] != "unsupported"
+                  assert f.is_file() == expected, (
+                      side, project_id, x["filename"], "expected" if expected else "unexpected")
+          assert (Path("output") / "client/mods/techquest-compat-1.0.0.jar").exists()
+          assert not (Path("output") / "client/mods/techquest-rpg-core-0.1.0.jar").exists()
+          print("micro4: 3 mods + 4 dependencies, correct NeoForge client/server sides")
+          PY
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
       - uses: actions/setup-java@v4
