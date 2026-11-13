@@ -22,6 +22,11 @@ KINDS = {"worldgen", "dimension", "dimension_type", "structure"}
 DOCUMENTATION_BIOME = "terralith:comment_dont_generate_strips_here"
 PUMPKIN = "minecraft:patch_pumpkin"
 CANE = "minecraft:patch_sugar_cane"
+# Vanilla 1.21.1 TrunkPlacer.isDirt after binding its original dirt tag.
+# The 26.3 dirt tag has different members, so using that tag changes behavior.
+LEGACY_TREE_SOILS = ("minecraft:dirt", "minecraft:coarse_dirt", "minecraft:podzol",
+                     "minecraft:muddy_mangrove_roots", "minecraft:moss_block",
+                     "minecraft:rooted_dirt", "minecraft:mud")
 
 
 def expand(value):
@@ -126,11 +131,56 @@ def normalize_marker(value):
     return result, count
 
 
+def normalize_trees(value):
+    """Preserve legacy soil replacement using the optional below-trunk provider.
+
+    A non-forced tree samples dirt_provider only when the existing block is
+    not one of the original seven soils. No fallback means no write/sample.
+    """
+    if isinstance(value, list):
+        pairs = [normalize_trees(v) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: normalize_trees(v) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    if value.get("type") not in ("tree", "minecraft:tree"):
+        return result, count
+    config = result.get("config", result)
+    if not isinstance(config, dict):
+        raise ValueError("expected a tree configuration object")
+    if "dirt_provider" not in config:
+        return result, count
+    if "below_trunk_provider" in config:
+        raise ValueError("tree has both legacy and current soil providers")
+    provider = config["dirt_provider"]
+    if (not isinstance(provider, dict) or set(provider) != {"type", "state"}
+            or provider["type"] not in ("simple_state_provider", "minecraft:simple_state_provider")):
+        raise ValueError("review a non-simple legacy tree dirt provider")
+    force = config.get("force_dirt", False)
+    if not isinstance(force, bool):
+        raise ValueError("expected boolean force_dirt")
+    below = provider if force else {
+        "type": "minecraft:rule_based", "rules": [{
+            "if_true": {"type": "minecraft:not", "predicate": {
+                "type": "minecraft:matching_blocks", "blocks": list(LEGACY_TREE_SOILS)}},
+            "then": provider}]}
+    config = {k: v for k, v in config.items() if k not in ("dirt_provider", "force_dirt")}
+    config["below_trunk_provider"] = below
+    return ({**result, "config": config} if "config" in result else config), count + 1
+
+
 def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = None) -> dict:
     if output.exists() or output.is_symlink():
         raise ValueError("output must be a new directory; existing worlds are never modified")
     if any((parent / "level.dat").exists() for parent in output.resolve().parents):
         raise ValueError("stage outside an existing world, then review before installation")
+    if any((parent / "horizon-resources.json").exists() for parent in output.resolve().parents):
+        raise ValueError("stage outside prepared game resources")
+    for origin in (work, resources):
+        if origin is not None and origin.resolve() in output.resolve().parents:
+            raise ValueError("output must be separate from source work and prepared resources")
     root = work.resolve() / "mods/terralith"
     manifest = tomllib.loads((root / "carry/horizon-mod.toml").read_text())
     if manifest.get("id") != "terralith" or manifest.get("version") != "2.6.2":
@@ -175,23 +225,25 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
     if "data/terralith/worldgen/biome/comment_dont_generate_strips_here.json" in payloads:
         raise ValueError("documentation marker is now a real biome: review required")
     # Validate and transform all inputs before creating any output.
-    markers, feature_orders = 0, 0
+    markers, feature_orders, trees = 0, 0, 0
     for relative, data in list(payloads.items()):
         if relative.endswith(".json"):
             value, count = expand(json.loads(data))
             value, removed = normalize_marker(value)
+            value, tree_count = normalize_trees(value)
             normalized = 0
             reordered = 0
             if "/worldgen/biome/" in relative:
                 value, normalized = normalize_carvers(value)
                 value, reordered = normalize_feature_order(value)
-            if count or normalized or removed or reordered:
+            if count or normalized or removed or reordered or tree_count:
                 payloads[relative] = (json.dumps(value, indent=2) + "\n").encode()
                 transformed.append(relative)
                 total += count
                 carver_lists += normalized
                 markers += removed
                 feature_orders += reordered
+                trees += tree_count
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".terralith-worldgen-", dir=output.parent) as temporary:
         stage = Path(temporary)
@@ -210,6 +262,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "normalized_carver_lists": carver_lists,
                   "removed_documentation_biome_markers": markers,
                   "reordered_adjacent_feature_pairs": feature_orders,
+                  "normalized_tree_configs": trees,
                   "prepared_biomes_sha256": base_hash,
                   "sources": sources, "official_upgrade_output": result.stdout.splitlines(),
                   "unselected_outside": unselected_outside,

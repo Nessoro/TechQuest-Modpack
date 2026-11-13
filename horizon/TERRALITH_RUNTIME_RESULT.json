@@ -74,5 +74,6 @@
   "visual_worldgen_parity_tested": false,
   "gameplay_ported": false,
   "third_party_resources_in_report": false,
-  "corrected_prior_missing_reference_diagnosis": "The subset diagnostic missed implicit minecraft: namespaces. Prepared resources contain these names; no aliases were added."
+  "corrected_prior_missing_reference_diagnosis": "The subset diagnostic missed implicit minecraft: namespaces. Prepared resources contain these names; no aliases were added.",
+  "tree_followup_result": "TERRALITH_TREE_RUNTIME_RESULT.json"
 }

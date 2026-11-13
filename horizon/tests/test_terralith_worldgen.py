@@ -139,6 +139,45 @@ class TerralithWorldgenTests(unittest.TestCase):
         self.assertTrue(adapter.selected(Path('data/terralith/tags/worldgen/biome/test.json')))
         self.assertFalse(adapter.selected(Path('data/minecraft/advancement/test.json')))
 
+    def test_nonforced_tree_preserves_the_seven_original_soils(self):
+        source = {"type": "minecraft:tree", "config": {
+            "dirt_provider": {"type": "minecraft:simple_state_provider", "state": {"id": "minecraft:dirt"}},
+            "decorators": [], "trunk_placer": {"type": "test:keep"}}}
+        before = copy.deepcopy(source)
+        result, count = adapter.normalize_trees(source)
+        provider = result["config"]["below_trunk_provider"]
+        self.assertEqual(count, 1)
+        self.assertEqual(source, before)
+        self.assertNotIn("fallback", provider)
+        self.assertEqual(provider["rules"][0]["if_true"]["type"], "minecraft:not")
+        self.assertCountEqual(provider["rules"][0]["if_true"]["predicate"]["blocks"],
+                              ["minecraft:dirt", "minecraft:coarse_dirt", "minecraft:podzol",
+                               "minecraft:muddy_mangrove_roots", "minecraft:moss_block",
+                               "minecraft:rooted_dirt", "minecraft:mud"])
+        self.assertEqual(result["config"]["trunk_placer"], before["config"]["trunk_placer"])
+        self.assertNotIn("dirt_provider", result["config"])
+
+    def test_forced_tree_keeps_its_unconditional_provider(self):
+        source = {"type": "minecraft:tree", "config": {
+            "force_dirt": True, "dirt_provider": {
+                "type": "minecraft:simple_state_provider", "state": {"id": "minecraft:rooted_dirt"}}}}
+        result, count = adapter.normalize_trees(source)
+        self.assertEqual(result["config"]["below_trunk_provider"], source["config"]["dirt_provider"])
+        self.assertNotIn("force_dirt", result["config"])
+        self.assertEqual(count, 1)
+
+    def test_tree_provider_conflicts_or_random_providers_need_review(self):
+        configs = [
+            {"dirt_provider": {"type": "minecraft:weighted_state_provider", "entries": []}},
+            {"dirt_provider": {"type": "minecraft:simple_state_provider", "state": "minecraft:dirt"},
+             "below_trunk_provider": {"id": "minecraft:stone"}},
+            {"dirt_provider": {"type": "minecraft:simple_state_provider", "state": "minecraft:dirt"},
+             "force_dirt": "false"},
+        ]
+        for config in configs:
+            with self.subTest(config=config), self.assertRaises(ValueError):
+                adapter.normalize_trees({"type": "minecraft:tree", "config": config})
+
     def fixture(self, base):
         work = base / "work"
         source = work / "mods/terralith/carry"
@@ -170,6 +209,13 @@ class TerralithWorldgenTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 adapter.prepare(base / "missing-work", base / "tool", base / "datapacks/new")
             self.assertFalse((base / "datapacks").exists())
+
+    def test_new_output_cannot_pollute_the_source_work(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            with self.assertRaises(ValueError):
+                adapter.prepare(work, work / "tool", work / "new-artifact")
+            self.assertFalse((work / "new-artifact").exists())
 
     def test_upgrader_failure_leaves_no_partial_output(self):
         with tempfile.TemporaryDirectory() as directory:
