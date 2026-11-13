@@ -1,0 +1,23 @@
+modLoader="lowcodefml"
+loaderVersion="[1,)"
+license="MIT"
+
+[[mods]]
+modId="techquest_rpg"
+version="0.1.0"
+displayName="TechQuest RPG Core"
+description="Original data-driven progression perks and light hostile mob scaling, without levels or vein mining."
+
+[[dependencies.techquest_rpg]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.techquest_rpg]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.264,21.2)"
+ordering="NONE"
+side="BOTH"

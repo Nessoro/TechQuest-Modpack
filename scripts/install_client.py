@@ -60,11 +60,11 @@ def install_guide_overrides(archive, game_dir):
             continue
         if not (relative.startswith(allowed_prefix)
                 or relative in (*allowed_datapacks, "mods/techquest-compat-1.0.0.jar",
+                                "mods/techquest-rpg-core-0.1.0.jar",
                                 "options.txt", "TECHQUEST_OPTIMIZED.txt",
                                 "config/physicsmod/physics_client_config.json",
                                 "config/physicsmod/physics_server_config.json",
                                 "config/betterzoom-client.toml",
-                                "config/pmmo-client.toml",
                                 "config/incoming-client.toml",
                                 "config/explosionoverhaul/explosionoverhaul-client.toml",
                                 "config/jade/plugins.json",

@@ -67,23 +67,18 @@ class ClientControlsTests(unittest.TestCase):
                 self.assertTrue(preset["smoothZoom"])
                 self.assertEqual(preset["zoomMode"], "WHEEL")
                 self.assertFalse(preset["hideGui"])
-                pmmo = tomllib.loads(archive.read("overrides/config/pmmo-client.toml").decode())["Client"]["GUI"]
-                self.assertFalse(pmmo["Display Skill List"])
-                self.assertTrue(pmmo["Skill List Use Icons"])
-                self.assertEqual(pmmo["Skill List Xoffset"], 0.70)
-                self.assertEqual(pmmo["Skill List Yoffset"], 0.05)
-                self.assertTrue(pmmo["Display Gain List"])
+                self.assertNotIn("overrides/config/pmmo-client.toml", archive.namelist())
+                self.assertIn("overrides/mods/" + build_pack.RPG_JAR_NAME, archive.namelist())
                 install_client.install_guide_overrides(archive, root / "client")
                 (root / "client/options.txt").write_text("player-options")
                 target = root / "client/config/betterzoom-client.toml"
                 target.write_text("player-zoom-options")
                 pmmo_target = root / "client/config/pmmo-client.toml"
-                self.assertTrue(pmmo_target.exists())
-                pmmo_target.write_text("player-pmmo-options")
+                self.assertFalse(pmmo_target.exists())
                 install_client.install_guide_overrides(archive, root / "client")
                 self.assertEqual((root / "client/options.txt").read_text(), "player-options")
                 self.assertEqual(target.read_text(), "player-zoom-options")
-                self.assertEqual(pmmo_target.read_text(), "player-pmmo-options")
+                self.assertFalse(pmmo_target.exists())
             install_server.install_guide_overrides(pack, root / "server")
             self.assertFalse((root / "server/config/betterzoom-client.toml").exists())
             self.assertFalse((root / "server/config/pmmo-client.toml").exists())
@@ -115,11 +110,12 @@ class ClientControlsTests(unittest.TestCase):
         with self.assertRaisesRegex(build_pack.BuildError, "DataVersion"):
             build_pack.client_options({"minecraft": "different", "performance_profile": {"video_defaults": {"renderDistance": 6}}})
 
-    def test_pmmo_preset_requires_reviewed_version(self):
+    def test_micro2_has_no_pmmo_preset_or_shortcuts(self):
         cfg = build_pack.load_cfg()
-        cfg["modrinth_lock"]["KFQYC1Uy"]["version_id"] = "unreviewed"
-        with self.assertRaisesRegex(build_pack.BuildError, "Review Project MMO"):
-            build_pack.client_config_overrides(cfg)
+        self.assertNotIn("config/pmmo-client.toml", build_pack.client_config_overrides(cfg))
+        self.assertFalse(any(key.startswith("key.pmmo.") for key in
+                             cfg["performance_profile"]["key_defaults"]))
+        self.assertNotIn("KFQYC1Uy", cfg["modrinth_lock"])
 
     def test_zoom_preset_requires_reviewed_version(self):
         cfg = {"mods": [{"project": "better-zoom", "client_only": True, "version_id": "unreviewed"}]}

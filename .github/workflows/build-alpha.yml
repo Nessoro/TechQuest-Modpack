@@ -6,6 +6,7 @@ on:
       - modlist.json
       - build_pack.py
       - compat/**
+      - rpg-core/**
       - scripts/install_server.py
       - scripts/install_client.py
       - windows-installer/**
@@ -57,6 +58,27 @@ jobs:
           PY
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
+      - name: Enforce micro2 RPG replacement in full packaged client and server
+        run: |
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          name = "techquest-rpg-core-0.1.0.jar"
+          out = Path("output")
+          for side in ("client", "server"):
+              directory = out / side / "mods"
+              assert (directory / name).is_file(), f"{side} missing RPG Core"
+              assert not list(directory.glob("pmmo-*.jar")), f"{side} still contains PMMO"
+              with zipfile.ZipFile(directory / name) as core:
+                  assert "data/minecraft/tags/function/tick.json" in core.namelist()
+                  assert b'modLoader="lowcodefml"' in core.read("META-INF/neoforge.mods.toml")
+          with zipfile.ZipFile(out / "TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as pack:
+              assert "overrides/mods/" + name in pack.namelist()
+              files = json.loads(pack.read("modrinth.index.json"))["files"]
+              assert not any(row["path"].startswith("mods/pmmo-") for row in files)
+              assert "overrides/config/pmmo-client.toml" not in pack.namelist()
+          print("micro2: RPG Core present on both sides; PMMO absent")
+          PY
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
       - uses: actions/setup-java@v4
@@ -351,7 +373,7 @@ jobs:
     name: Publish public installer preview (no account required)
     needs: [pack, windows-installer, security-scan]
     # Never publish unscanned binaries or make an unstable beta the stable release.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/fix/micropatch-storage-ultimine-worldtier-033'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feat/micro2-rpg-core-033'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
@@ -377,7 +399,7 @@ jobs:
         run: |
           set -euo pipefail
           # Prevent an older successful CI run from replacing a newer preview.
-          CURRENT=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/fix/micropatch-storage-ultimine-worldtier-033" --jq '.object.sha')
+          CURRENT=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/feat/micro2-rpg-core-033" --jq '.object.sha')
           if [ "$CURRENT" != "$GITHUB_SHA" ]; then
             echo "Skipping outdated candidate $GITHUB_SHA; branch moved to $CURRENT" >> "$GITHUB_STEP_SUMMARY"
             exit 0
@@ -387,7 +409,7 @@ jobs:
           cp public/pack/TechQuest_1.21.1_0.3.3_ALPHA.mrpack public/TechQuest_Optimized.mrpack
           sha256sum public/TechQuestInstaller.exe public/TechQuest_Optimized.mrpack > public/SHA256SUMS.txt
           cat > public/NOTES.md <<EOF
-          # TechQuest 0.3.3-micro1 preview
+          # TechQuest 0.3.3-micro2 preview
 
           Windows 10/11 x64, Minecraft Java 1.21.1, NeoForge 21.1.264.
 
@@ -398,17 +420,17 @@ jobs:
 
           Preview built from commit ${GITHUB_SHA}. SHA-256 checksums are attached.
           This release passed the pack build, Windows EXE self-test and ClamAV workflow.
-          The shared Apotheosis World Tier is **not yet multiplayer-tested**.
+          Project MMO has been replaced by the original TechQuest RPG Core; advancement perks and mob scaling require gameplay testing. The shared Apotheosis World Tier is **not yet multiplayer-tested**.
           Back up existing worlds. This is a prerelease, not a stable version.
 
           Third-party mods download only from their reviewed publishers;
           they are not bundled into this installer.
           EOF
-          TAG="v0.3.3-micro1-preview"
+          TAG="v0.3.3-micro2-preview"
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
             gh release upload "$TAG" public/TechQuestInstaller.exe public/TechQuest_Optimized.mrpack public/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
-            gh release edit "$TAG" --title "TechQuest 0.3.3-micro1 (preview)" --notes-file public/NOTES.md --prerelease --repo "$GITHUB_REPOSITORY"
+            gh release edit "$TAG" --title "TechQuest 0.3.3-micro2 (preview)" --notes-file public/NOTES.md --prerelease --repo "$GITHUB_REPOSITORY"
           else
-            gh release create "$TAG" public/TechQuestInstaller.exe public/TechQuest_Optimized.mrpack public/SHA256SUMS.txt --target "$GITHUB_SHA" --title "TechQuest 0.3.3-micro1 (preview)" --notes-file public/NOTES.md --prerelease --repo "$GITHUB_REPOSITORY"
+            gh release create "$TAG" public/TechQuestInstaller.exe public/TechQuest_Optimized.mrpack public/SHA256SUMS.txt --target "$GITHUB_SHA" --title "TechQuest 0.3.3-micro2 (preview)" --notes-file public/NOTES.md --prerelease --repo "$GITHUB_REPOSITORY"
           fi
           echo "Public download (no account): https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/TechQuestInstaller.exe" >> "$GITHUB_STEP_SUMMARY"

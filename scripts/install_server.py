@@ -70,9 +70,11 @@ def prepare_properties(target):
 def install_compatibility(pack_path, mods):
     # Extract only our known resource mod, never arbitrary paths from an archive.
     with zipfile.ZipFile(pack_path) as archive:
-        entry = "overrides/mods/" + packbuilder.COMPAT_JAR_NAME
-        if entry in archive.namelist():
-            (mods / packbuilder.COMPAT_JAR_NAME).write_bytes(archive.read(entry))
+        for filename in (packbuilder.COMPAT_JAR_NAME, packbuilder.RPG_JAR_NAME):
+            entry = "overrides/mods/" + filename
+            if entry not in archive.namelist():
+                raise packbuilder.BuildError("Missing first-party mod: " + filename)
+            (mods / filename).write_bytes(archive.read(entry))
     for path in mods.glob("superbwarfare-*.jar"):
         packbuilder.patch_superb_server_jar(path)
 

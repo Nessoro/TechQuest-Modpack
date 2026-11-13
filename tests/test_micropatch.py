@@ -48,16 +48,14 @@ class MicroPatchTests(unittest.TestCase):
             self.assertNotIn("data/minecraft/tags/function/tick.json", z.namelist())
         self.assertIn("config/openloader/packs/techquest_micropatch_033.zip", guide_overrides())
 
-    def test_pmmo_vein_disabled_without_removing_skills(self):
+    def test_micro2_replaces_pmmo_but_retains_ftb_and_apotheosis(self):
+        self.assertNotIn("project-mmo", self.mods)
+        self.assertNotIn("KFQYC1Uy", self.cfg["modrinth_lock"])
+        self.assertNotIn("config/pmmo-client.toml", build_pack.client_config_overrides(self.cfg))
+        self.assertIn("FTB Ultimine", {row["name"] for row in self.cfg["external_mods"]})
         with zipfile.ZipFile(io.BytesIO(micro_patch_datapack())) as z:
-            cfg = json.loads(z.read("data/pmmo/config/server.json"))
-            # Project MMO vein mining is disabled server-side. RPG XP and
-            # the independent FTB Ultimine remain enabled.
-            self.assertIs(cfg["vein_miner"]["vein_enabled"], False)
-            self.assertIn("levels", cfg)
-            self.assertIn("xp_gains", cfg)
-            self.assertIn("JUMP", cfg["xp_gains"]["player_actions"])
-            self.assertIn("DEAL_DAMAGE", cfg["xp_gains"]["damage"])
+            self.assertNotIn("data/pmmo/config/server.json", z.namelist())
+            self.assertIn("data/techquest/function/worldtier/sync.mcfunction", z.namelist())
 
     def test_betterzoom_startup_mixin_embedded(self):
         import zipfile

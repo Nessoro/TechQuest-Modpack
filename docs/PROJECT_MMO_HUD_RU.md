@@ -1,3 +1,7 @@
+# Архив: Project MMO исключён в TechQuest 0.3.3-micro2
+
+Этот файл описывает только старые 0.3.3/micro1, сохранён для истории. В micro2 PMMO удалён и конфиг больше не поставляется. См. [micro2](MICROPATCH_MICRO2_RU.md).
+
 # Project MMO 2.10.47 — настройки интерфейса TechQuest
 
 В TechQuest `0.3.3-alpha` установлен Project MMO `2.10.47` (`pmmo-1.21.1-2.10.47.jar`). Лишние надписи `Endurance`, `Woodcutting`, `Excavation`, `Combat`, `Mining`, `Agility`, `Building` рисует **Project MMO**, а не Incoming или Xaero.
