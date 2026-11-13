@@ -4,7 +4,7 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica Micro-patch 0.3.3-micro1: Sophisticated Storage, FTB Ultimine, shared Apotheosis World Tier.",
+  "description": "TechQuest 0.3.3 micro2: оригинальный RPG Core вместо PMMO; бонусы за достижения и масштабирование мобов без XP/Vein Mining",
   "removed_mods": [
     {
       "project": "mcheli-modern-port",
@@ -17,6 +17,10 @@
     {
       "project": "parcool",
       "reason": "не нужен"
+    },
+    {
+      "project": "project-mmo",
+      "reason": "micro2: Project MMO удалён после подтверждённого бага массовой добычи вверх; заменён собственным TechQuest RPG Core"
     }
   ],
   "mods": [
@@ -85,11 +89,6 @@
     },
     {
       "project": "skill-tree",
-      "group": "RPG",
-      "required": false
-    },
-    {
-      "project": "project-mmo",
       "group": "RPG",
       "required": false
     },
@@ -485,10 +484,7 @@
       "key.betterzoom.zoom_in": "key.keyboard.unknown",
       "key.betterzoom.zoom_out": "key.keyboard.unknown",
       "gui.xaero_enlarge_map": "key.keyboard.f9",
-      "key.sophisticatedbackpacks.toggle_upgrade_1": "key.keyboard.f10",
-      "key.pmmo.vein": "key.keyboard.unknown",
-      "key.pmmo.showVein": "key.keyboard.unknown",
-      "key.pmmo.cyclevein": "key.keyboard.unknown"
+      "key.sophisticatedbackpacks.toggle_upgrade_1": "key.keyboard.f10"
     }
   },
   "external_mods": [
@@ -854,17 +850,6 @@
       "version_id": "Go3nbneL",
       "filename": "YungsBetterMineshafts-1.21.1-NeoForge-5.1.1.jar",
       "sha512": "8b01b386f53feeaa55f0c62697578b82e00501e45e428b2a68df6bda34efb6a4b3b4e3582abf13fe767ebcb61aef9368186f53c03999958bef38f31c41a7f8b2",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      }
-    },
-    "KFQYC1Uy": {
-      "title": "Project MMO",
-      "version": "2.10.47",
-      "version_id": "9lu4zNd1",
-      "filename": "pmmo-1.21.1-2.10.47.jar",
-      "sha512": "c5f4c0000bcdb847b36dfe11fc48bfb17bff3696f2be7f44f03a8ed09490c3dd06864eb914321251f65a79059bac4be47a800c427e8bab5e92a949399693c067",
       "environment": {
         "client": "required",
         "server": "required"
