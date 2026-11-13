@@ -4,7 +4,7 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3 micro2: оригинальный RPG Core вместо PMMO; бонусы за достижения и масштабирование мобов без XP/Vein Mining Подготовка micro4: Trash Cans, Pretty Pipes и Colossal Reactors с закреплёнными зависимостями; солнечные панели IC2 Nostalgia отложены до проверки совместимости.",
+  "description": "TechQuest 0.3.3 micro2: оригинальный RPG Core вместо PMMO; бонусы за достижения и масштабирование мобов без XP/Vein Mining Подготовка micro4: Trash Cans, Pretty Pipes и Colossal Reactors с закреплёнными зависимостями (Fusion устанавливается и на сервер по требованию Colossal Reactors); солнечные панели IC2 Nostalgia отложены до проверки совместимости.",
   "removed_mods": [
     {
       "project": "mcheli-modern-port",
@@ -477,6 +477,17 @@
         "server": "required"
       },
       "note": "Многоблочный ядерный реактор, известный по FTB Evolution 2. Специальная совместимая версия 2.3.2.0.2 для NeoForge 1.21.1, с Fusion + Iskandert's Library. Не FTB Industrial Contraptions."
+    },
+    {
+      "project": "fusion-connected-textures",
+      "group": "Библиотеки",
+      "required": true,
+      "version_id": "AYDaLPK8",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Colossal Reactors hard-requires Fusion on dedicated server despite Modrinth listing Fusion client-only. Author FAQ confirms it is safe to install server-side and does nothing there; explicit reviewed side override, with in-game server boot still unverified."
     }
   ],
   "manual_mods": [
@@ -1644,7 +1655,7 @@
       "sha512": "0b65c3a78db5785c76a222639a56da0cd09fc8445e02cdfb84e4bb7c88dc2c5622ccb468291a12df30440205a881db2023d9857fdb7252e7d21238876fcc8608",
       "environment": {
         "client": "required",
-        "server": "unsupported"
+        "server": "required"
       }
     }
   }
