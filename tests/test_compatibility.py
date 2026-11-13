@@ -31,7 +31,7 @@ class CompatibilityTests(unittest.TestCase):
             builder.remove_stale_generated_jars(root, {"sodium-0.6.13.jar"})
             self.assertEqual({p.name for p in root.iterdir()}, {"sodium-0.6.13.jar", "README.txt"})
 
-    def test_no_custom_first_party_jar_on_server(self):
+    def test_server_keeps_compatibility_jar_and_excludes_rpg_core(self):
         cfg = {"version": "test", "pack_name": "Test", "description": "Test",
                "minecraft": "1.21.1", "loader_version": "21.1.264"}
         with tempfile.TemporaryDirectory() as tmp:
@@ -41,9 +41,15 @@ class CompatibilityTests(unittest.TestCase):
             mods = root / "mods"
             mods.mkdir()
             installer.install_compatibility(pack, mods)
-            self.assertEqual(list(mods.glob("*.jar")), [])
-            with zipfile.ZipFile(pack) as archive:
-                self.assertFalse(any(name.startswith("overrides/mods/") for name in archive.namelist()))
+            self.assertEqual({p.name for p in mods.glob("*.jar")}, {builder.COMPAT_JAR_NAME})
+            with zipfile.ZipFile(mods / builder.COMPAT_JAR_NAME) as jar:
+                for method in ("smelting", "blasting"):
+                    for metal in ("tin", "silver", "uranium"):
+                        recipe = json.loads(jar.read(
+                            f"data/create/recipe/{method}/ingot_{metal}_compat_ic2.json"))
+                        self.assertEqual(recipe["result"]["id"], f"ic2:{metal}_ingot")
+                self.assertIn("techquest-compat.mixins.json", jar.namelist())
+            self.assertEqual((mods / builder.COMPAT_JAR_NAME).read_bytes(), builder.compatibility_jar())
 
     def test_server_patch_changes_only_common_mixin_list_and_is_idempotent(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -63,7 +69,7 @@ class CompatibilityTests(unittest.TestCase):
                 self.assertEqual(patched["client"], ["ClientLevelMixin"])
                 self.assertEqual(jar.read("example.class"), original_class)
 
-    def test_client_install_and_gui_exclude_first_party_custom_mods(self):
+    def test_client_and_gui_keep_compatibility_but_exclude_rpg_core(self):
         import scripts.install_client as client
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -74,13 +80,15 @@ class CompatibilityTests(unittest.TestCase):
             builder.make_mrpack(cfg, [], archive_path)
             game = root / "game"
             with zipfile.ZipFile(archive_path) as archive:
-                self.assertFalse(any(name.startswith("overrides/mods/") for name in archive.namelist()))
+                self.assertIn("overrides/mods/" + builder.COMPAT_JAR_NAME, archive.namelist())
+                self.assertNotIn("overrides/mods/techquest-rpg-core-0.1.0.jar", archive.namelist())
                 client.install_guide_overrides(archive, game)
-            self.assertFalse((game / "mods").exists())
+            self.assertEqual((game / "mods" / builder.COMPAT_JAR_NAME).read_bytes(), builder.compatibility_jar())
+            self.assertFalse((game / "mods/techquest-rpg-core-0.1.0.jar").exists())
             gui = (ROOT / "windows-installer" / "Program.cs").read_text(encoding="utf-8")
-            self.assertNotIn('relative == "mods/techquest-compat-1.0.0.jar"', gui)
+            self.assertIn('relative == "mods/techquest-compat-1.0.0.jar"', gui)
             self.assertNotIn('relative == "mods/techquest-rpg-core-0.1.0.jar"', gui)
-            self.assertNotIn("StageFirstPartyCompatibilityJar(staging)", gui)
+            self.assertIn("StageFirstPartyCompatibilityJar(staging)", gui)
 
     def test_pack_uses_pinned_create_and_superb_warfare(self):
         cfg = json.loads((ROOT / "modlist.json").read_text(encoding="utf-8"))
