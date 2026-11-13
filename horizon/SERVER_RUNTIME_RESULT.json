@@ -91,12 +91,14 @@
       "densities": 152,
       "accepted": false,
       "unsupported_type": "minecraft:weird_scaled_sampler",
-      "missing_references": [
+      "not_proven_to_be_only_cause_of_full_boot_failure": true,
+      "invalidated_subset_probe_missing_references": [
         "minecraft:overworld/continents",
         "minecraft:overworld/temperature",
         "minecraft:overworld/erosion"
       ],
-      "not_proven_to_be_only_cause_of_full_boot_failure": true
+      "missing_references": [],
+      "subset_probe_default_namespace_bug_corrected": true
     }
   },
   "native_https_followup": {
@@ -127,5 +129,6 @@
     "save_probe_marker": "HORIZON_CLOUD_SAVE_REOPEN_OK",
     "server_stopped_cleanly": true
   },
-  "initial_smoke_tools": "original CI artifact, prior to HTTPS feature fix"
+  "initial_smoke_tools": "original CI artifact, prior to HTTPS feature fix",
+  "latest_terralith_result": "TERRALITH_RUNTIME_RESULT.json"
 }

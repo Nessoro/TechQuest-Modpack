@@ -1,0 +1,237 @@
+#!/usr/bin/env python3
+"""Prepare a local Terralith worldgen trial; never installs into an existing world.
+
+Expands legacy weird_scaled_sampler before the official 26.3 upgrader runs.
+Third-party data stay local. Sources and all unselected outside files are retained.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import tempfile
+import tomllib
+
+RARITIES = {
+    "type_1": ((-0.5, 0.0, 0.5), (0.75, 1.0, 1.5, 2.0)),
+    "type_2": ((-0.75, -0.5, 0.5, 0.75), (0.5, 0.75, 1.0, 2.0, 3.0)),
+}
+KINDS = {"worldgen", "dimension", "dimension_type", "structure"}
+DOCUMENTATION_BIOME = "terralith:comment_dont_generate_strips_here"
+PUMPKIN = "minecraft:patch_pumpkin"
+CANE = "minecraft:patch_sugar_cane"
+
+
+def expand(value):
+    """Return (legacy-compatible expression, number of samplers expanded).
+
+    r * abs(noise(x/r, y/r, z/r)), selected by the input's rarity interval.
+    Unrelated expressions are unchanged; unknown mapper shapes fail closed.
+    The official upgrader translates the resulting arithmetic/cache children.
+    """
+    if isinstance(value, list):
+        pairs = [expand(child) for child in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {key: expand(child) for key, child in value.items()}
+    result = {key: pair[0] for key, pair in pairs.items()}
+    count = sum(pair[1] for pair in pairs.values())
+    if value.get("type") not in ("weird_scaled_sampler", "minecraft:weird_scaled_sampler"):
+        return result, count
+    if set(value) != {"type", "input", "noise", "rarity_value_mapper"}:
+        raise ValueError("unreviewed weird_scaled_sampler fields")
+    mapper = value["rarity_value_mapper"]
+    if not isinstance(mapper, str) or mapper not in RARITIES:
+        raise ValueError("unreviewed rarity mapper")
+    noise = value["noise"]
+    if not isinstance(noise, str):
+        raise ValueError("expected a named legacy noise holder")
+    thresholds, scales = RARITIES[mapper]
+    branches = [{"type": "minecraft:mul", "argument1": scale,
+                 "argument2": {"type": "minecraft:abs", "argument": {
+                     "type": "minecraft:noise", "noise": noise,
+                     "xz_scale": 1.0 / scale, "y_scale": 1.0 / scale}}}
+                for scale in scales]
+    return {"type": "minecraft:interval_select", "input": result["input"],
+            "thresholds": list(thresholds), "functions": branches}, count + 1
+
+
+def selected(relative: Path) -> bool:
+    parts = relative.parts
+    kind = len(parts) >= 4 and (parts[2] in KINDS
+                               or parts[2:4] == ("tags", "worldgen"))
+    return (kind and parts[0] == "data"
+            and relative.suffix in (".json", ".nbt"))
+
+
+def normalize_carvers(biome: dict) -> tuple[dict, int]:
+    """1.21.1's AIR list becomes 26.3's ordered carver holder set.
+
+    A nonempty LIQUID step cannot be collapsed without a separate review.
+    """
+    if not isinstance(biome, dict):
+        raise ValueError("expected a biome JSON object")
+    carvers = biome.get("carvers")
+    if not isinstance(carvers, dict):
+        return biome, 0
+    if set(carvers) - {"air", "liquid"} or carvers.get("liquid", []) != []:
+        raise ValueError("unreviewed legacy carving steps")
+    air = carvers.get("air", [])
+    if not isinstance(air, list) or not all(isinstance(v, str) for v in air):
+        raise ValueError("expected an ordered list of named AIR carvers")
+    return {**biome, "carvers": list(air)}, 1
+
+
+def normalize_feature_order(biome: dict) -> tuple[dict, int]:
+    """Migrate the adjacent cane/pumpkin pair to vanilla 26.3 order.
+
+    Preserve every feature and every other order relation. Interleaved or
+    duplicate pairs need review rather than an arbitrary global reordering.
+    """
+    features = biome.get("features", [])
+    if not isinstance(features, list) or any(not isinstance(step, list) for step in features):
+        raise ValueError("expected biome feature lists")
+    if len(features) <= 9 or CANE not in features[9] or PUMPKIN not in features[9]:
+        return biome, 0
+    step = list(features[9])
+    if step.count(CANE) != 1 or step.count(PUMPKIN) != 1:
+        raise ValueError("duplicate feature-order pair needs review")
+    cane, pumpkin = step.index(CANE), step.index(PUMPKIN)
+    if pumpkin < cane:
+        return biome, 0
+    if pumpkin != cane + 1:
+        raise ValueError("interleaved feature-order pair needs review")
+    step[cane], step[pumpkin] = step[pumpkin], step[cane]
+    return {**biome, "features": features[:9] + [step] + features[10:]}, 1
+
+
+def normalize_marker(value):
+    """Remove only Terralith 2.6.2's explicit non-biome comment in an OR list."""
+    if isinstance(value, list):
+        pairs = [normalize_marker(v) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: normalize_marker(v) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    names = value.get("biome_is")
+    if (value.get("type") in ("minecraft:biome", "biome") and isinstance(names, list)
+            and DOCUMENTATION_BIOME in names):
+        result["biome_is"] = [v for v in names if v != DOCUMENTATION_BIOME]
+        count += names.count(DOCUMENTATION_BIOME)
+    return result, count
+
+
+def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = None) -> dict:
+    if output.exists() or output.is_symlink():
+        raise ValueError("output must be a new directory; existing worlds are never modified")
+    if any((parent / "level.dat").exists() for parent in output.resolve().parents):
+        raise ValueError("stage outside an existing world, then review before installation")
+    root = work.resolve() / "mods/terralith"
+    manifest = tomllib.loads((root / "carry/horizon-mod.toml").read_text())
+    if manifest.get("id") != "terralith" or manifest.get("version") != "2.6.2":
+        raise ValueError("review a different Terralith version before adapting it")
+    base_hash = None
+    if resources is not None:
+        prepared = json.loads((resources / "horizon-resources.json").read_text())
+        if prepared.get("minecraft") != "26.3" or prepared.get("schema") != 7:
+            raise ValueError("expected official Horizon 26.3 resources")
+        data = (resources / "worldgen/biomes.json").read_bytes()
+        base_hash = hashlib.sha256(data).hexdigest()
+        pairs = []
+        for text in json.loads(data).values():
+            steps = json.loads(text).get("features", [])
+            if len(steps) > 9 and PUMPKIN in steps[9] and CANE in steps[9]:
+                pairs.append(steps[9].index(PUMPKIN) < steps[9].index(CANE))
+        if not pairs or not all(pairs):
+            raise ValueError("prepared vanilla feature order differs: review migration")
+    sources, payloads, transformed, total, carver_lists = [], {}, [], 0, 0
+    unselected_outside = []
+    for section in ("carry", "outside"):
+        base = root / section
+        for path in sorted((base / "data").rglob("*")):
+            if path.is_symlink() or any(parent.is_symlink() for parent in path.parents):
+                raise ValueError("symlink in local source")
+            if not path.is_file():
+                continue
+            relative = path.relative_to(base).as_posix()
+            if not selected(path.relative_to(base)):
+                if section == "outside":
+                    unselected_outside.append(relative)
+                continue
+            data = path.read_bytes()
+            previous = payloads.get(relative)
+            if previous is not None and previous != data:
+                raise ValueError("conflicting carry/outside source: " + relative)
+            payloads[relative] = data
+            sources.append({"section": section, "path": relative,
+                            "sha256": hashlib.sha256(data).hexdigest()})
+    if not payloads or "data/minecraft/dimension/overworld.json" not in payloads:
+        raise ValueError("complete carried and outside worldgen inputs required")
+    if "data/terralith/worldgen/biome/comment_dont_generate_strips_here.json" in payloads:
+        raise ValueError("documentation marker is now a real biome: review required")
+    # Validate and transform all inputs before creating any output.
+    markers, feature_orders = 0, 0
+    for relative, data in list(payloads.items()):
+        if relative.endswith(".json"):
+            value, count = expand(json.loads(data))
+            value, removed = normalize_marker(value)
+            normalized = 0
+            reordered = 0
+            if "/worldgen/biome/" in relative:
+                value, normalized = normalize_carvers(value)
+                value, reordered = normalize_feature_order(value)
+            if count or normalized or removed or reordered:
+                payloads[relative] = (json.dumps(value, indent=2) + "\n").encode()
+                transformed.append(relative)
+                total += count
+                carver_lists += normalized
+                markers += removed
+                feature_orders += reordered
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix=".terralith-worldgen-", dir=output.parent) as temporary:
+        stage = Path(temporary)
+        raw, upgraded = stage / "input", stage / "upgraded"
+        for relative, data in payloads.items():
+            path = raw / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        (raw / "pack.mcmeta").write_text(json.dumps({"pack": {
+            "pack_format": 48, "description": "TechQuest local Terralith worldgen trial"}}))
+        result = subprocess.run([str(port_tool.resolve()), "upgrade-datapack", str(raw), str(upgraded)],
+                                capture_output=True, text=True, check=True, timeout=180)
+        report = {"schema": 1, "minecraft": "26.3", "source_minecraft": "1.21.1",
+                  "terralith": "2.6.2", "input_files": len(payloads),
+                  "expanded_samplers": total, "transformed_files": transformed,
+                  "normalized_carver_lists": carver_lists,
+                  "removed_documentation_biome_markers": markers,
+                  "reordered_adjacent_feature_pairs": feature_orders,
+                  "prepared_biomes_sha256": base_hash,
+                  "sources": sources, "official_upgrade_output": result.stdout.splitlines(),
+                  "unselected_outside": unselected_outside,
+                  "source_files_modified": False, "server_boot_tested": False,
+                  "natural_generation_verified": False, "gameplay_ported": False,
+                  "bit_exact_1_21_1_parity_claimed": False}
+        (upgraded / "techquest-worldgen-trial.json").write_text(
+            json.dumps(report, indent=2) + "\n")
+        upgraded.rename(output)
+    return report
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--work", type=Path, required=True)
+    parser.add_argument("--port-tool", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--resources", type=Path, required=True)
+    args = parser.parse_args()
+    report = prepare(args.work, args.port_tool, args.output, args.resources)
+    print(json.dumps({k: v for k, v in report.items() if k != "sources"}, indent=2))
+
+
+if __name__ == "__main__":
+    main()
