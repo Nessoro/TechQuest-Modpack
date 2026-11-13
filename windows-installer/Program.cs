@@ -191,7 +191,7 @@ internal sealed class InstallerForm : Form
                 archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null ||
                 archive.GetEntry("overrides/config/openloader/packs/techquest_micropatch_033.zip") is null ||
                  fileNames.Any(n => n.StartsWith("pmmo-", StringComparison.OrdinalIgnoreCase)) ||
-                 archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is not null ||
+                 archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null ||
                  archive.GetEntry("overrides/mods/techquest-rpg-core-0.1.0.jar") is not null)
                 return 7;
             string probe = Path.Combine(Path.GetTempPath(), "TechQuest-self-test-" + Guid.NewGuid().ToString("N"));
@@ -457,6 +457,7 @@ internal sealed class InstallerForm : Form
                 relative.StartsWith("patchouli_books/techquest_guide/", StringComparison.Ordinal) ||
                 relative == "config/openloader/packs/techquest_starter_guide.zip" ||
                 relative == "config/openloader/packs/techquest_micropatch_033.zip" ||
+                relative == "mods/techquest-compat-1.0.0.jar" ||
                 relative == "TECHQUEST_INGAME_GUIDE.txt" ||
                 relative == "options.txt" ||
                 relative == "config/physicsmod/physics_client_config.json" ||
@@ -602,6 +603,22 @@ internal sealed class InstallerForm : Form
         }
     }
 
+    private static void StageFirstPartyCompatibilityJar(string staging)
+    {
+        // Preserve the existing Create-IC2 recipes and Better Zoom startup Mixin.
+        // Always stage our verified current JAR rather than an older saved copy.
+        const string filename = "techquest-compat-1.0.0.jar";
+        using var pack = GetEmbeddedPack();
+        using var archive = new ZipArchive(pack, ZipArchiveMode.Read);
+        var item = archive.GetEntry("overrides/mods/" + filename)
+            ?? throw new InvalidDataException("Встроенный TechQuest Compatibility JAR отсутствует.");
+        if (item.Length < 64 || item.Length > 8 * 1024 * 1024)
+            throw new InvalidDataException("Некорректный размер TechQuest Compatibility JAR.");
+        using var input = item.Open();
+        using var output = File.Create(Path.Combine(staging, filename));
+        input.CopyTo(output);
+    }
+
     private async Task InstallAsync()
     {
         string target = Path.GetFullPath(location.Text);
@@ -676,7 +693,8 @@ internal sealed class InstallerForm : Form
                 updates.Report((Interlocked.Increment(ref completed), mod.Name, fromCache));
             });
             // The unchanged filename previously kept an outdated Better Zoom
-            // No custom TechQuest JARs are added in micro3.
+            // Retain TechQuest Compatibility only; do not stage RPG Core.
+            StageFirstPartyCompatibilityJar(staging);
             cancellation.Token.ThrowIfCancellationRequested();
             ActivateStagedMods(target, staging, () =>
             {
