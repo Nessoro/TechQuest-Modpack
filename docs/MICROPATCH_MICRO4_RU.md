@@ -14,8 +14,8 @@
 
 - Trash Cans → **SuperMartijn642's Config Lib** 1.1.8 (`LN9BxssP`), **Core Lib** 1.1.26a (`rOUBggPv`).
 - Pretty Pipes → JEI опционален; JEI уже предусмотрен TechQuest.
-- Colossal Reactors → **Iskandert's Library** 1.9.0.0.0 (`y16HgCOF`), **Fusion (Connected Textures)** 1.3.16 (`p19vrgc2`). Fusion клиентский, на выделенный сервер не устанавливается.
-- Все скачиваемые JAR фиксируются точной версией, официальным Modrinth URL и SHA-512 в `modlist.json`. Стороны для библиотек сверены с метаданными авторов.
+- Colossal Reactors → **Iskandert's Library** 1.9.0.0.0 (`y16HgCOF`), **Fusion (Connected Textures)** 1.3.16 (`p19vrgc2`). **Fusion установлен и на сервер**: Colossal Reactors жёстко требует его наличие, а разработчик Fusion подтверждает, что установленная на сервере библиотека ничего там не делает. Это явно проверенное исключение из метаданных Modrinth, где Fusion помечен как клиентский. [FAQ разработчика Fusion](https://www.curseforge.com/minecraft/mc-mods/fusion-connected-textures).
+- Все скачиваемые JAR фиксируются точной версией, официальным Modrinth URL и SHA-512 в `modlist.json`. Стороны для библиотек сверены с метаданными авторов; Fusion — документированное исключение для обязательной зависимости Colossal Reactors.
 
 ## Улучшенные солнечные панели для IndustrialCraft 2 — отложены
 
