@@ -89,7 +89,7 @@ def main():
             context.unroute("https://api.github.com/**", github)
             context.route("https://api.github.com/**", lambda route: route.fulfill(status=403, json={}))
             page.reload(wait_until="networkidle")
-            assert "Не удалось" in page.locator("#build-status").inner_text()
+            assert "Публичный EXE ещё не подтверждён" in page.locator("#build-status").inner_text()
             assert "недоступны" in page.locator("#issues-feed").inner_text()
             assert "/releases" in page.locator("#download-link").get_attribute("href")
             assert not errors, errors
