@@ -32,12 +32,10 @@ def main():
             context = browser.new_context(viewport={"width": 1440, "height": 1000}, device_scale_factor=1)
 
             def github(route):
-                if "/artifacts" in route.request.url:
-                    data = {"artifacts": [{"id": 123, "name": "TechQuest-Windows-GUI-Installer", "expired": False}]}
-                elif "/actions/" in route.request.url:
-                    data = {"workflow_runs": [{"id": 456, "conclusion": "success", "head_sha": "abcdef123456",
-                            "created_at": "2026-11-08T12:00:00Z",
-                            "html_url": "https://github.com/Nessoro/TechQuest-Modpack/actions/runs/456"}]}
+                if "/releases/tags/" in route.request.url:
+                    data = {"published_at": "2026-11-11T12:00:00Z",
+                            "assets": [{"name": "TechQuestInstaller.exe", "state": "uploaded",
+                                "browser_download_url": "https://github.com/Nessoro/TechQuest-Modpack/releases/download/v0.3.3-micro1-preview/TechQuestInstaller.exe"}]}
                 else:
                     data = [{"number": 21, "title": "<script>bad()</script> Обновление установщика",
                              "html_url": "https://github.com/Nessoro/TechQuest-Modpack/issues/21",
@@ -51,7 +49,7 @@ def main():
             page.add_init_script("window.open=(url)=>{window.__draft=url;return null}")
             page.goto(url, wait_until="networkidle")
             assert page.locator(".mod-card").count() == 12
-            assert page.locator("#download-link").get_attribute("href").endswith("/456/artifacts/123")
+            assert page.locator("#download-link").get_attribute("href").endswith("/releases/download/v0.3.3-micro1-preview/TechQuestInstaller.exe")
             assert "<script>bad()</script>" in page.locator("#issues-feed").inner_text()
             assert page.locator("#issues-feed script").count() == 0
             page.screenshot(path=str(output / "desktop.png"))
@@ -91,9 +89,9 @@ def main():
             context.unroute("https://api.github.com/**", github)
             context.route("https://api.github.com/**", lambda route: route.fulfill(status=403, json={}))
             page.reload(wait_until="networkidle")
-            assert "Не удалось" in page.locator("#build-status").inner_text()
+            assert "Публичный EXE ещё не подтверждён" in page.locator("#build-status").inner_text()
             assert "недоступны" in page.locator("#issues-feed").inner_text()
-            assert "/actions/workflows/build-alpha.yml" in page.locator("#download-link").get_attribute("href")
+            assert "/releases" in page.locator("#download-link").get_attribute("href")
             assert not errors, errors
             context.close()
             context = browser.new_context(java_script_enabled=False)

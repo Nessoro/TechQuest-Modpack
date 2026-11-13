@@ -48,7 +48,10 @@ def client_records(index):
 def install_guide_overrides(archive, game_dir):
     """Extract first-party guide data only, never arbitrary archive paths."""
     allowed_prefix = "patchouli_books/techquest_guide/"
-    allowed_datapack = "config/openloader/packs/techquest_starter_guide.zip"
+    allowed_datapacks = {
+        "config/openloader/packs/techquest_starter_guide.zip",
+        "config/openloader/packs/techquest_micropatch_033.zip",
+    }
     for info in archive.infolist():
         if not info.filename.startswith("overrides/"):
             continue
@@ -56,7 +59,7 @@ def install_guide_overrides(archive, game_dir):
         if relative.endswith("/"):
             continue
         if not (relative.startswith(allowed_prefix)
-                or relative in (allowed_datapack, "mods/techquest-compat-1.0.0.jar",
+                or relative in (*allowed_datapacks, "mods/techquest-compat-1.0.0.jar",
                                 "options.txt", "TECHQUEST_OPTIMIZED.txt",
                                 "config/physicsmod/physics_client_config.json",
                                 "config/physicsmod/physics_server_config.json",

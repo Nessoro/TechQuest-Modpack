@@ -346,3 +346,69 @@ jobs:
             echo "- ClamAV not completed. No antivirus clearance." >> "$GITHUB_STEP_SUMMARY"
           fi
           echo "- Negative antivirus scans cannot guarantee absence of malicious code." >> "$GITHUB_STEP_SUMMARY"
+
+  publish-preview:
+    name: Publish public installer preview (no account required)
+    needs: [pack, windows-installer, security-scan]
+    # Never publish unscanned binaries or make an unstable beta the stable release.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/fix/micropatch-storage-ultimine-worldtier-033'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: techquest-preview-release
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    steps:
+      - name: Download the exact security-approved Windows installer
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-Windows-GUI-Installer
+          path: public
+      - name: Download the exact verified modpack manifest
+        uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-1.21.1-alpha-build
+          path: public/pack
+      - name: Publish or update a public GitHub prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Prevent an older successful CI run from replacing a newer preview.
+          CURRENT=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/fix/micropatch-storage-ultimine-worldtier-033" --jq '.object.sha')
+          if [ "$CURRENT" != "$GITHUB_SHA" ]; then
+            echo "Skipping outdated candidate $GITHUB_SHA; branch moved to $CURRENT" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          test -s public/TechQuestInstaller.exe
+          test -s public/pack/TechQuest_1.21.1_0.3.3_ALPHA.mrpack
+          cp public/pack/TechQuest_1.21.1_0.3.3_ALPHA.mrpack public/TechQuest_Optimized.mrpack
+          sha256sum public/TechQuestInstaller.exe public/TechQuest_Optimized.mrpack > public/SHA256SUMS.txt
+          cat > public/NOTES.md <<EOF
+          # TechQuest 0.3.3-micro1 preview
+
+          Windows 10/11 x64, Minecraft Java 1.21.1, NeoForge 21.1.264.
+
+          **Download TechQuestInstaller.exe without a GitHub account.**
+          The EXE can create or update your existing TechQuest profile. New installs
+          download several mods simultaneously; upgrades reuse unchanged JARs after
+          checking their exact hashes. No Python or terminal required.
+
+          Preview built from commit ${GITHUB_SHA}. SHA-256 checksums are attached.
+          This release passed the pack build, Windows EXE self-test and ClamAV workflow.
+          The shared Apotheosis World Tier is **not yet multiplayer-tested**.
+          Back up existing worlds. This is a prerelease, not a stable version.
+
+          Third-party mods download only from their reviewed publishers;
+          they are not bundled into this installer.
+          EOF
+          TAG="v0.3.3-micro1-preview"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release upload "$TAG" public/TechQuestInstaller.exe public/TechQuest_Optimized.mrpack public/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
+            gh release edit "$TAG" --title "TechQuest 0.3.3-micro1 (preview)" --notes-file public/NOTES.md --prerelease --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" public/TechQuestInstaller.exe public/TechQuest_Optimized.mrpack public/SHA256SUMS.txt --target "$GITHUB_SHA" --title "TechQuest 0.3.3-micro1 (preview)" --notes-file public/NOTES.md --prerelease --repo "$GITHUB_REPOSITORY"
+          fi
+          echo "Public download (no account): https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/TechQuestInstaller.exe" >> "$GITHUB_STEP_SUMMARY"

@@ -139,19 +139,22 @@ async function githubJSON(url) {
 }
 async function latestBuild() {
   const status = document.querySelector('#build-status');
+  const link = document.querySelector('#download-link');
+  // Public GitHub Releases work without authentication and do not expire as
+  // Actions artifacts do. The HTML fallback links to the public Releases page.
   try {
-    const result = await githubJSON(`https://api.github.com/repos/${REPO}/actions/workflows/build-alpha.yml/runs?branch=main&status=success&per_page=1`);
-    const run = result.workflow_runs?.[0];
-    if(!run || run.conclusion !== 'success' || !run.html_url.startsWith(`${GH}/actions/runs/`)) throw new Error('No successful main build');
-    const resultArtifacts = await githubJSON(`https://api.github.com/repos/${REPO}/actions/runs/${run.id}/artifacts`);
-    const artifact = resultArtifacts.artifacts?.find(item=>item.name === 'TechQuest-Windows-GUI-Installer' && !item.expired);
-    if(!artifact) throw new Error('Installer artifact unavailable');
-    document.querySelector('#download-link').href = `${run.html_url}/artifacts/${artifact.id}`;
-    status.textContent = `Последняя успешная сборка main: ${relativeDate(run.created_at)} · ${run.head_sha.slice(0,7)}. Отчёт Security Audit — в том же запуске.`;
+    const release = await githubJSON(`https://api.github.com/repos/${REPO}/releases/tags/v0.3.3-micro1-preview`);
+    const asset = release.assets?.find(item => item.name === 'TechQuestInstaller.exe' && item.state === 'uploaded');
+    const prefix = `${GH}/releases/download/v0.3.3-micro1-preview/`;
+    if(!asset || !asset.browser_download_url?.startsWith(prefix))
+      throw new Error('Public Windows EXE not yet available');
+    link.href = asset.browser_download_url;
+    status.textContent = `Публичный тестовый выпуск: ${relativeDate(release.published_at || release.created_at)} · ${asset.name}. Для скачивания регистрация не нужна.`;
   } catch {
-    status.textContent = 'Не удалось получить актуальный EXE. Открой список сборок и проверь зелёный статус и срок хранения Artifacts.';
+    status.textContent = 'Публичный EXE ещё не подтверждён. Открой список релизов: выпуски появляются после проверки безопасности.';
   }
 }
+
 initLinks();renderMods();setupSearch();setupForms();renderIssues();latestBuild();
 
 

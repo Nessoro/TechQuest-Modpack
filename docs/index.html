@@ -29,6 +29,20 @@ window.TQ_MODS = [
     "url": "https://github.com/zentixua/incoming/releases/tag/v3.10.4"
   },
   {
+    "name": "FTB Library",
+    "group": "Комфорт",
+    "required": true,
+    "description": "Библиотека или инструмент FTB Ultimine для NeoForge 1.21.1.",
+    "url": "https://maven.ftb.dev/releases/"
+  },
+  {
+    "name": "FTB Ultimine",
+    "group": "Комфорт",
+    "required": true,
+    "description": "Библиотека или инструмент FTB Ultimine для NeoForge 1.21.1.",
+    "url": "https://maven.ftb.dev/releases/"
+  },
+  {
     "name": "Industrial Craft 2: Nostalgia",
     "group": "Технологии",
     "required": true,
@@ -503,6 +517,20 @@ window.TQ_MODS = [
     "required": true,
     "description": "Обязательная библиотека Aquamirae, версия 5.4.0.",
     "url": "https://modrinth.com/mod/fragmentum"
+  },
+  {
+    "name": "Sophisticated Storage",
+    "group": "Хранение",
+    "required": true,
+    "description": "Улучшаемые сундуки и фильтры; Iron Chests сохранён.",
+    "url": "https://modrinth.com/mod/sophisticated-storage"
+  },
+  {
+    "name": "Architectury API",
+    "group": "Библиотеки",
+    "required": true,
+    "description": "Библиотека NeoForge для FTB Library и Ultimine.",
+    "url": "https://modrinth.com/mod/architectury-api"
   }
 ];
   </script>
@@ -546,16 +574,16 @@ window.TQ_MODS = [
 <section class="download section" id="download" aria-labelledby="download-title">
  <div class="container download-grid">
   <div><p class="kicker">02 / СОБИРАЕМСЯ В ПУТЬ</p><h2 id="download-title">Первый шаг —<br>установить сборку.</h2><p class="intro">Графический установщик для Windows 10/11 и привычный официальный Minecraft Launcher. Python и команды в консоли не нужны.</p>
-   <ol class="steps"><li><div><strong>Скачай установщик.</strong><br>Открой успешную сборку, в Artifacts выбери TechQuest-Windows-GUI-Installer. Распакуй ZIP и запусти EXE.</div></li><li><div><strong>Выбери новую папку.</strong><br>Установи моды и Java 21. NeoForge 21.1.264 устанавливается один раз для твоего Launcher.</div></li><li><div><strong>Укажи папку в Launcher.</strong><br>Установки → профиль NeoForge → Папка игры. Для первого теста создай новый мир, без необязательного AMW.</div></li></ol>
+   <ol class="steps"><li><div><strong>Скачай установщик.</strong><br>Один EXE из публичного релиза — без регистрации на GitHub, без ZIP-архива. Запусти TechQuestInstaller.exe.</div></li><li><div><strong>Установи или обнови.</strong><br>Установи моды и Java 21. NeoForge 21.1.264 устанавливается один раз для твоего Launcher.</div></li><li><div><strong>Укажи папку в Launcher.</strong><br>Установки → профиль NeoForge → Папка игры. Для первого теста создай новый мир, без необязательного AMW.</div></li></ol>
   </div>
   <div>
    <article class="release"><div class="release-top"><span class="tag">ТЕСТОВАЯ АЛЬФА</span><span>WINDOWS 10 / 11 · x64</span></div><h3>TechQuest <span data-pack-version>0.3.3-alpha</span></h3><p>Единый Optimized. Приключения, технологии, авиация и ограниченная физика обломков.</p>
-    <a class="button light" id="download-link" href="https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml?query=branch%3Amain">Открыть скачивание EXE <span class="arrow" aria-hidden="true">→</span></a>
-    <p class="release-note">Скачивание пока через GitHub Actions: для Artifacts нужен вход в GitHub. Выбирай полностью успешный запуск; архивы хранятся ограниченное время.</p>
-    <p class="release-status" id="build-status" role="status">Проверь зелёный статус сборки и отчёт Security Audit на GitHub.</p>
+    <a class="button light" id="download-link" href="https://github.com/Nessoro/TechQuest-Modpack/releases">Скачать установщик EXE <span class="arrow" aria-hidden="true">→</span></a>
+    <p class="release-note">Публичный GitHub Releases: аккаунт не нужен. Доступен один EXE с обновлением существующей папки, параллельной загрузкой и проверкой хешей. Это тестовая версия.</p>
+    <p class="release-status" id="build-status" role="status">Проверяем публичный предрелиз. Его файл публикуется только после успешного аудита ClamAV.</p>
     <div class="release-footer"><span>Java 21 · NeoForge 21.1.264</span><a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/docs/INSTALL_0.3.3_PC_RU.md">Подробная инструкция →</a></div>
    </article>
-   <div class="download-links"><a href="https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml">Прежние сборки</a><a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/QA_0.3.3_RU.md">Что проверено</a><a href="https://github.com/Nessoro/TechQuest-Modpack/issues/21">План обновления</a></div>
+   <div class="download-links"><a href="https://github.com/Nessoro/TechQuest-Modpack/releases">Все публичные выпуски</a><a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/QA_0.3.3_RU.md">Что проверено</a><a href="https://github.com/Nessoro/TechQuest-Modpack/issues/21">План обновления</a></div>
    <p class="release-status">Это альфа: запуск до меню проверен. Полёт, выделенный сервер и производительность нового состава ещё требуют игровых испытаний. Сохраняй резервные копии миров.</p>
   </div>
  </div>
