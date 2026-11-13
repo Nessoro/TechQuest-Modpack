@@ -58,6 +58,27 @@ jobs:
           PY
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
+      - name: Enforce micro2 RPG replacement in full packaged client and server
+        run: |
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          name = "techquest-rpg-core-0.1.0.jar"
+          out = Path("output")
+          for side in ("client", "server"):
+              directory = out / side / "mods"
+              assert (directory / name).is_file(), f"{side} missing RPG Core"
+              assert not list(directory.glob("pmmo-*.jar")), f"{side} still contains PMMO"
+              with zipfile.ZipFile(directory / name) as core:
+                  assert "data/minecraft/tags/function/tick.json" in core.namelist()
+                  assert b'modLoader="lowcodefml"' in core.read("META-INF/neoforge.mods.toml")
+          with zipfile.ZipFile(out / "TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as pack:
+              assert "overrides/mods/" + name in pack.namelist()
+              files = json.loads(pack.read("modrinth.index.json"))["files"]
+              assert not any(row["path"].startswith("mods/pmmo-") for row in files)
+              assert "overrides/config/pmmo-client.toml" not in pack.namelist()
+          print("micro2: RPG Core present on both sides; PMMO absent")
+          PY
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
       - uses: actions/setup-java@v4
