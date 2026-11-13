@@ -4,7 +4,7 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica Micro-patch 0.3.3-micro1: Sophisticated Storage, FTB Ultimine, Inventory Profiles Next, shared Apotheosis World Tier.",
+  "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica Micro-patch 0.3.3-micro1: Sophisticated Storage, FTB Ultimine, shared Apotheosis World Tier.",
   "removed_mods": [
     {
       "project": "mcheli-modern-port",
@@ -439,20 +439,6 @@
       "group": "Хранение",
       "required": true,
       "version_id": "hC4LaBhJ"
-    },
-    {
-      "project": "inventory-profiles-next",
-      "group": "Интерфейс",
-      "required": true,
-      "version_id": "PGkcsaK7",
-      "client_only": true
-    },
-    {
-      "project": "libipn",
-      "group": "Библиотеки",
-      "required": true,
-      "version_id": "BGe4KMlE",
-      "client_only": true
     },
     {
       "project": "architectury-api",
@@ -1553,28 +1539,6 @@
       "environment": {
         "client": "required",
         "server": "required"
-      }
-    },
-    "O7RBXm3n": {
-      "title": "Inventory Profiles Next",
-      "version": "neoforge-1.21.1-2.2.4",
-      "version_id": "PGkcsaK7",
-      "filename": "InventoryProfilesNext-neoforge-1.21.1-2.2.4.jar",
-      "sha512": "10cd7d8608761191581fd151210349d380450deaf98b73ca53b689a54938208224a2bb922251a990640cd72a1eb6ceaddd2026efef2da61a3028fa1b3e7b4d28",
-      "environment": {
-        "client": "required",
-        "server": "unsupported"
-      }
-    },
-    "onSQdWhM": {
-      "title": "libIPN",
-      "version": "neoforge-1.21.1-6.6.3",
-      "version_id": "BGe4KMlE",
-      "filename": "libIPN-neoforge-1.21.1-6.6.3.jar",
-      "sha512": "89383465eb8dfa296e7518dd0e6ddc1a242f4537a3183425f2319c79a3e97843ded0f5e13f86b095f2f09beacd2a1f249f554e0f4e18291209720826031a8b93",
-      "environment": {
-        "client": "required",
-        "server": "unsupported"
       }
     },
     "lhGA9TYQ": {

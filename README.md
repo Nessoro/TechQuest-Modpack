@@ -20,7 +20,7 @@ TechQuest — большая комплексная сборка вокруг **
 
 **Project MMO:** в новых установках список навыков скрыт по умолчанию, `Left Alt` включает его по запросу. Сами навыки и опыт сохранены; при включении список использует иконки и правую часть экрана. Существующий `config/pmmo-client.toml` не перезаписывается. [Настройка Project MMO](docs/PROJECT_MMO_HUD_RU.md).
 
-**Микропатч 0.3.3:** добавлены Sophisticated Storage (Iron Chests сохранён), FTB Ultimine с официального FTB Maven и Inventory Profiles Next для сортировки инвентаря. Серверная синхронизация World Tier Apotheosis и отключение Vein Mining PMMO оформлены в [документации микропатча](docs/MICROPATCH_0.3.3_RU.md). Эти изменения тестируются в отдельной ветке; не переносите старый мир без бэкапа.
+**Микропатч 0.3.3:** добавлены Sophisticated Storage (Iron Chests сохранён), FTB Ultimine с официального FTB Maven. Inventory Profiles Next и libIPN исключены (нежелательная автоматическая замена инструмента). Серверная синхронизация World Tier Apotheosis и отключение Vein Mining PMMO оформлены в [документации микропатча](docs/MICROPATCH_0.3.3_RU.md). Эти изменения тестируются в отдельной ветке; не переносите старый мир без бэкапа.
 
 **Авиация:** Superb Warfare и Incoming остаются в составе. MCHeli Modern Port, TaCZ и ParCool исключены по решению владельца («не нужен»). Геймпад для самолёта пока не реализован. [Состояние авиации](docs/AIRCRAFT_0.3.3_RU.md) · [Как работает SAM Incoming](docs/INCOMING_SAM_RU.md) · [Физика](docs/PHYSICS_TESTING_RU.md) · [NeoForge через GUI](docs/NEOFORGE_FALLBACK_RU.md) · [Клавиши и зум](docs/CONTROLS_RU.md).
 

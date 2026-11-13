@@ -15,18 +15,21 @@ class MicroPatchTests(unittest.TestCase):
         self.cfg = build_pack.load_cfg()
         self.mods = {m["project"]: m for m in self.cfg["mods"]}
 
-    def test_storage_sorting_and_dependencies_are_locked(self):
-        for p in ("sophisticated-storage", "inventory-profiles-next", "libipn", "architectury-api"):
+    def test_storage_and_dependencies_are_locked_without_ipn(self):
+        for p in ("sophisticated-storage", "architectury-api"):
             self.assertIn(p, self.mods)
             self.assertTrue(self.mods[p]["required"])
         self.assertIn("iron-chests", self.mods)
         self.assertIn("sophisticated-backpacks", self.mods)
-        for p in ("inventory-profiles-next", "libipn"):
-            self.assertTrue(self.mods[p]["client_only"])
+        # IPN automatically replaced worn-out tools and is no longer wanted.
+        for slug in ("inventory-profiles-next", "libipn"):
+            self.assertNotIn(slug, self.mods)
+        for ident in ("O7RBXm3n", "onSQdWhM"):
+            self.assertNotIn(ident, self.cfg["modrinth_lock"])
+        # Do not remove other pinned libraries opportunistically.
         self.assertFalse(self.mods["architectury-api"].get("client_only", False))
-        for ident in ("hMlaZH8f", "O7RBXm3n", "onSQdWhM", "lhGA9TYQ", "ordsPcFz"):
+        for ident in ("hMlaZH8f", "lhGA9TYQ", "ordsPcFz"):
             self.assertIn(ident, self.cfg["modrinth_lock"])
-        self.assertEqual(self.cfg["modrinth_lock"]["O7RBXm3n"]["environment"]["server"], "unsupported")
 
     def test_ftb_maven_only_and_same_client_server_versions(self):
         files = {m["name"]: m for m in self.cfg["external_mods"]}
@@ -48,7 +51,9 @@ class MicroPatchTests(unittest.TestCase):
     def test_pmmo_vein_disabled_without_removing_skills(self):
         with zipfile.ZipFile(io.BytesIO(micro_patch_datapack())) as z:
             cfg = json.loads(z.read("data/pmmo/config/server.json"))
-            self.assertFalse(cfg["vein_miner"]["vein_enabled"])
+            # Project MMO vein mining is disabled server-side. RPG XP and
+            # the independent FTB Ultimine remain enabled.
+            self.assertIs(cfg["vein_miner"]["vein_enabled"], False)
             self.assertIn("levels", cfg)
             self.assertIn("xp_gains", cfg)
             self.assertIn("JUMP", cfg["xp_gains"]["player_actions"])

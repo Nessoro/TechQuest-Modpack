@@ -61,8 +61,6 @@ NAMES = {
     "forgematica": "Forgematica",
     "explorers-compass": "Explorer's Compass",
     "sophisticated-storage": "Sophisticated Storage",
-    "inventory-profiles-next": "Inventory Profiles Next",
-    "libipn": "libIPN",
     "architectury-api": "Architectury API",
     "lithium": "Lithium",
 }
@@ -110,8 +108,6 @@ DESCRIPTIONS = {
     "forgematica": "Голограммы чертежей, .litematic и списки материалов; только клиент.",
     "explorers-compass": "Поиск обычных и модовых структур через удобный компас.",
     "sophisticated-storage": "Улучшаемые сундуки и фильтры; Iron Chests сохранён.",
-    "inventory-profiles-next": "Сортировка инвентаря и сундуков, только клиент.",
-    "libipn": "Библиотека сортировки инвентаря, только клиент.",
     "architectury-api": "Библиотека NeoForge для FTB Library и Ultimine.",
     "lithium": "Оптимизация логики и тиков Minecraft; требуется проверка совместимости.",
 }
