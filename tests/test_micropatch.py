@@ -57,10 +57,14 @@ class MicroPatchTests(unittest.TestCase):
             self.assertNotIn("data/pmmo/config/server.json", z.namelist())
             self.assertIn("data/techquest/function/worldtier/sync.mcfunction", z.namelist())
 
-    def test_betterzoom_custom_mixin_is_no_longer_packaged(self):
-        # The old Better Zoom startup workaround lived in TechQuest Compatibility.
-        # This check documents its removal; runtime startup must be retested.
-        self.assertFalse(hasattr(build_pack, "compatibility_jar"))
+    def test_compatibility_betterzoom_mixin_preserved_but_rpg_removed(self):
+        from build_pack import compatibility_jar
+        class_path = "techquest/compat/mixin/BetterZoomEarlyTickMixin.class"
+        with zipfile.ZipFile(io.BytesIO(compatibility_jar())) as jar:
+            self.assertIn(class_path, jar.namelist())
+            self.assertIn("techquest-compat.mixins.json", jar.namelist())
+            config = json.loads(jar.read("techquest-compat.mixins.json"))
+            self.assertEqual(config["client"], ["BetterZoomEarlyTickMixin"])
         self.assertFalse(hasattr(build_pack, "rpg_core_jar"))
 
     def test_global_apotheosis_commands_and_persistent_scoreboard(self):
