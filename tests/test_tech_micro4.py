@@ -60,6 +60,15 @@ class TechnologyExpansionTests(unittest.TestCase):
         self.assertTrue(hasattr(build_pack, "compatibility_jar"))
         self.assertFalse(hasattr(build_pack, "rpg_core_jar"))
 
+    def test_russian_ingame_guide_includes_new_technology(self):
+        from scripts.guide_assets import ENTRIES, guide_overrides
+        for key in ("trash_cans", "pretty_pipes", "colossal_reactors"):
+            self.assertIn(key, ENTRIES)
+            self.assertIn(
+                "patchouli_books/techquest_guide/en_us/entries/" + key + ".json",
+                guide_overrides(),
+            )
+
     def test_lock_metadata_and_matching_website_catalog(self):
         html = (ROOT / "docs/index.html").read_text(encoding="utf-8")
         start = html.index("window.TQ_MODS = ") + len("window.TQ_MODS = ")
