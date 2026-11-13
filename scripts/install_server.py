@@ -68,13 +68,11 @@ def prepare_properties(target):
             "allow-flight=true\n", encoding="utf-8")
 
 def install_compatibility(pack_path, mods):
-    # Extract only our known resource mod, never arbitrary paths from an archive.
-    with zipfile.ZipFile(pack_path) as archive:
-        for filename in (packbuilder.COMPAT_JAR_NAME, packbuilder.RPG_JAR_NAME):
-            entry = "overrides/mods/" + filename
-            if entry not in archive.namelist():
-                raise packbuilder.BuildError("Missing first-party mod: " + filename)
-            (mods / filename).write_bytes(archive.read(entry))
+    """Keep the existing verified server-side Superb Warfare patch.
+
+    Historical method name is retained for callers; neither TechQuest-made JAR
+    is installed. This routine does not modify other official mod binaries.
+    """
     for path in mods.glob("superbwarfare-*.jar"):
         packbuilder.patch_superb_server_jar(path)
 
