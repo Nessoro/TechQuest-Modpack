@@ -1,0 +1,56 @@
+name: Build TEST isolated installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/test-isolated-mining-pack
+    paths:
+      - 'test/**'
+      - '.github/workflows/build-test.yml'
+  pull_request:
+    paths:
+      - 'test/**'
+      - '.github/workflows/build-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Check isolated layout
+        shell: pwsh
+        run: |
+          if (!(Test-Path test/TESTInstaller.cs)) { throw "TEST source missing" }
+          $source = Get-Content test/TESTInstaller.cs -Raw
+          foreach ($value in @("TechQuest", "TEST_ALL", "TEST_PHYSICS_ON", "TEST_PHYSICS_OFF", "PrOVZx3c", "wudTG1nk", "1IiqEQGl", "incoming-3.10.4.jar")) {
+            if (!$source.Contains($value)) { throw "Required TEST marker missing: $value" }
+          }
+          if ($source.Contains('Environment.SpecialFolder.ApplicationData')) {
+            throw "TEST installer must not use shared roaming .minecraft"
+          }
+      - name: Compile single-file Windows GUI installer
+        run: dotnet publish test/TESTInstaller.csproj --configuration Release --runtime win-x64 --self-contained true --output artifacts/TEST
+      - name: Check executable
+        shell: pwsh
+        run: |
+          if (!(Test-Path artifacts/TEST/TEST.exe)) { throw "TEST.exe missing" }
+          $size = (Get-Item artifacts/TEST/TEST.exe).Length
+          if ($size -lt 1000000) { throw "Unexpectedly small Windows self-contained executable" }
+          Write-Output "TEST.exe bytes: $size"
+      - name: Publish standalone installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEST-Windows-Installer
+          path: artifacts/TEST/TEST.exe
+          if-no-files-found: error
+          retention-days: 30
