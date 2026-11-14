@@ -33,7 +33,8 @@ internal static class TransactionalMods
 
     private static bool SafeName(string value) =>
         !string.IsNullOrEmpty(value) && value.Length <= 180 &&
-        value == Path.GetFileName(value) && !value.Contains("..", StringComparison.Ordinal) &&
+        value == Path.GetFileName(value) && value.IndexOfAny(Path.GetInvalidFileNameChars()) < 0 &&
+        !value.Contains("..", StringComparison.Ordinal) &&
         !value.Contains('/') && !value.Contains('\\') &&
         value.EndsWith(".jar", StringComparison.OrdinalIgnoreCase);
 
