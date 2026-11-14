@@ -204,6 +204,7 @@ def main(argv=None):
     print("Refactored IC2R binary symbols:", report["solar_ic2r_class_references"])
     print("Refactored IC2R symbol examples:", report["solar_ic2r_class_examples"][:25])
     print("Symbols still missing after naive remap:", report["solar_ic2r_symbols_without_direct_nostalgia_class"])
+    print("Non-remappable IC2R class paths:", report["solar_ic2r_symbols_not_naively_remappable"])
     print("Missing IC2 classes in pinned Nostalgia:", report["solar_ic2_missing_class_count"])
     print("Missing class names:", report["solar_ic2_missing_classes"][:60])
     print("Full report:", outfile)
