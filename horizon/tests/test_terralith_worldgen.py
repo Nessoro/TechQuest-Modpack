@@ -254,6 +254,44 @@ class TerralithWorldgenTests(unittest.TestCase):
         dimension.write_text('{}')
         return work, field
 
+    def test_patch_composition_retains_placed_child_without_mutating_source(self):
+        child = {"feature": "test:configured", "placement": [
+            {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:true"}}]}
+        patch = {"type": "minecraft:random_patch", "tries": 7,
+                 "xz_spread": 12, "y_spread": 16, "feature": child}
+        before = copy.deepcopy(patch)
+        result, count = adapter.normalize_patches(patch)
+        self.assertEqual(count, 1)
+        self.assertEqual(patch, before)
+        self.assertEqual(result["features"][0]["feature"]["features"], [child])
+        self.assertFalse(adapter.has_legacy_patch(result))
+        self.assertEqual(adapter.normalize_patches(result), (result, 0))
+
+    def test_zero_spread_retains_random_sampling_and_named_placed_feature(self):
+        patch = {"type": "minecraft:flower", "tries": 1,
+                 "xz_spread": 0, "y_spread": 0, "feature": "test:placed"}
+        result, _ = adapter.normalize_patches(patch)
+        attempt = result["features"][0]
+        self.assertEqual(attempt["feature"]["features"], ["test:placed"])
+        for axis in ("x", "y", "z"):
+            self.assertIsInstance(attempt["placement"][1][axis], dict)
+            self.assertEqual(attempt["placement"][1][axis]["type"], "minecraft:trapezoid")
+
+    def test_patch_outside_engine_bounds_is_preserved_and_reportable(self):
+        for fields in ({"y_spread": 25}, {"xz_spread": 17}, {"tries": 4097}):
+            patch = {"type": "minecraft:random_patch", "tries": 1,
+                     "xz_spread": 7, "y_spread": 3, "feature": "test:placed", **fields}
+            self.assertEqual(adapter.normalize_patches(patch), (patch, 0))
+            self.assertTrue(adapter.has_legacy_patch(patch))
+
+    def test_patch_unknown_fields_and_invalid_values_require_review(self):
+        for fields in ({"tries": True}, {"y_spread": -1}, {"xz_spread": 2.5},
+                       {"salt": 42}, {"feature": []}):
+            patch = {"type": "minecraft:random_patch", "tries": 1,
+                     "xz_spread": 7, "y_spread": 3, "feature": "test:placed", **fields}
+            with self.subTest(fields=fields), self.assertRaises(ValueError):
+                adapter.normalize_patches(patch)
+
     def test_existing_output_refused(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)

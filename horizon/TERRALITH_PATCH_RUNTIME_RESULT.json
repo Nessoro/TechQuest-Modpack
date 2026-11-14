@@ -1,0 +1,238 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-14",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "source_minecraft": "1.21.1",
+  "minecraft": "26.3",
+  "terralith": "2.6.2",
+  "normalized_patch_configs": 59,
+  "deferred_patch_files": [
+    "data/terralith/worldgen/feature/snowy/fix_snow.json"
+  ],
+  "deferred_reason": "pinned offset bounds [-16,16]; original fix_snow has y_spread=25",
+  "source_files_hashed": 1867,
+  "source_hashes_rechecked": true,
+  "source_files_modified": false,
+  "reference_patch_probes": {
+    "cases": 640,
+    "attempt_positions_compared": 11520,
+    "mismatches": 0,
+    "compared": [
+      "ordered attempt positions",
+      "result",
+      "next bounded random draw"
+    ],
+    "kinds": [
+      "random_patch",
+      "flower"
+    ],
+    "seeds": [
+      0,
+      1,
+      -1,
+      263,
+      9223372036854775807
+    ],
+    "tries": [
+      0,
+      1,
+      7,
+      64
+    ],
+    "spreads": [
+      [
+        0,
+        0
+      ],
+      [
+        7,
+        3
+      ],
+      [
+        12,
+        16
+      ],
+      [
+        16,
+        16
+      ]
+    ],
+    "child_random_offset_tested": true,
+    "alternating_success_and_all_failure_tested": true,
+    "world_is_recording_stub": true,
+    "whole_feature_or_world_parity_claimed": false,
+    "verified_official_inputs": {
+      "server_sha1": "59353fb40c36d304f2035d51e7d6e6baa98dc05c",
+      "server_mappings_sha1": "03f8985492bda0afc0898465341eb0acef35f570"
+    }
+  },
+  "derived_hmod_sdk_validated": true,
+  "derived_hmod_sha256": "074f2923fc03608f1a2a6b0fc00be6f408bd2bb9e47a0512ca023dfeb3f3290a",
+  "world_datapack_still_required": true,
+  "namespace_ownership_changed": false,
+  "server_boot_tested": true,
+  "loaded_hmod_modules": 6,
+  "world_checks": {
+    "schema": 1,
+    "world": "horizon-patch-test",
+    "seed": 263,
+    "online_mode": true,
+    "whitelist": true,
+    "bind": "127.0.0.1",
+    "port": 25590,
+    "features": [
+      {
+        "feature": "terralith:plains/patch_grass",
+        "position": [
+          126,
+          220,
+          126
+        ],
+        "block": "minecraft:short_grass",
+        "placed": true,
+        "soil_checked": true,
+        "plant_after_reopen": true,
+        "soil_after_reopen": true
+      },
+      {
+        "feature": "terralith:birch/flowers",
+        "position": [
+          152,
+          220,
+          127
+        ],
+        "block": "minecraft:lily_of_the_valley",
+        "placed": true,
+        "soil_checked": true,
+        "plant_after_reopen": true,
+        "soil_after_reopen": true
+      },
+      {
+        "feature": "terralith:sakura/flowers",
+        "position": [
+          176,
+          220,
+          127
+        ],
+        "block": "minecraft:white_tulip",
+        "placed": true,
+        "soil_checked": true,
+        "plant_after_reopen": true,
+        "soil_after_reopen": true
+      }
+    ],
+    "save_all_flushed": true,
+    "reopen_checks_passed": true,
+    "final_status": {
+      "phase": "stopped"
+    }
+  },
+  "previous_placed_features_skipped": 77,
+  "placed_features_skipped": 22,
+  "restored_feature_decodes": 55,
+  "new_unsupported_features": [],
+  "skip_reasons": {
+    "unknown feature reference minecraft:patch_grass": 2,
+    "missing block identifier": 1,
+    "invalid world generation field: basic feature type": 7,
+    "unknown feature reference minecraft:patch_brown_mushroom": 1,
+    "unknown feature reference minecraft:patch_red_mushroom": 1,
+    "invalid world generation field: block": 6,
+    "unknown feature reference minecraft:patch_pumpkin": 1,
+    "invalid world generation field: level_test_distance": 2,
+    "invalid world generation field: replaceable_blocks": 1
+  },
+  "remaining_unsupported_features": [
+    [
+      "minecraft:patch_grass_forest",
+      "unknown feature reference minecraft:patch_grass"
+    ],
+    [
+      "terralith:cliffs/basalt/seed",
+      "missing block identifier"
+    ],
+    [
+      "terralith:snowy/fix_snow",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "minecraft:brown_mushroom_swamp",
+      "unknown feature reference minecraft:patch_brown_mushroom"
+    ],
+    [
+      "minecraft:red_mushroom_swamp",
+      "unknown feature reference minecraft:patch_red_mushroom"
+    ],
+    [
+      "terralith:flower/blue/flowers",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:dark/lichen",
+      "invalid world generation field: block"
+    ],
+    [
+      "terralith:dark/lichen_log",
+      "invalid world generation field: block"
+    ],
+    [
+      "terralith:savanna/dripstone",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:highlands/lichen",
+      "invalid world generation field: block"
+    ],
+    [
+      "terralith:spires/patch_grass",
+      "unknown feature reference minecraft:patch_grass"
+    ],
+    [
+      "terralith:spires/dripstone",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:savanna/shattered/teeth",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:cherry/rock",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:skylands/lichen",
+      "invalid world generation field: block"
+    ],
+    [
+      "terralith:skylands/winter/lichen",
+      "invalid world generation field: block"
+    ],
+    [
+      "terralith:skylands/patch_pumpkin",
+      "unknown feature reference minecraft:patch_pumpkin"
+    ],
+    [
+      "terralith:skylands/spring/lichen",
+      "invalid world generation field: block"
+    ],
+    [
+      "terralith:cave/stone/granite_roots",
+      "invalid world generation field: level_test_distance"
+    ],
+    [
+      "terralith:cave/stone/diorite_clearing",
+      "invalid world generation field: level_test_distance"
+    ],
+    [
+      "terralith:cave/thermal/dripstone",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:cave/frostfire/columns",
+      "invalid world generation field: replaceable_blocks"
+    ]
+  ],
+  "client_boot_tested": false,
+  "multiplayer_tested": false,
+  "gameplay_ported": false
+}

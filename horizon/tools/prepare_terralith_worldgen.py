@@ -257,6 +257,54 @@ def inline_noise_parameters(value, converted: dict):
     return result, count
 
 
+def normalize_patches(value):
+    """Compose legacy attempts without changing random draws or short circuiting.
+
+    A one-child overlay supplies the configured-feature boundary; the inner
+    overlay retains an inline or named placed feature and its modifiers.
+    Symmetric trapezoids draw nextInt(spread+1) twice, including spread=0.
+    The pinned engine only accepts offsets in [-16,16]; wider patches remain
+    explicitly unsupported instead of being clipped or redistributed.
+    """
+    if isinstance(value, list):
+        pairs = [normalize_patches(v) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: normalize_patches(v) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    if value.get("type") not in ("random_patch", "minecraft:random_patch",
+                                 "flower", "minecraft:flower"):
+        return result, count
+    if set(value) != {"type", "tries", "xz_spread", "y_spread", "feature"}:
+        raise ValueError("unreviewed legacy patch fields")
+    if any(type(value[k]) is not int or value[k] < 0
+           for k in ("tries", "xz_spread", "y_spread")):
+        raise ValueError("expected nonnegative patch integers")
+    if not isinstance(value["feature"], (str, dict)):
+        raise ValueError("expected a named or inline patch placed feature")
+    if value["tries"] > 4096 or max(value["xz_spread"], value["y_spread"]) > 16:
+        return result, count
+    def spread(size):
+        return {"type": "minecraft:trapezoid", "min": -size, "max": size, "plateau": 0}
+    attempt = {"feature": {"type": "minecraft:overlay", "features": [result["feature"]]},
+               "placement": [{"type": "minecraft:count", "count": value["tries"]},
+                             {"type": "minecraft:offset", "x": spread(value["xz_spread"]),
+                              "y": spread(value["y_spread"]), "z": spread(value["xz_spread"])}]}
+    return {"type": "minecraft:overlay", "features": [attempt]}, count + 1
+
+
+def has_legacy_patch(value):
+    if isinstance(value, list):
+        return any(has_legacy_patch(v) for v in value)
+    if not isinstance(value, dict):
+        return False
+    return (value.get("type") in ("random_patch", "minecraft:random_patch",
+                                  "flower", "minecraft:flower")
+            or any(has_legacy_patch(v) for v in value.values()))
+
+
 def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = None) -> dict:
     if output.exists() or output.is_symlink():
         raise ValueError("output must be a new directory; existing worlds are never modified")
@@ -364,12 +412,17 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                 raise ValueError("official upgrader did not convert noise parameters")
             converted[key] = spec
             path.unlink()  # Only our temporary conversion record, never a source file.
-        noise_converted = 0
+        noise_converted, patches = 0, 0
+        deferred_patches = []
         for path in sorted((upgraded / "data").rglob("*.json")):
             value, count = inline_noise_parameters(json.loads(path.read_bytes()), converted)
-            if count:
+            value, patch_count = normalize_patches(value)
+            if has_legacy_patch(value):
+                deferred_patches.append(path.relative_to(upgraded).as_posix())
+            if count or patch_count:
                 path.write_text(json.dumps(value, indent=2) + "\n")
-                noise_converted += count
+            noise_converted += count
+            patches += patch_count
         if noise_converted != noise_occurrences:
             raise ValueError("noise parameter occurrence count changed during official upgrade")
         report = {"schema": 1, "minecraft": "26.3", "source_minecraft": "1.21.1",
@@ -383,6 +436,8 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "normalized_noise_provider_parameters": noise_converted,
                   "unique_noise_parameter_records": len(generated),
                   "temporary_noise_records_removed": True,
+                  "normalized_patch_configs": patches,
+                  "deferred_patch_files": deferred_patches,
                   "prepared_biomes_sha256": base_hash,
                   "sources": sources, "official_upgrade_output": result.stdout.splitlines(),
                   "unselected_outside": unselected_outside,
