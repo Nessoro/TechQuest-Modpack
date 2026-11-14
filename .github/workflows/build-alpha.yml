@@ -35,6 +35,8 @@ jobs:
           python-version: '3.12'
       - name: Validate pack builder and server installer
         run: python -m unittest discover -s tests -v
+      - name: Inspect official Iskander Rocket metadata
+        run: python scripts/inspect_iskander_rocket.py
       - name: Validate GitHub-hosted IndustrialCraft JAR and download hash
         run: |
           python - <<'PY'
@@ -129,6 +131,40 @@ jobs:
               ), side
           print("micro4 pinned JAR hashes, client/server outputs and mrpack verified")
           print("No Minecraft gameplay or route-testing implied by this check")
+          PY
+      - name: Verify original Iskander in client, server, and Modrinth manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+          import build_pack
+
+          cfg = build_pack.load_cfg()
+          mod = next(x for x in cfg["mods"] if x["project"] == "iskander-rocket-mod")
+          lock = cfg["modrinth_lock"]["XUogRnhj"]
+          assert mod["version_id"] == lock["version_id"] == "M1b2lYax"
+          assert lock["filename"] == "iskander-2.0.1+mc1.21-1.21.1-neoforge.jar"
+          assert lock["environment"] == {"client": "required", "server": "required"}
+          for side in ("client", "server"):
+              jar = Path("output") / side / "mods" / lock["filename"]
+              assert jar.is_file(), (side, "Iskander missing")
+              assert hashlib.sha512(jar.read_bytes()).hexdigest() == lock["sha512"], jar
+              with zipfile.ZipFile(jar) as archive:
+                  assert archive.testzip() is None, (side, "corrupted jar")
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as archive:
+              assert archive.testzip() is None
+              index = json.loads(archive.read("modrinth.index.json"))
+              path = "mods/" + lock["filename"]
+              rows = [row for row in index["files"] if row["path"] == path]
+              assert len(rows) == 1, (path, "expected exactly one original mod entry")
+              assert rows[0]["hashes"]["sha512"] == lock["sha512"]
+              assert rows[0]["env"] == {"client": "required", "server": "required"}
+              assert "overrides/" + path not in archive.namelist(), "do not repackage author jar"
+              guide = "overrides/patchouli_books/techquest_guide/en_us/entries/iskander_rocket.json"
+              assert guide in archive.namelist(), "missing Patchouli rocket guide"
+          print("micro5: Iskander 2.0.1 original pinned SHA-512 and client/server mrpack verified")
           PY
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py

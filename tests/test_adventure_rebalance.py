@@ -70,8 +70,8 @@ class AdventureRebalanceTests(unittest.TestCase):
         exploration = sum(counts[g] for g in EXPLORATION)
         military = sum(counts[g] for g in MILITARY)
         total = tech + adventure + exploration + military
-        self.assertEqual((tech, adventure, exploration, military), (13, 20, 6, 6))
-        self.assertEqual(total, 45)
+        self.assertEqual((tech, adventure, exploration, military), (13, 20, 6, 7))
+        self.assertEqual(total, 46)
         self.assertLess(tech / total, 0.32)
         self.assertGreater((adventure + exploration) / total, 0.55)
 
