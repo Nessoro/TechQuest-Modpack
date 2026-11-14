@@ -268,8 +268,9 @@ def normalize_patches(value):
     A one-child overlay supplies the configured-feature boundary; the inner
     overlay retains an inline or named placed feature and its modifiers.
     Symmetric trapezoids draw nextInt(spread+1) twice, including spread=0.
-    The pinned engine only accepts offsets in [-16,16]; wider patches remain
-    explicitly unsupported instead of being clipped or redistributed.
+    The pinned engine accepts each offset in [-16,16]. For wider spreads up
+    to 31, two centered weighted draws per axis preserve i-j exactly while
+    keeping each individual offset in bounds. Wider patches remain deferred.
     """
     if isinstance(value, list):
         pairs = [normalize_patches(v) for v in value]
@@ -289,14 +290,26 @@ def normalize_patches(value):
         raise ValueError("expected nonnegative patch integers")
     if not isinstance(value["feature"], (str, dict)):
         raise ValueError("expected a named or inline patch placed feature")
-    if value["tries"] > 4096 or max(value["xz_spread"], value["y_spread"]) > 16:
+    if value["tries"] > 4096 or max(value["xz_spread"], value["y_spread"]) > 31:
         return result, count
     def spread(size):
         return {"type": "minecraft:trapezoid", "min": -size, "max": size, "plateau": 0}
+    if max(value["xz_spread"], value["y_spread"]) <= 16:
+        offsets = [{"type": "minecraft:offset", "x": spread(value["xz_spread"]),
+                    "y": spread(value["y_spread"]), "z": spread(value["xz_spread"])}]
+    else:
+        offsets = []
+        for axis, size in zip(("x", "y", "z"), (value["xz_spread"], value["y_spread"], value["xz_spread"])):
+            half = size // 2
+            for subtract in (False, True):
+                # Even a singleton weighted list consumes nextInt(1), unlike
+                # a constant. Inactive axes use constants and consume nothing.
+                distribution = [{"data": half-i if subtract else i-half, "weight": 1}
+                                for i in range(size + 1)]
+                offsets.append({"type": "minecraft:offset", **dict.fromkeys(("x", "y", "z"), 0),
+                                axis: {"type": "minecraft:weighted_list", "distribution": distribution}})
     attempt = {"feature": {"type": "minecraft:overlay", "features": [result["feature"]]},
-               "placement": [{"type": "minecraft:count", "count": value["tries"]},
-                             {"type": "minecraft:offset", "x": spread(value["xz_spread"]),
-                              "y": spread(value["y_spread"]), "z": spread(value["xz_spread"])}]}
+               "placement": [{"type": "minecraft:count", "count": value["tries"]}, *offsets]}
     return {"type": "minecraft:overlay", "features": [attempt]}, count + 1
 
 
@@ -617,6 +630,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "unique_noise_parameter_records": len(generated),
                   "temporary_noise_records_removed": True,
                   "normalized_patch_configs": patches,
+                  "max_composed_patch_spread": 31,
                   "deferred_patch_files": deferred_patches,
                   "normalized_multiface_defaults": multiface,
                   "normalized_root_systems": roots,

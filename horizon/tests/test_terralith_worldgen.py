@@ -277,12 +277,27 @@ class TerralithWorldgenTests(unittest.TestCase):
             self.assertIsInstance(attempt["placement"][1][axis], dict)
             self.assertEqual(attempt["placement"][1][axis]["type"], "minecraft:trapezoid")
 
-    def test_patch_outside_engine_bounds_is_preserved_and_reportable(self):
-        for fields in ({"y_spread": 25}, {"xz_spread": 17}, {"tries": 4097}):
+    def test_patch_beyond_composition_bounds_is_preserved_and_reportable(self):
+        for fields in ({"y_spread": 32}, {"xz_spread": 32}, {"tries": 4097}):
             patch = {"type": "minecraft:random_patch", "tries": 1,
                      "xz_spread": 7, "y_spread": 3, "feature": "test:placed", **fields}
             self.assertEqual(adapter.normalize_patches(patch), (patch, 0))
             self.assertTrue(adapter.has_legacy_patch(patch))
+
+    def test_wide_patch_individual_offsets_stay_in_engine_bounds(self):
+        patch = {"type": "minecraft:random_patch", "tries": 7,
+                 "xz_spread": 7, "y_spread": 25, "feature": "test:placed"}
+        result, count = adapter.normalize_patches(patch)
+        self.assertEqual(count, 1)
+        self.assertFalse(adapter.has_legacy_patch(result))
+        offsets = result["features"][0]["placement"][1:]
+        self.assertEqual(len(offsets), 6)
+        for offset in offsets:
+            for axis in ("x", "y", "z"):
+                if isinstance(offset[axis], dict):
+                    values = [entry["data"] for entry in offset[axis]["distribution"]]
+                    self.assertGreaterEqual(min(values), -16)
+                    self.assertLessEqual(max(values), 16)
 
     def test_patch_unknown_fields_and_invalid_values_require_review(self):
         for fields in ({"tries": True}, {"y_spread": -1}, {"xz_spread": 2.5},

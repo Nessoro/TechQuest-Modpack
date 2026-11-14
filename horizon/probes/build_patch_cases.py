@@ -17,7 +17,8 @@ def main():
     spec.loader.exec_module(adapter)
     cases = []
     for seed, tries, spreads, kind, child_offset, accept in itertools.product(
-            [0, 1, -1, 263, 2**63-1], [0, 1, 7, 64, 96], [(0, 0), (7, 3), (12, 16), (16, 16)],
+            [0, 1, -1, 263, 2**63-1], [0, 1, 7, 64, 96],
+            [(0, 0), (7, 3), (12, 16), (16, 16), (7, 25), (0, 25), (31, 31), (31, 0), (0, 31)],
             ["random_patch", "flower"], [False, True], [False, True]):
         placement = []
         if child_offset:
