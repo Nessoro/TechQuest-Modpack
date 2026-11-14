@@ -192,7 +192,10 @@ internal sealed class InstallerForm : Form
                 archive.GetEntry("overrides/config/openloader/packs/techquest_micropatch_033.zip") is null ||
                  fileNames.Any(n => n.StartsWith("pmmo-", StringComparison.OrdinalIgnoreCase)) ||
                  archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null ||
-                 archive.GetEntry("overrides/mods/techquest-rpg-core-0.1.0.jar") is not null)
+                 archive.Entries.Any(e =>
+                     e.FullName.StartsWith("overrides/mods/techquest-rpg-core", StringComparison.OrdinalIgnoreCase) ||
+                     e.FullName.StartsWith("overrides/mods/pmmo-", StringComparison.OrdinalIgnoreCase) ||
+                     e.FullName.StartsWith("overrides/mods/project-mmo", StringComparison.OrdinalIgnoreCase)))
                 return 7;
             string probe = Path.Combine(Path.GetTempPath(), "TechQuest-self-test-" + Guid.NewGuid().ToString("N"));
             try
@@ -257,20 +260,35 @@ internal sealed class InstallerForm : Form
             Directory.CreateDirectory(Path.Combine(updateProbe, "mods"));
             File.WriteAllText(Path.Combine(updateProbe, "TechQuest_НАСТРОЙКА.txt"), "managed");
             File.WriteAllText(Path.Combine(updateProbe, "mods", "old.jar"), "old");
+            File.WriteAllText(Path.Combine(updateProbe, "mods", "techquest-rpg-core-0.1.0.jar"), "old-rpg");
+            File.WriteAllText(Path.Combine(updateProbe, "mods", "pmmo-legacy.jar"), "old-pmmo");
             Directory.CreateDirectory(Path.Combine(updateProbe, "saves", "world1"));
             File.WriteAllText(Path.Combine(updateProbe, "saves", "world1", "level.dat"), "world");
             File.WriteAllText(Path.Combine(updateProbe, "options.txt"), "controls");
             string staged = Path.Combine(updateProbe, ".staged");
             Directory.CreateDirectory(staged);
             File.WriteAllText(Path.Combine(staged, "fresh.jar"), "fresh");
+            StageFirstPartyCompatibilityJar(staged);
             ActivateStagedMods(updateProbe, staged, () => { });
             if (!File.Exists(Path.Combine(updateProbe, "mods", "fresh.jar")) ||
                 File.Exists(Path.Combine(updateProbe, "mods", "old.jar")) ||
-                !File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "old.jar"))) return 20;
+                !File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "old.jar")) ||
+                !File.Exists(Path.Combine(updateProbe, "mods", "techquest-compat-1.0.0.jar")) ||
+                File.Exists(Path.Combine(updateProbe, "mods", "techquest-rpg-core-0.1.0.jar")) ||
+                File.Exists(Path.Combine(updateProbe, "mods", "pmmo-legacy.jar"))) return 20;
             if (File.ReadAllText(Path.Combine(updateProbe, "options.txt")) != "controls" ||
                 File.ReadAllText(Path.Combine(updateProbe, "saves", "world1", "level.dat")) != "world")
                 return 21;
-            // A failed override must roll back the previous verified mod set.
+            // Second successful update replaces (not multiplies) the backup.
+            Directory.CreateDirectory(staged);
+            File.WriteAllText(Path.Combine(staged, "newer.jar"), "newer");
+            StageFirstPartyCompatibilityJar(staged);
+            ActivateStagedMods(updateProbe, staged, () => { });
+            if (!File.Exists(Path.Combine(updateProbe, "mods", "newer.jar")) ||
+                !File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "fresh.jar")) ||
+                File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "old.jar")) ||
+                Directory.Exists(Path.Combine(updateProbe, ".techquest-backup-rotation"))) return 28;
+            // A failed update must restore BOTH the current mods and prior backup.
             Directory.CreateDirectory(staged);
             File.WriteAllText(Path.Combine(staged, "failed.jar"), "bad");
             try
@@ -279,8 +297,10 @@ internal sealed class InstallerForm : Form
                 return 22;
             }
             catch (IOException) { }
-            if (!File.Exists(Path.Combine(updateProbe, "mods", "fresh.jar")) ||
+            if (!File.Exists(Path.Combine(updateProbe, "mods", "newer.jar")) ||
                 File.Exists(Path.Combine(updateProbe, "mods", "failed.jar")) ||
+                !File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "fresh.jar")) ||
+                Directory.Exists(Path.Combine(updateProbe, ".techquest-backup-rotation")) ||
                 File.ReadAllText(Path.Combine(updateProbe, "options.txt")) != "controls") return 23;
             // Caching is only allowed after checking BOTH file size and SHA;
             // stale or tampered JARs are never reused.
