@@ -139,7 +139,7 @@ def inspect(jar_data, solar_data, url):
             ic2_mentions.update(part.decode("utf-8", "replace") for part in re.findall(rb"[A-Za-z0-9_/$;:.-]*[iI][cC]2[A-Za-z0-9_/$;:.-]*", content))
         solar_class_examples = entries[:30]
         solar_resource_examples = [p for p in solar.namelist() if "recipe" in p.lower() or "solar" in p.lower()][:35]
-    required_classes = {x for x in required_classes if x.startswith("ic2/")}
+    required_classes = {x for x in required_classes if x.startswith(("ic2/", "me/halfcooler/ic2r/"))}
     refactored_classes = {x for x in required_classes if x.startswith("me/halfcooler/ic2r/")}
     required_nostalgia_classes = {x for x in required_classes if x.startswith("ic2/")}
     missing = sorted(required_nostalgia_classes - ic2_classes)
