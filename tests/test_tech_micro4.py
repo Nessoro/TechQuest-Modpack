@@ -59,6 +59,27 @@ class TechnologyExpansionTests(unittest.TestCase):
         self.assertNotIn("advanced-solar-panels-refactored", self.mods)
         self.assertNotIn("solar-industrialization", self.mods)
 
+    def test_cancelled_reactors_absent_from_all_install_channels(self):
+        forbidden = ("colossal", "iskandert", "fusion", "ftb-industrial",
+                     "ftbindustrial", "ftb_industrial")
+        for section in ("mods", "manual_mods", "external_mods", "optional_local_mods"):
+            for item in self.cfg.get(section, []):
+                names = " ".join(str(item.get(key, "")) for key in
+                                 ("project", "name", "file_name", "download_url")).lower()
+                self.assertFalse(any(bad in names for bad in forbidden),
+                                 (section, names))
+        for lock in self.lock.values():
+            value = (lock.get("title", "") + " " + lock.get("filename", "")).lower()
+            self.assertFalse(any(bad in value for bad in forbidden), value)
+
+    def test_micro4_does_not_enable_automatic_preview_release(self):
+        workflow = (ROOT / ".github/workflows/build-alpha.yml").read_text(encoding="utf-8")
+        publisher = workflow.split("  publish-preview:", 1)[1]
+        gate = next(line.strip() for line in publisher.splitlines()
+                    if line.strip().startswith("if: github.event_name"))
+        self.assertIn("refs/heads/feat/micro2-rpg-core-033", gate)
+        self.assertNotIn("feat/techquest-trash-pipes-reactor-micro4", gate)
+
     def test_core_unchanged_and_compatibility_retained(self):
         for slug in ("buildcraft-community-edition", "create", "mekanism",
                      "modern-industrialization", "ae2", "sophisticated-storage"):
