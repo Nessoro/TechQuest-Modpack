@@ -41,6 +41,7 @@ internal sealed class InstallerForm : Form
     private readonly Button downloadExe = new() { Text = "Новый EXE", Width = 205, Height = 39, Enabled = false };
     private readonly CheckBox previewUpdates = new() { Text = "Включая тестовые релизы", Checked = true, AutoSize = true };
     private TrustedRelease? availableRelease;
+    private bool updateAvailable;
     private readonly ProgressBar progress = new() { Width = 695, Height = 19 };
     private readonly Label status = new() { Text = "Готово к установке. Minecraft Launcher и Java 21 устанавливаются отдельно.", AutoSize = false, Width = 710, Height = 45 };
     private CancellationTokenSource? cancellation;
@@ -150,7 +151,7 @@ internal sealed class InstallerForm : Form
         importAmw.Enabled = !busy;
         browse.Enabled = !busy;
         checkUpdates.Enabled = !busy;
-        applyUpdate.Enabled = !busy && availableRelease != null;
+        applyUpdate.Enabled = !busy && availableRelease != null && updateAvailable;
         rollback.Enabled = !busy;
         downloadExe.Enabled = !busy && availableRelease != null;
         previewUpdates.Enabled = !busy;
@@ -162,9 +163,9 @@ internal sealed class InstallerForm : Form
     private void ShowInstructions()
     {
         MessageBox.Show(this,
-            "1. Нажмите «Установить моды»; Python и консоль не нужны.\\n" +
-            "   Требуются лицензионная Minecraft Java Edition, вход в официальный Launcher Microsoft.\\n" +
-            "   TechQuest никогда не запрашивает и не хранит пароль Microsoft, токены или cookies.\\n" +
+            "1. Нажмите «Установить моды»; Python и консоль не нужны.\n" +
+            "   Требуются лицензионная Minecraft Java Edition, вход в официальный Launcher Microsoft.\n" +
+            "   TechQuest никогда не запрашивает и не хранит пароль Microsoft, токены или cookies.\n" +
             "2. Установите Java 21, если её нет на компьютере.\n" +
             "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
             "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
@@ -490,6 +491,7 @@ internal sealed class InstallerForm : Form
         applyUpdate.Enabled = false;
         downloadExe.Enabled = false;
         availableRelease = null;
+        updateAvailable = false;
         try
         {
             status.Text = "Проверка подписанных обновлений GitHub (без авторизации)...";
@@ -506,7 +508,8 @@ internal sealed class InstallerForm : Form
             else
                 status.Text = "Доступно подписанное обновление " + found.Tag +
                     ". Установка только по вашему подтверждению.";
-            applyUpdate.Enabled = current != null && current.ReleaseTag != found.Tag;
+            updateAvailable = current != null && current.ReleaseTag != found.Tag;
+            applyUpdate.Enabled = updateAvailable;
             downloadExe.Enabled = true;
         }
         catch (Exception ex)
@@ -541,6 +544,7 @@ internal sealed class InstallerForm : Form
             MessageBox.Show(this, $"Обновлено файлов: {count}.\nВерсия: {release.Tag}\n" +
                 "Запускайте игру через официальный Minecraft Launcher.",
                 "TechQuest обновлён", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            updateAvailable = false;
             applyUpdate.Enabled = false;
         }
         catch (Exception ex)
