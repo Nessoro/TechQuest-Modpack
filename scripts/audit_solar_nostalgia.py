@@ -70,7 +70,7 @@ def download_solar():
 
 def class_refs_from_bytecode(data):
     """Read CONSTANT_Class names without loading or executing any mod classes."""
-    if len(data) < 10 or data[:4] != b"\\xca\\xfe\\xba\\xbe":
+    if len(data) < 10 or data[:4] != b"\xca\xfe\xba\xbe":
         return set()
     pos = 8
     count = struct.unpack_from(">H", data, pos)[0]
@@ -124,7 +124,7 @@ def inspect(jar_data, solar_data, url):
         ic2_classes = {name[:-6] for name in ic2.namelist() if name.endswith(".class")}
         ic2_meta = next((ic2.read(p).decode("utf-8", "replace") for p in (
             "META-INF/neoforge.mods.toml", "META-INF/mods.toml") if p in ic2.namelist()), "")
-    if not re.search(r"modId\\s*=\\s*[\\\"']ic2[\\\"']", ic2_meta):
+    if not re.search(r"""modId\s*=\s*["']ic2["']""", ic2_meta):
         raise AuditError("Pinned IC2 Nostalgia does not declare modId ic2")
     with zipfile.ZipFile(BytesIO(solar_data)) as solar:
         meta = next((solar.read(p).decode("utf-8", "replace") for p in (
@@ -174,7 +174,7 @@ def main(argv=None):
     report = inspect(IC2_JAR.read_bytes(), solar_bytes, url)
     outfile = ROOT / args.output
     outfile.parent.mkdir(parents=True, exist_ok=True)
-    outfile.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    outfile.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Solar addon official file:", report["solar_file"], report["solar_sha512"])
     print("Required IC2 symbols:", report["solar_ic2_class_references"])
     print("Missing IC2 classes in pinned Nostalgia:", report["solar_ic2_missing_class_count"])
