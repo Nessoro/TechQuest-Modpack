@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MODRINTH_PROJECT_ID = "KDvYkUg3"
 VERSION_ID = "lHHiI26k"
 FILENAME = "refinedstorage-neoforge-2.0.9.jar"
-SHA512 = "1f94acedf32e1687e59deb0198e2fb977fdec227661a820d10f7fb3950e20b29ca8acf36aabe233dcd31b6a30144327e51b4d87b9dbf817cde25a5772468e109"
+SHA512 = "b98a938b8af859f1952bfb35fb6db712835a7dead88fa15258ac0f4f06b26b08ebfa49fd9a35b2c81f7a745b3cd4370ced98c242d0fe7473ba019d92da8f6c57"
 
 
 class TestRefinedStorageManifest(unittest.TestCase):
