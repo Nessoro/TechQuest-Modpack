@@ -11,6 +11,12 @@ Horizon с шестью `.hmod` и дополнительным локальны
 Три дерева с проверкой почвы действительно размещены командой в новом мире;
 стволы и почва сохранились после перезапуска. [Результат этого этапа](TERRALITH_TREE_RUNTIME_RESULT.json).
 
+Продолжение 14 ноября: исправлены 23 старые записи disk-provider и 93 записи
+параметров noise-provider. Пропуски placed features снижены **со 140 до 77**.
+В 384 пробах с синтетической палитрой выбор блоков совпал с оригиналом 1.21.1.
+Подзол и семь состояний снега размещены на сервере и проверены после перезапуска.
+[Результат providers](TERRALITH_PROVIDER_RUNTIME_RESULT.json).
+
 Тест выполнен 10 ноября 2026; после восстановления среды 13 ноября его
 сохранённые результаты и SHA-256 всех выбранных исходных файлов проверены.
 Машиночитаемый результат: [TERRALITH_RUNTIME_RESULT.json](TERRALITH_RUNTIME_RESULT.json).
@@ -49,6 +55,17 @@ Horizon с шестью `.hmod` и дополнительным локальны
   Подзол, мох, mud, muddy mangrove roots и остальные старые почвы сохранены.
   Совмещённые старый/новый providers, не-bool флаг и сложный старый provider
   отклоняются для отдельного разбора.
+- В 23 disk-configs старому нетипизированному `{fallback, rules}` добавлен
+  дискриминатор `minecraft:rule_based`. Fallback, условия, порядок правил,
+  target и размеры сохранены. Неизвестные поля старой записи отклоняются.
+- Для 93 вхождений параметров noise/dual_noise/noise_threshold использован
+  официальный upgrader, который преобразует `firstOctave/amplitudes` в новую
+  нормированную запись. 54 уникальных набора временно конвертируются как noise
+  registry records и затем подставляются обратно inline; временные файлы удалены
+  из результата. Seed, scale, slow_scale, palette и threshold не меняются.
+  Самостоятельная формула нормирования не вводится. Референсные пробы охватывают
+  три набора параметров исходного Terralith, по два seed и 64 координаты; палитра
+  синтетическая. Это ограниченная проверка выбора блоков, не всей генерации мира.
 
 Выбрано 1867 файлов генератора, измерения, структур и worldgen-тегов.
 Включены теги новых биомов: наличие `.hmod` само по себе не гарантирует, что
@@ -148,6 +165,38 @@ save-all flush
 с namespace `techquest.probes`. Не добавлять в classpath папку с launcher
 `version.json`: она перекрывает одноимённый внутренний ресурс игры.
 
+`probes/build_noise_cases.py` строит локальные векторы для `NoiseStateProbe.java`
+и `noise_states.rs`. Векторы и игровые библиотеки не включаются в репозиторий:
+
+```bash
+python horizon/probes/build_noise_cases.py --work /path/to/five-together \
+  --port-tool /path/to/pinned-horizon/target/fast/horizon-port-pack \
+  --output /path/to/new-cases.json
+javac -cp '/path/to/unpacked-bundle/*' -d /path/to/probe-classes \
+  horizon/probes/NoiseStateProbe.java
+java -cp '/path/to/probe-classes:/path/to/unpacked-bundle/*' \
+  techquest.probes.NoiseStateProbe /path/to/new-cases.json /path/to/reference.json
+```
+
+Скопировать `noise_states.rs` в upstream examples как `techquest_noise_states.rs`:
+
+```bash
+cargo run --manifest-path /path/to/pinned-horizon/Cargo.toml --profile fast --locked \
+  -p horizon-world --example techquest_noise_states -- \
+  /path/to/prepared/26.3/facts.json /path/to/new-cases.json /path/to/native.json
+```
+
+Сравнить два выходных JSON-массива поэлементно. В проверенном прогоне — 384/384
+совпадения. Это не перебор всех наборов параметров или всех координат.
+
+В серверном тесте providers `pause-when-empty-seconds=0` выставлен **в server.toml**
+в `[properties]`: иначе пустой сервер через минуту засыпает и forceload может
+не продвигать генерацию. После forceload дождаться `execute if loaded` в каждой
+проверяемой области. На площадке Y=220 размещены `terralith:shrubland/disk_podzol`
+и `terralith:canyon/glacial/snow`. Проверены podzol в [128,220,128], нетронутый
+stone в [129,220,128] и слои снега в X=144…150, Y=220, Z=128:
+`[3,3,2,2,2,2,3]`. Все состояния повторно проверены после сохранения и запуска.
+
 ## Ограничения и следующий этап
 
 Первый сервер сообщал о **246 пропускаемых placed features**. Аудит именно того
@@ -172,6 +221,11 @@ cargo run --manifest-path /path/to/pinned-horizon/Cargo.toml --profile fast --lo
 Первый аргумент — root из строки `content from 6 mod(s)` журнала сервера,
 не чистые ванильные ресурсы. Этот probe проверяет JSON-реестры и декодирование;
 сервер, бинарные шаблоны структур и игровой паритет он не проверяет.
+
+После переноса providers осталось **77** отказов: 62 `basic feature type`,
+6 `block`, 5 ссылок на отсутствующие старые feature IDs, 2 `level_test_distance`,
+по одному `replaceable_blocks` и `missing block identifier`. Все 63 отказа
+`exclusive state or provider` устранены; список features не сокращался.
 
 Полная генерация деревьев, растительности, структур/лута и визуальный паритет
 ещё не подтверждены. Не проверены вход лицензированного клиента, мультиплеер

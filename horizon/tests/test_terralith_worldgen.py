@@ -178,6 +178,69 @@ class TerralithWorldgenTests(unittest.TestCase):
             with self.subTest(config=config), self.assertRaises(ValueError):
                 adapter.normalize_trees({"type": "minecraft:tree", "config": config})
 
+    def test_disk_provider_keeps_fallback_rules_and_source(self):
+        provider = {"fallback": {"type": "minecraft:simple_state_provider", "state": "minecraft:dirt"},
+                    "rules": [{"if_true": {"type": "minecraft:matching_blocks", "blocks": ["minecraft:stone"]},
+                               "then": {"type": "minecraft:simple_state_provider", "state": "minecraft:clay"}},
+                              {"if_true": {"type": "minecraft:true"},
+                               "then": {"type": "minecraft:simple_state_provider", "state": "minecraft:sand"}}]}
+        source = {"type": "minecraft:disk", "config": {"radius": 4, "state_provider": provider}}
+        original = copy.deepcopy(source)
+        result, count = adapter.normalize_disk_providers(source)
+        self.assertEqual(source, original)
+        self.assertEqual(count, 1)
+        current = result["config"]["state_provider"]
+        self.assertEqual(current["type"], "minecraft:rule_based")
+        self.assertEqual(current["fallback"], original["config"]["state_provider"]["fallback"])
+        self.assertEqual(current["rules"], original["config"]["state_provider"]["rules"])
+        self.assertEqual(adapter.normalize_disk_providers(result), (result, 0))
+
+    def test_unknown_disk_record_or_rule_fields_need_review(self):
+        for provider in ({"fallback": {}, "rules": [], "extra": 1},
+                         {"fallback": {}, "rules": "invalid"},
+                         {"fallback": {}, "rules": [{"if_true": {}, "then": {}, "extra": 1}]}):
+            with self.subTest(provider=provider), self.assertRaises(ValueError):
+                adapter.normalize_disk_providers(
+                    {"type": "minecraft:disk", "config": {"state_provider": provider}})
+
+    def test_direct_state_provider_is_not_reinterpreted_as_legacy_record(self):
+        source = {"type": "minecraft:disk", "state_provider": {"id": "minecraft:clay"}}
+        self.assertEqual(adapter.normalize_disk_providers(source), (source, 0))
+
+    def test_noise_records_deduplicate_but_keep_occurrence_count(self):
+        spec = {"firstOctave": -4, "amplitudes": [1, 1]}
+        source = {"type": "minecraft:dual_noise_provider", "seed": 2**63-1,
+                  "scale": .5, "noise": spec, "slow_noise": copy.deepcopy(spec),
+                  "states": ["minecraft:dirt", "minecraft:stone"]}
+        original = copy.deepcopy(source)
+        records = {}
+        self.assertEqual(adapter.collect_noise_parameters(source, records), 2)
+        self.assertEqual(len(records), 1)
+        converted = {next(iter(records)): {"base_octave": -4, "octave_count": 2,
+                                          "base_amplitude": .875}}
+        result, count = adapter.inline_noise_parameters(source, converted)
+        self.assertEqual(count, 2)
+        self.assertEqual(source, original)
+        for field in ("seed", "scale", "states", "type"):
+            self.assertEqual(result[field], source[field])
+        self.assertEqual(result["noise"], converted[next(iter(records))])
+        self.assertEqual(result["slow_noise"], result["noise"])
+
+    def test_unknown_noise_parameter_fields_are_not_discarded(self):
+        for spec in ({"firstOctave": -4, "amplitudes": [1], "salt": 7},
+                     {"firstOctave": -4, "amplitudes": [float('nan')]},
+                     {"firstOctave": True, "amplitudes": [1]}):
+            with self.subTest(spec=spec), self.assertRaises(ValueError):
+                adapter.noise_parameter_key(spec)
+
+    def test_density_noise_and_nonstring_type_are_not_provider_parameters(self):
+        source = [{"type": "minecraft:noise", "noise": "minecraft:temperature", "xz_scale": 1},
+                  {"type": None, "seed": 0, "scale": 1}]
+        records = {}
+        self.assertEqual(adapter.collect_noise_parameters(source, records), 0)
+        self.assertEqual(records, {})
+        self.assertEqual(adapter.inline_noise_parameters(source, {}), (source, 0))
+
     def fixture(self, base):
         work = base / "work"
         source = work / "mods/terralith/carry"

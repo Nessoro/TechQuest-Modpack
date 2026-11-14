@@ -171,6 +171,92 @@ def normalize_trees(value):
     return ({**result, "config": config} if "config" in result else config), count + 1
 
 
+def normalize_disk_providers(value):
+    """Give the legacy disk RuleBasedStateProvider its current discriminator.
+
+    The old record's fallback and ordered rules are preserved; the official
+    upgrader handles their nested providers and block states afterwards.
+    """
+    if isinstance(value, list):
+        pairs = [normalize_disk_providers(v) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: normalize_disk_providers(v) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    if value.get("type") not in ("disk", "minecraft:disk"):
+        return result, count
+    config = result.get("config", result)
+    if not isinstance(config, dict):
+        raise ValueError("expected a disk configuration object")
+    provider = config.get("state_provider")
+    if not isinstance(provider, dict) or "type" in provider:
+        return result, count
+    if not ({"fallback", "rules"} & set(provider)):
+        return result, count
+    if set(provider) != {"fallback", "rules"} or not isinstance(provider["rules"], list):
+        raise ValueError("unreviewed legacy disk provider shape")
+    if any(not isinstance(rule, dict) or set(rule) != {"if_true", "then"}
+           for rule in provider["rules"]):
+        raise ValueError("unreviewed legacy disk rule shape")
+    config = {**config, "state_provider": {"type": "minecraft:rule_based", **provider}}
+    return ({**result, "config": config} if "config" in result else config), count + 1
+
+
+def noise_parameter_key(value: dict) -> str:
+    if (set(value) != {"firstOctave", "amplitudes"}
+            or type(value["firstOctave"]) is not int
+            or not isinstance(value["amplitudes"], list)
+            or len(value["amplitudes"]) > 32
+            or any(type(v) not in (int, float) or v < 0 for v in value["amplitudes"])):
+        raise ValueError("unreviewed legacy noise parameters")
+    return json.dumps({"firstOctave": value["firstOctave"],
+                       "amplitudes": [float(v) for v in value["amplitudes"]]},
+                      sort_keys=True, separators=(",", ":"), allow_nan=False)
+
+
+def noise_provider(value) -> bool:
+    return (isinstance(value, dict) and isinstance(value.get("type"), str)
+            and "seed" in value and "scale" in value
+            and value["type"].removeprefix("minecraft:") in (
+                "noise_provider", "dual_noise_provider", "noise_threshold_provider",
+                "noise", "dual_noise", "noise_threshold"))
+
+
+def collect_noise_parameters(value, records: dict) -> int:
+    count = 0
+    if isinstance(value, list):
+        return sum(collect_noise_parameters(v, records) for v in value)
+    if not isinstance(value, dict):
+        return 0
+    if noise_provider(value):
+        for field in ("noise", "slow_noise"):
+            spec = value.get(field)
+            if isinstance(spec, dict) and "firstOctave" in spec:
+                records[noise_parameter_key(spec)] = spec
+                count += 1
+    return count + sum(collect_noise_parameters(v, records) for v in value.values())
+
+
+def inline_noise_parameters(value, converted: dict):
+    if isinstance(value, list):
+        pairs = [inline_noise_parameters(v, converted) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: inline_noise_parameters(v, converted) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    if noise_provider(value):
+        for field in ("noise", "slow_noise"):
+            spec = value.get(field)
+            if isinstance(spec, dict) and "firstOctave" in spec:
+                result[field] = converted[noise_parameter_key(spec)]
+                count += 1
+    return result, count
+
+
 def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = None) -> dict:
     if output.exists() or output.is_symlink():
         raise ValueError("output must be a new directory; existing worlds are never modified")
@@ -225,18 +311,21 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
     if "data/terralith/worldgen/biome/comment_dont_generate_strips_here.json" in payloads:
         raise ValueError("documentation marker is now a real biome: review required")
     # Validate and transform all inputs before creating any output.
-    markers, feature_orders, trees = 0, 0, 0
+    markers, feature_orders, trees, disk_providers = 0, 0, 0, 0
+    noise_records, noise_occurrences = {}, 0
     for relative, data in list(payloads.items()):
         if relative.endswith(".json"):
             value, count = expand(json.loads(data))
+            noise_occurrences += collect_noise_parameters(value, noise_records)
             value, removed = normalize_marker(value)
             value, tree_count = normalize_trees(value)
+            value, disk_count = normalize_disk_providers(value)
             normalized = 0
             reordered = 0
             if "/worldgen/biome/" in relative:
                 value, normalized = normalize_carvers(value)
                 value, reordered = normalize_feature_order(value)
-            if count or normalized or removed or reordered or tree_count:
+            if count or normalized or removed or reordered or tree_count or disk_count:
                 payloads[relative] = (json.dumps(value, indent=2) + "\n").encode()
                 transformed.append(relative)
                 total += count
@@ -244,6 +333,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                 markers += removed
                 feature_orders += reordered
                 trees += tree_count
+                disk_providers += disk_count
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".terralith-worldgen-", dir=output.parent) as temporary:
         stage = Path(temporary)
@@ -254,8 +344,34 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
             path.write_bytes(data)
         (raw / "pack.mcmeta").write_text(json.dumps({"pack": {
             "pack_format": 48, "description": "TechQuest local Terralith worldgen trial"}}))
+        generated = {}
+        for key, spec in noise_records.items():
+            name = hashlib.sha256(key.encode()).hexdigest()
+            relative = f"data/terralith/worldgen/noise/_techquest_parameters/{name}.json"
+            if relative in payloads:
+                raise ValueError("generated noise parameter path conflicts with a source")
+            path = raw / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(spec))
+            generated[key] = relative
         result = subprocess.run([str(port_tool.resolve()), "upgrade-datapack", str(raw), str(upgraded)],
                                 capture_output=True, text=True, check=True, timeout=180)
+        converted = {}
+        for key, relative in generated.items():
+            path = upgraded / relative
+            spec = json.loads(path.read_text())
+            if "base_octave" not in spec or "firstOctave" in spec:
+                raise ValueError("official upgrader did not convert noise parameters")
+            converted[key] = spec
+            path.unlink()  # Only our temporary conversion record, never a source file.
+        noise_converted = 0
+        for path in sorted((upgraded / "data").rglob("*.json")):
+            value, count = inline_noise_parameters(json.loads(path.read_bytes()), converted)
+            if count:
+                path.write_text(json.dumps(value, indent=2) + "\n")
+                noise_converted += count
+        if noise_converted != noise_occurrences:
+            raise ValueError("noise parameter occurrence count changed during official upgrade")
         report = {"schema": 1, "minecraft": "26.3", "source_minecraft": "1.21.1",
                   "terralith": "2.6.2", "input_files": len(payloads),
                   "expanded_samplers": total, "transformed_files": transformed,
@@ -263,6 +379,10 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "removed_documentation_biome_markers": markers,
                   "reordered_adjacent_feature_pairs": feature_orders,
                   "normalized_tree_configs": trees,
+                  "normalized_disk_providers": disk_providers,
+                  "normalized_noise_provider_parameters": noise_converted,
+                  "unique_noise_parameter_records": len(generated),
+                  "temporary_noise_records_removed": True,
                   "prepared_biomes_sha256": base_hash,
                   "sources": sources, "official_upgrade_output": result.stdout.splitlines(),
                   "unselected_outside": unselected_outside,
