@@ -110,7 +110,7 @@ def class_refs_from_bytecode(data):
         if name.startswith("ic2/"):
             refs.add(name)
         elif name.startswith("["):
-            refs.update(re.findall(r"Lic2/([A-Za-z0-9_$/]+);", name))
+            refs.update("ic2/" + suffix for suffix in re.findall(r"Lic2/([A-Za-z0-9_$/]+);", name))
     return refs
 
 
