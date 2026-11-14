@@ -59,6 +59,12 @@ Horizon с шестью `.hmod` и дополнительным локальны
 результатов и next draw совпали. Камни на четырёх опорах сохранились после
 перезапуска. Остался **1 отказ**. [Результат камней](TERRALITH_ROCK_RUNTIME_RESULT.json).
 
+Последняя nether_forest_vegetation перенесена с правильным порядком weighted
+selection/air/height checks. **246 → 0 decoder skips**, ни одна placed feature
+не удалена. 450 traces совпали; растения на всех пяти опорах сохранились после
+перезапуска. Исправлена потеря moss_block в nylium и ещё две unqualified tag
+entries. [Текущий результат](TERRALITH_VEGETATION_RUNTIME_RESULT.json).
+
 Тест выполнен 10 ноября 2026; после восстановления среды 13 ноября его
 сохранённые результаты и SHA-256 всех выбранных исходных файлов проверены.
 Машиночитаемый результат: [TERRALITH_RUNTIME_RESULT.json](TERRALITH_RUNTIME_RESULT.json).
@@ -159,6 +165,19 @@ Horizon с шестью `.hmod` и дополнительным локальны
   Новый общий forest-rock substrate tag не подставляется вместо старого правила.
   Оригинальный алгоритм проверен на default states 1060 типов, допустимы 16;
   это не перебор всех возможных свойств каждого блока.
+- `nether_forest_vegetation` преобразована в header gate, patch loop и
+  feature-level weighted selector. State выбирается **до** air-check: если
+  фильтровать air до выбора provider, занятые позиции меняют весь дальнейший RNG.
+  Сохранены nylium-origin gate, origin height gates, target Y>min_y и веса шести
+  states. Для проверенного spread_height≤4 два inside-bounds predicates со
+  смещениями -1/-2 дают точный нужный диапазон без недопустимой infinite anchor.
+  Поддерживаются width 1…32, height 1…4; другие providers/формы требуют разбора.
+- При staging block tags из Java carry получают явный `minecraft:` у bare
+  entries и bare tag references. Native hmod по умолчанию использует namespace
+  владельца, а Java — Minecraft: из-за этого moss_block терялся из nylium.
+  Исправлены ровно три entries в nylium, island_blocks и volcano_barrier;
+  порядок, replace/required flags и исходные файлы сохранены. Manifest/ownership
+  не меняются. Объединённый nylium снова содержит обе nylium, grass, mycelium, moss.
 
 Выбрано 1867 файлов генератора, измерения, структур и worldgen-тегов.
 Включены теги новых биомов: наличие `.hmod` само по себе не гарантирует, что
@@ -381,6 +400,22 @@ random draw. На отдельном сервере вызов `terralith:snowy/
 terracotta сохранились после перезапуска. Естественная генерация cherry-биомов
 и все свойства блоков этим не сверялись.
 
+`NetherVegetationProbe.java WORK OUTPUT` выполняет исходный feature с nylium
+tags ванили + Terralith. `build_nether_cases.py REFERENCE OUTPUT` берёт только
+входные labels и вызывает тот же адаптер; `nether_traces.rs` собирается как
+`techquest_nether_traces` с аргументами EFFECTIVE_CONTENT_ROOT CASES_JSON OUTPUT.
+В 450 случаях совпали 6890 ordered writes, result и next draw: шесть supports,
+три air masks, пять seeds и Y=80/-64/-63/318/319. Палитра — шесть синтетических
+solid blocks с исходными весами, survival в stub всегда true; это проверка
+потока и RNG, не старой физики шести настоящих растений.
+
+В настоящем серверном мире без probe-модуля вызван `terralith:flower/blue/flowers`:
+nether_sprouts на crimson_nylium [131,220,132], warped_roots на warped_nylium
+[161,220,122], cornflower на grass [191,220,129] и mycelium [224,220,127], fern
+на moss [255,220,130]. Все растения и supports сохранились после перезапуска;
+stone-origin отклонён. На старте подтверждены шесть hmod и 0 unsupported features
+в effective content-root. Сервер штатно остановлен.
+
 В отдельном серверном мире seed=263 протестированы `terralith:plains/patch_grass`,
 `terralith:birch/flowers` и `terralith:sakura/flowers` на травяных площадках Y=219.
 Проверены short_grass в [126,220,126], lily_of_the_valley в [152,220,127],
@@ -456,6 +491,11 @@ flower/blue/flowers (nether_forest_vegetation) и cherry/rock (forest_rock).
 
 После forest rock остался **один** `basic feature type`:
 `terralith:flower/blue/flowers` (`nether_forest_vegetation`).
+
+Теперь decoder skips **0**. Это проверка декодирования и перечисленных игровых
+примеров, а не всей естественной генерации, структур, лута, клиента/мультиплеера
+или промышленных Java-механик. 15 outside-файлов Terralith остаются отдельно;
+нулевое число доказанно полных портов в общем inventory пока не меняется.
 
 Полная генерация деревьев, растительности, структур/лута и визуальный паритет
 ещё не подтверждены. Не проверены вход лицензированного клиента, мультиплеер

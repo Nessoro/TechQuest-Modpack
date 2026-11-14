@@ -442,6 +442,33 @@ class TerralithWorldgenTests(unittest.TestCase):
         self.assertNotIn("minecraft:sand", predicates[1]["blocks"])
         self.assertEqual(adapter.normalize_forest_rocks(result), (result, 0))
 
+    def test_nether_vegetation_preserves_weights_and_direct_states(self):
+        source = {"type": "minecraft:nether_forest_vegetation", "spread_width": 8, "spread_height": 4,
+                  "state_provider": {"type": "minecraft:weighted", "entries": [
+                      {"data": "minecraft:stone", "weight": 3},
+                      {"data": {"id": "minecraft:dirt"}, "weight": 7}]}}
+        before = copy.deepcopy(source)
+        result, count = adapter.normalize_nether_vegetation(source)
+        self.assertEqual(source, before)
+        self.assertEqual(count, 1)
+        def collect(value):
+            if isinstance(value, dict):
+                if value.get("type") == "minecraft:weighted_random_selector":
+                    return [value]
+                return sum((collect(v) for v in value.values()), [])
+            if isinstance(value, list):
+                return sum((collect(v) for v in value), [])
+            return []
+        choices = collect(result)[0]["features"]
+        self.assertEqual([v["weight"] for v in choices], [3, 7])
+        self.assertEqual([v["data"]["feature"]["to_place"] for v in choices],
+                         [{"id": "minecraft:stone"}, {"id": "minecraft:dirt"}])
+
+    def test_other_vegetation_providers_require_review(self):
+        with self.assertRaisesRegex(ValueError, "non-weighted"):
+            adapter.normalize_nether_vegetation({"type": "minecraft:nether_forest_vegetation",
+                "spread_width": 8, "spread_height": 4, "state_provider": {"id": "minecraft:stone"}})
+
     def test_existing_output_refused(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)

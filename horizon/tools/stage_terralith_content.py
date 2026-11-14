@@ -22,6 +22,30 @@ def read_checked(path: Path) -> bytes:
     return path.read_bytes()
 
 
+def canonicalize_block_tag(value):
+    """Java tag entries default to minecraft, while native hmods default to their owner."""
+    if not isinstance(value, dict) or not isinstance(value.get("values"), list):
+        raise ValueError("expected a block tag values list")
+    def identifier(name):
+        if not isinstance(name, str) or not name or name == "#":
+            raise ValueError("expected a block/tag identifier")
+        prefix, body = ("#", name[1:]) if name.startswith("#") else ("", name)
+        return prefix + (body if ":" in body else "minecraft:" + body)
+    entries, count = [], 0
+    for entry in value["values"]:
+        if isinstance(entry, str):
+            converted = identifier(entry)
+            count += converted != entry
+        elif isinstance(entry, dict) and "id" in entry and not set(entry) - {"id", "required"}:
+            converted_id = identifier(entry["id"])
+            count += converted_id != entry["id"]
+            converted = {**entry, "id": converted_id}
+        else:
+            raise ValueError("unreviewed block tag entry")
+        entries.append(converted)
+    return {**value, "values": entries}, count
+
+
 def stage(work: Path, datapack: Path, output: Path, sdk: Path) -> dict:
     if output.exists() or output.is_symlink():
         raise ValueError("output must be new")
@@ -48,6 +72,15 @@ def stage(work: Path, datapack: Path, output: Path, sdk: Path) -> dict:
                 raise ValueError("symlink in content tree")
             if path.is_file():
                 payloads[path.relative_to(source).as_posix()] = read_checked(path)
+    canonicalized, canonical_count = [], 0
+    for relative, data in list(payloads.items()):
+        parts = Path(relative).parts
+        if len(parts) >= 5 and parts[0] == "data" and parts[2:4] == ("tags", "block") and relative.endswith(".json"):
+            value, count = canonicalize_block_tag(json.loads(data))
+            if count:
+                payloads[relative] = (json.dumps(value, indent=2) + "\n").encode()
+                canonicalized.append(relative)
+                canonical_count += count
     # Only this module's namespace; vanilla dimension/biome overrides remain
     # world-specific datapack files, rather than becoming global mod ownership.
     overlays = []
@@ -93,6 +126,8 @@ def stage(work: Path, datapack: Path, output: Path, sdk: Path) -> dict:
                   "minecraft": "26.3", "sdk_validated": True,
                   "source_files_modified": False, "world_datapack_still_required": True,
                   "namespace_ownership_changed": False, "adapted_files": overlays,
+                  "canonicalized_block_tag_entries": canonical_count,
+                  "canonicalized_block_tag_files": canonicalized,
                   "registry_path_migrations": migrations,
                   "sha256": package_hash,
                   "server_boot_tested": False, "gameplay_ported": False}

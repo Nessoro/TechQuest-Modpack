@@ -1,3 +1,4 @@
+import copy
 import hashlib
 import importlib.util
 import json
@@ -15,6 +16,17 @@ SPEC.loader.exec_module(module)
 
 
 class TerralithContentTests(unittest.TestCase):
+    def test_java_block_tag_defaults_are_explicit_and_optional_flags_survive(self):
+        source = {"replace": False, "values": ["moss_block", "#base_stone_overworld", "minecraft:stone",
+            {"id": "mycelium", "required": False}, {"id": "terralith:custom", "required": True}]}
+        before = copy.deepcopy(source)
+        result, count = module.canonicalize_block_tag(source)
+        self.assertEqual(source, before)
+        self.assertEqual(count, 3)
+        self.assertEqual(result, {"replace": False, "values": ["minecraft:moss_block", "#minecraft:base_stone_overworld",
+            "minecraft:stone", {"id": "minecraft:mycelium", "required": False},
+            {"id": "terralith:custom", "required": True}]})
+
     def fixture(self, base):
         work, pack = base / "work", base / "pack"
         carry = work / "mods/terralith/carry"
@@ -61,6 +73,23 @@ class TerralithContentTests(unittest.TestCase):
             self.assertFalse(report["namespace_ownership_changed"])
             self.assertFalse(report["server_boot_tested"])
             self.assertTrue(report["world_datapack_still_required"])
+
+    def test_carried_vanilla_tag_is_canonicalized_in_derived_module_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            work, pack, _, _ = self.fixture(base)
+            relative = Path("data/minecraft/tags/block/nylium.json")
+            source = work / "mods/terralith/carry" / relative
+            source.parent.mkdir(parents=True)
+            source.write_text('{"replace":false,"values":["moss_block"]}')
+            before = source.read_bytes()
+            with patch.object(module.subprocess, "run", side_effect=self.fake_sdk):
+                report = module.stage(work, pack, base / "output", base / "sdk")
+            self.assertEqual(source.read_bytes(), before)
+            self.assertEqual(json.loads((base / "output" / relative).read_text())["values"], ["minecraft:moss_block"])
+            self.assertEqual(report["canonicalized_block_tag_entries"], 1)
+            self.assertEqual(report["canonicalized_block_tag_files"], [relative.as_posix()])
+            self.assertFalse(report["namespace_ownership_changed"])
 
     def test_missing_replacement_is_rejected_before_output(self):
         with tempfile.TemporaryDirectory() as directory:

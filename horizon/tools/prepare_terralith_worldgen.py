@@ -457,6 +457,72 @@ def normalize_forest_rocks(value):
             {"type": "minecraft:matching_blocks", "blocks": "#minecraft:base_stone_overworld"}]}}, count + 1
 
 
+def normalize_nether_vegetation(value):
+    """Select each weighted state before its air/height/survival checks.
+
+    A feature-level weighted selector preserves the old provider draw even
+    when its chosen child rejects the position. A pre-provider air filter
+    would skip draws on occupied positions and change every later attempt.
+    """
+    if isinstance(value, list):
+        pairs = [normalize_nether_vegetation(v) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: normalize_nether_vegetation(v) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    if value.get("type") not in ("nether_forest_vegetation", "minecraft:nether_forest_vegetation"):
+        return result, count
+    if set(value) != {"type", "spread_width", "spread_height", "state_provider"}:
+        raise ValueError("unreviewed legacy nether vegetation fields")
+    width, height = value["spread_width"], value["spread_height"]
+    if type(width) is not int or not 1 <= width <= 32 or type(height) is not int or not 1 <= height <= 4:
+        raise ValueError("unreviewed nether vegetation spread")
+    provider = result["state_provider"]
+    if (not isinstance(provider, dict) or set(provider) != {"type", "entries"}
+            or provider["type"] not in ("weighted", "minecraft:weighted")
+            or not isinstance(provider["entries"], list) or not 1 <= len(provider["entries"]) <= 8192):
+        raise ValueError("review a non-weighted nether vegetation provider")
+    valid_position = {"type": "minecraft:all_of", "predicates": [
+        {"type": "minecraft:matching_blocks", "blocks": [
+            "minecraft:air", "minecraft:cave_air", "minecraft:void_air"]},
+        # The original target test is Y>min_y. With height<=4 and the
+        # original origin gate, candidates cannot exceed max_y+2. The union
+        # covers [min_y+1,max_y+2] without an invalid infinite height anchor.
+        {"type": "minecraft:any_of", "predicates": [
+            {"type": "minecraft:inside_world_bounds", "offset": [0, -1, 0]},
+            {"type": "minecraft:inside_world_bounds", "offset": [0, -2, 0]}]}]}
+    choices = []
+    total = 0
+    for entry in provider["entries"]:
+        if (not isinstance(entry, dict) or set(entry) != {"weight", "data"}
+                or type(entry["weight"]) is not int or entry["weight"] <= 0):
+            raise ValueError("unreviewed vegetation weight")
+        data = entry["data"]
+        if isinstance(data, str):
+            data = {"id": data}  # Bare provider strings name registry entries, not states.
+        if not isinstance(data, dict) or "id" not in data or set(data) - {"id", "properties"}:
+            raise ValueError("expected a direct vegetation block state")
+        total += entry["weight"]
+        choices.append({"weight": entry["weight"], "data": {
+            "feature": {"type": "minecraft:simple_block", "to_place": data},
+            "placement": [{"type": "minecraft:block_predicate_filter", "predicate": valid_position}]}})
+    if total > 2147483647:
+        raise ValueError("vegetation total weight exceeds the original integer range")
+    loop, converted = normalize_patches({"type": "minecraft:random_patch", "tries": width * width,
+        "xz_spread": width - 1, "y_spread": height - 1, "feature": {"placement": [],
+            "feature": {"type": "minecraft:weighted_random_selector", "features": choices}}})
+    if converted != 1:
+        raise ValueError("nether vegetation patch was not converted")
+    header = {"type": "minecraft:all_of", "predicates": [
+        {"type": "minecraft:matching_blocks", "blocks": "#minecraft:nylium", "offset": [0, -1, 0]},
+        {"type": "minecraft:height_range", "min_inclusive": {"above_bottom": 1},
+         "max_inclusive": {"below_top": 1}}]}
+    return {"type": "minecraft:overlay", "features": [{"feature": loop, "placement": [
+        {"type": "minecraft:block_predicate_filter", "predicate": header}]}]}, count + 1
+
+
 def load_legacy_features(jar: Path):
     """Read four definitions from the official pinned bundle, without extracting it."""
     if jar.is_symlink() or any(p.is_symlink() for p in jar.parents):
@@ -622,7 +688,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                 raise ValueError("official upgrader did not convert noise parameters")
             converted[key] = spec
             path.unlink()  # Only our temporary conversion record, never a source file.
-        noise_converted, patches, multiface, roots, dripstone, large_dripstone, basalt_seed, forest_rocks = 0, 0, 0, 0, 0, 0, 0, 0
+        noise_converted, patches, multiface, roots, dripstone, large_dripstone, basalt_seed, forest_rocks, nether_vegetation = 0, 0, 0, 0, 0, 0, 0, 0, 0
         deferred_patches = []
         for path in sorted((upgraded / "data").rglob("*.json")):
             value, count = inline_noise_parameters(json.loads(path.read_bytes()), converted)
@@ -632,9 +698,10 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
             value, dripstone_count, large_dripstone_count = normalize_dripstone(value)
             value, basalt_count = normalize_basalt_seed(value)
             value, rock_count = normalize_forest_rocks(value)
+            value, vegetation_count = normalize_nether_vegetation(value)
             if has_legacy_patch(value):
                 deferred_patches.append(path.relative_to(upgraded).as_posix())
-            if count or patch_count or multiface_count or root_count or dripstone_count or large_dripstone_count or basalt_count or rock_count:
+            if count or patch_count or multiface_count or root_count or dripstone_count or large_dripstone_count or basalt_count or rock_count or vegetation_count:
                 path.write_text(json.dumps(value, indent=2) + "\n")
             noise_converted += count
             patches += patch_count
@@ -644,6 +711,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
             large_dripstone += large_dripstone_count
             basalt_seed += basalt_count
             forest_rocks += rock_count
+            nether_vegetation += vegetation_count
         if noise_converted != noise_occurrences:
             raise ValueError("noise parameter occurrence count changed during official upgrade")
         report = {"schema": 1, "minecraft": "26.3", "source_minecraft": "1.21.1",
@@ -666,6 +734,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "normalized_large_dripstone": large_dripstone,
                   "normalized_basalt_seed_states": basalt_seed,
                   "normalized_forest_rocks": forest_rocks,
+                  "normalized_nether_vegetation": nether_vegetation,
                   "inlined_legacy_feature_references": legacy_references,
                   "legacy_vanilla_provenance": legacy_provenance,
                   "prepared_biomes_sha256": base_hash,

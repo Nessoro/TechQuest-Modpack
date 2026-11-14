@@ -26,7 +26,7 @@
 - [x] Естественный биом Terralith и сохранение после перезапуска.
 - [x] Производный SDK-валидный hmod синхронизирован с datapack для live features.
 - [x] Деревья: реальное размещение, почва, сохранение и повторная загрузка.
-- [x] Снижение отказов placed features с 246 до 1, без удаления features.
+- [x] Все ранее пропускавшиеся placed features декодируются: 246 → 0, без удаления features.
 - [x] 23 disk-provider и 93 записи noise-параметров перенесены; 384 выбора блоков
   совпали с оригиналом. Подзол, non-target камень и семь слоёв снега пережили перезапуск.
 - [x] 59 random_patch/flower configs заменены композициями. 640 проб координат,
@@ -50,6 +50,9 @@
 - [x] Forest rock перенесён в block_blob. На 1060 типах блоков определены 16
   исходных опор; 1124 traces совпали. Камни на четырёх опорах и отрицательный
   контроль сохранены после перезапуска.
+- [x] Nether vegetation перенесена с выбором state до air-check и исходными
+  height gates. 450 traces совпали; все пять исходных опор, включая moss,
+  проверены после перезапуска. Исправлены три unqualified block-tag entries.
 
 Источники доказательств: [сервер](SERVER_RUNTIME_RESULT.json),
 [Terralith](TERRALITH_RUNTIME_RESULT.json), [деревья](TERRALITH_TREE_RUNTIME_RESULT.json),
@@ -57,19 +60,19 @@
 [лишайники](TERRALITH_MULTIFACE_RUNTIME_RESULT.json), [корни](TERRALITH_ROOT_RUNTIME_RESULT.json),
 [старые ссылки](TERRALITH_LEGACY_REFERENCE_RUNTIME_RESULT.json),
 [dripstone](TERRALITH_DRIPSTONE_RUNTIME_RESULT.json), [basalt](TERRALITH_BASALT_RUNTIME_RESULT.json),
-[широкий patch](TERRALITH_WIDE_PATCH_RUNTIME_RESULT.json), [камни](TERRALITH_ROCK_RUNTIME_RESULT.json).
-Проверки текущего этапа: 73 Horizon и 45 базовых тестов прошли.
+[широкий patch](TERRALITH_WIDE_PATCH_RUNTIME_RESULT.json), [камни](TERRALITH_ROCK_RUNTIME_RESULT.json),
+[текущий генератор](TERRALITH_VEGETATION_RUNTIME_RESULT.json).
+Проверки текущего этапа: 77 Horizon и 45 базовых тестов прошли.
 
 ## Ближайшая работа
 
-1. Разобрать оставшийся nether_forest_vegetation у terralith:flower/blue/flowers.
-   Важно сохранить выбор weighted state до проверки air, исходные Nylium tags
-   с добавлениями Terralith и порядок RNG, а не просто перенести vanilla placement.
-   Для актуальной сборки адаптера передавать --legacy-server-jar с проверенным
-   официальным bundle 1.21.1; без этого аргумента остаются пять старых ссылок.
-2. Повторять аудит официальным `horizon-world` на effective content-root сервера.
-3. Проверять новые согласованные datapack/hmod в отдельном мире, включая
-   сохранение/открытие, и фиксировать оставшиеся отказы.
+1. Разобрать оставшиеся 15 outside-файлов Terralith и покрытие структур/лута.
+   Ноль decoder skips не означает, что весь исходный мод полностью перенесён.
+2. Подготовить воспроизводимую локальную установку согласованных шести hmod
+   и world datapack; для адаптера нужен --legacy-server-jar с проверенным
+   bundle 1.21.1. Исходные и игровые файлы не коммитить и ничего не публиковать.
+3. Продолжить нативные механики TechQuest и подготовить проверку официальным
+   лицензированным клиентом. Пользовательские данные не использовать.
 
 ## Критерии завершения всей цели
 
