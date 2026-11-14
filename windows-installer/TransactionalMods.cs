@@ -137,10 +137,13 @@ internal static class TransactionalMods
         string mods = Path.Combine(root, "mods");
         foreach (var file in pack.Mods)
             ReleaseUpdates.VerifyFile(Path.Combine(mods, file.Identity.Name), file.Identity, file.Sha1);
+        foreach (var file in pack.BundledMods)
+            ReleaseUpdates.VerifyFile(Path.Combine(mods, file.Identity.Name), file.Identity);
         var initial = new PackState
         {
             ReleaseTag = "embedded-" + pack.VersionId,
-            Mods = pack.Mods.Select(x => x.Identity).ToList()
+            Mods = pack.Mods.Select(x => x.Identity)
+                .Concat(pack.BundledMods.Select(x => x.Identity)).ToList()
         };
         Validate(initial);
         WriteAtomic(stateFile, initial);
@@ -231,12 +234,24 @@ internal static class TransactionalMods
         if (pack.VersionId != release.VersionId)
             throw new SecurityException("Signed version does not match the pack index");
         var sources = pack.Mods.ToDictionary(x => x.Identity.Name, NameComparer);
+        var firstParty = pack.BundledMods.ToDictionary(x => x.Identity.Name, NameComparer);
+        var desired = pack.Mods.Select(x => x.Identity)
+            .Concat(pack.BundledMods.Select(x => x.Identity)).ToList();
         return await ApplyAsync(root,
-            new PackState { ReleaseTag = release.Tag, Mods = pack.Mods.Select(x => x.Identity).ToList() },
+            new PackState { ReleaseTag = release.Tag, Mods = desired },
             async (item, dest, token) =>
-                await ReleaseUpdates.DownloadCheckedAsync(sources[item.Name].Url, dest,
-                    item, sources[item.Name].Sha1, token),
-            progress, cancellation);
+            {
+                if (firstParty.TryGetValue(item.Name, out var embedded))
+                {
+                    token.ThrowIfCancellationRequested();
+                    await File.WriteAllBytesAsync(dest, embedded.Bytes, token);
+                }
+                else
+                {
+                    await ReleaseUpdates.DownloadCheckedAsync(sources[item.Name].Url,
+                        dest, item, sources[item.Name].Sha1, token);
+                }
+            }, progress, cancellation);
     }
 
     internal static async Task<int> RollbackAsync(
