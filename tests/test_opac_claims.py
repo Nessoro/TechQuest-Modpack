@@ -71,6 +71,17 @@ class TestOpenPartiesClaims(unittest.TestCase):
         self.assertNotIn("world/serverconfig/openpartiesandclaims-server.toml", overrides)
         self.assertNotIn("saves", "/".join(overrides))
 
+    def test_mrpack_contains_safe_new_world_template(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            archive_path = Path(tmp) / "TechQuest-opac-test.mrpack"
+            build_pack.make_mrpack(self.cfg, [], archive_path)
+            with zipfile.ZipFile(archive_path) as zf:
+                self.assertIn("overrides/" + CONFIG_REL, zf.namelist())
+                self.assertEqual(self.config_path.read_bytes(),
+                                 zf.read("overrides/" + CONFIG_REL))
+                self.assertNotIn("overrides/world/serverconfig/openpartiesandclaims-server.toml",
+                                 zf.namelist())
+
     def test_client_and_server_installers_preserve_existing_defaults(self):
         cfg_data = self.config_path.read_bytes()
         with tempfile.TemporaryDirectory() as tmp:
