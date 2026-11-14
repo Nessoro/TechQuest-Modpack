@@ -1,0 +1,38 @@
+name: Probe Refined Storage JEI 1.0.0 official Modrinth metadata
+on:
+  pull_request:
+    paths:
+      - .github/workflows/probe-refined-jei-033.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtain exact release, dependencies and SHA512 from Modrinth
+        run: |
+          python3 - <<'PY'
+          import json
+          import urllib.request
+          def get(id):
+              req = urllib.request.Request("https://api.modrinth.com/v2/version/" + id,
+                      headers={"User-Agent": "TechQuest-Modpack/0.3.3 (github.com/Nessoro/TechQuest-Modpack)"})
+              with urllib.request.urlopen(req, timeout=30) as resp: return json.load(resp)
+          ver = get("BYZmHubv")
+          assert ver["id"] == "BYZmHubv", ver
+          assert ver["project_id"] == "VzR5wiLo", ver["project_id"]
+          assert "1.21.1" in ver["game_versions"], ver["game_versions"]
+          assert "neoforge" in ver["loaders"], ver["loaders"]
+          files = [x for x in ver["files"] if x["filename"] == "refinedstorage-jei-integration-neoforge-1.0.0.jar"]
+          assert len(files) == 1, [x["filename"] for x in ver["files"]]
+          f = files[0]
+          print("PIN_VERSION=" + ver["version_number"])
+          print("PIN_SHA512=" + f["hashes"]["sha512"])
+          print("PIN_SHA1=" + f["hashes"]["sha1"])
+          print("PIN_SIZE=" + str(f["size"]))
+          print("PIN_DEPENDENCIES=" + json.dumps(ver.get("dependencies", [])))
+          for dep in ver.get("dependencies", []):
+              if dep["dependency_type"] == "required":
+                  print("REQUIRED_PROJECT=" + str(dep.get("project_id")) + " VERSION=" + str(dep.get("version_id")))
+          PY
