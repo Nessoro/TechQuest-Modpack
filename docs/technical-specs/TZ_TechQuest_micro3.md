@@ -1,53 +1,54 @@
-# Техническое задание №1 — TechQuest 0.3.3-micro3
+# Technical Specification No. 1 — TechQuest 0.3.3-micro3
 
-## Удаление RPG Core с сохранением TechQuest Compatibility
+## Remove RPG Core while preserving TechQuest Compatibility
 
-**Редакция:** 14.11.2026  
-**Репозиторий:** https://github.com/Nessoro/TechQuest-Modpack  
-**PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/30 (draft)  
-**Ветка реализации:** fix/micro3-remove-first-party-mods-033  
-**База:** feat/micro2-rpg-core-033  
-**Платформа:** Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
+**Revision:** November 14, 2026  
+**Repository:** https://github.com/Nessoro/TechQuest-Modpack  
+**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/30 (draft)  
+**Implementation branch:** `fix/micro3-remove-first-party-mods-033`  
+**Base branch:** `feat/micro2-rpg-core-033`  
+**Target platform:** Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
 
-### Цель
-Полностью исключить собственный TechQuest RPG Core 0.1.0 из будущих клиентских, серверных, Modrinth и Windows-пакетов, не потеряв исправления TechQuest Compatibility 1.0.0. PMMO также не должен возвращаться.
+### Objective
+Completely exclude the in-house TechQuest RPG Core 0.1.0 from future client, dedicated-server, Modrinth and Windows distribution packages **without losing TechQuest Compatibility 1.0.0**. Project MMO (PMMO) must not be reintroduced.
 
-### Обязательные требования
-1. Убрать techquest-rpg-core-0.1.0.jar из **генерации**, output/client/mods, output/server/mods, .mrpack, серверного bootstrap и графического Windows EXE.
-2. Сохранить techquest-compat-1.0.0.jar на всех соответствующих сторонах и два назначения: рецепты **Create ↔ Industrial Craft 2: Nostalgia** и клиентский Mixin исправления ранней загрузки **Better Zoom**.
-3. Исключить повторное появление PMMO JAR и RPG Core при обновлении существующего профиля.
-4. Не менять состав и настройки остальных модов, в том числе BuildCraft, Create, IC2, Mekanism, AE2, FTB Ultimine, Physics Mod, Incoming, Patchouli.
-5. Оставить один оптимизированный профиль для Minecraft Launcher. Игроку не нужны Python, консоль или Prism Launcher.
-6. Не удалять saves, config, options.txt, карты, сведения Launcher. При обновлении mods обеспечить предсказуемый резервный каталог и откат; не создавать множество лишних копий.
-7. Не модифицировать публичный micro2, не объединять PR и не публиковать релиз без отдельного решения владельца.
+### Mandatory requirements
+1. Remove `techquest-rpg-core-0.1.0.jar` from the generation pipeline, `output/client/mods`, `output/server/mods`, `.mrpack`, the server bootstrap and the Windows GUI installer.
+2. Keep `techquest-compat-1.0.0.jar` wherever required, preserving both functions: **Create ↔ Industrial Craft 2: Nostalgia** compatibility recipes and the client-side **Better Zoom** early-initialization Mixin workaround.
+3. Prevent RPG Core and PMMO JARs from reappearing when an existing profile is upgraded.
+4. Do not modify unrelated mod selections or configuration, including BuildCraft, Create, IC2, Mekanism, AE2, FTB Ultimine, Physics Mod, Incoming or Patchouli.
+5. Preserve a single Optimized profile installed through the official Minecraft Launcher. End users must not need Python, a command line or Prism Launcher.
+6. Preserve `saves`, `config`, `options.txt`, maps and Minecraft Launcher data. When upgrading `mods`, implement a predictable backup location and rollback mechanism; avoid creating numerous duplicate backups.
+7. Do not modify the already published micro2 preview, merge PRs or publish releases without explicit owner approval.
 
-### Что проверить по компонентам
-| Компонент | Требование |
+### Components to inspect and modify
+
+| Component | Required outcome |
 |---|---|
-| build_pack.py | RPG Core не генерируется, Compatibility JAR генерируется и попадает во все нужные пакеты |
-| scripts/install_client.py | Разрешено извлечение Compatibility, запрещена штатная поставка RPG Core |
-| scripts/install_server.py | Compatibility поставляется, RPG Core не поставляется; патч Superb Warfare не повреждён |
-| windows-installer/Program.cs | GUI ставит актуальный Compatibility, не возвращает RPG Core и безопасно обновляет mods |
-| .github/workflows/build-alpha.yml | Проверка отсутствия RPG Core/PMMO и наличия Compatibility на клиенте, сервере и в .mrpack |
-| tests/ | Позитивные и негативные регрессионные тесты, повторная установка, откат |
-| README.md, docs/MICROPATCH_MICRO3_RU.md | Актуальные инструкции и риски |
+| `build_pack.py` | RPG Core JAR is no longer generated; Compatibility JAR is generated and packaged correctly |
+| `scripts/install_client.py` | Compatibility extraction remains allowed; RPG Core is not included in the supported installation path |
+| `scripts/install_server.py` | Compatibility is installed, RPG Core is not; the Superb Warfare server workaround remains intact |
+| `windows-installer/Program.cs` | GUI installs the current Compatibility JAR, never restores RPG Core, and safely replaces the `mods` folder |
+| `.github/workflows/build-alpha.yml` | Assert RPG Core/PMMO are absent and Compatibility is present in client, server and `.mrpack` |
+| `tests/` | Add positive/negative regression tests, repeat-install coverage and rollback checks |
+| `README.md`, `docs/MICROPATCH_MICRO3_RU.md` | Keep installation guidance, limitations and risks accurate |
 
-### План тестирования
-- Unit tests: python -m unittest discover -s tests -v.
-- Полная сборка: python build_pack.py; проверка хешей и непротиворечивости modrinth.index.json.
-- GUI: собрать TechQuestInstaller.exe, выполнить self-test, новую установку и обновление тестового профиля с историческим RPG Core. Проверить, что предыдущий mods сохранён в единой резервной директории, а сбой вызывает откат.
-- Игра: настоящий клиент до главного меню, новый тестовый мир, рецепт Create ↔ IC2, функция Better Zoom; dedicated server до Done и вход игрока — только при отдельном явном принятии Minecraft EULA.
-- Отдельно проверить известный дефект добычи блоков вверх: тест одного блока без активного Ultimine, затем тест колонны блоков и Physics Mod. **Удаление RPG Core само по себе не считается исправлением дефекта.**
+### Verification plan
+- **Unit tests:** run `python -m unittest discover -s tests -v`.
+- **Full packaging:** run `python build_pack.py`; verify downloaded hashes and `modrinth.index.json` consistency.
+- **Windows GUI:** build `TechQuestInstaller.exe`, run its self-test, complete a clean installation and upgrade a disposable profile containing the legacy RPG Core. Confirm the previous `mods` folder is retained in one backup location and rollback works after an injected or reproducible failure.
+- **Runtime:** launch a real Minecraft client to the main menu and create a fresh test world. Validate Create ↔ IC2 recipes and Better Zoom behavior. Bring the dedicated server to `Done` and connect a client **only after explicit acceptance of the Minecraft EULA**.
+- **Separate known mining defect:** reproduce mining of a single block with Ultimine inactive, then a vertical column test with Ultimine and Physics Mod. **Removing RPG Core is not, by itself, proof that unexpected upward block destruction is fixed.**
 
-### Критерии приёмки
-- [ ] Ни один будущий пакет не содержит RPG Core или PMMO.
-- [ ] Compatibility есть в клиенте и сервере, в .mrpack и Windows EXE; оба его назначения подтверждены в настоящей игре.
-- [ ] Клиент, сервер, GUI и повторная установка работают.
-- [ ] Миры и пользовательские настройки сохранены, откат проверен.
-- [ ] Unit tests, полная сборка, self-test и аудит на одном commit SHA зелёные; к PR приложен отчёт игрового испытания.
+### Acceptance criteria
+- [ ] No future distribution contains RPG Core or PMMO.
+- [ ] Compatibility exists in client, server, `.mrpack` and the Windows installer; its two functions are verified in the actual game.
+- [ ] Client, dedicated server, Windows GUI and repeat installation work correctly.
+- [ ] Existing worlds and user settings are preserved; rollback has been tested.
+- [ ] Unit tests, full build, installer self-test and auditing are green for the relevant commit SHA, and a real-game test report is attached to PR #30.
 
-### Не входит
-Переработка FTB Ultimine/Physics Mod, замена IC2, новые промышленные моды, публичный релиз. Отдельный дефект добычи вверх при необходимости оформляется отдельно.
+### Out of scope
+Redesigning FTB Ultimine or Physics Mod, replacing IC2, introducing industrial mods, and publishing a public release. Track the upward-mining defect separately if necessary.
 
-### Конечный результат
-Коммиты в существующей ветке, обновлённый PR #30, перечень изменённых файлов, матрица состава на всех сторонах и проверяемые логи. Не объявлять стабильным без реальных испытаний.
+### Deliverables and Codex handoff
+Commit only to the existing implementation branch and update PR #30. Provide changed-file inventory, client/server package manifest, reproducible test logs, remaining risks and the next action. Update `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md` with dated evidence. Do not claim stability until runtime validation is complete.
