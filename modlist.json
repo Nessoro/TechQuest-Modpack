@@ -4,7 +4,7 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3 micro2: оригинальный RPG Core вместо PMMO; бонусы за достижения и масштабирование мобов без XP/Vein Mining Подготовка micro4: Trash Cans и Pretty Pipes с закреплёнными зависимостями; Colossal Reactors исключён по просьбе владельца, FTB Industrial Contraptions пока не имеет совместимого порта 1.21.1 NeoForge, улучшенные солнечные панели IC2 Nostalgia требуют отдельной проверки.",
+  "description": "TechQuest 0.3.3 micro4 candidate: Trash Cans и Pretty Pipes без двигателей, только предметные трубы; IC2: Nostalgia и TechQuest Compatibility сохранены. Colossal Reactors, Iskandert's Library, Fusion, FTB Industrial, RPG Core и PMMO исключены. Advanced Solar Panels — только micro6. Micro5 (draft): Iskander Rocket 2.0.1 (XUogRnhj/M1b2lYax) for both client and server; only authorized test worlds, no public release.",
   "removed_mods": [
     {
       "project": "mcheli-modern-port",
@@ -20,7 +20,7 @@
     },
     {
       "project": "project-mmo",
-      "reason": "micro2: Project MMO удалён после подтверждённого бага массовой добычи вверх; заменён собственным TechQuest RPG Core"
+      "reason": "PMMO удалён из-за ошибки массовой добычи; собственный RPG Core также удалён в micro3 и не возвращается в micro4."
     }
   ],
   "mods": [

@@ -56,6 +56,10 @@ class AdventureRebalanceTests(unittest.TestCase):
                 self.assertEqual(m["version_prefix"], "0.4.3+mc1.21.1")
 
     def test_gameplay_genre_distribution(self):
+        self.assertEqual(self.mods["trash-cans"]["group"], "Комфорт")
+        self.assertEqual(self.mods["pretty-pipes"]["group"], "Технологии")
+        self.assertNotIn("ftb-industrial-contraptions", self.mods)
+        self.assertNotIn("colossal-reactors", self.mods)
         # Micro4 adds one technology (Pretty Pipes) and one logistics QoL mod (Trash Cans).
         counts = Counter(m["group"] for m in self.cfg["mods"])
         counts.update(m.get("group", "Технологии") for m in self.cfg.get("manual_mods", []))
