@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from prepare_terralith_worldgen import selected
+from prepare_terralith_worldgen import RECIPE_ADVANCEMENTS, normalize_recipe_unlocks, selected
 from server_preflight import UPSTREAM
 
 RECIPES = ("dispenser", "dropper", "lever", "observer", "piston")
@@ -28,7 +28,7 @@ def read(path: Path) -> bytes:
     return path.read_bytes()
 
 
-def audit(work: Path, resources: Path, upstream: Path) -> dict:
+def audit(work: Path, resources: Path, upstream: Path, datapack: Path | None = None) -> dict:
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=upstream, check=True,
                           capture_output=True, text=True).stdout.strip()
     if head != UPSTREAM:
@@ -38,7 +38,8 @@ def audit(work: Path, resources: Path, upstream: Path) -> dict:
     outside = work / "mods/terralith/outside"
     carry = work / "mods/terralith/carry"
     remaining = {p.relative_to(outside).as_posix(): p for p in (outside / "data").rglob("*")
-                 if p.is_file() and not selected(p.relative_to(outside))}
+                 if p.is_file() and (not selected(p.relative_to(outside))
+                                      or p.relative_to(outside).as_posix() in RECIPE_ADVANCEMENTS)}
     expected = {f"data/minecraft/advancement/recipes/redstone/{name}.json" for name in RECIPES}
     expected |= {f"data/minecraft/wolf_variant/{name}.json" for name in WOLVES}
     expected.add("data/minecraft/dimension/funny_cave_meme.txt")
@@ -58,11 +59,16 @@ def audit(work: Path, resources: Path, upstream: Path) -> dict:
                     or new["criteria"]["has_the_recipe"]["conditions"] != {"recipes": recipe}):
                 raise ValueError("review a changed recipe advancement")
             custom_file = carry / f"data/terralith/recipe/{path.stem}_alt.json"
-            record.update(classification="recipe_unlock_pending", custom_recipe=custom,
+            adapted = datapack is not None
+            if adapted:
+                converted, count = normalize_recipe_unlocks(old)
+                if count != 1 or json.loads(read(datapack / name)) != converted:
+                    raise ValueError("adapted advancement does not preserve the reviewed source")
+            record.update(classification="recipe_unlock_adapted" if adapted else "recipe_unlock_adapter_available", custom_recipe=custom,
                           carried_recipe_sha256=hashlib.sha256(read(custom_file)).hexdigest(),
-                          migration_needed="recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
-                          behavior_missing="automatic unlock of the alternate recipe from this advancement",
-                          runtime_verified=False)
+                          migration="recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
+                          behavior_requires_player_test="automatic unlock of the alternate recipe from this advancement",
+                          adapted_datapack_checked=adapted, player_runtime_verified=False)
         elif "/wolf_variant/" in name:
             old, new = json.loads(raw), json.loads(read(resources / name))
             if set(old) != {"angry_texture", "tame_texture", "wild_texture", "biomes"}:
@@ -84,7 +90,9 @@ def audit(work: Path, resources: Path, upstream: Path) -> dict:
         files.append(record)
     return {"schema": 1, "minecraft": "26.3", "terralith": "2.6.2", "upstream_commit": UPSTREAM,
             "outside_files_reviewed": len(files), "unclassified": [],
-            "recipe_unlock_pending": 5, "native_wolf_selector_pending": 9, "non_runtime_author_notes": 1,
+            "recipe_unlock_adapted": 5 if datapack is not None else 0,
+            "recipe_unlock_player_test_pending": 5, "outside_not_selected_by_adapter": 10,
+            "native_wolf_selector_pending": 9, "non_runtime_author_notes": 1,
             "evidence_sha256": {name: hashlib.sha256(read(upstream / name)).hexdigest() for name in EVIDENCE},
             "native_wolf_selector": "wolf_variant_for has fixed vanilla biome/tag branches; c tags are not consulted",
             "recipe_unlock_selector": "native advancement index and matcher read conditions.recipes",
@@ -96,6 +104,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("work", "resources", "upstream"):
         parser.add_argument("--" + name, required=True, type=Path)
+    parser.add_argument("--datapack", type=Path,
+                        help="Also verify the five adapted recipe advancements against the original source")
     print(json.dumps(audit(**vars(parser.parse_args())), indent=2))
 
 

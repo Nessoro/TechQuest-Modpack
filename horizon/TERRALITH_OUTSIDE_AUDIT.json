@@ -5,7 +5,9 @@
   "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
   "outside_files_reviewed": 15,
   "unclassified": [],
-  "recipe_unlock_pending": 5,
+  "recipe_unlock_adapted": 5,
+  "recipe_unlock_player_test_pending": 5,
+  "outside_not_selected_by_adapter": 10,
   "native_wolf_selector_pending": 9,
   "non_runtime_author_notes": 1,
   "evidence_sha256": {
@@ -19,52 +21,57 @@
     {
       "path": "data/minecraft/advancement/recipes/redstone/dispenser.json",
       "sha256": "b8c570aa38b9fe02ea390e8ec22ad0ec044c01ac5bef7df7edcac49506ddcc74",
-      "classification": "recipe_unlock_pending",
+      "classification": "recipe_unlock_adapted",
       "custom_recipe": "terralith:dispenser_alt",
       "carried_recipe_sha256": "4d4cc0556eeffb8db4e70b028294e97261d82bef3012536b70b7797f70b3016f",
-      "migration_needed": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
-      "behavior_missing": "automatic unlock of the alternate recipe from this advancement",
-      "runtime_verified": false
+      "migration": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
+      "behavior_requires_player_test": "automatic unlock of the alternate recipe from this advancement",
+      "adapted_datapack_checked": true,
+      "player_runtime_verified": false
     },
     {
       "path": "data/minecraft/advancement/recipes/redstone/dropper.json",
       "sha256": "1ca3860ecfbd325449675950997b4cdc540c2b1b525d31b0c168dbe3b43d77ac",
-      "classification": "recipe_unlock_pending",
+      "classification": "recipe_unlock_adapted",
       "custom_recipe": "terralith:dropper_alt",
       "carried_recipe_sha256": "edbc7f6a57b18279026198a743aa5abb9d4d506394be3cb6e9e3d630c12f4c2a",
-      "migration_needed": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
-      "behavior_missing": "automatic unlock of the alternate recipe from this advancement",
-      "runtime_verified": false
+      "migration": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
+      "behavior_requires_player_test": "automatic unlock of the alternate recipe from this advancement",
+      "adapted_datapack_checked": true,
+      "player_runtime_verified": false
     },
     {
       "path": "data/minecraft/advancement/recipes/redstone/lever.json",
       "sha256": "cc8d92436b90baf70471abaf5f7920b50974ba8b8a21b0cb4ac3742980549a7c",
-      "classification": "recipe_unlock_pending",
+      "classification": "recipe_unlock_adapted",
       "custom_recipe": "terralith:lever_alt",
       "carried_recipe_sha256": "20c588464e87d007f6092e83f2a04496409be70a85fb8ed623afcc43648f4178",
-      "migration_needed": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
-      "behavior_missing": "automatic unlock of the alternate recipe from this advancement",
-      "runtime_verified": false
+      "migration": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
+      "behavior_requires_player_test": "automatic unlock of the alternate recipe from this advancement",
+      "adapted_datapack_checked": true,
+      "player_runtime_verified": false
     },
     {
       "path": "data/minecraft/advancement/recipes/redstone/observer.json",
       "sha256": "e6c03771026ea250b8642a2bd207f1ed2adfca310ea5fade2cd860fe17a0c651",
-      "classification": "recipe_unlock_pending",
+      "classification": "recipe_unlock_adapted",
       "custom_recipe": "terralith:observer_alt",
       "carried_recipe_sha256": "0f05bad11385a6177fe726b6bdcf76f2f897387d7c9666ff52d9b0970b18359b",
-      "migration_needed": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
-      "behavior_missing": "automatic unlock of the alternate recipe from this advancement",
-      "runtime_verified": false
+      "migration": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
+      "behavior_requires_player_test": "automatic unlock of the alternate recipe from this advancement",
+      "adapted_datapack_checked": true,
+      "player_runtime_verified": false
     },
     {
       "path": "data/minecraft/advancement/recipes/redstone/piston.json",
       "sha256": "2bb193b15878f0225e8834d78d4d7561cd7449c3f09f27f15b604aae53a8ec0a",
-      "classification": "recipe_unlock_pending",
+      "classification": "recipe_unlock_adapted",
       "custom_recipe": "terralith:piston_alt",
       "carried_recipe_sha256": "e5a4176d58d42bbcfea9fcc7157a3c636c501b6602357ff5fefec43f3220f131",
-      "migration_needed": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
-      "behavior_missing": "automatic unlock of the alternate recipe from this advancement",
-      "runtime_verified": false
+      "migration": "recipe_unlocked.conditions.recipe -> recipes; preserve both rewards",
+      "behavior_requires_player_test": "automatic unlock of the alternate recipe from this advancement",
+      "adapted_datapack_checked": true,
+      "player_runtime_verified": false
     },
     {
       "path": "data/minecraft/dimension/funny_cave_meme.txt",

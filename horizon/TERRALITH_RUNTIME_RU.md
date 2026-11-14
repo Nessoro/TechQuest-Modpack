@@ -504,3 +504,67 @@ flower/blue/flowers (nether_forest_vegetation) и cherry/rock (forest_rock).
 
 Сторонние JAR, datapack, `.hmod`, подготовленные ресурсы, миры и сырые логи
 не входят в репозиторий или публикацию. Основной NeoForge main не меняется.
+
+## Recipe advancements — 14 ноября 2026
+
+После разбора остальных outside-файлов восстановлены пять vanilla overrides:
+`advancement/recipes/redstone/{dispenser,dropper,lever,observer,piston}.json`.
+Их JSON не находился в активном наборе, поэтому vanilla advancements выдавали
+только основной рецепт. Исходный Terralith дополнительно выдаёт соответствующий
+`terralith:*_alt`, уже существовавший в carry.
+
+Адаптер выбирает ровно эти пять путей и меняет только поле `recipe` на `recipes`
+у `minecraft:recipe_unlocked`. Старое имя текущий нативный обработчик не читает.
+Parent, inventory predicates, requirements и обе награды сохранены. Другие
+advancements не выбираются автоматически; `recipe_crafted.conditions.recipe`
+не меняется. Конфликт старого и нового полей отклоняется.
+
+Новый trial содержит **1872 исходных файла**, все SHA-256 повторно сверены.
+Из первоначально оставшихся 15 outside-файлов теперь не выбраны десять:
+девять wolf definitions и текстовые заметки. Производный hmod побайтно совпадает
+с предыдущим: новые файлы относятся к vanilla namespace и исполняются через
+world datapack, не меняя namespace ownership.
+
+Установщик требует эту миграцию и проверяет её файлы против нормализованных
+исходников. Одних чисел в trial-отчёте недостаточно: пропущенный advancement
+или удалённая alternate reward приводят к отказу установки.
+
+Первичная нативная проба [recipe_unlocks.rs](probes/recipe_unlocks.rs) собрана
+с библиотеками закреплённой headless-сборки. Она не запускает клиент или сервер,
+не создаёт аккаунт и принимает три локальных входа:
+
+```text
+recipe_unlocks EFFECTIVE_CONTENT_ROOT INSTALLED_WORLD ORIGINAL_TERRALITH_OUTSIDE
+```
+
+Проба использует настоящие `DataStore::load`/`PackOverlay`, `Tree::load_with`,
+`InventoryIndex`, item predicates, `Progress`, `RecipeIndex`, `Settings` и
+`Recipes`. Диспетчер событий в ней тестовый: он вызывает нативные компоненты
+по тем же условиям пяти configs; приватный `Game::trigger_criteria` не вызывается.
+Для recipe event основной рецепт уже находится в книге, как в игре.
+
+**165 сценариев** покрыли верные/неверные recipe events, inventory events с
+одним предметом или полным стеком, семь stone materials и непригодные предметы.
+После первого получения рецептов повторное событие не выдаёт наград; JSON
+прогресса и NBT книги проходят нативный roundtrip. Отдельный отрицательный
+контроль подтвердил, что все пять старых `recipe` predicates в нативной системе
+не проходят recipe event. Без datapack vanilla tree содержит только vanilla reward.
+
+Сам крафт прошёл **168 сеток**: все семь stone materials, отражение и допустимые
+смещения; для lever также сетки 2×2. Проверены реальный поиск рецепта, результат
+и его количество, пустые remainders. **336 отрицательных проверок** отклонили
+dirt вместо одного stone input и отсутствие одного ингредиента. Семь материалов
+совпали с исходным vanilla 1.21.1 tag плюс исходными добавками Terralith.
+Списание предметов из инвентаря, щелчки интерфейса и сетевой recipe book не проверены.
+
+Новая установка на `127.0.0.1:25601` с online-mode и whitelist достигла `Done`
+с шестью hmod; `datapack list enabled` подтвердил активный world pack. Чанк
+`terralith:arid_highlands` в `[-2272,81,2272]` сгенерирован и проверен через
+`execute if biome`; он и контрольный gold block сохранились после перезапуска
+с новыми homes. Аудит фактического merged content root снова дал **0 skips**.
+Сервер остановлен, engine отсутствует, lock прошёл проверку.
+
+Прошли 90 Horizon unit-тестов. Машиночитаемый итог:
+[TERRALITH_RECIPES_RUNTIME_RESULT.json](TERRALITH_RECIPES_RUNTIME_RESULT.json).
+Проверка настоящего player event, клиент, мультиплеер, wolf selection,
+структуры/лут и промышленные механики остаются отдельными задачами.

@@ -27,6 +27,9 @@ PUMPKIN = "minecraft:patch_pumpkin"
 CANE = "minecraft:patch_sugar_cane"
 LEGACY_SERVER_SHA1 = "59353fb40c36d304f2035d51e7d6e6baa98dc05c"
 LEGACY_FEATURES = ("patch_grass", "patch_brown_mushroom", "patch_red_mushroom", "patch_pumpkin")
+RECIPE_ADVANCEMENTS = frozenset(
+    f"data/minecraft/advancement/recipes/redstone/{name}.json"
+    for name in ("dispenser", "dropper", "lever", "observer", "piston"))
 # Vanilla 1.21.1 TrunkPlacer.isDirt after binding its original dirt tag.
 # The 26.3 dirt tag has different members, so using that tag changes behavior.
 LEGACY_TREE_SOILS = ("minecraft:dirt", "minecraft:coarse_dirt", "minecraft:podzol",
@@ -70,11 +73,43 @@ def expand(value):
 
 
 def selected(relative: Path) -> bool:
+    if relative.as_posix() in RECIPE_ADVANCEMENTS:
+        return True
     parts = relative.parts
     kind = len(parts) >= 4 and (parts[2] in KINDS
                                or parts[2:4] == ("tags", "worldgen"))
     return (kind and parts[0] == "data"
             and relative.suffix in (".json", ".nbt"))
+
+
+def normalize_recipe_unlocks(value):
+    """The old recipe_unlocked predicate's recipe field is recipes in 26.3.
+
+    Change only the renamed field of the reviewed trigger, preserving inventory
+    criteria, requirements, parent and both vanilla/alternate recipe rewards.
+    """
+    if not isinstance(value, dict):
+        raise ValueError("expected an advancement JSON object")
+    result = copy.deepcopy(value)
+    criteria = result.get("criteria")
+    if not isinstance(criteria, dict):
+        raise ValueError("expected advancement criteria")
+    count = 0
+    for criterion in criteria.values():
+        if not isinstance(criterion, dict):
+            raise ValueError("expected an advancement criterion object")
+        if criterion.get("trigger") not in ("minecraft:recipe_unlocked", "recipe_unlocked"):
+            continue
+        conditions = criterion.get("conditions", {})
+        if not isinstance(conditions, dict):
+            raise ValueError("expected recipe_unlocked conditions")
+        if "recipe" not in conditions:
+            continue
+        if "recipes" in conditions or not isinstance(conditions["recipe"], str) or not conditions["recipe"]:
+            raise ValueError("review conflicting or non-identifier recipe predicates")
+        conditions["recipes"] = conditions.pop("recipe")
+        count += 1
+    return result, count
 
 
 def normalize_carvers(biome: dict) -> tuple[dict, int]:
@@ -632,7 +667,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                 raise ValueError("source overrides a legacy vanilla feature: review before inlining")
         legacy_definitions, legacy_provenance = load_legacy_features(legacy_server_jar)
     # Validate and transform all inputs before creating any output.
-    markers, feature_orders, trees, disk_providers = 0, 0, 0, 0
+    markers, feature_orders, trees, disk_providers, recipe_unlocks = 0, 0, 0, 0, 0
     noise_records, noise_occurrences = {}, 0
     legacy_references = 0
     for relative, data in list(payloads.items()):
@@ -643,12 +678,16 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
             value, removed = normalize_marker(value)
             value, tree_count = normalize_trees(value)
             value, disk_count = normalize_disk_providers(value)
+            unlock_count = 0
+            if relative in RECIPE_ADVANCEMENTS:
+                value, unlock_count = normalize_recipe_unlocks(value)
+                recipe_unlocks += unlock_count
             normalized = 0
             reordered = 0
             if "/worldgen/biome/" in relative:
                 value, normalized = normalize_carvers(value)
                 value, reordered = normalize_feature_order(value)
-            if count or normalized or removed or reordered or tree_count or disk_count or inlined:
+            if count or normalized or removed or reordered or tree_count or disk_count or inlined or unlock_count:
                 payloads[relative] = (json.dumps(value, indent=2) + "\n").encode()
                 transformed.append(relative)
                 total += count
@@ -722,6 +761,8 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "reordered_adjacent_feature_pairs": feature_orders,
                   "normalized_tree_configs": trees,
                   "normalized_disk_providers": disk_providers,
+                  "normalized_recipe_unlock_criteria": recipe_unlocks,
+                  "selected_recipe_advancements": sorted(RECIPE_ADVANCEMENTS.intersection(payloads)),
                   "normalized_noise_provider_parameters": noise_converted,
                   "unique_noise_parameter_records": len(generated),
                   "temporary_noise_records_removed": True,

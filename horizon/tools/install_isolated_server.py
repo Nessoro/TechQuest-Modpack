@@ -19,6 +19,7 @@ import zipfile
 
 from server_preflight import BINARIES, MODULES, UPSTREAM, digest, inspect
 from stage_terralith_content import canonicalize_block_tag
+from prepare_terralith_worldgen import RECIPE_ADVANCEMENTS, normalize_recipe_unlocks
 
 LOCK = "techquest-local-install.json"
 WORLD = "techquest-horizon-test"
@@ -126,8 +127,10 @@ def validate_trial(datapack: Path, work: Path) -> dict[str, Path]:
     trial = json.loads(files["techquest-worldgen-trial.json"].read_text())
     if ((trial.get("schema"), trial.get("minecraft"), trial.get("terralith")) != (1, "26.3", "2.6.2")
             or trial.get("inlined_legacy_feature_references") != 5
+            or trial.get("normalized_recipe_unlock_criteria") != 5
+            or set(trial.get("selected_recipe_advancements", [])) != RECIPE_ADVANCEMENTS
             or trial.get("deferred_patch_files") != []):
-        raise ValueError("expected complete reviewed Terralith adaptation, including legacy references")
+        raise ValueError("expected complete reviewed adaptation, including legacy references and recipe unlocks")
     sources = trial.get("sources", [])
     if not sources or len(sources) != trial.get("input_files"):
         raise ValueError("missing source provenance")
@@ -139,6 +142,14 @@ def validate_trial(datapack: Path, work: Path) -> dict[str, Path]:
         path = checked_path(work / "mods/terralith" / source["section"] / name)
         if digest(path) != source["sha256"]:
             raise ValueError("Terralith source changed since adaptation: " + name.as_posix())
+    for name in RECIPE_ADVANCEMENTS:
+        origins = [source for source in sources if source["path"] == name]
+        if len(origins) != 1 or name not in files:
+            raise ValueError("missing restored recipe advancement: " + name)
+        source = work / "mods/terralith" / origins[0]["section"] / name
+        expected, count = normalize_recipe_unlocks(json.loads(source.read_bytes()))
+        if count != 1 or json.loads(files[name].read_bytes()) != expected:
+            raise ValueError("restored advancement differs from reviewed source: " + name)
     return files
 
 

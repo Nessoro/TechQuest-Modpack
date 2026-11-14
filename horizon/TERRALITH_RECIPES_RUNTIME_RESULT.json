@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-14",
+  "minecraft": "26.3",
+  "source_minecraft": "1.21.1",
+  "terralith": "2.6.2",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "normalized_recipe_unlock_criteria": 5,
+  "selected_recipe_advancements": [
+    "data/minecraft/advancement/recipes/redstone/dispenser.json",
+    "data/minecraft/advancement/recipes/redstone/dropper.json",
+    "data/minecraft/advancement/recipes/redstone/lever.json",
+    "data/minecraft/advancement/recipes/redstone/observer.json",
+    "data/minecraft/advancement/recipes/redstone/piston.json"
+  ],
+  "source_files_hashed": 1872,
+  "source_hashes_rechecked": true,
+  "source_advancement_sha256": {
+    "data/minecraft/advancement/recipes/redstone/dispenser.json": "b8c570aa38b9fe02ea390e8ec22ad0ec044c01ac5bef7df7edcac49506ddcc74",
+    "data/minecraft/advancement/recipes/redstone/dropper.json": "1ca3860ecfbd325449675950997b4cdc540c2b1b525d31b0c168dbe3b43d77ac",
+    "data/minecraft/advancement/recipes/redstone/lever.json": "cc8d92436b90baf70471abaf5f7920b50974ba8b8a21b0cb4ac3742980549a7c",
+    "data/minecraft/advancement/recipes/redstone/observer.json": "e6c03771026ea250b8642a2bd207f1ed2adfca310ea5fade2cd860fe17a0c651",
+    "data/minecraft/advancement/recipes/redstone/piston.json": "2bb193b15878f0225e8834d78d4d7561cd7449c3f09f27f15b604aae53a8ec0a"
+  },
+  "source_files_modified": false,
+  "remaining_unselected_outside_files": 10,
+  "remaining_native_wolf_definitions": 9,
+  "non_runtime_author_notes": 1,
+  "derived_hmod_sha256": "95630e9b454945db8167d2eb807db36a73137f0d6e54874fc94548985e3d302a",
+  "hmod_unchanged_from_previous_step": true,
+  "world_datapack_still_required": true,
+  "namespace_ownership_changed": false,
+  "native_component_probe": {
+    "cases": 165,
+    "per_recipe": {
+      "dispenser": {
+        "events": 33,
+        "positive": 3,
+        "negative": 30
+      },
+      "dropper": {
+        "events": 33,
+        "positive": 3,
+        "negative": 30
+      },
+      "lever": {
+        "events": 33,
+        "positive": 15,
+        "negative": 18
+      },
+      "observer": {
+        "events": 33,
+        "positive": 3,
+        "negative": 30
+      },
+      "piston": {
+        "events": 33,
+        "positive": 3,
+        "negative": 30
+      }
+    },
+    "components": [
+      "DataStore",
+      "Tree",
+      "InventoryIndex",
+      "item predicate",
+      "Progress",
+      "RecipeIndex",
+      "ServerRecipeBook Settings"
+    ],
+    "recipe_event_after_book_update_preserved": true,
+    "legacy_recipe_events_rejected": 5,
+    "progress_json_and_book_nbt_roundtrip": true,
+    "duplicate_events_award_nothing": true,
+    "event_driver_is_harness": true,
+    "full_game_event_dispatch_tested": false,
+    "actual_player_login_tested": false
+  },
+  "native_crafting_probe": {
+    "positive_grids": 168,
+    "negative_checks": 336,
+    "negative_controls": [
+      "dirt replaces one stone",
+      "one occupied ingredient removed"
+    ],
+    "sizes": [
+      2,
+      3
+    ],
+    "mirrored_and_offset_grids_tested": true,
+    "actual_recipe_manager_lookup_and_result_checked": true,
+    "all_remainders_empty": true,
+    "inventory_input_consumption_tested": false,
+    "stone_tag": {
+      "original_vanilla_tag_sha256": "a487c80a5e1e83e4bf8bf6ae0f0ea05acd91b6ee28066648f27df1808b56fa6b",
+      "terralith_additions_sha256": "ea595ddd4f31edec838f5b345229a32e676261f60b0dcd900f00f662e0794b0c",
+      "members": [
+        "minecraft:andesite",
+        "minecraft:blackstone",
+        "minecraft:cobbled_deepslate",
+        "minecraft:cobblestone",
+        "minecraft:diorite",
+        "minecraft:granite",
+        "minecraft:tuff"
+      ],
+      "old_merged_and_native_members_match": true
+    },
+    "original_server_inner_sha256": "c301de10f575027d13eac18c7f34409d60648cf56a35d566aa1f530ff617840a"
+  },
+  "server_boot_tested": true,
+  "world_checks": {
+    "schema": 1,
+    "minecraft": "26.3",
+    "world": "techquest-horizon-test",
+    "port": 25601,
+    "online_mode": true,
+    "whitelist": true,
+    "loaded_hmod_modules": 6,
+    "source_hashes_rechecked": 1872,
+    "recipe_advancements_in_world_datapack": 5,
+    "enabled_packs_before": "There are 2 data pack(s) enabled: [vanilla (built-in)], [file/techquest_terralith (world)]",
+    "natural_biome_position": [
+      -2272,
+      81,
+      2272
+    ],
+    "natural_biome_generated": true,
+    "save_all_flushed": true,
+    "fresh_home_created_for_reopen": true,
+    "marker_after_reopen": true,
+    "natural_biome_after_reopen": true,
+    "enabled_packs_after_reopen": "There are 2 data pack(s) enabled: [vanilla (built-in)], [file/techquest_terralith (world)]",
+    "unsupported_count_after_reopen": 0,
+    "installation_verified_after_reopen": true
+  },
+  "final_phase": "stopped",
+  "engine_stopped": true,
+  "generator_audit": {
+    "gameplay_ported": false,
+    "generator_pipeline_accepted": true,
+    "minecraft": "26.3",
+    "schema": 1,
+    "scope": "JSON registries and feature decoding; not structure placement or gameplay",
+    "seed": 263,
+    "server_boot_tested": false,
+    "unsupported_count": 0,
+    "unsupported_features": []
+  },
+  "horizon_unit_tests_passed": 90,
+  "industrial_mechanics_ported": false,
+  "full_terralith_ported": false,
+  "client_tested": false,
+  "multiplayer_tested": false,
+  "published": false
+}

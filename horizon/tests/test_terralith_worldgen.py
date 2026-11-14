@@ -138,6 +138,39 @@ class TerralithWorldgenTests(unittest.TestCase):
     def test_worldgen_tags_are_selected_with_their_definitions(self):
         self.assertTrue(adapter.selected(Path('data/terralith/tags/worldgen/biome/test.json')))
         self.assertFalse(adapter.selected(Path('data/minecraft/advancement/test.json')))
+        for name in adapter.RECIPE_ADVANCEMENTS:
+            self.assertTrue(adapter.selected(Path(name)))
+        self.assertFalse(adapter.selected(Path('data/custom/advancement/recipes/redstone/piston.json')))
+
+    def test_recipe_unlock_migration_preserves_inventory_and_rewards(self):
+        source = {"parent": "minecraft:recipes/root", "criteria": {
+            "has_iron": {"trigger": "minecraft:inventory_changed", "conditions": {
+                "items": [{"items": "minecraft:iron_ingot"}]}},
+            "has_recipe": {"trigger": "minecraft:recipe_unlocked", "conditions": {
+                "recipe": "minecraft:piston", "player": []}}},
+            "requirements": [["has_iron", "has_recipe"]],
+            "rewards": {"recipes": ["minecraft:piston", "terralith:piston_alt"]}}
+        before = copy.deepcopy(source)
+        result, count = adapter.normalize_recipe_unlocks(source)
+        self.assertEqual(source, before)
+        expected = copy.deepcopy(source)
+        conditions = expected["criteria"]["has_recipe"]["conditions"]
+        conditions["recipes"] = conditions.pop("recipe")
+        self.assertEqual(result, expected)
+        self.assertEqual(count, 1)
+        self.assertEqual(adapter.normalize_recipe_unlocks(result), (result, 0))
+
+    def test_other_trigger_recipe_field_is_not_renamed(self):
+        source = {"criteria": {"crafted": {"trigger": "minecraft:recipe_crafted",
+                                         "conditions": {"recipe": "minecraft:piston"}}}}
+        self.assertEqual(adapter.normalize_recipe_unlocks(source), (source, 0))
+
+    def test_ambiguous_recipe_predicates_fail_before_output(self):
+        for value in ({"recipe": "minecraft:piston", "recipes": "minecraft:lever"},
+                      {"recipe": ["minecraft:piston"]}, {"recipe": ""}):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                adapter.normalize_recipe_unlocks({"criteria": {"r": {
+                    "trigger": "minecraft:recipe_unlocked", "conditions": value}}})
 
     def test_nonforced_tree_preserves_the_seven_original_soils(self):
         source = {"type": "minecraft:tree", "config": {

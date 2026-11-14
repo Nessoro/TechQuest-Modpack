@@ -53,11 +53,16 @@
 - [x] Nether vegetation перенесена с выбором state до air-check и исходными
   height gates. 450 traces совпали; все пять исходных опор, включая moss,
   проверены после перезапуска. Исправлены три unqualified block-tag entries.
-- [x] Все 15 оставшихся outside-файлов разобраны: пять recipe unlocks,
-  девять wolf selectors требуют реализации; один файл — авторские заметки.
+- [x] Все 15 оставшихся outside-файлов разобраны: девять wolf selectors
+  требуют реализации; один файл — авторские заметки, пять recipe unlocks перенесены.
 - [x] Локальный установщик сверяет шесть SDK hmod, адаптированный datapack,
   канонические block tags и source hashes; новая установка прошла старт,
   save/reopen, проверку lock и аудит генератора с нулём skips. Сервер остановлен.
+- [x] Пять recipe advancements добавлены в world datapack. Нативные Tree,
+  InventoryIndex, Progress и RecipeBook прошли 165 сценариев; крафт — 168 сеток
+  с семью исходными материалами и 336 отрицательных проверок. Event driver
+  в пробе тестовый; реальный игрок и полный Game dispatch пока не проверены.
+  Новая установка с 1872 исходниками сохранила биом и блок после перезапуска.
 
 Источники доказательств: [сервер](SERVER_RUNTIME_RESULT.json),
 [Terralith](TERRALITH_RUNTIME_RESULT.json), [деревья](TERRALITH_TREE_RUNTIME_RESULT.json),
@@ -69,12 +74,13 @@
 [текущий генератор](TERRALITH_VEGETATION_RUNTIME_RESULT.json).
 Новая установка: [инструкция](LOCAL_INSTALL_RU.md),
 [runtime-итог](LOCAL_INSTALL_RUNTIME_RESULT.json), [outside-аудит](TERRALITH_OUTSIDE_AUDIT.json).
-Проверки текущего этапа: 85 Horizon-тестов прошли; 45 базовых тестов — предыдущая проверка.
+[Рецепты и текущая установка](TERRALITH_RECIPES_RUNTIME_RESULT.json).
+Проверки текущего этапа: 90 Horizon-тестов прошли; 45 базовых тестов — предыдущая проверка.
 
 ## Ближайшая работа
 
-1. Восстановить пять recipe advancements Terralith с проверкой автоматического
-   открытия alternate recipes; исправить нативный wolf variant selector.
+1. Исправить нативный wolf variant selector с чтением c:has_wolf_variant tags;
+   проверить пять recipe advancements с настоящим лицензированным игроком.
    Ноль decoder skips не означает, что весь исходный мод полностью перенесён.
 2. Проверить генерацию структур, лут и спавнеры четырёх YUNG's, включая сохранение.
    Для воспроизводимой локальной установки использовать LOCAL_INSTALL_RU.md.

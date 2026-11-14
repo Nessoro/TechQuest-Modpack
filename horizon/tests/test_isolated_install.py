@@ -150,6 +150,53 @@ class IsolatedInstallTests(unittest.TestCase):
                 run.assert_not_called()
             self.assertEqual(marker.read_bytes(), b"existing world")
 
+    def test_trial_without_recipe_unlock_migration_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            pack = Path(temp) / "pack"
+            pack.mkdir()
+            (pack / "pack.mcmeta").write_text("{}")
+            (pack / "techquest-worldgen-trial.json").write_text(json.dumps({"schema": 1,
+                "minecraft": "26.3", "terralith": "2.6.2", "inlined_legacy_feature_references": 5,
+                "deferred_patch_files": []}))
+            with self.assertRaisesRegex(ValueError, "recipe unlocks"):
+                installer.validate_trial(pack, Path(temp) / "work")
+
+    def test_missing_or_changed_restored_advancement_cannot_hide_behind_trial_counts(self):
+        for remove in (False, True):
+            with self.subTest(remove=remove), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                pack, work = root / "pack", root / "work"
+                pack.mkdir()
+                (pack / "pack.mcmeta").write_text("{}")
+                sources = []
+                for name in sorted(installer.RECIPE_ADVANCEMENTS):
+                    original = {"criteria": {"has_recipe": {"trigger": "minecraft:recipe_unlocked",
+                        "conditions": {"recipe": "minecraft:" + Path(name).stem}}},
+                        "rewards": {"recipes": ["minecraft:" + Path(name).stem, "terralith:" + Path(name).stem + "_alt"]}}
+                    path = work / "mods/terralith/outside" / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text(json.dumps(original))
+                    sources.append({"section": "outside", "path": name, "sha256": installer.digest(path)})
+                    original["criteria"]["has_recipe"]["conditions"] = {"recipes": "minecraft:" + Path(name).stem}
+                    target = pack / name
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text(json.dumps(original))
+                (pack / "techquest-worldgen-trial.json").write_text(json.dumps({"schema": 1,
+                    "minecraft": "26.3", "terralith": "2.6.2", "inlined_legacy_feature_references": 5,
+                    "deferred_patch_files": [], "normalized_recipe_unlock_criteria": 5,
+                    "selected_recipe_advancements": sorted(installer.RECIPE_ADVANCEMENTS),
+                    "sources": sources, "input_files": 5}))
+                installer.validate_trial(pack, work)
+                target = pack / sorted(installer.RECIPE_ADVANCEMENTS)[0]
+                if remove:
+                    target.unlink()
+                else:
+                    value = json.loads(target.read_text())
+                    value["rewards"]["recipes"] = []
+                    target.write_text(json.dumps(value))
+                with self.assertRaisesRegex(ValueError, "recipe advancement|advancement differs"):
+                    installer.validate_trial(pack, work)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -22,8 +22,10 @@ Forest rock совпал в 1124 traces, nether vegetation — в 450. Blue flow
 [Воспроизводимая локальная установка](LOCAL_INSTALL_RU.md) согласованных шести
 hmod и world datapack проверена настоящим стартом и save/reopen.
 Все 15 оставшихся outside-файлов Terralith [разобраны](TERRALITH_OUTSIDE_AUDIT.json):
-пять recipe advancements и девять wolf selectors требуют реализации;
-один текстовый файл содержит авторские заметки.
+пять recipe advancements восстановлены, девять wolf selectors требуют реализации;
+один текстовый файл содержит авторские заметки. Для рецептов прошли 165 нативных
+сценариев открытия и 168 сеток крафта, включая alternate-материалы.
+[Результат и ограничения проверки](TERRALITH_RECIPES_RUNTIME_RESULT.json).
 
 ## Уже сделано
 

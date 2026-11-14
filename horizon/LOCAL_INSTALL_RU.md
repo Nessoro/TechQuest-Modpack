@@ -33,7 +33,11 @@ python horizon/tools/stage_terralith_content.py \
 `--legacy-server-jar` — оригинальный bundled server.jar Minecraft 1.21.1,
 не извлечённый внутренний JAR. Адаптер проверяет его SHA-1 и внутренний SHA-256.
 Без этого входа пять ссылок на старые vanilla features остаются нерешёнными;
-установщик такой trial отклоняет. Подготовка и SDK сами по себе не доказывают
+установщик такой trial отклоняет. Текущий адаптер также включает пять vanilla
+recipe advancements с сохранением alternate rewards Terralith. Установщик
+проверяет каждый из этих файлов против исходника и отклоняет старый trial без
+этой миграции, пропущенные файлы и изменённые награды.
+Подготовка и SDK сами по себе не доказывают
 полный игровой перенос.
 
 ## Установка и запуск
@@ -92,7 +96,7 @@ loopback/online-mode/whitelist, отсутствие игроков и опер�
 профиля с лицензированным клиентом — отдельный следующий этап. Не редактировать
 lock для обхода проверки. Для изменённого набора готовить новую установку.
 
-## Проверенный прогон 14 ноября 2026
+## Первый проверенный прогон 14 ноября 2026
 
 Из новых файлов установки на порту 25600 выполнены настоящий старт, загрузка
 шести модулей, forceload чанка, установка gold block, `save-all flush`, штатная
@@ -112,6 +116,14 @@ symlink, изменённом внешнем бинарнике, списках 
 Проверка ресурсов/SDK, запуск и save/reopen не подтверждают полный перенос
 Terralith, промышленные механики, вход клиента или мультиплеер.
 
+В следующем прогоне с пятью recipe advancements (порт 25601) дополнительно
+сгенерирован найденный биом `terralith:arid_highlands` и проверен после
+перезапуска. Исходных файлов теперь 1872; decoder skips по-прежнему 0.
+Нативная проверка пяти восстановленных advancements прошла 165 сценариев
+событий; крафт — 168 сеток и 336 отрицательных проверок. Диспетчер событий
+в этой проверке тестовый, реальный вход игрока не проверен.
+[Текущий результат](TERRALITH_RECIPES_RUNTIME_RESULT.json).
+
 ## Разбор остальных outside-файлов Terralith
 
 [Аудит всех 15 файлов](TERRALITH_OUTSIDE_AUDIT.json) воспроизводится командой:
@@ -120,16 +132,18 @@ Terralith, промышленные механики, вход клиента и
 python horizon/tools/audit_terralith_outside.py \
   --work /path/to/five-together \
   --resources /path/to/resources/26.3 \
-  --upstream /path/to/pinned-horizon
+  --upstream /path/to/pinned-horizon \
+  --datapack /path/to/new-adapted-datapack
 ```
 
 | Количество | Назначение | Что осталось |
 | --- | --- | --- |
-| 5 | Recipe advancements: dispenser/dropper/lever/observer/piston | Перенести `conditions.recipe` в `conditions.recipes`, сохранить vanilla и alternate rewards, проверить автоматическое открытие рецептов |
+| 5 | Recipe advancements: dispenser/dropper/lever/observer/piston | Адаптированы; нативные компоненты проверены, полный путь события с реальным игроком ещё не проверен |
 | 9 | Wolf variants | Сохранить `c:has_wolf_variant/*` условия и реализовать их нативное чтение; текущая `wolf_variant_for` использует фиксированные vanilla ветки |
 | 1 | `funny_cave_meme.txt` | Авторские climate-point заметки; не исполняемая dimension JSON |
 
 Все пять alternate recipe JSON уже есть в carry. Все девять biome tags также
-есть, adult textures совпадают с текущей vanilla. Наличие этих данных не решает
-неподключённые advancements и нативный selector. Необходимы отдельные изменения
-и игровые доказательства; полный перенос Terralith пока не заявляется.
+есть, adult textures совпадают с текущей vanilla. После восстановления пяти
+advancements в outside остаются 10 файлов: девять wolf definitions и заметки.
+Нужны нативный selector и игровые доказательства с реальным игроком;
+полный перенос Terralith пока не заявляется.
