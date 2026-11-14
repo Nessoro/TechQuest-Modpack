@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../windows-installer/ReleaseUpdates.cs" Link="ReleaseUpdates.cs" />
+    <Compile Include="../../windows-installer/TransactionalMods.cs" Link="TransactionalMods.cs" />
+    <EmbeddedResource Include="../../windows-installer/assets/update-public-key.pem" LogicalName="TechQuest.Update.PublicKey.pem" />
+  </ItemGroup>
+</Project>
