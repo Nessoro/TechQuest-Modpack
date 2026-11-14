@@ -305,6 +305,24 @@ def has_legacy_patch(value):
             or any(has_legacy_patch(v) for v in value.values()))
 
 
+def normalize_multiface(value):
+    """Materialize 1.21.1's omitted glow-lichen default in flat 26.3 features."""
+    if isinstance(value, list):
+        pairs = [normalize_multiface(v) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: normalize_multiface(v) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    if (value.get("type") not in ("multiface_growth", "minecraft:multiface_growth")
+            or "block" in value):
+        return result, count
+    if "config" in value or "can_be_placed_on" not in value:
+        raise ValueError("expected an upgraded multiface configuration")
+    return {**result, "block": "minecraft:glow_lichen"}, count + 1
+
+
 def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = None) -> dict:
     if output.exists() or output.is_symlink():
         raise ValueError("output must be a new directory; existing worlds are never modified")
@@ -412,17 +430,19 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                 raise ValueError("official upgrader did not convert noise parameters")
             converted[key] = spec
             path.unlink()  # Only our temporary conversion record, never a source file.
-        noise_converted, patches = 0, 0
+        noise_converted, patches, multiface = 0, 0, 0
         deferred_patches = []
         for path in sorted((upgraded / "data").rglob("*.json")):
             value, count = inline_noise_parameters(json.loads(path.read_bytes()), converted)
             value, patch_count = normalize_patches(value)
+            value, multiface_count = normalize_multiface(value)
             if has_legacy_patch(value):
                 deferred_patches.append(path.relative_to(upgraded).as_posix())
-            if count or patch_count:
+            if count or patch_count or multiface_count:
                 path.write_text(json.dumps(value, indent=2) + "\n")
             noise_converted += count
             patches += patch_count
+            multiface += multiface_count
         if noise_converted != noise_occurrences:
             raise ValueError("noise parameter occurrence count changed during official upgrade")
         report = {"schema": 1, "minecraft": "26.3", "source_minecraft": "1.21.1",
@@ -438,6 +458,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "temporary_noise_records_removed": True,
                   "normalized_patch_configs": patches,
                   "deferred_patch_files": deferred_patches,
+                  "normalized_multiface_defaults": multiface,
                   "prepared_biomes_sha256": base_hash,
                   "sources": sources, "official_upgrade_output": result.stdout.splitlines(),
                   "unselected_outside": unselected_outside,

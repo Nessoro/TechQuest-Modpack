@@ -292,6 +292,26 @@ class TerralithWorldgenTests(unittest.TestCase):
             with self.subTest(fields=fields), self.assertRaises(ValueError):
                 adapter.normalize_patches(patch)
 
+    def test_omitted_multiface_block_uses_original_default_and_keeps_options(self):
+        feature = {"type": "minecraft:multiface_growth", "can_be_placed_on": ["minecraft:stone"],
+                   "can_place_on_floor": True, "search_range": 9, "chance_of_spreading": .99}
+        before = copy.deepcopy(feature)
+        result, count = adapter.normalize_multiface({"feature": feature})
+        self.assertEqual(feature, before)
+        self.assertEqual(count, 1)
+        self.assertEqual(result["feature"], {**before, "block": "minecraft:glow_lichen"})
+        self.assertEqual(adapter.normalize_multiface(result), (result, 0))
+
+    def test_explicit_multiface_block_is_preserved(self):
+        feature = {"type": "minecraft:multiface_growth", "block": "minecraft:sculk_vein",
+                   "can_be_placed_on": ["minecraft:stone"]}
+        self.assertEqual(adapter.normalize_multiface(feature), (feature, 0))
+
+    def test_unflattened_multiface_is_not_given_a_top_level_default(self):
+        with self.assertRaises(ValueError):
+            adapter.normalize_multiface({"type": "minecraft:multiface_growth", "config": {
+                "can_be_placed_on": ["minecraft:stone"]}})
+
     def test_existing_output_refused(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)

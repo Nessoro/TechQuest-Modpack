@@ -26,20 +26,23 @@
 - [x] Естественный биом Terralith и сохранение после перезапуска.
 - [x] Производный SDK-валидный hmod синхронизирован с datapack для live features.
 - [x] Деревья: реальное размещение, почва, сохранение и повторная загрузка.
-- [x] Снижение отказов placed features с 246 до 22, без удаления features.
+- [x] Снижение отказов placed features с 246 до 16, без удаления features.
 - [x] 23 disk-provider и 93 записи noise-параметров перенесены; 384 выбора блоков
   совпали с оригиналом. Подзол, non-target камень и семь слоёв снега пережили перезапуск.
 - [x] 59 random_patch/flower configs заменены композициями. 640 проб координат,
   результата и следующего random draw совпали; трава и два цветка пережили перезапуск.
+- [x] Подтверждён старым кодеком default блока шести multiface configs;
+  лишайники, грани и ограничения поверхности проверены до и после перезапуска.
 
 Источники доказательств: [сервер](SERVER_RUNTIME_RESULT.json),
 [Terralith](TERRALITH_RUNTIME_RESULT.json), [деревья](TERRALITH_TREE_RUNTIME_RESULT.json),
-[providers](TERRALITH_PROVIDER_RUNTIME_RESULT.json), [patches](TERRALITH_PATCH_RUNTIME_RESULT.json).
-Проверки текущего этапа: 58 Horizon и 45 базовых тестов прошли.
+[providers](TERRALITH_PROVIDER_RUNTIME_RESULT.json), [patches](TERRALITH_PATCH_RUNTIME_RESULT.json),
+[лишайники](TERRALITH_MULTIFACE_RUNTIME_RESULT.json).
+Проверки текущего этапа: 61 Horizon и 45 базовых тестов прошли.
 
 ## Ближайшая работа
 
-1. Разобрать оставшиеся 22 отказа: 7 basic feature type, 6 block, 5 старых feature IDs,
+1. Разобрать оставшиеся 16 отказов: 7 basic feature type, 5 старых feature IDs,
    2 level_test_distance, replaceable_blocks и missing block identifier.
    Один patch `snowy/fix_snow` оставлен с исходным y_spread=25: offset движка
    ограничен ±16. Не обрезать разброс и не менять случайную последовательность.
