@@ -131,8 +131,13 @@ def inspect(jar_data, solar_data, url):
             "META-INF/neoforge.mods.toml", "META-INF/mods.toml") if p in solar.namelist()), "")
         entries = [p for p in solar.namelist() if p.endswith(".class") and not p.startswith("META-INF/versions/")]
         required_classes = set()
+        ic2_mentions = set()
         for path in entries:
-            required_classes.update(class_refs_from_bytecode(solar.read(path)))
+            content = solar.read(path)
+            required_classes.update(class_refs_from_bytecode(content))
+            ic2_mentions.update(part.decode("utf-8", "replace") for part in re.findall(rb"[A-Za-z0-9_/$;:.-]*[iI][cC]2[A-Za-z0-9_/$;:.-]*", content))
+        solar_class_examples = entries[:30]
+        solar_resource_examples = [p for p in solar.namelist() if "recipe" in p.lower() or "solar" in p.lower()][:35]
     required_classes = {x for x in required_classes if x.startswith("ic2/")}
     missing = sorted(required_classes - ic2_classes)
     return {
@@ -150,10 +155,13 @@ def inspect(jar_data, solar_data, url):
         "solar_verified_upstream_url": url,
         "solar_metadata": meta[:10000],
         "solar_bytecode_classes": len(entries),
+        "solar_class_examples": solar_class_examples,
+        "solar_resource_examples": solar_resource_examples,
+        "solar_ic2_string_mentions": sorted(ic2_mentions)[:90],
         "solar_ic2_class_references": len(required_classes),
         "solar_ic2_missing_class_count": len(missing),
         "solar_ic2_missing_classes": missing,
-        "static_class_linkage_possible": not missing,
+        "static_class_linkage_possible": bool(required_classes) and not missing,
         "ready_for_distribution": False,
         "runtime_compatible": "NOT_TESTED",
         "warnings": [
@@ -176,6 +184,9 @@ def main(argv=None):
     outfile.parent.mkdir(parents=True, exist_ok=True)
     outfile.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Solar addon official file:", report["solar_file"], report["solar_sha512"])
+    print("Solar class files:", report["solar_bytecode_classes"], report["solar_class_examples"][:15])
+    print("Solar metadata:", report["solar_metadata"][:1600])
+    print("IC2 string mentions:", report["solar_ic2_string_mentions"][:40])
     print("Required IC2 symbols:", report["solar_ic2_class_references"])
     print("Missing IC2 classes in pinned Nostalgia:", report["solar_ic2_missing_class_count"])
     print("Missing class names:", report["solar_ic2_missing_classes"][:60])
