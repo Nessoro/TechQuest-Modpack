@@ -466,6 +466,17 @@
         "server": "required"
       },
       "note": "Трубы без двигателей для автоматической транспортировки предметов (в том числе блоков как вещей) между контейнерами; не перемещают установленные блоки в мире."
+    },
+    {
+      "project": "iskander-rocket-mod",
+      "group": "Военная техника",
+      "required": true,
+      "version_id": "M1b2lYax",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Iskander Rocket Mod 2.0.1 (rcatlab, MIT) для NeoForge 1.21.1: баллистическая ракета дальностью до 10 000 блоков; огромный кратер и ударная волна, сначала проверять только в отдельном тестовом мире; мод нужен и клиенту, и серверу. Не зависит от Iskandert's Library."
     }
   ],
   "manual_mods": [
@@ -1598,6 +1609,17 @@
       "version_id": "lrhbGGSe",
       "filename": "PrettyPipes-1.22.0-all.jar",
       "sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "XUogRnhj": {
+      "title": "Iskander Rocket Mod",
+      "version": "2.0.1+mc1.21-1.21.1-neoforge",
+      "version_id": "M1b2lYax",
+      "filename": "iskander-2.0.1+mc1.21-1.21.1-neoforge.jar",
+      "sha512": "539ea44461455b3af6e799e17c59d8284300c06b81f6012f687fe8031452c5e60fa0a93d8e59229d4717d0032e53408f80ad7670a681a932acf736a574a7a07c",
       "environment": {
         "client": "required",
         "server": "required"
