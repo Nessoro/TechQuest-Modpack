@@ -91,7 +91,7 @@ jobs:
           locks = cfg["modrinth_lock"]
           expected_ids = ("4QrnfueM", "XExdLWCQ", "LN9BxssP", "rOUBggPv")
           excluded_ids = ("x18RjbsF", "y16HgCOF", "p19vrgc2")
-          excluded_names = ("colossal", "iskand", "fusion", "ftb-industrial",
+          excluded_names = ("colossal", "iskandert", "fusion", "ftb-industrial",
                             "ftb_industrial", "techquest-rpg-core", "pmmo")
           for project_id in excluded_ids:
               assert project_id not in locks, ("excluded Modrinth lock", project_id)
@@ -104,8 +104,23 @@ jobs:
               index = json.loads(archive.read("modrinth.index.json"))
               files = {row["path"]: row for row in index["files"]}
               all_paths = set(archive.namelist()) | set(files)
+              # Only JARs under mod directories can be installed as mods.
+              # Patchouli pages such as colossal_enemies.json are not reactor mods.
+              def forbidden_mod_jar(path):
+                  lowered = path.lower()
+                  if not lowered.startswith(("mods/", "overrides/mods/")):
+                      return False
+                  if not lowered.endswith(".jar"):
+                      return False
+                  return any(name in Path(lowered).name for name in excluded_names)
+
+              # Regression checks: keep false positives out and real banned JARs out.
+              assert not forbidden_mod_jar(
+                  "overrides/patchouli_books/techquest_guide/en_us/entries/colossal_enemies.json")
+              assert forbidden_mod_jar("mods/colossal-reactors-1.0.jar")
+              assert not forbidden_mod_jar("mods/iskander-2.0.1.jar")
               for path in all_paths:
-                  assert not any(name in path.lower() for name in excluded_names), path
+                  assert not forbidden_mod_jar(path), path
               for project_id in expected_ids:
                   lock = locks[project_id]
                   name = lock["filename"]
