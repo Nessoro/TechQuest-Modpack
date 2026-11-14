@@ -7,12 +7,15 @@ Third-party data stay local. Sources and all unselected outside files are retain
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
+import io
 import json
 from pathlib import Path
 import subprocess
 import tempfile
 import tomllib
+import zipfile
 
 RARITIES = {
     "type_1": ((-0.5, 0.0, 0.5), (0.75, 1.0, 1.5, 2.0)),
@@ -22,6 +25,8 @@ KINDS = {"worldgen", "dimension", "dimension_type", "structure"}
 DOCUMENTATION_BIOME = "terralith:comment_dont_generate_strips_here"
 PUMPKIN = "minecraft:patch_pumpkin"
 CANE = "minecraft:patch_sugar_cane"
+LEGACY_SERVER_SHA1 = "59353fb40c36d304f2035d51e7d6e6baa98dc05c"
+LEGACY_FEATURES = ("patch_grass", "patch_brown_mushroom", "patch_red_mushroom", "patch_pumpkin")
 # Vanilla 1.21.1 TrunkPlacer.isDirt after binding its original dirt tag.
 # The 26.3 dirt tag has different members, so using that tag changes behavior.
 LEGACY_TREE_SOILS = ("minecraft:dirt", "minecraft:coarse_dirt", "minecraft:podzol",
@@ -350,7 +355,55 @@ def normalize_roots(value):
     return {**result, "level_test_distance": 0, "max_level_deviation": 0}, count + 1
 
 
-def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = None) -> dict:
+def load_legacy_features(jar: Path):
+    """Read four definitions from the official pinned bundle, without extracting it."""
+    if jar.is_symlink() or any(p.is_symlink() for p in jar.parents):
+        raise ValueError("symlink in legacy server input")
+    raw = jar.read_bytes()
+    if hashlib.sha1(raw).hexdigest() != LEGACY_SERVER_SHA1:
+        raise ValueError("expected the official Minecraft 1.21.1 server bundle")
+    with zipfile.ZipFile(io.BytesIO(raw)) as bundle:
+        fields = bundle.read("META-INF/versions.list").decode().strip().split("\t")
+        if len(fields) != 3 or fields[1:] != ["1.21.1", "1.21.1/server-1.21.1.jar"]:
+            raise ValueError("unexpected legacy bundle index")
+        inner = bundle.read("META-INF/versions/" + fields[2])
+        if hashlib.sha256(inner).hexdigest() != fields[0]:
+            raise ValueError("legacy bundle inner hash mismatch")
+    definitions, hashes = {}, {}
+    with zipfile.ZipFile(io.BytesIO(inner)) as game:
+        for key in LEGACY_FEATURES:
+            data = game.read(f"data/minecraft/worldgen/configured_feature/{key}.json")
+            definitions["minecraft:" + key] = json.loads(data)
+            hashes["minecraft:" + key] = hashlib.sha256(data).hexdigest()
+    return definitions, {"minecraft": "1.21.1", "server_sha1": LEGACY_SERVER_SHA1,
+                         "inner_server_sha256": fields[0], "feature_sha256": hashes}
+
+
+def inline_legacy_features(value, definitions):
+    """Replace only configured-feature references inside placed-feature records.
+
+    Lists of placed feature IDs, biome features and unrelated strings are kept.
+    No registry aliases or namespace ownership changes are introduced.
+    """
+    if isinstance(value, list):
+        pairs = [inline_legacy_features(v, definitions) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: inline_legacy_features(v, definitions) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    ref = value.get("feature")
+    if "placement" in value and isinstance(ref, str):
+        ref = ref if ":" in ref else "minecraft:" + ref
+        if ref in definitions:
+            result["feature"] = copy.deepcopy(definitions[ref])
+            count += 1
+    return result, count
+
+
+def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = None,
+            legacy_server_jar: Path | None = None) -> dict:
     if output.exists() or output.is_symlink():
         raise ValueError("output must be a new directory; existing worlds are never modified")
     if any((parent / "level.dat").exists() for parent in output.resolve().parents):
@@ -403,12 +456,21 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
         raise ValueError("complete carried and outside worldgen inputs required")
     if "data/terralith/worldgen/biome/comment_dont_generate_strips_here.json" in payloads:
         raise ValueError("documentation marker is now a real biome: review required")
+    legacy_definitions, legacy_provenance = {}, None
+    if legacy_server_jar is not None:
+        for key in LEGACY_FEATURES:
+            if any(f"data/minecraft/worldgen/{kind}/{key}.json" in payloads
+                   for kind in ("configured_feature", "feature")):
+                raise ValueError("source overrides a legacy vanilla feature: review before inlining")
+        legacy_definitions, legacy_provenance = load_legacy_features(legacy_server_jar)
     # Validate and transform all inputs before creating any output.
     markers, feature_orders, trees, disk_providers = 0, 0, 0, 0
     noise_records, noise_occurrences = {}, 0
+    legacy_references = 0
     for relative, data in list(payloads.items()):
         if relative.endswith(".json"):
             value, count = expand(json.loads(data))
+            value, inlined = inline_legacy_features(value, legacy_definitions)
             noise_occurrences += collect_noise_parameters(value, noise_records)
             value, removed = normalize_marker(value)
             value, tree_count = normalize_trees(value)
@@ -418,7 +480,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
             if "/worldgen/biome/" in relative:
                 value, normalized = normalize_carvers(value)
                 value, reordered = normalize_feature_order(value)
-            if count or normalized or removed or reordered or tree_count or disk_count:
+            if count or normalized or removed or reordered or tree_count or disk_count or inlined:
                 payloads[relative] = (json.dumps(value, indent=2) + "\n").encode()
                 transformed.append(relative)
                 total += count
@@ -427,6 +489,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                 feature_orders += reordered
                 trees += tree_count
                 disk_providers += disk_count
+                legacy_references += inlined
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".terralith-worldgen-", dir=output.parent) as temporary:
         stage = Path(temporary)
@@ -489,6 +552,8 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "deferred_patch_files": deferred_patches,
                   "normalized_multiface_defaults": multiface,
                   "normalized_root_systems": roots,
+                  "inlined_legacy_feature_references": legacy_references,
+                  "legacy_vanilla_provenance": legacy_provenance,
                   "prepared_biomes_sha256": base_hash,
                   "sources": sources, "official_upgrade_output": result.stdout.splitlines(),
                   "unselected_outside": unselected_outside,
@@ -507,8 +572,10 @@ def main() -> None:
     parser.add_argument("--port-tool", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--resources", type=Path, required=True)
+    parser.add_argument("--legacy-server-jar", type=Path,
+                        help="official 1.21.1 bundle, to inline four removed vanilla patch definitions")
     args = parser.parse_args()
-    report = prepare(args.work, args.port_tool, args.output, args.resources)
+    report = prepare(args.work, args.port_tool, args.output, args.resources, args.legacy_server_jar)
     print(json.dumps({k: v for k, v in report.items() if k != "sources"}, indent=2))
 
 

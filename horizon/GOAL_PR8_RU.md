@@ -26,7 +26,7 @@
 - [x] Естественный биом Terralith и сохранение после перезапуска.
 - [x] Производный SDK-валидный hmod синхронизирован с datapack для live features.
 - [x] Деревья: реальное размещение, почва, сохранение и повторная загрузка.
-- [x] Снижение отказов placed features с 246 до 14, без удаления features.
+- [x] Снижение отказов placed features с 246 до 9, без удаления features.
 - [x] 23 disk-provider и 93 записи noise-параметров перенесены; 384 выбора блоков
   совпали с оригиналом. Подзол, non-target камень и семь слоёв снега пережили перезапуск.
 - [x] 59 random_patch/flower configs заменены композициями. 640 проб координат,
@@ -36,19 +36,25 @@
 - [x] Две root_system configs приняли формат 26.3 с отключённой новой проверкой
   уровня местности. Через тестовые aliases проверены шесть блоков дочерних
   features/корней после перезапуска, отказ на занятом origin и запуск основных шести hmod.
+- [x] Пять старых configured-feature ссылок заменены исходными определениями
+  из проверенного bundle 1.21.1. 800 проб совпали; трава, два гриба и тыква
+  сохранились после перезапуска. Production registry aliases не добавлялись.
 
 Источники доказательств: [сервер](SERVER_RUNTIME_RESULT.json),
 [Terralith](TERRALITH_RUNTIME_RESULT.json), [деревья](TERRALITH_TREE_RUNTIME_RESULT.json),
 [providers](TERRALITH_PROVIDER_RUNTIME_RESULT.json), [patches](TERRALITH_PATCH_RUNTIME_RESULT.json),
-[лишайники](TERRALITH_MULTIFACE_RUNTIME_RESULT.json), [корни](TERRALITH_ROOT_RUNTIME_RESULT.json).
-Проверки текущего этапа: 63 Horizon и 45 базовых тестов прошли.
+[лишайники](TERRALITH_MULTIFACE_RUNTIME_RESULT.json), [корни](TERRALITH_ROOT_RUNTIME_RESULT.json),
+[старые ссылки](TERRALITH_LEGACY_REFERENCE_RUNTIME_RESULT.json).
+Проверки текущего этапа: 66 Horizon и 45 базовых тестов прошли.
 
 ## Ближайшая работа
 
-1. Разобрать оставшиеся 14 отказов: 7 basic feature type, 5 старых feature IDs,
+1. Разобрать оставшиеся 9 отказов: 7 basic feature type,
    replaceable_blocks и missing block identifier.
    Один patch `snowy/fix_snow` оставлен с исходным y_spread=25: offset движка
    ограничен ±16. Не обрезать разброс и не менять случайную последовательность.
+   Для актуальной сборки адаптера передавать --legacy-server-jar с проверенным
+   официальным bundle 1.21.1; без этого аргумента остаются пять старых ссылок.
 2. Повторять аудит официальным `horizon-world` на effective content-root сервера.
 3. Проверять новые согласованные datapack/hmod в отдельном мире, включая
    сохранение/открытие, и фиксировать оставшиеся отказы.

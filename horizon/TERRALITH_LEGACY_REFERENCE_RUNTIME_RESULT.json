@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-14",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "source_minecraft": "1.21.1",
+  "minecraft": "26.3",
+  "terralith": "2.6.2",
+  "inlined_legacy_feature_references": 5,
+  "legacy_vanilla_provenance": {
+    "minecraft": "1.21.1",
+    "server_sha1": "59353fb40c36d304f2035d51e7d6e6baa98dc05c",
+    "inner_server_sha256": "c301de10f575027d13eac18c7f34409d60648cf56a35d566aa1f530ff617840a",
+    "feature_sha256": {
+      "minecraft:patch_grass": "91c6d8d4c983725af1c0b2f0583a3fddb7e5815a6a4f642246a31afaaca09b7c",
+      "minecraft:patch_brown_mushroom": "ec2b89257ca12e23d4ce2901239491324454302e83693a3e2be032852e294b8a",
+      "minecraft:patch_red_mushroom": "a82af090ef36c0caf652ab2d3186320f2521ee45a717fbf5e918b7c894f5dcc4",
+      "minecraft:patch_pumpkin": "174078e74c62e6c2fbe0f2904141dd3a779ff7162486be0ddf06f1cca8b3ced8"
+    }
+  },
+  "normalized_patch_configs": 64,
+  "production_registry_aliases_added": false,
+  "source_files_hashed": 1867,
+  "source_hashes_rechecked": true,
+  "source_files_modified": false,
+  "reference_patch_probes": {
+    "cases": 800,
+    "attempt_positions_compared": 26880,
+    "mismatches": 0,
+    "tries": [
+      0,
+      1,
+      7,
+      64,
+      96
+    ],
+    "ordered_positions_result_and_next_random_draw_compared": true,
+    "world_is_recording_stub": true,
+    "whole_feature_or_world_parity_claimed": false
+  },
+  "derived_hmod_sdk_validated": true,
+  "derived_hmod_sha256": "2c0853d03ec2f3cb7701511638e0d9ad504ab71131dd5e1a5ef2928d72f71975",
+  "namespace_ownership_changed": false,
+  "world_datapack_still_required": true,
+  "server_boot_tested": true,
+  "production_loaded_hmod_modules": 6,
+  "production_boot_done": true,
+  "command_probe_test_only": true,
+  "command_probe_sha256": "87b18bd0e0c95a6b70104f6a2d8ca088f7921fe46d96516192203f85dfde36e7",
+  "command_probe_module_count": 7,
+  "command_probe_skips_outer_placed_modifiers": true,
+  "generalized_builder_reproduced_previous_root_probe_hash": true,
+  "world_checks": {
+    "schema": 1,
+    "world": "horizon-legacy-test",
+    "seed": 263,
+    "online_mode": true,
+    "whitelist": true,
+    "bind": "127.0.0.1",
+    "port": 25593,
+    "command_probe_module_count": 7,
+    "outer_placed_modifiers_tested": false,
+    "features": [
+      {
+        "command_alias": "techquest_legacy_probe:grass",
+        "position": [
+          127,
+          220,
+          127
+        ],
+        "block": "minecraft:short_grass",
+        "soil": "minecraft:grass_block",
+        "plant_after_reopen": true,
+        "soil_after_reopen": true
+      },
+      {
+        "command_alias": "techquest_legacy_probe:brown",
+        "position": [
+          161,
+          220,
+          128
+        ],
+        "block": "minecraft:brown_mushroom",
+        "soil": "minecraft:mycelium",
+        "plant_after_reopen": true,
+        "soil_after_reopen": true
+      },
+      {
+        "command_alias": "techquest_legacy_probe:red",
+        "position": [
+          191,
+          220,
+          128
+        ],
+        "block": "minecraft:red_mushroom",
+        "soil": "minecraft:mycelium",
+        "plant_after_reopen": true,
+        "soil_after_reopen": true
+      },
+      {
+        "command_alias": "techquest_legacy_probe:pumpkin",
+        "position": [
+          224,
+          220,
+          128
+        ],
+        "block": "minecraft:pumpkin",
+        "soil": "minecraft:grass_block",
+        "plant_after_reopen": true,
+        "soil_after_reopen": true
+      }
+    ],
+    "pumpkin_non_target_stone_rejected": true,
+    "save_all_flushed": true,
+    "pumpkin_non_target_stone_rejected_after_reopen": true,
+    "reopen_checks_passed": true,
+    "final_status": {
+      "phase": "stopped"
+    }
+  },
+  "previous_placed_features_skipped": 14,
+  "placed_features_skipped": 9,
+  "restored_feature_decodes": 5,
+  "new_unsupported_features": [],
+  "skip_reasons": {
+    "missing block identifier": 1,
+    "invalid world generation field: basic feature type": 7,
+    "invalid world generation field: replaceable_blocks": 1
+  },
+  "remaining_unsupported_features": [
+    [
+      "terralith:cliffs/basalt/seed",
+      "missing block identifier"
+    ],
+    [
+      "terralith:snowy/fix_snow",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:flower/blue/flowers",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:savanna/dripstone",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:spires/dripstone",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:savanna/shattered/teeth",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:cherry/rock",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:cave/thermal/dripstone",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:cave/frostfire/columns",
+      "invalid world generation field: replaceable_blocks"
+    ]
+  ],
+  "client_boot_tested": false,
+  "multiplayer_tested": false,
+  "gameplay_ported": false
+}

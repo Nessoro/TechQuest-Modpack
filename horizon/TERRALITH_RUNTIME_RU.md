@@ -34,6 +34,11 @@ Horizon с шестью `.hmod` и дополнительным локальны
 тесте с дополнительным test-only модулем проверены дочерние features, корни,
 свисающие корни и сохранение шести блоков. [Результат корней](TERRALITH_ROOT_RUNTIME_RESULT.json).
 
+Пять ссылок на старые ванильные configured features заменены точными inline
+определениями из проверенного официального bundle 1.21.1. Отказы снижены
+**с 14 до 9**. Трава, оба гриба и тыква проверены после перезапуска; 800 patch-проб
+совпали, включая tries=96. [Результат старых ссылок](TERRALITH_LEGACY_REFERENCE_RUNTIME_RESULT.json).
+
 Тест выполнен 10 ноября 2026; после восстановления среды 13 ноября его
 сохранённые результаты и SHA-256 всех выбранных исходных файлов проверены.
 Машиночитаемый результат: [TERRALITH_RUNTIME_RESULT.json](TERRALITH_RUNTIME_RESULT.json).
@@ -100,6 +105,13 @@ Horizon с шестью `.hmod` и дополнительным локальны
   не выполняет новые запросы. Child feature, старые условия, providers,
   радиусы и попытки сохранены. Явная полная новая пара не меняется, частичная
   пара требует разбора. Полный паритет алгоритма корней между версиями не заявлен.
+- Опциональный `--legacy-server-jar` читает четыре старых ванильных patch-configs
+  из официального bundle 1.21.1. Проверяются SHA-1 bundle, индекс версии и SHA-256
+  внутреннего server JAR. Пять configured-feature ссылок внутри placed records
+  получают точные inline определения; списки placed IDs и biome features не меняются.
+  Далее работают официальный upgrader и композиция patch-loop. Custom override
+  этих четырёх definitions в источнике отклоняется для разбора. Новые production
+  registry aliases не создаются, original-файлы и namespace ownership сохраняются.
 
 Выбрано 1867 файлов генератора, измерения, структур и worldgen-тегов.
 Включены теги новых биомов: наличие `.hmod` само по себе не гарантирует, что
@@ -128,8 +140,15 @@ python horizon/tools/prepare_terralith_worldgen.py \
   --work /path/to/five-together \
   --port-tool /path/to/pinned-horizon/target/fast/horizon-port-pack \
   --resources /path/to/prepared/26.3 \
+  --legacy-server-jar /path/to/official-1.21.1-server-bundle.jar \
   --output /path/to/new-terralith-trial
 ```
+
+Для полного текущего этапа нужен официальный **bundled** server JAR 1.21.1,
+SHA-1 `59353fb40c36d304f2035d51e7d6e6baa98dc05c`. Он не включён в репозиторий.
+Без опционального аргумента пять старых ссылок остаются несовместимыми;
+неверный JAR и symlink отклоняются до создания результата. В отчёте записаны
+хеши четырёх прочитанных JSON, сами игровые файлы не коммитятся.
 
 Создать новый изолированный сервер по `SERVER_TEST_RU.md`, оставить
 `online_mode=true`, whitelist и loopback. Установить шесть проверенных `.hmod`
@@ -243,7 +262,7 @@ dark_oak_log [152,220,128]. Последняя feature отказалась ра
 запрещённой. До и после перезапуска проверены все шесть face-флагов и waterlogged.
 Геометрия и случайная последовательность всей multiface-growth этим не сверялись.
 
-Для корней `probes/build_root_test_module.py --datapack /path/to/trial --sdk
+Для корней `probes/build_worldgen_test_module.py --kind roots --datapack /path/to/trial --sdk
 /path/to/cargo-horizon-mod --output /path/to/new-probe` создаёт SDK-проверенный
 **тестовый седьмой модуль** `techquest_root_probe`. Он даёт имена двум исходным
 inline configured features: иначе `place feature` их не принимает. Конфигурации
@@ -256,6 +275,16 @@ inline configured features: иначе `place feature` их не принима�
 [152,220,128] отклонён и остался stone. Естественная генерация этих систем
 в пещерах и полный паритет не подтверждены. Probe hmod и производные данные
 остаются локальными и не входят в репозиторий.
+
+Тот же builder с `--kind legacy-patches` создаёт `techquest_legacy_probe` для
+четырёх восстановленных inline definitions. Сначала проверен запуск production
+шести hmod; затем с седьмым тестовым модулем размещены short_grass [127,220,127],
+brown_mushroom [161,220,128], red_mushroom [191,220,128], pumpkin [224,220,128].
+Все растения и почва сохранились после перезапуска. Тыквенный patch отказался
+расти над stone, как требует старый predicate. Outer placed modifiers этим
+командным тестом не проверяются. Расширенные `build_patch_cases.py`/Java/Rust
+probes дали 800 совпадений по 26 880 координатам, результатам и следующему random
+draw. Обобщённый builder также воспроизвёл прежний SHA-256 root-probe hmod.
 
 В отдельном серверном мире seed=263 протестированы `terralith:plains/patch_grass`,
 `terralith:birch/flowers` и `terralith:sakura/flowers` на травяных площадках Y=219.
@@ -313,6 +342,11 @@ identifier. Все 6 отказов `block` устранены; новых от�
 После переноса корней осталось **14**: 7 basic feature type, 5 старых feature IDs,
 replaceable_blocks и missing block identifier. Оба отказа level_test_distance
 устранены без новых отказов. Список features не сокращался.
+
+После переноса старых ссылок осталось **9**: fix_snow с y_spread=25,
+nether_forest_vegetation, четыре dripstone_cluster, forest_rock,
+replaceable_blocks у frostfire columns и ошибочная старая block-state запись
+у basalt seed. Все пять unknown configured-feature references устранены.
 
 Полная генерация деревьев, растительности, структур/лута и визуальный паритет
 ещё не подтверждены. Не проверены вход лицензированного клиента, мультиплеер

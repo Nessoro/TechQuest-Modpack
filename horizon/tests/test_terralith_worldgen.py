@@ -331,6 +331,39 @@ class TerralithWorldgenTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             adapter.normalize_roots(source)
 
+    def test_legacy_configured_reference_is_inlined_without_rewriting_placed_ids(self):
+        definition = {"type": "minecraft:random_patch", "config": {"tries": 96}}
+        definitions = {"minecraft:patch_grass": definition}
+        source = {"features": [["minecraft:patch_grass"]],
+                  "nested": [{"feature": "patch_grass", "placement": []},
+                             {"feature": "test:patch_grass", "placement": []}],
+                  "unrelated": {"feature": "minecraft:patch_grass"}}
+        before = copy.deepcopy(source)
+        result, count = adapter.inline_legacy_features(source, definitions)
+        self.assertEqual(count, 1)
+        self.assertEqual(source, before)
+        self.assertEqual(result["features"], before["features"])
+        self.assertEqual(result["nested"][1], before["nested"][1])
+        self.assertEqual(result["unrelated"], before["unrelated"])
+        self.assertEqual(result["nested"][0]["feature"], definition)
+        result["nested"][0]["feature"]["config"]["tries"] = 1
+        self.assertEqual(definition["config"]["tries"], 96)
+
+    def test_unverified_legacy_server_is_rejected_before_zip_parsing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "untrusted.jar"
+            path.write_bytes(b"not the pinned official server")
+            with self.assertRaisesRegex(ValueError, "official Minecraft 1.21.1"):
+                adapter.load_legacy_features(path)
+
+    def test_legacy_server_symlink_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "target.jar").write_bytes(b"input")
+            (root / "link.jar").symlink_to(root / "target.jar")
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                adapter.load_legacy_features(root / "link.jar")
+
     def test_existing_output_refused(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
