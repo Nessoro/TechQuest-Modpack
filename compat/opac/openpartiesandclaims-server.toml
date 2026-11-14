@@ -1,0 +1,21 @@
+# TechQuest: Industrial Frontier 0.3.3 — new-world NeoForge server defaults.
+# Open Parties and Claims neoforge-1.21.1-0.33.0 (beta).
+# This file must be installed at <game or server>/defaultconfigs/
+# before creating a NEW world. NeoForge copies it into world/serverconfig/.
+# Existing world/serverconfig files MUST NOT be overwritten by the installer.
+# Source for keys: official OPAC documentation; example generated server config:
+# https://gist.github.com/Adammatthiesen/74d3973eeabeb39c8d9c890bdfad82b2
+#
+# Claimed chunks are only reserved/protected, NOT permanently simulated.
+# Forceloads can keep machines ticking; use the map UI to enable explicitly.
+# For a small 2–8 player server, use conservative values until TPS/MSPT is tested.
+[serverConfig.claims]
+enabled = true
+maxPlayerClaims = 64
+maxPlayerClaimForceloads = 4
+# Never silently override these conservative defaults via a permission plugin.
+# Server owners can edit the world config and decide their own policy.
+maxPlayerClaimsPermission = ""
+maxPlayerClaimForceloadsPermission = ""
+# Sync claim boundaries to Xaero's map (no automatic terrain generation).
+claimsSynchronization = "ALL"
