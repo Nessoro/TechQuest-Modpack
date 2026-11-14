@@ -394,6 +394,30 @@ def normalize_dripstone(value):
     return result, clusters + 1, large
 
 
+def normalize_basalt_seed(value):
+    """Preserve the original codec's default for one reviewed misspelled state.
+
+    The 1.21.1 codec ignores Properites, so it decodes default basalt (axis=y).
+    Do not generally rename that misspelling: doing so could activate a value
+    which the original codec ignored.
+    """
+    if isinstance(value, list):
+        pairs = [normalize_basalt_seed(v) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: normalize_basalt_seed(v) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    target = value.get("target")
+    if (value.get("type") not in ("netherrack_replace_blobs", "minecraft:netherrack_replace_blobs")
+            or not isinstance(target, dict) or "Properites" not in target):
+        return result, count
+    if target != {"Name": "minecraft:basalt", "Properites": {"axis": "y"}}:
+        raise ValueError("unreviewed misspelled legacy block state")
+    return {**result, "target": {"id": "minecraft:basalt", "properties": {"axis": "y"}}}, count + 1
+
+
 def load_legacy_features(jar: Path):
     """Read four definitions from the official pinned bundle, without extracting it."""
     if jar.is_symlink() or any(p.is_symlink() for p in jar.parents):
@@ -559,7 +583,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                 raise ValueError("official upgrader did not convert noise parameters")
             converted[key] = spec
             path.unlink()  # Only our temporary conversion record, never a source file.
-        noise_converted, patches, multiface, roots, dripstone, large_dripstone = 0, 0, 0, 0, 0, 0
+        noise_converted, patches, multiface, roots, dripstone, large_dripstone, basalt_seed = 0, 0, 0, 0, 0, 0, 0
         deferred_patches = []
         for path in sorted((upgraded / "data").rglob("*.json")):
             value, count = inline_noise_parameters(json.loads(path.read_bytes()), converted)
@@ -567,9 +591,10 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
             value, multiface_count = normalize_multiface(value)
             value, root_count = normalize_roots(value)
             value, dripstone_count, large_dripstone_count = normalize_dripstone(value)
+            value, basalt_count = normalize_basalt_seed(value)
             if has_legacy_patch(value):
                 deferred_patches.append(path.relative_to(upgraded).as_posix())
-            if count or patch_count or multiface_count or root_count or dripstone_count or large_dripstone_count:
+            if count or patch_count or multiface_count or root_count or dripstone_count or large_dripstone_count or basalt_count:
                 path.write_text(json.dumps(value, indent=2) + "\n")
             noise_converted += count
             patches += patch_count
@@ -577,6 +602,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
             roots += root_count
             dripstone += dripstone_count
             large_dripstone += large_dripstone_count
+            basalt_seed += basalt_count
         if noise_converted != noise_occurrences:
             raise ValueError("noise parameter occurrence count changed during official upgrade")
         report = {"schema": 1, "minecraft": "26.3", "source_minecraft": "1.21.1",
@@ -596,6 +622,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "normalized_root_systems": roots,
                   "normalized_dripstone_clusters": dripstone,
                   "normalized_large_dripstone": large_dripstone,
+                  "normalized_basalt_seed_states": basalt_seed,
                   "inlined_legacy_feature_references": legacy_references,
                   "legacy_vanilla_provenance": legacy_provenance,
                   "prepared_biomes_sha256": base_hash,

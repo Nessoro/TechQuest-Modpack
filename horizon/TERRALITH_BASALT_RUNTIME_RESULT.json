@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-14",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "source_minecraft": "1.21.1",
+  "minecraft": "26.3",
+  "terralith": "2.6.2",
+  "normalized_basalt_seed_states": 1,
+  "original_codec_proof": {
+    "equals_default_basalt": true,
+    "source_has_misspelled_Properites": true,
+    "encoded_state": {
+      "Properties": {
+        "axis": "y"
+      },
+      "Name": "minecraft:basalt"
+    }
+  },
+  "typo_generally_renamed": false,
+  "preserves_original_default_state": true,
+  "source_files_hashed": 1867,
+  "source_hashes_rechecked": true,
+  "source_files_modified": false,
+  "derived_hmod_sdk_validated": true,
+  "derived_hmod_sha256": "8348c1cecba8342134429564744e2ac559bb9b0a5628174fa6cdb171f37e6821",
+  "namespace_ownership_changed": false,
+  "world_datapack_still_required": true,
+  "server_boot_tested": true,
+  "loaded_hmod_modules": 6,
+  "world_checks": {
+    "schema": 1,
+    "world": "horizon-basalt-test",
+    "seed": 263,
+    "online_mode": true,
+    "whitelist": true,
+    "bind": "127.0.0.1",
+    "port": 25595,
+    "loaded_hmod_modules": 6,
+    "axes": [
+      {
+        "axis": "x",
+        "position": [
+          128,
+          220,
+          128
+        ],
+        "smooth_basalt": true,
+        "neighbor_preserved": true,
+        "all_states_after_reopen": true
+      },
+      {
+        "axis": "y",
+        "position": [
+          136,
+          220,
+          128
+        ],
+        "smooth_basalt": true,
+        "neighbor_preserved": true,
+        "all_states_after_reopen": true
+      },
+      {
+        "axis": "z",
+        "position": [
+          144,
+          220,
+          128
+        ],
+        "smooth_basalt": true,
+        "neighbor_preserved": true,
+        "all_states_after_reopen": true
+      }
+    ],
+    "non_target_column_preserved": true,
+    "save_all_flushed": true,
+    "non_target_column_preserved_after_reopen": true,
+    "reopen_checks_passed": true,
+    "final_status": {
+      "phase": "stopped"
+    }
+  },
+  "previous_placed_features_skipped": 4,
+  "placed_features_skipped": 3,
+  "restored_feature_decodes": 1,
+  "remaining_unsupported_features": [
+    [
+      "terralith:snowy/fix_snow",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:flower/blue/flowers",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:cherry/rock",
+      "invalid world generation field: basic feature type"
+    ]
+  ],
+  "natural_basalt_cliffs_verified": false,
+  "client_boot_tested": false,
+  "multiplayer_tested": false,
+  "gameplay_ported": false
+}

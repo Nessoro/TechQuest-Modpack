@@ -393,6 +393,25 @@ class TerralithWorldgenTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             adapter.normalize_dripstone(source)
 
+    def test_basalt_typo_preserves_original_codec_default_without_mutating_source(self):
+        source = {"type": "minecraft:netherrack_replace_blobs", "radius": 0,
+                  "state": {"id": "minecraft:smooth_basalt"},
+                  "target": {"Name": "minecraft:basalt", "Properites": {"axis": "y"}}}
+        before = copy.deepcopy(source)
+        result, count = adapter.normalize_basalt_seed(source)
+        self.assertEqual(source, before)
+        self.assertEqual(count, 1)
+        self.assertEqual(result["target"], {"id": "minecraft:basalt", "properties": {"axis": "y"}})
+        self.assertEqual(result["state"], before["state"])
+        self.assertEqual(result["radius"], 0)
+        self.assertEqual(adapter.normalize_basalt_seed(result), (result, 0))
+
+    def test_other_misspelled_block_states_require_review(self):
+        source = {"type": "minecraft:netherrack_replace_blobs",
+                  "target": {"Name": "minecraft:basalt", "Properites": {"axis": "x"}}}
+        with self.assertRaises(ValueError):
+            adapter.normalize_basalt_seed(source)
+
     def test_existing_output_refused(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)

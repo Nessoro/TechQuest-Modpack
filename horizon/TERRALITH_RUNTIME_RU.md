@@ -44,6 +44,11 @@ Horizon с шестью `.hmod` и дополнительным локальны
 они и свойства pointed dripstone сохранились после перезапуска.
 [Результат dripstone](TERRALITH_DRIPSTONE_RUNTIME_RESULT.json).
 
+У basalt seed исправлен формат target без изменения результата старого кодека.
+Осталось **3 отказа**. Все три ориентации basalt заменились на smooth_basalt,
+соседи при radius=0 сохранились; результат проверен после перезапуска.
+[Результат basalt](TERRALITH_BASALT_RUNTIME_RESULT.json).
+
 Тест выполнен 10 ноября 2026; после восстановления среды 13 ноября его
 сохранённые результаты и SHA-256 всех выбранных исходных файлов проверены.
 Машиночитаемый результат: [TERRALITH_RUNTIME_RESULT.json](TERRALITH_RUNTIME_RESULT.json).
@@ -125,6 +130,12 @@ Horizon с шестью `.hmod` и дополнительным локальны
   Terralith добавляет dirt, blue ice, packed ice и через base-stone tag — blackstone.
   Probe сравнил старую ваниль + эти additions с effective Horizon tags: 10/10
   типов блоков совпали. Теги не заменены новым сокращённым списком.
+- Одна misspelled block-state запись `Name/Properites` у basalt seed заменена
+  на современный `id/properties`. Старый кодек **игнорирует** `Properites` и
+  выбирает default basalt axis=y; `LegacyBlockStateProbe.java` подтвердил это
+  настоящим Codec и обратным encode. Переименовывать эту опечатку произвольно
+  нельзя: это могло бы активировать старое игнорируемое значение. Обработан
+  только точный проверенный случай; другие формы требуют разбора.
 
 Выбрано 1867 файлов генератора, измерения, структур и worldgen-тегов.
 Включены теги новых биомов: наличие `.hmod` само по себе не гарантирует, что
@@ -316,6 +327,14 @@ Outer placed modifiers, естественные пещеры и весь слу
 bundle, additive tags Terralith, отсутствие других source overrides этих тегов
 и сравнивает полный набор исходных modded block IDs с текущим объединённым.
 
+`LegacyBlockStateProbe.java` принимает путь исходного configured_feature
+`cliffs/basalt/seed.json` и новый выходной JSON; classpath тот же официальный
+bundle 1.21.1, что у других Java-probes. На сервере с шестью модулями проверены
+три basalt axes в X=128,136,144, Y=220, Z=128, соседи в X+1 и stone-column
+контроль в X=152. Smooth basalt и соседние basalt сохранились после перезапуска;
+stone без подходящего target в столбце был отклонён. Естественные скалы и
+все параметры исходного алгоритма blobs этим не проверяются.
+
 В отдельном серверном мире seed=263 протестированы `terralith:plains/patch_grass`,
 `terralith:birch/flowers` и `terralith:sakura/flowers` на травяных площадках Y=219.
 Проверены short_grass в [126,220,126], lily_of_the_valley в [152,220,127],
@@ -381,6 +400,9 @@ replaceable_blocks у frostfire columns и ошибочная старая block
 После dripstone остались **4**: три basic feature type (fix_snow,
 nether_forest_vegetation, forest_rock) и missing block identifier у basalt seed.
 Устранено ещё пять placed-feature отказов без новых пропусков.
+
+После basalt seed остались **3 basic feature type**: snowy/fix_snow,
+flower/blue/flowers (nether_forest_vegetation) и cherry/rock (forest_rock).
 
 Полная генерация деревьев, растительности, структур/лута и визуальный паритет
 ещё не подтверждены. Не проверены вход лицензированного клиента, мультиплеер

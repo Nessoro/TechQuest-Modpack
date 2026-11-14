@@ -26,7 +26,7 @@
 - [x] Естественный биом Terralith и сохранение после перезапуска.
 - [x] Производный SDK-валидный hmod синхронизирован с datapack для live features.
 - [x] Деревья: реальное размещение, почва, сохранение и повторная загрузка.
-- [x] Снижение отказов placed features с 246 до 4, без удаления features.
+- [x] Снижение отказов placed features с 246 до 3, без удаления features.
 - [x] 23 disk-provider и 93 записи noise-параметров перенесены; 384 выбора блоков
   совпали с оригиналом. Подзол, non-target камень и семь слоёв снега пережили перезапуск.
 - [x] 59 random_patch/flower configs заменены композициями. 640 проб координат,
@@ -42,19 +42,20 @@
 - [x] Четыре dripstone_cluster и две large_dripstone configs мигрированы.
   Исходный объединённый тег из 10 блоков сохранён; все шесть features разместили
   блоки, которые проверены после перезапуска, включая свойства pointed dripstone.
+- [x] Исправлена запись target у basalt seed с сохранением default из старого
+  кодека. Три оси, radius=0, отрицательный контроль и сохранение проверены сервером.
 
 Источники доказательств: [сервер](SERVER_RUNTIME_RESULT.json),
 [Terralith](TERRALITH_RUNTIME_RESULT.json), [деревья](TERRALITH_TREE_RUNTIME_RESULT.json),
 [providers](TERRALITH_PROVIDER_RUNTIME_RESULT.json), [patches](TERRALITH_PATCH_RUNTIME_RESULT.json),
 [лишайники](TERRALITH_MULTIFACE_RUNTIME_RESULT.json), [корни](TERRALITH_ROOT_RUNTIME_RESULT.json),
 [старые ссылки](TERRALITH_LEGACY_REFERENCE_RUNTIME_RESULT.json),
-[dripstone](TERRALITH_DRIPSTONE_RUNTIME_RESULT.json).
-Проверки текущего этапа: 69 Horizon и 45 базовых тестов прошли.
+[dripstone](TERRALITH_DRIPSTONE_RUNTIME_RESULT.json), [basalt](TERRALITH_BASALT_RUNTIME_RESULT.json).
+Проверки текущего этапа: 71 Horizon и 45 базовых тестов прошли.
 
 ## Ближайшая работа
 
-1. Разобрать оставшиеся 4 отказа: fix_snow, nether_forest_vegetation,
-   forest_rock и ошибочная старая block-state запись у basalt seed.
+1. Разобрать оставшиеся 3 отказа: fix_snow, nether_forest_vegetation и forest_rock.
    Один patch `snowy/fix_snow` оставлен с исходным y_spread=25: offset движка
    ограничен ±16. Не обрезать разброс и не менять случайную последовательность.
    Для актуальной сборки адаптера передавать --legacy-server-jar с проверенным
