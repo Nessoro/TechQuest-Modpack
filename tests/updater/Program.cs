@@ -131,6 +131,14 @@ try
             Previous = start, Desired = desired, BackupId = id
         }));
     File.Delete(Path.Combine(mods, "old.jar"));
+    File.WriteAllBytes(Path.Combine(mods, "next.jar"), Encoding.UTF8.GetBytes("user-replaced-file"));
+    bool unsafeRecoveryBlocked = false;
+    try { TransactionalMods.RecoverPending(root); }
+    catch (InvalidDataException) { unsafeRecoveryBlocked = true; }
+    catch (SecurityException) { unsafeRecoveryBlocked = true; }
+    Assert(unsafeRecoveryBlocked, "crash recovery refuses to delete unexpected user bytes");
+    Assert(File.ReadAllText(Path.Combine(mods, "next.jar")) == "user-replaced-file",
+        "unexpected user file preserved");
     File.WriteAllBytes(Path.Combine(mods, "next.jar"), newBytes);
     TransactionalMods.RecoverPending(root);
     Assert(File.Exists(Path.Combine(mods, "old.jar")), "journal recovery restored the mod");
@@ -145,6 +153,21 @@ try
         "player options preserved");
     Assert(File.ReadAllText(Path.Combine(mods, "manual.jar")) == "user-installed-mod",
         "unmanaged local mods preserved");
+
+    // The first-party techquest-compat JAR is inside mrpack overrides, not its download list.
+    using (var compatPack = FakePack((old, oldBytes)))
+    {
+        using (var zip = new ZipArchive(compatPack, ZipArchiveMode.Update, leaveOpen: true))
+        {
+            using var outStream = zip.CreateEntry("overrides/mods/techquest-compat-1.0.0.jar").Open();
+            outStream.Write(Encoding.UTF8.GetBytes("trusted-compat-fixture"));
+        }
+        compatPack.Position = 0;
+        var unpacked = ReleaseUpdates.ParsePack(compatPack);
+        Assert(unpacked.BundledMods.Count == 1 &&
+               unpacked.BundledMods[0].Identity.Name == "techquest-compat-1.0.0.jar",
+               "first-party bundled compatibility JAR is tracked");
+    }
 
     using (var malformed = new MemoryStream())
     {
