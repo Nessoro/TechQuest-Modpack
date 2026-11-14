@@ -34,7 +34,7 @@ static MemoryStream FakePack(params (ManagedMod identity, byte[] contents)[] mod
                 downloads = new[] { "https://cdn.modrinth.com/data/test/fake.jar" }
             }).ToArray()
         };
-        using var writer = new StreamWriter(zip.CreateEntry("modrinth.index.json").Open(), Encoding.UTF8);
+        using var writer = new StreamWriter(zip.CreateEntry("modrinth.index.json").Open(), new UTF8Encoding(false));
         writer.Write(JsonSerializer.Serialize(index));
     }
     stream.Position = 0;
