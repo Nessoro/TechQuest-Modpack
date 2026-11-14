@@ -84,5 +84,19 @@ Include the **original Iskander Rocket Mod 2.0.1** in both TechQuest client and 
 ### Out of scope
 Developing new missiles or custom ballistics, integrating the Broken Arrow bridge, rewriting explosion mechanics, FTB Industrial, Colossal Reactors, replacing IC2 or publishing without approval.
 
+### Conditional release authorization (owner decision, November 14, 2026)
+
+The owner has **conditionally authorized publishing the micro5 release after the remaining playtest feedback is addressed**. This is **not** permission to publish the current incomplete build immediately, nor authorization to merge PRs into `main`.
+
+Before releasing:
+1. Implement and **verify in the actual game** [issue #38](https://github.com/Nessoro/TechQuest-Modpack/issues/38): inventory sorting and explicit bulk move/drop actions for matching items. Do not restore Inventory Profiles Next, automatic tool swapping or hotbar auto-refill.
+2. Implement and **verify in a client/server test** [issue #39](https://github.com/Nessoro/TechQuest-Modpack/issues/39): map-driven chunk claim/force-load with conservative limits, permissions and documented effects on gameplay. Preserve Xaero's maps and existing world data.
+3. Retest the user's already confirmed working behavior: Iskander Rocket launch and ordinary mining without unexpected upward block destruction.
+4. On the **same final release commit SHA**, run relevant unit tests, full pack build, Modrinth/client/server manifest and SHA-512 validation, Windows GUI self-test and security audit. Complete real Minecraft client and dedicated-server world/save/play tests; require explicit EULA consent.
+5. Publish installable artifacts via a link **accessible without a GitHub account**; do not rely solely on expiring GitHub Actions artifacts. Document limitations honestly and avoid labeling unverified features stable.
+6. Record the release artifact version, commit, test evidence, download links and residual risks in the journal. **Do not automatically merge implementation PRs**; release authorization and merge authorization are separate.
+
+**Current status:** These UX issues remain open; no new micro5 release has been published under this approval.
+
 ### Deliverables and Codex handoff
 Update the existing PR #34 with the exact file changes, verified manifests, real client/server/missile-test logs, performance results and outstanding risks. Append a dated status entry to `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. Do not merge or publish automatically.
