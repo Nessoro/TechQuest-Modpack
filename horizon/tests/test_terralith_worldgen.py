@@ -312,6 +312,25 @@ class TerralithWorldgenTests(unittest.TestCase):
             adapter.normalize_multiface({"type": "minecraft:multiface_growth", "config": {
                 "can_be_placed_on": ["minecraft:stone"]}})
 
+    def test_legacy_roots_disable_added_terrain_test_and_keep_children(self):
+        source = {"type": "minecraft:root_system", "root_replaceable": "#test:soil",
+                  "allowed_tree_position": {"type": "minecraft:true"},
+                  "feature": {"feature": "test:tree", "placement": []},
+                  "required_vertical_space_for_tree": 7, "root_column_max_height": 100}
+        before = copy.deepcopy(source)
+        result, count = adapter.normalize_roots(source)
+        self.assertEqual(source, before)
+        self.assertEqual(count, 1)
+        self.assertEqual(result, {**before, "level_test_distance": 0, "max_level_deviation": 0})
+        self.assertEqual(adapter.normalize_roots(result), (result, 0))
+
+    def test_explicit_root_terrain_checks_are_not_overwritten(self):
+        source = {"type": "minecraft:root_system", "level_test_distance": 8, "max_level_deviation": 2}
+        self.assertEqual(adapter.normalize_roots(source), (source, 0))
+        del source["max_level_deviation"]
+        with self.assertRaises(ValueError):
+            adapter.normalize_roots(source)
+
     def test_existing_output_refused(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)
