@@ -9,6 +9,30 @@
 **Base:** micro4 — `feat/techquest-trash-pipes-reactor-micro4`  
 **Target platform:** Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
 
+### Verified implementation status and change since the original specification (November 14, 2026)
+
+**This is a completion and synchronization task, not a request to rebuild micro5 from scratch.** The existing PR #34 already implements the initial Iskander integration. Check the actual GitHub state again immediately before editing; the SHA values below are a dated snapshot, not permanent version pins.
+
+| Area | Verified state | Required follow-up |
+|---|---|---|
+| Implementation branch | PR #34 is an **open draft**, HEAD `a4c99c4508be34f3bf8b80c05db15983b8bcd094` | Preserve the implemented work; do not create a duplicate PR or mod |
+| Official mod pin | `modlist.json` already contains project `XUogRnhj`, version `M1b2lYax`, the original JAR filename, SHA-512 and required client/server sides | Recheck upstream metadata only; do not replace the pinned version without evidence |
+| Pack CI, Windows GUI and security audit | **All three jobs passed** in `Build TechQuest alpha` run [43532977806](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/43532977806), at commit `c1c8e43e...`; the job also verified Iskander in both sides and the `.mrpack` | This success belongs to an **earlier implementation SHA**, not to the updated base or the final combined commit. Repeat after synchronization |
+| Repository and website checks | Both passed for the PR #34 HEAD `a4c99c45...` | Re-run after all synchronization and fixes |
+| **Critical dependency drift** | Parent PR #31 / branch `feat/techquest-trash-pipes-reactor-micro4` advanced to `b8d1d71c07e628c328ad8ebf066267931ef4501b`. GitHub comparison shows **31 parent-side commits missing from micro5** and **12 micro5-side commits**, with both branches diverged | **First reconcile micro5 with the latest micro4**, preserving all updated micro3/micro4 installer transactions, validation, docs, pinning and tests; resolve overlapping files carefully |
+| Real Minecraft verification | A **client-menu-only smoke test succeeded on updated micro4**, not on synchronized micro5. No verified Iskander launch, actual client/server world test, multiplayer or FPS/TPS benchmark for the final micro5 combination | Run new targeted client and server tests, then controlled missile tests in a separate world |
+| Release | Latest public preview remains `v0.3.3-micro2-preview`; micro5 is **not released** | Do not merge PR #34 or publish a new release without owner approval |
+
+**Important integration trap:** new micro4 work overlaps micro5 in `modlist.json`, `.github/workflows/build-alpha.yml`, `README.md`, `docs/index.html`, `scripts/guide_assets.py`, `scripts/sync_site_mods.py` and `tests/test_adventure_rebalance.py`. Do **not** resolve conflicts by taking an entire older micro5 file over the latest micro4 version. Preserve the new installer backup/rollback safeguards and package audits from micro3/micro4.
+
+#### Required implementation sequence for Codex
+
+1. Inspect `AGENTS.md`, the latest PR #30/#31/#34 branch heads and diffs, current package manifests, the journal, and successful CI logs. Check repository status before applying changes.
+2. Synchronize the existing micro5 branch with its **current parent micro4 branch** using a reviewable integration approach. Never force-push, silently drop parent commits, or rewrite published history. Reconcile conflicts by keeping the new micro3/micro4 protections and replaying only the Iskander-specific additions.
+3. Run all relevant unit tests and a complete `Build TechQuest alpha` on the **new micro5 HEAD**, including Windows GUI self-test, the two-side Iskander hash/manifest checks and the security audit. The checks must correspond to the integrated SHA.
+4. Run a fresh real client-to-menu smoke test on the synchronized branch. With explicit Minecraft EULA consent from the operator, run a dedicated-server boot and client join. Then perform the isolated-world missile launch, chunk-boundary, save/reload and performance checks below.
+5. Update PR #34 with exact commit SHA and evidence; append dated details to `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. **If the journal is only in an unmerged docs PR, carry the latest journal file into the implementation branch without overwriting newer entries.** Do not merge PRs or publish a release automatically.
+
 ### Objective
 Include the **original Iskander Rocket Mod 2.0.1** in both TechQuest client and dedicated-server packages, with a verifiable official download and a controlled in-game test, without replacing Incoming or Superb Warfare.
 
