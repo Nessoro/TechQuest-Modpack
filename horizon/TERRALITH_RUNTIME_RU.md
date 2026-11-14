@@ -568,3 +568,52 @@ dirt вместо одного stone input и отсутствие одного 
 [TERRALITH_RECIPES_RUNTIME_RESULT.json](TERRALITH_RECIPES_RUNTIME_RESULT.json).
 Проверка настоящего player event, клиент, мультиплеер, wolf selection,
 структуры/лут и промышленные механики остаются отдельными задачами.
+
+## Нативные wolf selectors — 14 ноября 2026
+
+Первый нативный bundle `techquest_terralith_wolves` собран официальным
+`horizon-mixins` 5a64af9 на Horizon c78187d. Два HEAD-хука и один support module
+восстанавливают исходные девять c-tag selectors. Исходники и описание сборки:
+[first_party/terralith_wolves](first_party/terralith_wolves/README.md).
+
+Обнаружены две отдельные причины потерь: фиксированный vanilla selector и
+фильтрация custom biome IDs из глобальных mob tags при сборке content root.
+В наборе из 159 исходных биомов у 35 не хватало глобальных tag memberships;
+базовый движок выбирал неверный вариант в 32 случаях. Полные определения уже
+есть в кеше world datapack. Native extension берёт выбор оттуда и передаёт
+его selector через одноразовый контекст потока. Исходное тело biome_facts
+и остальные поля сохраняются; им всё ещё нужен отдельный аудит world tags.
+
+Живой сервер Minecraft 1.21.1 показал порядок loaded registry, отличный от
+bootstrap. Проверенный reference driver запускает исходные девять definitions
+с искусственными совпадающими c tags, удаляет победителя, делает reload и
+повторяет до пустого набора. Порядок: ashen, black, chestnut, pale, rusty,
+snowy, spotted, striped, woods; fallback pale. Этот порядок подтверждён
+повторным прогоном driver из репозитория; оба reference-сервера остановлены.
+
+Java-компонентная проба использует настоящий WolfVariants selector с этим
+порядком и 512 синтетическими масками HolderSet membership. Нативная проба
+прошла все 512 масок и все 159 исходных биомов без расхождений. Единственное
+пересечение исходных c tags — savanna_badlands. На 67 vanilla биомах без
+Terralith результат совпал с базовой сборкой. Три Rust-теста проверили
+однократность контекста, сброс при другом биоме и изоляцию потоков.
+
+Нативный `.hnmod` прошёл SDK check. Итоговый headless engine собран с прежними
+TLS CA/proxy features; исходный checkout сохранён, только в отдельном clean
+worktree материализован документационный symlink CLAUDE.md. Установщик теперь
+проверяет также native source bundles и фиксирует их вместе с движком в lock.
+
+Новый сервер `127.0.0.1:25603`, online-mode/whitelist, шесть hmod и один
+скомпилированный native bundle: все девять вариантов появились в заданных
+через fillbiome биомах Terralith. Отдельный savanna_badlands выбрал spotted.
+Summon выполнялся без NBT, чтобы прошёл настоящий finalizeSpawn; только затем
+сущности получили NoAI/persistence. Десять сущностей, их variant и биомы
+проверены после save/reopen с новыми homes. Engine остановлен, lock проверен,
+generator audit фактического content root по-прежнему показывает 0 skips.
+
+Прошли 92 Horizon Python-теста и три Rust-теста контекста. Итог:
+[TERRALITH_WOLF_RUNTIME_RESULT.json](TERRALITH_WOLF_RUNTIME_RESULT.json).
+Девять исходных wolf JSON остаются вне пакета: их нужный selector реализован
+нативно, adult texture IDs уже соответствуют target vanilla. Естественный
+спавн, breeding, детские текстуры, визуальный клиент и мультиплеер не проверены.
+Промышленные механики остаются не перенесены; общий inventory полных портов 0.

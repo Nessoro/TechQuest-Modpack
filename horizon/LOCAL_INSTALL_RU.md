@@ -5,6 +5,11 @@ world datapack в **новой** папке. Это текущий сервер�
 промышленные механики TechQuest и клиент ещё не готовы. Ничего не скачивается
 и не публикуется. NeoForge main и существующие миры не используются.
 
+Для текущего варианта с восстановленными волками нужен также движок с
+[нативным расширением Terralith Wolves](first_party/terralith_wolves/README.md).
+Оно компилируется в engine; content-модулей по-прежнему шесть. Базовая сборка
+без расширения сохраняет прежний vanilla selector.
+
 ## Входные файлы
 
 - Официальный Horizon `c78187dffffb60f31517eadcb87413386e8ce729` и SDK.
@@ -13,6 +18,8 @@ world datapack в **новой** папке. Это текущий сервер�
 - Совместный carry workspace пяти исходных модов и `techquest_yungs_shared`.
 - Пять исходных SDK-проверенных hmod: четыре YUNG's и shared tags.
 - Производный Terralith hmod, собранный из **того же** адаптированного datapack.
+- Для wolf extension: отдельная сборка engine и проверенный source bundle
+  `.hnmod` в `tools/native-mods/`, описанный через `native_mods` в build-result.json.
 
 Из корня репозитория сначала подготовить согласованную пару в новых каталогах:
 
@@ -67,6 +74,11 @@ python horizon/tools/install_isolated_server.py start --server-dir /path/to/new-
 файла в hmod/datapack и канонических block tags. Рабочий каталог создаётся
 временно и переименовывается только после успеха. При отказе готовая папка
 сервера не появляется. Существующая папка выхода всегда отклоняется.
+
+Если инструменты декларируют `native_mods`, каждый source bundle дополнительно
+проверяется SDK по ID, версии, Horizon/Mixins pins и SHA-256. Расширения
+записываются в lock; их файлы и build-result.json также фиксируются SHA-256.
+SDK проверяет исходный пакет, игровое исполнение подтверждает отдельный runtime-тест.
 
 В новой папке находятся шесть включённых hmod, datapack в
 `techquest-horizon-test/datapacks/techquest_terralith`, конфигурация и
@@ -133,17 +145,19 @@ python horizon/tools/audit_terralith_outside.py \
   --work /path/to/five-together \
   --resources /path/to/resources/26.3 \
   --upstream /path/to/pinned-horizon \
-  --datapack /path/to/new-adapted-datapack
+  --datapack /path/to/new-adapted-datapack \
+  --native-runtime-result horizon/TERRALITH_WOLF_RUNTIME_RESULT.json
 ```
 
 | Количество | Назначение | Что осталось |
 | --- | --- | --- |
 | 5 | Recipe advancements: dispenser/dropper/lever/observer/piston | Адаптированы; нативные компоненты проверены, полный путь события с реальным игроком ещё не проверен |
-| 9 | Wolf variants | Сохранить `c:has_wolf_variant/*` условия и реализовать их нативное чтение; текущая `wolf_variant_for` использует фиксированные vanilla ветки |
+| 9 | Wolf variants | Проверены с отдельным native extension: все девять вариантов и overlap-case после save/reopen; естественный спавн ещё не проверен |
 | 1 | `funny_cave_meme.txt` | Авторские climate-point заметки; не исполняемая dimension JSON |
 
 Все пять alternate recipe JSON уже есть в carry. Все девять biome tags также
-есть, adult textures совпадают с текущей vanilla. После восстановления пяти
+есть, adult texture IDs совпадают с текущей vanilla. После восстановления пяти
 advancements в outside остаются 10 файлов: девять wolf definitions и заметки.
-Нужны нативный selector и игровые доказательства с реальным игроком;
-полный перенос Terralith пока не заявляется.
+Девять wolf definitions покрывает отдельный нативный selector; без расширения
+базовый движок сохраняет прежнее поведение. Нужны естественный спавн и проверки
+с реальным игроком; полный перенос Terralith пока не заявляется.

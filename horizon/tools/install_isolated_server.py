@@ -11,6 +11,7 @@ import argparse
 import json
 import os
 from pathlib import Path, PurePosixPath
+import re
 import shutil
 import subprocess
 import tempfile
@@ -153,6 +154,39 @@ def validate_trial(datapack: Path, work: Path) -> dict[str, Path]:
     return files
 
 
+def check_native_modules(tools: Path, sdk: Path) -> list[dict]:
+    """Check declared source bundles; this alone does not prove their compilation."""
+    build = json.loads((tools / "build-result.json").read_text())
+    specs = build.get("native_mods", [])
+    if not isinstance(specs, list):
+        raise ValueError("native_mods must be a list")
+    result = []
+    for spec in specs:
+        if not isinstance(spec, dict):
+            raise ValueError("native source bundle declaration must be an object")
+        mod = spec.get("id", "")
+        revision = spec.get("mixins_commit", "")
+        if (not isinstance(mod, str) or not isinstance(revision, str)
+                or not re.fullmatch(r"[a-z0-9_]{1,64}", mod)
+                or not re.fullmatch(r"[0-9a-f]{40}", revision)
+                or any(entry["id"] == mod for entry in result)):
+            raise ValueError("invalid/duplicate declared native source bundle")
+        path = checked_path(tools / "native-mods" / f"{mod}.hnmod")
+        checksum = digest(path)
+        if checksum != spec.get("sha256"):
+            raise ValueError("native source bundle checksum differs: " + mod)
+        verdict = json.loads(run([sdk, "check", path, "--json"], cwd=path.parent))
+        facts = verdict.get("report", {})
+        api = f"native-1/{UPSTREAM}/{revision}"
+        if (verdict.get("ok") is not True or facts.get("kind") != "native-mod"
+                or facts.get("id") != mod or facts.get("version") != spec.get("version")
+                or facts.get("game") != "26.3" or facts.get("api") != api
+                or facts.get("sha256") != checksum):
+            raise ValueError("SDK rejected native source bundle identity/pins: " + mod)
+        result.append({"id": mod, "version": spec["version"], "sha256": checksum, "api": api})
+    return result
+
+
 def install(*, resources: Path, tools: Path, work: Path, modules: Path,
             terralith: Path, datapack: Path, sdk: Path, upstream: Path,
             output: Path, port: int, accept_eula: bool) -> dict:
@@ -178,6 +212,7 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
     run([tools / "horizon-prepare", "--check", "--root", upstream, "--output", resources], cwd=upstream)
     payloads = validate_trial(datapack, work)
     mods = check_modules(modules, terralith, datapack, sdk, work)
+    native = check_native_modules(tools, sdk)
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".techquest-install-", dir=output.parent) as temporary:
         temporary = Path(temporary)
@@ -212,6 +247,9 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
         relative += [f"horizon-mods/{mod}.hmod" for mod in MODULES]
         relative += [f"{PACK}/{name}" for name in payloads]
         external = {str((tools / name).resolve()): digest(tools / name) for name in BINARIES}
+        external[str((tools / "build-result.json").resolve())] = digest(tools / "build-result.json")
+        for spec in native:
+            external[str((tools / "native-mods" / f'{spec["id"]}.hnmod').resolve())] = spec["sha256"]
         for name in ("horizon-resources.json", "horizon-prepare.json", "facts.json", "block-tags.json"):
             external[str((resources / name).resolve())] = digest(resources / name)
         report = {
@@ -221,6 +259,7 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
             "modules": {mod: {k: v for k, v in spec.items() if k != "path"} for mod, spec in mods.items()},
             "files": {name: digest(stage / name) for name in sorted(relative)}, "external_files": external,
             "server_binary": str((tools / "horizon-server").resolve()),
+            "native_modules": native,
             "sdk_validated_modules": len(mods), "resources_check_passed": True,
             "source_hashes_rechecked": len(json.loads(payloads["techquest-worldgen-trial.json"].read_text())["sources"]),
             "hmod_datapack_synchronized": True, "server_boot_tested": False,

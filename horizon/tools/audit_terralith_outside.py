@@ -28,7 +28,8 @@ def read(path: Path) -> bytes:
     return path.read_bytes()
 
 
-def audit(work: Path, resources: Path, upstream: Path, datapack: Path | None = None) -> dict:
+def audit(work: Path, resources: Path, upstream: Path, datapack: Path | None = None,
+          native_runtime_result: Path | None = None) -> dict:
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=upstream, check=True,
                           capture_output=True, text=True).stdout.strip()
     if head != UPSTREAM:
@@ -45,6 +46,23 @@ def audit(work: Path, resources: Path, upstream: Path, datapack: Path | None = N
     expected.add("data/minecraft/dimension/funny_cave_meme.txt")
     if remaining.keys() != expected:
         raise ValueError("outside inventory changed; classify all additions/removals before continuing")
+    native = None
+    if native_runtime_result is not None:
+        raw_proof = read(native_runtime_result)
+        proof = json.loads(raw_proof)
+        checks = proof.get("world_checks", {})
+        wolves = checks.get("wolves", [])
+        if (proof.get("upstream_commit") != UPSTREAM or proof.get("minecraft") != "26.3"
+                or proof.get("native_module", {}).get("id") != "techquest_terralith_wolves"
+                or proof.get("server_boot_tested") is not True or proof.get("engine_stopped") is not True
+                or proof.get("native_source_biome_mismatches") != 0 or proof.get("native_mask_mismatches") != 0
+                or checks.get("reopen_checks_passed") is not True
+                or {wolf.get("variant") for wolf in wolves} != {"minecraft:" + name for name in WOLVES}
+                or not all(wolf.get("variant_and_biome_after_reopen") is True for wolf in wolves)):
+            raise ValueError("native report must prove all nine variants and save/reopen on the pinned engine")
+        native = {"report": native_runtime_result.name, "report_sha256": hashlib.sha256(raw_proof).hexdigest(),
+                  "module": proof["native_module"], "engine_sha256": proof["engine_sha256"],
+                  "natural_spawning_tested": proof.get("natural_wolf_spawning_tested", False)}
     files = []
     for name, path in sorted(remaining.items()):
         raw = read(path)
@@ -80,10 +98,18 @@ def audit(work: Path, resources: Path, upstream: Path, datapack: Path | None = N
             tag_file = carry / f"data/c/tags/worldgen/biome/has_wolf_variant/{path.stem}.json"
             record.update(classification="native_wolf_selector_pending", biome_tag=tag,
                           carried_tag_sha256=hashlib.sha256(read(tag_file)).hexdigest(),
-                          adult_textures_match_current_vanilla=True,
+                          adult_texture_ids_match_current_vanilla=True,
                           migration_needed="assets/spawn_conditions plus native data-driven variant selection",
                           behavior_missing="Terralith's c:has_wolf_variant biome selection",
                           runtime_verified=False)
+            if native:
+                record["base_engine_behavior_missing"] = record.pop("behavior_missing")
+                record.pop("migration_needed")
+                record.update(classification="native_wolf_selector_runtime_verified",
+                              implementation="compiled native selector and cached world biome tags; nine existing vanilla variants",
+                              command_spawn_and_reopen_verified=True,
+                              natural_spawning_verified=native["natural_spawning_tested"],
+                              runtime_verified=True)
         else:
             record.update(classification="non_runtime_author_notes", runtime_required=False,
                           reason=".txt climate-point snippets; not a dimension registry .json file")
@@ -92,9 +118,11 @@ def audit(work: Path, resources: Path, upstream: Path, datapack: Path | None = N
             "outside_files_reviewed": len(files), "unclassified": [],
             "recipe_unlock_adapted": 5 if datapack is not None else 0,
             "recipe_unlock_player_test_pending": 5, "outside_not_selected_by_adapter": 10,
-            "native_wolf_selector_pending": 9, "non_runtime_author_notes": 1,
+            "native_wolf_selector_pending": 0 if native else 9,
+            "native_wolf_selector_runtime_verified": 9 if native else 0,
+            "native_extension": native, "non_runtime_author_notes": 1,
             "evidence_sha256": {name: hashlib.sha256(read(upstream / name)).hexdigest() for name in EVIDENCE},
-            "native_wolf_selector": "wolf_variant_for has fixed vanilla biome/tag branches; c tags are not consulted",
+            "base_native_wolf_selector": "wolf_variant_for has fixed vanilla biome/tag branches; c tags are not consulted",
             "recipe_unlock_selector": "native advancement index and matcher read conditions.recipes",
             "files": files, "source_files_modified": False, "complete_terralith_port": False,
             "client_tested": False, "multiplayer_tested": False}
@@ -106,6 +134,8 @@ def main() -> None:
         parser.add_argument("--" + name, required=True, type=Path)
     parser.add_argument("--datapack", type=Path,
                         help="Also verify the five adapted recipe advancements against the original source")
+    parser.add_argument("--native-runtime-result", type=Path,
+                        help="Optional local runtime proof for the separately compiled wolf extension")
     print(json.dumps(audit(**vars(parser.parse_args())), indent=2))
 
 

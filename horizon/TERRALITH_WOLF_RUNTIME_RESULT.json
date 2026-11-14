@@ -1,0 +1,259 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-14",
+  "minecraft": "26.3",
+  "source_minecraft": "1.21.1",
+  "terralith": "2.6.2",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "native_module": {
+    "id": "techquest_terralith_wolves",
+    "version": "0.1.0",
+    "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+    "sha256": "243f1bb11cd5e09bc955c38423c57fda0856018bef6cb42bb070056be96ed140",
+    "api": "native-1/c78187dffffb60f31517eadcb87413386e8ce729/5a64af938ec86b00d53d16a408aabc0038fb3e57"
+  },
+  "native_sdk_validated": true,
+  "engine_sha256": "cb7a64df053277298fd4c29507a6bc25a6e10e30731eccccfc9ad323182bbbe5",
+  "headless_build_profile": "fast",
+  "native_crate_build_seconds": 278,
+  "https_features": [
+    "ureq/native-certs",
+    "ureq/proxy-from-env"
+  ],
+  "source_documentation_symlinks_materialized": [
+    "CLAUDE.md"
+  ],
+  "staged_rust_files_changed": [
+    "crates/horizon-client/src/client_lib.rs",
+    "crates/horizon-client/src/game/creatures.rs",
+    "crates/horizon-client/src/mobs/tame.rs"
+  ],
+  "original_upstream_tracked_code_changed": false,
+  "native_injections": 2,
+  "support_modules": 1,
+  "context_rust_tests_passed": 3,
+  "native_source_sha256": {
+    "horizon-native.json": "5bce0cfafb77240a0e0d4d9be99eea84ec90c1d2c05abdee91e3cf6d5868065e",
+    "horizon-mixin.toml": "238914f96a0ad3d8586f5c366b991097fe3612cfc7514c657abcf311caa1e704",
+    "LICENSE-HORIZON": "b4b374ae9d0f2d8f7be35c6783e41327431da3b5662605da9ba31493630621df",
+    "select.rs": "90142b35f226422d59316f8cd851e609de892faea08753e43c33cd837aa67e4e",
+    "context.rs": "64b886cadb39b95845bec21bef2162394b16401770f6ffa9fe2461da7497f45b",
+    "world_tags.rs": "2bb13352571ce0df3a553579af4cdf62dc0bc3160adf651d5d94a5492aaf26fd"
+  },
+  "source_biome_cases": 159,
+  "native_source_biome_mismatches": 0,
+  "native_world_membership_mismatches": 0,
+  "global_mob_tags_still_trim_custom_biomes": 35,
+  "uses_cached_world_tags_for_wolves": true,
+  "baseline_wrong_selections_with_global_tags": 32,
+  "oracle_masks_compared": 512,
+  "native_mask_mismatches": 0,
+  "vanilla_without_terralith_cases": 67,
+  "vanilla_without_terralith_changed_cases": 0,
+  "source_overlapping_biomes": [
+    "terralith:savanna_badlands"
+  ],
+  "original_live_priority_probe": {
+    "schema": 1,
+    "source_minecraft": "1.21.1",
+    "online_mode": true,
+    "whitelist": true,
+    "port": 25604,
+    "bind": "127.0.0.1",
+    "biome": "minecraft:plains",
+    "memberships_are_synthetic": true,
+    "uses_original_nine_terralith_variant_definitions": true,
+    "source_variant_sha256": {
+      "pale": "c2931ed2250519dfbbe6911e926f2d5102fb277dcef8bb3c2f55eb59cdeeff3d",
+      "spotted": "f66ee60426cd3b5c216197d183cc04a2cfc7d6e431a482749865dc4e37844c2b",
+      "snowy": "a8bfce139f19ac27ed6d9945db9b0f8f38e6c805d812510039d96472bacacc5e",
+      "black": "359a0077958a4c3d3f882dd31147090ec65be26399f3d0e03a880b9d222adec2",
+      "ashen": "adfedcfbf7d1445f231ff761467da7575d37e6b273751b67daccb0803facf685",
+      "rusty": "f60c799ae1aeac0b9bb436e3d50317537dc064a72be1deab860f62a7028a3178",
+      "woods": "83077f9066e94e632ed9a84b51562539c72e561627cc992b8d4366fb116015aa",
+      "chestnut": "9d6e6c6e049766c0ab82417a4fa2b0b84e27574c6efaad5c621b49e34df69d12",
+      "striped": "4aea36429559d2ddb21426600f9c2c557150c60e20ce964a36e6e40a85483364"
+    },
+    "live_priority": [
+      "ashen",
+      "black",
+      "chestnut",
+      "pale",
+      "rusty",
+      "snowy",
+      "spotted",
+      "striped",
+      "woods"
+    ],
+    "empty_membership_fallback": "pale",
+    "exit_code": 0
+  },
+  "original_bootstrap_priority_is_different": true,
+  "server_boot_tested": true,
+  "world_checks": {
+    "schema": 1,
+    "minecraft": "26.3",
+    "world": "techquest-horizon-test",
+    "online_mode": true,
+    "whitelist": true,
+    "bind": "127.0.0.1",
+    "port": 25603,
+    "content_modules": 6,
+    "compiled_native_modules": 1,
+    "spawn_reason": "command with no NBT, through finalizeSpawn",
+    "natural_spawning_tested": false,
+    "wolves": [
+      {
+        "tag": "tq_wolf_0",
+        "position": [
+          128,
+          220,
+          128
+        ],
+        "biome": "terralith:alpha_islands",
+        "variant": "minecraft:pale",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      },
+      {
+        "tag": "tq_wolf_1",
+        "position": [
+          160,
+          220,
+          128
+        ],
+        "biome": "terralith:arid_highlands",
+        "variant": "minecraft:spotted",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      },
+      {
+        "tag": "tq_wolf_2",
+        "position": [
+          192,
+          220,
+          128
+        ],
+        "biome": "terralith:siberian_grove",
+        "variant": "minecraft:snowy",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      },
+      {
+        "tag": "tq_wolf_3",
+        "position": [
+          224,
+          220,
+          128
+        ],
+        "biome": "terralith:alpine_highlands",
+        "variant": "minecraft:black",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      },
+      {
+        "tag": "tq_wolf_4",
+        "position": [
+          256,
+          220,
+          128
+        ],
+        "biome": "terralith:wintry_forest",
+        "variant": "minecraft:ashen",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      },
+      {
+        "tag": "tq_wolf_5",
+        "position": [
+          288,
+          220,
+          128
+        ],
+        "biome": "terralith:amethyst_rainforest",
+        "variant": "minecraft:rusty",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      },
+      {
+        "tag": "tq_wolf_6",
+        "position": [
+          320,
+          220,
+          128
+        ],
+        "biome": "terralith:lavender_forest",
+        "variant": "minecraft:woods",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      },
+      {
+        "tag": "tq_wolf_7",
+        "position": [
+          352,
+          220,
+          128
+        ],
+        "biome": "terralith:forested_highlands",
+        "variant": "minecraft:chestnut",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      },
+      {
+        "tag": "tq_wolf_8",
+        "position": [
+          384,
+          220,
+          128
+        ],
+        "biome": "terralith:bryce_canyon",
+        "variant": "minecraft:striped",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      },
+      {
+        "tag": "tq_wolf_9",
+        "position": [
+          416,
+          220,
+          128
+        ],
+        "biome": "terralith:savanna_badlands",
+        "variant": "minecraft:spotted",
+        "data_get_and_nbt_predicate_passed": true,
+        "variant_and_biome_after_reopen": true
+      }
+    ],
+    "save_all_flushed": true,
+    "fresh_homes_for_reopen": true,
+    "reopen_checks_passed": true,
+    "installation_verified_after_test": true
+  },
+  "final_phase": "stopped",
+  "engine_stopped": true,
+  "generator_audit": {
+    "gameplay_ported": false,
+    "generator_pipeline_accepted": true,
+    "minecraft": "26.3",
+    "schema": 1,
+    "scope": "JSON registries and feature decoding; not structure placement or gameplay",
+    "seed": 263,
+    "server_boot_tested": false,
+    "unsupported_count": 0,
+    "unsupported_features": []
+  },
+  "source_files_hashed": 1872,
+  "namespace_ownership_changed": false,
+  "original_nine_wolf_json_files_copied_into_pack": false,
+  "natural_wolf_spawning_tested": false,
+  "wolf_breeding_and_baby_textures_tested": false,
+  "horizon_unit_tests_passed": 92,
+  "client_tested": false,
+  "multiplayer_tested": false,
+  "industrial_mechanics_ported": false,
+  "full_terralith_ported": false,
+  "published": false,
+  "live_priority_reproduced_with_repository_driver": true,
+  "source_adult_variant_texture_ids_match_target_vanilla": true
+}

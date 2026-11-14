@@ -1,0 +1,36 @@
+[mod]
+id = "techquest_terralith_wolves"
+version = "0.1.0"
+
+[compatibility]
+horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
+
+[[injection]]
+id = "source_biome_tags"
+target = "horizon_client_lib::mobs::tame::wolf_variant_for"
+kind = "HEAD"
+cancellable = true
+helper = "select.rs"
+bindings = [
+  { name = "biome", ty = "&str", value = "biome" },
+  { name = "has_tag", ty = "&dyn Fn(&str) -> bool", value = "has_tag" },
+]
+
+[[injection]]
+id = "world_biome_tags"
+target = "horizon_client::game::creatures::Game<'_>::biome_facts"
+kind = "HEAD"
+helper = "world_tags.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "x", ty = "i32", value = "x" },
+  { name = "y", ty = "i32", value = "y" },
+  { name = "z", ty = "i32", value = "z" },
+]
+
+[[module]]
+id = "world_context"
+file = "crates/horizon-client/src/client_lib.rs"
+name = "techquest_terralith_wolf_context"
+source = "context.rs"
+visibility = "pub"

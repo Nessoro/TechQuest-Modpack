@@ -13,6 +13,34 @@ import install_isolated_server as installer
 
 
 class IsolatedInstallTests(unittest.TestCase):
+    def test_changed_native_source_bundle_is_rejected_before_sdk(self):
+        with tempfile.TemporaryDirectory() as temp:
+            tools = Path(temp)
+            package = tools / "native-mods/example.hnmod"
+            package.parent.mkdir()
+            package.write_bytes(b"changed local native source")
+            (tools / "build-result.json").write_text(json.dumps({"native_mods": [{
+                "id": "example", "version": "1", "mixins_commit": "a" * 40, "sha256": "0" * 64}]}))
+            with patch.object(installer, "run") as sdk:
+                with self.assertRaisesRegex(ValueError, "native source bundle checksum"):
+                    installer.check_native_modules(tools, tools / "sdk")
+                sdk.assert_not_called()
+
+    def test_native_bundle_must_match_the_engines_declared_pins(self):
+        with tempfile.TemporaryDirectory() as temp:
+            tools = Path(temp)
+            package = tools / "native-mods/example.hnmod"
+            package.parent.mkdir()
+            package.write_bytes(b"fixture source bundle")
+            checksum = installer.digest(package)
+            (tools / "build-result.json").write_text(json.dumps({"native_mods": [{
+                "id": "example", "version": "1", "mixins_commit": "a" * 40, "sha256": checksum}]}))
+            verdict = {"ok": True, "report": {"id": "example", "version": "1", "kind": "native-mod",
+                "game": "26.3", "sha256": checksum, "api": f'native-1/{installer.UPSTREAM}/' + "b" * 40}}
+            with patch.object(installer, "run", return_value=json.dumps(verdict)):
+                with self.assertRaisesRegex(ValueError, "identity/pins"):
+                    installer.check_native_modules(tools, tools / "sdk")
+
     def installation(self, root):
         root.mkdir()
         (root / "server.toml").write_text(
