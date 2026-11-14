@@ -84,6 +84,17 @@ Include the **original Iskander Rocket Mod 2.0.1** in both TechQuest client and 
 ### Out of scope
 Developing new missiles or custom ballistics, integrating the Broken Arrow bridge, rewriting explosion mechanics, FTB Industrial, Colossal Reactors, replacing IC2 or publishing without approval.
 
+### New mandatory mining regression gate (owner test, November 14, 2026)
+
+**The prior positive micro5 mining result was temporary.** The owner subsequently launched an older TechQuest installation to inspect a world seed, returned to micro5 and found that ordinary mining **again breaks extra blocks above the targeted block**.
+
+- Track and resolve [issue #37](https://github.com/Nessoro/TechQuest-Modpack/issues/37) before a public micro5 release, alongside the existing inventory (#38) and map chunk-loading (#39) acceptance requirements.
+- Audit whether older and newer Launcher installations share a **Game Directory** and therefore preserved `options.txt`, `config`, world-level `serverconfig`, or `mods` files. Do not assume they share a directory without checking.
+- Reproduce in (a) the affected profile, (b) a fresh micro5 directory/new test world, (c) Ultimine deactivated/unbound, and (d) an isolated old-build → micro5 sequence. FTB Ultimine 2101.1.15 is pinned in `external_mods`; inspect selected mining shapes, keybinds and server settings. Physics Mod is client-only in this pack and should be tested as a secondary hypothesis, not presumed culpable.
+- Preserve valuable saves and player configs; test against backed-up copies. Never solve a configuration regression by blindly deleting all user data or removing an approved mod.
+- A passing build, client-to-menu smoke test or one successful mining session **does not meet** this acceptance gate; obtain an actual gameplay no-regression result after switching versions, with a documented cause and safe mitigation.
+- Keep Iskander Rocket and the established industrial core intact; do not auto-merge PRs or publish before all release criteria are met.
+
 ### Conditional release authorization (owner decision, November 14, 2026)
 
 The owner has **conditionally authorized publishing the micro5 release after the remaining playtest feedback is addressed**. This is **not** permission to publish the current incomplete build immediately, nor authorization to merge PRs into `main`.
