@@ -12,6 +12,13 @@ These are persistent instructions for Codex and other coding agents working in t
 - Read before relevant work: `README.md`, `MODPACK_README_RU.md`, `CONTRIBUTING.md`, `modlist.json`, `build_pack.py`, the affected `scripts/`, `windows-installer/`, `tests/`, and `.github/workflows/`.
 - Start each task by checking the current branch, recent changes, and affected files. Avoid overwriting unrelated user or contributor changes.
 
+## Language policy for Codex and external AI handoffs
+
+- **Write all AI-facing prompts, technical specifications (ТЗ), implementation task briefs, acceptance criteria, handoff instructions, and documentation intended for Codex or another AI chat entirely in English.** This applies to new documents and revisions, including Markdown files in `docs/technical-specs/`.
+- Keep technical terminology, paths, mod IDs, version pins and commands unchanged. Do not silently translate source identifiers.
+- **Conversation with the project owner may remain in Russian**, as can Russian in-game localization, player-facing guides and the historical development journal. The language of a response is distinct from the language of reusable AI task instructions.
+- If an existing AI-facing specification is in Russian, translate and maintain it in English instead of adding mixed-language instructions.
+
 ## Shared development journal — mandatory after each TechQuest change
 
 - **Single decision and status log:** `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. **Four patch specifications:** `docs/technical-specs/TZ_TechQuest_micro3.md`, `TZ_TechQuest_micro4.md`, `TZ_TechQuest_micro5.md`, `TZ_TechQuest_micro6.md`.
