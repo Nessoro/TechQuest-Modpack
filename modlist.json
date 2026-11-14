@@ -4,7 +4,7 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3 micro2: оригинальный RPG Core вместо PMMO; бонусы за достижения и масштабирование мобов без XP/Vein Mining",
+  "description": "TechQuest 0.3.3 micro4 candidate: Trash Cans и Pretty Pipes без двигателей, только предметные трубы; IC2: Nostalgia и TechQuest Compatibility сохранены. Colossal Reactors, Iskandert's Library, Fusion, FTB Industrial, RPG Core и PMMO исключены. Advanced Solar Panels — только micro6.",
   "removed_mods": [
     {
       "project": "mcheli-modern-port",
@@ -20,7 +20,7 @@
     },
     {
       "project": "project-mmo",
-      "reason": "micro2: Project MMO удалён после подтверждённого бага массовой добычи вверх; заменён собственным TechQuest RPG Core"
+      "reason": "PMMO удалён из-за ошибки массовой добычи; собственный RPG Core также удалён в micro3 и не возвращается в micro4."
     }
   ],
   "mods": [
@@ -444,6 +444,28 @@
       "group": "Библиотеки",
       "required": true,
       "version_id": "1IiqEQGl"
+    },
+    {
+      "project": "trash-cans",
+      "group": "Комфорт",
+      "required": true,
+      "version_id": "lSKYKJdm",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Item/Fluid/Energy Trash Cans для удаления ресурсов; требуется SuperMartijn642's Config Lib и Core Lib; скачивается по закреплённому SHA-512; NeoForge 1.21.1."
+    },
+    {
+      "project": "pretty-pipes",
+      "group": "Технологии",
+      "required": true,
+      "version_id": "lrhbGGSe",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Трубы без двигателей для автоматической транспортировки предметов (в том числе блоков как вещей) между контейнерами; не перемещают установленные блоки в мире."
     }
   ],
   "manual_mods": [
@@ -1532,6 +1554,50 @@
       "version_id": "1IiqEQGl",
       "filename": "architectury-13.0.11-neoforge.jar",
       "sha512": "d9f7c3bb8162577dfb461ffdf04bd6a3563c7586934a0e2a744c14421beffb8286f0d88d4c758317003f20f99fe8072a39b9d675af061e036970d36db36027f0",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "4QrnfueM": {
+      "title": "Trash Cans",
+      "version": "1.1.0-neoforge-mc1.21",
+      "version_id": "lSKYKJdm",
+      "filename": "trashcans-1.1.0-neoforge-mc1.21.jar",
+      "sha512": "0350245afb135ad611694393fd4e94ad00fdf16dcabbf7167c90f54649c2738f4eba3376888b6f37247694510bf7f60607d0fdeaec1ce1ff7b678daa03b0a723",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "LN9BxssP": {
+      "title": "SuperMartijn642's Config Lib",
+      "version": "1.1.8-neoforge-mc1.21",
+      "version_id": "qKL9jM75",
+      "filename": "supermartijn642configlib-1.1.8-neoforge-mc1.21.jar",
+      "sha512": "768d8ca178c5e653986f5131b7aeb7fa57ce7d32c16ed399ced01b273565a2b640130c55c7092747efeff40dbb0348876b18b415f59b0d16dd2c7f32f1798ce2",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "rOUBggPv": {
+      "title": "SuperMartijn642's Core Lib",
+      "version": "1.1.26a-neoforge-mc1.21",
+      "version_id": "sLRKmslC",
+      "filename": "supermartijn642corelib-1.1.26a-neoforge-mc1.21.jar",
+      "sha512": "e90a1f1a2a4b1b095b6692e82b3f1bbf3aafa5653fa80759ac4243385ac1d10605b8713107847a9d0f5e8e4da161009aa3380ae20ca8f70784abfaa85e868492",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "XExdLWCQ": {
+      "title": "Pretty Pipes",
+      "version": "1.22.0",
+      "version_id": "lrhbGGSe",
+      "filename": "PrettyPipes-1.22.0-all.jar",
+      "sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
       "environment": {
         "client": "required",
         "server": "required"

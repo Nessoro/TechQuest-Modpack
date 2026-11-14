@@ -63,8 +63,12 @@ NAMES = {
     "sophisticated-storage": "Sophisticated Storage",
     "architectury-api": "Architectury API",
     "lithium": "Lithium",
+    "trash-cans": "Trash Cans",
+    "pretty-pipes": "Pretty Pipes",
 }
 DESCRIPTIONS = {
+    "trash-cans": "Раздельные предметные, жидкостные и энергетические мусорки. Только в изолированной сети отходов и с проверенными фильтрами.",
+    "pretty-pipes": "Только предметы (включая блоки как вещи), без двигателей. Не передаёт жидкости, энергию или установленные блоки.",
     "aquamirae": "Океанские структуры, существа и босс в общей тестовой 0.3.3; игровые механики ещё требуют проверки.",
     "fragmentum": "Обязательная библиотека Aquamirae, версия 5.4.0.",
     "better-zoom": "Клиентский зум Z + колесо с плавным возвратом FOV.",

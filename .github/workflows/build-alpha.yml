@@ -62,6 +62,74 @@ jobs:
         run: python build_pack.py
       - name: Audit micro3 client/server/Modrinth manifests and both Compatibility payloads
         run: python scripts/audit_micro3_packages.py
+      - name: Assert pinned micro4 client, server and Modrinth manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+          import build_pack
+
+          cfg = build_pack.load_cfg()
+          locks = cfg["modrinth_lock"]
+          expected_ids = ("4QrnfueM", "XExdLWCQ", "LN9BxssP", "rOUBggPv")
+          excluded_ids = ("x18RjbsF", "y16HgCOF", "p19vrgc2")
+          excluded_names = ("colossal", "iskandert", "fusion", "ftb-industrial",
+                            "ftb_industrial", "techquest-rpg-core", "pmmo")
+          for project_id in excluded_ids:
+              assert project_id not in locks, ("excluded Modrinth lock", project_id)
+          for meta in locks.values():
+              label = (meta.get("title", "") + " " + meta.get("filename", "")).lower()
+              assert not any(name in label for name in excluded_names), label
+
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as archive:
+              assert archive.testzip() is None, "damaged mrpack ZIP"
+              index = json.loads(archive.read("modrinth.index.json"))
+              files = {row["path"]: row for row in index["files"]}
+              all_paths = set(archive.namelist()) | set(files)
+              # Only JARs under mod directories can be installed as mods.
+              # Patchouli pages such as colossal_enemies.json are not reactor mods.
+              def forbidden_mod_jar(path):
+                  lowered = path.lower()
+                  if not lowered.startswith(("mods/", "overrides/mods/")):
+                      return False
+                  if not lowered.endswith(".jar"):
+                      return False
+                  return any(name in Path(lowered).name for name in excluded_names)
+
+              # Regression checks: keep false positives out and real banned JARs out.
+              assert not forbidden_mod_jar(
+                  "overrides/patchouli_books/techquest_guide/en_us/entries/colossal_enemies.json")
+              assert forbidden_mod_jar("mods/colossal-reactors-1.0.jar")
+              assert not forbidden_mod_jar("mods/iskander-2.0.1.jar")
+              for path in all_paths:
+                  assert not forbidden_mod_jar(path), path
+              for project_id in expected_ids:
+                  lock = locks[project_id]
+                  name = lock["filename"]
+                  path = "mods/" + name
+                  assert path in files, ("missing from mrpack", project_id, path)
+                  row = files[path]
+                  assert row["hashes"]["sha512"] == lock["sha512"], path
+                  assert row["env"] == {"client": "required", "server": "required"}, path
+                  # .mrpack holds download references, never repacked third-party JARs.
+                  assert "overrides/" + path not in all_paths, path
+                  for side in ("client", "server"):
+                      jar = Path("output") / side / "mods" / name
+                      assert jar.is_file(), (side, project_id, "missing")
+                      assert hashlib.sha512(jar.read_bytes()).hexdigest() == lock["sha512"], jar
+              assert "overrides/mods/techquest-compat-1.0.0.jar" in all_paths
+          for side in ("client", "server"):
+              directory = Path("output") / side / "mods"
+              assert (directory / "techquest-compat-1.0.0.jar").is_file(), side
+              assert not any(
+                  any(name in jar.name.lower() for name in excluded_names)
+                  for jar in directory.glob("*.jar")
+              ), side
+          print("micro4 pinned JAR hashes, client/server outputs and mrpack verified")
+          print("No Minecraft gameplay or route-testing implied by this check")
+          PY
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
       - uses: actions/setup-java@v4
