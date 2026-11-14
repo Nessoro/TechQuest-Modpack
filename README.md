@@ -1,5 +1,7 @@
 # TechQuest: Industrial Frontier
 
+**Подписанные обновления (новый EXE):** при запуске проверяются GitHub Releases; только релизы с проверенной офлайн RSA-подписью могут обновлять управляемые моды (включая techquest-compat) и предлагать новый EXE. Повторно скачиваются только изменившиеся JAR; пользовательские сохранения, конфигурации и другие файлы не затрагиваются. Есть откат модов после обновления. Старые установки без .techquest/state.json требуют новой отдельной папки. Только официальный Minecraft Launcher с лицензионной Java Edition и Microsoft-входом; TechQuest не обрабатывает пароли и токены. Подробнее: [безопасность и обновления](docs/SECURE_UPDATES_RU.md).
+
 ## 🌐 [Открыть сайт TechQuest →](https://nessoro.github.io/TechQuest-Modpack/)
 
 **[Установка и скачивание](https://nessoro.github.io/TechQuest-Modpack/#download) · [Каталог модов](https://nessoro.github.io/TechQuest-Modpack/#mods) · [Ошибки и предложения](https://nessoro.github.io/TechQuest-Modpack/#feedback)**
