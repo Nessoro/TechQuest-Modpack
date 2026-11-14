@@ -2,6 +2,8 @@
 
 ## 🌐 [Открыть сайт TechQuest →](https://nessoro.github.io/TechQuest-Modpack/)
 
+**[Журнал разработки и решения по патчам 0.3.3](docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md)** · **[ТЗ micro3](docs/technical-specs/TZ_TechQuest_micro3.md)** · **[micro4](docs/technical-specs/TZ_TechQuest_micro4.md)** · **[micro5](docs/technical-specs/TZ_TechQuest_micro5.md)** · **[micro6](docs/technical-specs/TZ_TechQuest_micro6.md)**
+
 **[Установка и скачивание](https://nessoro.github.io/TechQuest-Modpack/#download) · [Каталог модов](https://nessoro.github.io/TechQuest-Modpack/#mods) · [Ошибки и предложения](https://nessoro.github.io/TechQuest-Modpack/#feedback)**
 
 > **Minecraft Java 1.21.1 • NeoForge 21.1.x • Java 21 • сервер с друзьями**
