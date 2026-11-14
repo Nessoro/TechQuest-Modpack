@@ -31,8 +31,8 @@ def check_index(index):
     if deps.get("minecraft") != "1.21.1":
         raise packbuilder.BuildError("Expected Minecraft 1.21.1")
     version = deps.get("neoforge", "")
-    if not re.fullmatch(r"21\.1\.[0-9]+", version):
-        raise packbuilder.BuildError("Expected a NeoForge 21.1.x version")
+    if version != "21.1.264":
+        raise packbuilder.BuildError("Expected NeoForge 21.1.264")
     return version
 
 def server_records(index):
