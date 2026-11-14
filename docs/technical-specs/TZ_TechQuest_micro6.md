@@ -1,76 +1,81 @@
-# Техническое задание №4 — TechQuest 0.3.3-micro6
+# Technical Specification No. 4 — TechQuest 0.3.3-micro6
 
-## Перенос Advanced Solar Panels на Industrial Craft 2: Nostalgia
+## Port Advanced Solar Panels to Industrial Craft 2: Nostalgia
 
-**Редакция:** 14.11.2026  
-**Репозиторий:** https://github.com/Nessoro/TechQuest-Modpack  
-**PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/35 (draft, этап аудита)  
-**Ветка:** experiment/solar-panels-nostalgia-micro6  
-**База:** micro5 — feat/micro5-iskander-rocket-033  
-**Платформа:** Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
+**Revision:** November 14, 2026  
+**Repository:** https://github.com/Nessoro/TechQuest-Modpack  
+**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/35 (draft; initial audit phase only)  
+**Implementation branch:** `experiment/solar-panels-nostalgia-micro6`  
+**Base:** micro5 — `feat/micro5-iskander-rocket-033`  
+**Target platform:** Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
 
-### Цель
-Разработать отдельный аддон **Advanced Solar Panels** для **Industrial Craft 2: Nostalgia 21.1.0-local.26**, не заменяя Nostalgia на Refactored и не меняя mod ID ic2 в существующих мирах. Сначала один работающий прототип, затем четыре типа панелей.
+### Objective
+Build a separate **Advanced Solar Panels** add-on compatible with **Industrial Craft 2: Nostalgia 21.1.0-local.26**. Do **not** replace Nostalgia with Refactored or alter the existing `ic2` mod ID and saved worlds. Start with one functional solar-panel prototype; expand to four panel tiers only after the minimum viable prototype works.
 
-### Подтверждённая база и блокер
-- Пакет уже содержит industrial-craft-2-nostalgia-21.1.0-local.26.jar в manual-mods.
-- **TechQuest Compatibility 1.0.0** должен сохраниться: рецепты Create ↔ IC2 и обход Better Zoom.
-- Исходный ориентир — Advanced Solar Panels Refactored 1.1.8, официальный файл https://www.curseforge.com/minecraft/mc-mods/advanced-solar-panels-refactored/files/9525863.
-- scripts/audit_solar_nostalgia.py в CI показал 48 классов аддона и **19 прямых ссылок на me/halfcooler/ic2r/**, modId=ic2r и ссылки на рецепты/предметы ic2r. При условном изменении префикса одного класса (me/halfcooler/ic2r/core/IC2R) нет в Nostalgia; остальные совпадающие имена **не доказывают** совместимость методов или полей.
-- Лицензия исходного аддона указана как GPLv3: подтвердить точную лицензию исходников/ресурсов, обеспечить авторство, соответствующий исходный код и условия распространения производных работ.
-- **Важно: реальный перенос ещё не создан и не запущен в Minecraft.** Аудит не является успешной установкой аддона.
+### Verified baseline and current blocker
+- TechQuest already includes `industrial-craft-2-nostalgia-21.1.0-local.26.jar` in `manual-mods`.
+- **TechQuest Compatibility 1.0.0** must remain installed, preserving Create ↔ IC2 recipes and the Better Zoom workaround.
+- Reference upstream add-on: **Advanced Solar Panels Refactored 1.1.8**, published for Minecraft 1.21.1 at https://www.curseforge.com/minecraft/mc-mods/advanced-solar-panels-refactored/files/9525863.
+- The existing `scripts/audit_solar_nostalgia.py` audit found **48 Java classes** and **19 direct references to `me/halfcooler/ic2r/`**. The add-on expects `modId=ic2r` and references `ic2r:` item/recipe identifiers.
+- Under a hypothetical package-name replacement, one class (`me/halfcooler/ic2r/core/IC2R`) has no direct counterpart in Nostalgia. **Similar class names for the remaining references do not prove binary, method, field or semantic compatibility.**
+- The add-on page lists a **GPLv3** license. Verify the actual source code, resource rights and exact distribution terms before reusing code or assets.
+- **The actual port has not yet been implemented or tested in Minecraft.** A successful static audit is not a successful game launch.
 
-### Этап A — законность и матрица API
-1. Найти и проверить исходники релиза 1.1.8 или другую пригодную лицензированную основу, права на текстуры и игровые ресурсы.
-2. Сравнить Java API Nostalgia local.26 и оригинального Refactored: регистрацию блоков/предметов, энергоисточники EU и события энергосети, кабельные соединения, блок-сущности, сохранение/синхронизацию, интерфейсы предметов и сетевое взаимодействие.
-3. Составить **таблицу соответствия классов, методов и полей**; обозначить необходимые адаптеры и блокирующие несовместимости. Не маскировать проблему пустыми фиктивными реализациями.
-4. Получить проверяемые исходные хеши и указать условия публикации; не загружать сторонний неподтверждённый JAR в сборку.
+### Phase A — Legal review and API compatibility matrix
+1. Locate the source code corresponding to upstream release 1.1.8, or another legally usable code base. Verify permissions for textures, models, localization and other art assets as well as Java sources.
+2. Compare the Java APIs of the pinned Nostalgia `local.26` and the referenced IC2 Refactored: block/item registration, EU energy-source and energy-sink interfaces, energy-grid events, cable connections, block entities, save/sync logic, item energy APIs and client/server packets.
+3. Produce a **class / method / field compatibility matrix**, identifying actual adapter implementations and blockers. Do not conceal missing behavior with empty placeholder interfaces or dummy methods.
+4. Record source revisions, verified checksums, attribution and corresponding-source distribution requirements. Do not ship an unverified third-party binary.
 
-### Этап B — MVP одной панели
-1. Создать изолированный мод под Java 21/NeoForge 21.1.264 со **своим уникальным mod ID** (предварительный вариант techquest_solar); **не создавать второй мод ic2**, не изменять Nostalgia JAR.
-2. Реализовать блок и предмет **Advanced Solar Panel**: генерация EU, подключение к реальному API Nostalgia, передача через кабели, ограничение выдачи/напряжения, внутреннее накопление энергии.
-3. Учитывать небо, свет, день/ночь, дождь, выгрузку чанков и перезагрузку сервера/мира; не допускать неограниченной генерации или удвоения после повторной загрузки.
-4. Добавить собственные/разрешённые лицензией ресурсы, русский текст, JEI-рецепт, страницу Patchouli. Не копировать защищённые изображения без соблюдения условий.
-5. Измерить на тестовом мире EU за 20/200/1200 тиков, передачу в IC2-накопитель, сохранение и ограничения напряжения.
+### Phase B — MVP: one Advanced Solar Panel
+1. Create an isolated NeoForge/Java 21 add-on with its **own unique mod ID** (proposed: `techquest_solar`). **Do not register another `ic2` mod** or modify Nostalgia's JAR.
+2. Implement a placeable **Advanced Solar Panel** block and item with EU generation, integration into Nostalgia's actual energy network, cable output, voltage/output limits and internal energy storage.
+3. Account for sky access, daylight, weather/rain, chunk unloading and server/world reloads. Prevent unbounded power generation or duplication after saving/reloading.
+4. Supply original or properly licensed textures/models, Russian in-game strings, a JEI recipe and a Patchouli entry. Do not copy protected art without complying with the applicable license.
+5. Test EU production over **20, 200 and 1,200 game ticks**, transfer to an IC2 energy-storage block, persistence and output-voltage restrictions.
 
-### Этап C — расширение до четырёх панелей
-| Панель | Ориентир днём | Ориентир ночью/при дожде | Накопление | Предел отдачи |
+### Phase C — Expand to four panel tiers
+
+The following figures are **historical reference targets** from Advanced Solar Panels, **not approved balance or verified output values for TechQuest**. Confirm Nostalgia voltage tiers and balance before finalizing them.
+
+| Panel tier | Reference daytime generation | Reference night/rain generation | Internal capacity | Maximum output |
 |---|---:|---:|---:|---:|
-| Advanced | 8 EU/t | 1 EU/t | 32 000 EU | 32 EU/t |
-| Hybrid | 64 EU/t | 8 EU/t | 100 000 EU | 128 EU/t |
-| Ultimate Hybrid | 512 EU/t | 64 EU/t | 1 000 000 EU | 512 EU/t |
-| Quantum | 4096 EU/t | 2048 EU/t | 10 000 000 EU | 8192 EU/t |
+| Advanced | 8 EU/t | 1 EU/t | 32,000 EU | 32 EU/t |
+| Hybrid | 64 EU/t | 8 EU/t | 100,000 EU | 128 EU/t |
+| Ultimate Hybrid | 512 EU/t | 64 EU/t | 1,000,000 EU | 512 EU/t |
+| Quantum | 4,096 EU/t | 2,048 EU/t | 10,000,000 EU | 8,192 EU/t |
 
-Числа являются **ориентировочными значениями исторического аддона**, а не утверждённым балансом TechQuest. Перед окончательным утверждением проверить ограничения EU-тиров Nostalgia, рецепты, долговечность механик и влияние на прогрессию. Не использовать ic2r:* рецепты в конечной версии; перейти на действующие ic2:* или согласованные теги.
+1. Implement all four tiers **only after the MVP is validated**, including proper storage, generation, cable interfaces and safety limits.
+2. Validate existing Nostalgia voltage tiers and the effect on industrial progression. Confirm materials, craft balance and recipe compatibility with JEI.
+3. Replace `ic2r:*` ingredients with the real `ic2:*` identifiers or agreed common item tags. Do not quietly invent missing items.
+4. Solar helmets, Molecular Transformer, additional materials and other machines are a **separate second-stage enhancement**; they are not required to accept the four-panel MVP.
 
-Солнечные шлемы, Molecular Transformer, дополнительные материалы и прочие блоки — **вторая очередь** после четырёх рабочих панелей, не критерий готовности MVP.
+### Phase D — Runtime validation and packaging
+- Implement automated EU-network tests, generation tests under different daylight/weather conditions, storage-overflow handling, output-voltage restrictions and save/reload behavior.
+- Launch a real Minecraft client with IC2 Nostalgia, TechQuest Compatibility, Create, Mekanism, AE2 and JEI. Verify recipe visibility, actual EU measurements and no Better Zoom regression.
+- Boot a real dedicated server to `Done` **after explicit Minecraft EULA consent** and join from the client. Verify there are no `NoClassDefFoundError`, `NoSuchMethodError` or client/server synchronization errors.
+- Profile **1 / 16 / 64 solar panels** using Spark; report actual FPS and TPS compared with a control test without the panels. Do not invent performance figures.
+- Test save/reload, chunk unload/load, energy retention and preservation of existing IC2 machines/world data.
+- **Only after runtime tests pass**, include the legally distributable compiled add-on with verified URLs, checksums and side metadata in `modlist.json`, `.mrpack`, Windows GUI and the server distribution. Verify upgrades, rollback, source availability and licensing compliance.
 
-### Этап D — испытания и интеграция
-- Разработать тесты EU-сети, выработки при разной погоде/свете, переполнения аккумулятора, пределов напряжения и стабильности после сохранения.
-- Реальный Minecraft клиент с IC2 Nostalgia, TechQuest Compatibility, Create, Mekanism, AE2, JEI; проверить крафты, показания EU, отсутствие регрессии Better Zoom.
-- Выделенный сервер до Done и вход игрока после отдельного **явного принятия EULA**, отсутствие NoClassDefFoundError, NoSuchMethodError и сетевых рассинхронизаций.
-- Нагрузочные сценарии **1 / 16 / 64 панели**, Spark-отчёт и фактические FPS/TPS относительно теста без панелей; не выдумывать метрики.
-- Перезапуск мира, выгрузка/загрузка чанков, сохранность энергии, отсутствие потери существующих машин.
-- **Только после пройденных испытаний** включить собственный/разрешённый JAR с хешами и ссылками в modlist.json, .mrpack, Windows GUI и сервер; тестировать rollback и обновление, сохранить исходный код и лицензию.
+### Non-negotiable restrictions
+- Do not replace IC2 Nostalgia or require IC2 Refactored in the final modpack.
+- Do not install two competing mods with the same `ic2` ID.
+- Do not add an untested experimental solar JAR to the regular distribution merely to obtain a green CI build.
+- Do not distribute source, modified JARs, textures or other assets without checking licenses, authorship and attribution.
+- Do not modify existing player worlds, `main` or the published micro2 preview without explicit owner approval.
 
-### Жёсткие запреты
-- Не заменять IC2 Nostalgia и не использовать IC2 Refactored как зависимость итоговой сборки.
-- Не устанавливать два конкурирующих мода с одинаковым ID ic2.
-- Не включать экспериментальный аддон в действующий модпак ради формального зелёного CI.
-- Не распространять JAR/текстуры/копии исходников без проверки лицензии и атрибуции.
-- Не изменять существующие миры, main и публичный micro2 без отдельного решения владельца.
+### Research-phase acceptance (current PR #35)
+- [ ] A concrete API matrix including class, method and field signatures has been documented; legal rights and remaining blockers are identified.
+- [ ] The static audit and offline unit tests are reproducible against pinned binaries and verified hashes.
+- [ ] If no functioning port exists yet, the report explicitly states **"not tested by launching Minecraft"**.
 
-### Приёмка исследования (PR #35)
-- [ ] Матрица реальных API и сигнатур документирована; установлены права и блокеры.
-- [ ] Аудит и unit tests воспроизводимы для зафиксированных JAR/хешей.
-- [ ] При отсутствии порта явно написано «не проверено запуском Minecraft».
+### Playable micro6 acceptance (future)
+- [ ] All four panels generate and deliver **real EU to IC2 Nostalgia** in both single-player and dedicated-server worlds, with no second IC2 implementation.
+- [ ] Generation/storage are measured numerically and daylight/weather behavior follows the agreed specification.
+- [ ] Recipes, Russian localization, JEI and Patchouli work; Create ↔ IC2 and Better Zoom remain functional.
+- [ ] Worlds survive save/reload; there are no network-sync errors; FPS/TPS results are documented.
+- [ ] Source/license reviews are complete; the binary can be audited; GUI, `.mrpack` and CI all use the same validated commit SHA.
 
-### Приёмка игрового micro6
-- [ ] Все четыре панели генерируют и отдают **EU именно в Nostalgia**, без второй IC2, в одиночной и серверной игре.
-- [ ] Выработка/накопление проверены числами, поведение по времени суток и осадкам соответствует согласованным значениям.
-- [ ] Работают рецепты, русская локализация, JEI и Patchouli; Create ↔ IC2 и Better Zoom не сломаны.
-- [ ] Мир цел после сохранения/перезагрузки, нет ошибок сетевой синхронизации, FPS/TPS задокументированы.
-- [ ] Выполнены проверки прав, исходного кода и доступного для аудита релиза; GUI, .mrpack и CI проверены на одном SHA.
-
-### Итог
-Самостоятельный исходный проект или правомерный порт, таблица API Refactored → Nostalgia, полностью проверенный модуль Solar, документация/логи/PR. До появления реального игрового порта micro6 остаётся **экспериментом**, а не обновлением для игроков.
+### Deliverables and Codex handoff
+Provide the add-on source project or a legally compliant port, the **Refactored → Nostalgia API compatibility matrix**, tested solar-panel implementation, documentation, logs and updated PR #35 (or a follow-up implementation PR if needed). Append dated evidence to `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. Until a real, tested in-game port exists, **micro6 remains an experiment, not a player-facing update**.
