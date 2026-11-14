@@ -60,7 +60,7 @@ class AdventureRebalanceTests(unittest.TestCase):
         self.assertEqual(self.mods["pretty-pipes"]["group"], "Технологии")
         self.assertNotIn("ftb-industrial-contraptions", self.mods)
         self.assertNotIn("colossal-reactors", self.mods)
-        # Micro4 adds one technology (Pretty Pipes) and one logistics QoL mod (Trash Cans).
+        # Micro5 + Refined Storage add one additional storage mod; OPAC is UI, not industry.
         counts = Counter(m["group"] for m in self.cfg["mods"])
         counts.update(m.get("group", "Технологии") for m in self.cfg.get("manual_mods", []))
         counts.update(m.get("group", "Военная техника") for m in self.cfg.get("external_mods", []))
@@ -70,8 +70,8 @@ class AdventureRebalanceTests(unittest.TestCase):
         exploration = sum(counts[g] for g in EXPLORATION)
         military = sum(counts[g] for g in MILITARY)
         total = tech + adventure + exploration + military
-        self.assertEqual((tech, adventure, exploration, military), (13, 20, 6, 7))
-        self.assertEqual(total, 46)
+        self.assertEqual((tech, adventure, exploration, military), (14, 20, 6, 7))
+        self.assertEqual(total, 47)
         self.assertLess(tech / total, 0.32)
         self.assertGreater((adventure + exploration) / total, 0.55)
 
