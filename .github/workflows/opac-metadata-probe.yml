@@ -1,0 +1,32 @@
+name: Probe Open Parties and Claims Modrinth metadata
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch and print official Modrinth release metadata
+        run: |
+          python3 - <<'PY'
+          import json
+          import urllib.request
+          url = 'https://api.modrinth.com/v2/version/yWmXD7GW'
+          req = urllib.request.Request(url, headers={'User-Agent': 'TechQuest-Modpack/0.3.3 (https://github.com/Nessoro/TechQuest-Modpack)'})
+          with urllib.request.urlopen(req, timeout=30) as resp:
+              obj = json.load(resp)
+          assert obj['id'] == 'yWmXD7GW'
+          assert obj['project_id'] == 'gF3BGWvG'
+          assert obj['loaders'] == ['neoforge'] or 'neoforge' in obj['loaders']
+          assert '1.21.1' in obj['game_versions']
+          files = [f for f in obj['files'] if f['filename'] == 'open-parties-and-claims-neoforge-1.21.1-0.33.0.jar']
+          assert len(files) == 1
+          file = files[0]
+          print('OPAC_FILE_SHA512=' + file['hashes']['sha512'])
+          print('OPAC_FILE_SHA1=' + file['hashes']['sha1'])
+          print('OPAC_VERSION=' + obj['version_number'])
+          print('OPAC_DEPENDENCIES=' + json.dumps(obj['dependencies']))
+          print('OPAC_FILE_SIZE=' + str(file['size']))
+          PY
