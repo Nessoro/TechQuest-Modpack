@@ -427,6 +427,21 @@ class TerralithWorldgenTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             adapter.normalize_basalt_seed(source)
 
+    def test_forest_rock_preserves_state_and_legacy_soils_with_dynamic_tags(self):
+        source = {"type": "minecraft:forest_rock", "state": {"id": "minecraft:mossy_cobblestone"}}
+        before = copy.deepcopy(source)
+        result, count = adapter.normalize_forest_rocks(source)
+        self.assertEqual(source, before)
+        self.assertEqual(count, 1)
+        self.assertEqual(result["state"], before["state"])
+        predicates = result["can_place_on"]["predicates"]
+        self.assertEqual({p["blocks"] for p in predicates if isinstance(p["blocks"], str)},
+                         {"#minecraft:dirt", "#minecraft:base_stone_overworld"})
+        self.assertIn("minecraft:mycelium", predicates[1]["blocks"])
+        self.assertIn("minecraft:muddy_mangrove_roots", predicates[1]["blocks"])
+        self.assertNotIn("minecraft:sand", predicates[1]["blocks"])
+        self.assertEqual(adapter.normalize_forest_rocks(result), (result, 0))
+
     def test_existing_output_refused(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)

@@ -54,6 +54,11 @@ Horizon с шестью `.hmod` и дополнительным локальны
 Снег размещён выше +16 на grass/spruce leaves и проверен после перезапуска.
 [Результат широкого patch](TERRALITH_WIDE_PATCH_RUNTIME_RESULT.json).
 
+`forest_rock` перенесён в `block_blob` с исходным условием опоры. На 1060
+типах блоков определены 16 допустимых опор; 1124 сравнения ordered writes,
+результатов и next draw совпали. Камни на четырёх опорах сохранились после
+перезапуска. Остался **1 отказ**. [Результат камней](TERRALITH_ROCK_RUNTIME_RESULT.json).
+
 Тест выполнен 10 ноября 2026; после восстановления среды 13 ноября его
 сохранённые результаты и SHA-256 всех выбранных исходных файлов проверены.
 Машиночитаемый результат: [TERRALITH_RUNTIME_RESULT.json](TERRALITH_RUNTIME_RESULT.json).
@@ -148,6 +153,12 @@ Horizon с шестью `.hmod` и дополнительным локальны
   nextInt(1), не заменяется constant. Промежуточные позиции не читают мир.
   Старый narrow путь сохранён. Больше 31 или tries>4096 остаются deferred.
   Текущие 65 patch configs преобразованы полностью; deferred_patch_files пуст.
+- `forest_rock` стал `block_blob` с сохранением state и старого dirt/grass/
+  mycelium/base-stone условия. Сохранены семь старых soils, grass_block/mycelium,
+  динамические dirt и base_stone_overworld tags, включая Blackstone Terralith.
+  Новый общий forest-rock substrate tag не подставляется вместо старого правила.
+  Оригинальный алгоритм проверен на default states 1060 типов, допустимы 16;
+  это не перебор всех возможных свойств каждого блока.
 
 Выбрано 1867 файлов генератора, измерения, структур и worldgen-тегов.
 Включены теги новых биомов: наличие `.hmod` само по себе не гарантирует, что
@@ -356,6 +367,20 @@ random draw. На отдельном сервере вызов `terralith:snowy/
 перезапуска. Stone-площадка была отклонена. Таким образом проверен реальный
 выход выше прежнего +16; естественные снежные биомы этим не подтверждаются.
 
+`ForestRockProbe.java WORK OUTPUT` выполняет настоящий старый feature с
+записывающим миром и исходными dirt/base-stone tags + additions Terralith.
+`build_rock_cases.py REFERENCE OUTPUT` берёт только support/seed labels,
+не ожидаемые результаты. `rock_traces.rs` собирается как upstream example
+`techquest_rock_traces` и принимает EFFECTIVE_CONTENT_ROOT CASES_JSON OUTPUT_JSON.
+1124 traces совпали: поддержка/отказ для всех 1060 default block types,
+пять seeds на 16 допустимых опорах, ordered writes, result и next draw.
+Единственный изменённый ID в native fixture — старый chain → iron_chain,
+как в официальном datafix; обе формы отклоняются как опора. На сервере проверены
+`terralith:cherry/rock` на grass_block, mycelium, muddy_mangrove_roots, blackstone
+в X=128/160/192/224, Y=220, Z=128. Камни, внешние опоры и отклонённый столбец
+terracotta сохранились после перезапуска. Естественная генерация cherry-биомов
+и все свойства блоков этим не сверялись.
+
 В отдельном серверном мире seed=263 протестированы `terralith:plains/patch_grass`,
 `terralith:birch/flowers` и `terralith:sakura/flowers` на травяных площадках Y=219.
 Проверены short_grass в [126,220,126], lily_of_the_valley в [152,220,127],
@@ -428,6 +453,9 @@ flower/blue/flowers (nether_forest_vegetation) и cherry/rock (forest_rock).
 После wide patch остались **2 basic feature type**: nether_forest_vegetation
 и forest_rock. Исходный y_spread=25 сохранён без обрезания, проверенный RNG-порядок
 совпадает с 1.21.1. Бинарные файлы Horizon для этого изменения не менялись.
+
+После forest rock остался **один** `basic feature type`:
+`terralith:flower/blue/flowers` (`nether_forest_vegetation`).
 
 Полная генерация деревьев, растительности, структур/лута и визуальный паритет
 ещё не подтверждены. Не проверены вход лицензированного клиента, мультиплеер

@@ -431,6 +431,32 @@ def normalize_basalt_seed(value):
     return {**result, "target": {"id": "minecraft:basalt", "properties": {"axis": "y"}}}, count + 1
 
 
+def normalize_forest_rocks(value):
+    """Keep the original dirt/grass/mycelium/base-stone support rule.
+
+    The new vanilla forest_rock_can_place_on includes more substrate types.
+    Retain the old seven soils as well as dynamic dirt/base-stone tags.
+    """
+    if isinstance(value, list):
+        pairs = [normalize_forest_rocks(v) for v in value]
+        return [v for v, _ in pairs], sum(n for _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0
+    pairs = {k: normalize_forest_rocks(v) for k, v in value.items()}
+    result = {k: v for k, (v, _) in pairs.items()}
+    count = sum(n for _, n in pairs.values())
+    if value.get("type") not in ("forest_rock", "minecraft:forest_rock"):
+        return result, count
+    if set(value) != {"type", "state"}:
+        raise ValueError("unreviewed legacy forest rock configuration")
+    return {"type": "minecraft:block_blob", "state": result["state"], "can_place_on": {
+        "type": "minecraft:any_of", "predicates": [
+            {"type": "minecraft:matching_blocks", "blocks": "#minecraft:dirt"},
+            {"type": "minecraft:matching_blocks", "blocks": [
+                *LEGACY_TREE_SOILS, "minecraft:grass_block", "minecraft:mycelium"]},
+            {"type": "minecraft:matching_blocks", "blocks": "#minecraft:base_stone_overworld"}]}}, count + 1
+
+
 def load_legacy_features(jar: Path):
     """Read four definitions from the official pinned bundle, without extracting it."""
     if jar.is_symlink() or any(p.is_symlink() for p in jar.parents):
@@ -596,7 +622,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                 raise ValueError("official upgrader did not convert noise parameters")
             converted[key] = spec
             path.unlink()  # Only our temporary conversion record, never a source file.
-        noise_converted, patches, multiface, roots, dripstone, large_dripstone, basalt_seed = 0, 0, 0, 0, 0, 0, 0
+        noise_converted, patches, multiface, roots, dripstone, large_dripstone, basalt_seed, forest_rocks = 0, 0, 0, 0, 0, 0, 0, 0
         deferred_patches = []
         for path in sorted((upgraded / "data").rglob("*.json")):
             value, count = inline_noise_parameters(json.loads(path.read_bytes()), converted)
@@ -605,9 +631,10 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
             value, root_count = normalize_roots(value)
             value, dripstone_count, large_dripstone_count = normalize_dripstone(value)
             value, basalt_count = normalize_basalt_seed(value)
+            value, rock_count = normalize_forest_rocks(value)
             if has_legacy_patch(value):
                 deferred_patches.append(path.relative_to(upgraded).as_posix())
-            if count or patch_count or multiface_count or root_count or dripstone_count or large_dripstone_count or basalt_count:
+            if count or patch_count or multiface_count or root_count or dripstone_count or large_dripstone_count or basalt_count or rock_count:
                 path.write_text(json.dumps(value, indent=2) + "\n")
             noise_converted += count
             patches += patch_count
@@ -616,6 +643,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
             dripstone += dripstone_count
             large_dripstone += large_dripstone_count
             basalt_seed += basalt_count
+            forest_rocks += rock_count
         if noise_converted != noise_occurrences:
             raise ValueError("noise parameter occurrence count changed during official upgrade")
         report = {"schema": 1, "minecraft": "26.3", "source_minecraft": "1.21.1",
@@ -637,6 +665,7 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "normalized_dripstone_clusters": dripstone,
                   "normalized_large_dripstone": large_dripstone,
                   "normalized_basalt_seed_states": basalt_seed,
+                  "normalized_forest_rocks": forest_rocks,
                   "inlined_legacy_feature_references": legacy_references,
                   "legacy_vanilla_provenance": legacy_provenance,
                   "prepared_biomes_sha256": base_hash,
