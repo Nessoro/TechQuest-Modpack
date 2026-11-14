@@ -17,7 +17,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for key in ("datapack", "sdk", "output"):
         parser.add_argument("--" + key, type=Path, required=True)
-    parser.add_argument("--kind", choices=("roots", "legacy-patches"), default="roots")
+    parser.add_argument("--kind", choices=("roots", "legacy-patches", "dripstone"), default="roots")
     args = parser.parse_args()
     if args.output.exists() or args.output.is_symlink():
         raise ValueError("output must be new")
@@ -35,7 +35,7 @@ def main():
         module = "techquest_root_probe"
         aliases = {key: ("terralith", "cave/stone/" + key)
                    for key in ("granite_roots", "diorite_clearing")}
-    else:
+    elif args.kind == "legacy-patches":
         if trial.get("inlined_legacy_feature_references") != 5:
             raise ValueError("expected the reviewed five inlined references")
         module = "techquest_legacy_probe"
@@ -43,6 +43,12 @@ def main():
                    "brown": ("minecraft", "brown_mushroom_swamp"),
                    "red": ("minecraft", "red_mushroom_swamp"),
                    "pumpkin": ("terralith", "skylands/patch_pumpkin")}
+    else:
+        if (trial.get("normalized_dripstone_clusters"), trial.get("normalized_large_dripstone")) != (4, 2):
+            raise ValueError("expected the reviewed dripstone trial")
+        module = "techquest_dripstone_probe"
+        aliases = {"spires": ("terralith", "spires/dripstone"),
+                   "thermal": ("terralith", "cave/thermal/dripstone")}
     payloads = {}
     for key, (namespace, name) in aliases.items():
         source = args.datapack / f"data/{namespace}/worldgen/placed_feature/{name}.json"
@@ -53,14 +59,18 @@ def main():
             raise ValueError("unexpected root configuration")
         if args.kind == "legacy-patches" and feature.get("type") != "minecraft:overlay":
             raise ValueError("expected a composed legacy patch")
+        if args.kind == "dripstone" and feature.get("type") != "minecraft:speleothem_cluster":
+            raise ValueError("expected an adapted cluster")
         payloads[key] = feature
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".worldgen-command-probe-", dir=args.output.parent) as tmp:
         content = Path(tmp) / "content"
         content.mkdir()
-        name = "TechQuest root command probe" if args.kind == "roots" else "TechQuest legacy patch command probe"
-        description = ("Local test aliases for two inline Terralith features." if args.kind == "roots"
-                       else "Local test aliases for four inline legacy patches.")
+        name, description = {
+            "roots": ("TechQuest root command probe", "Local test aliases for two inline Terralith features."),
+            "legacy-patches": ("TechQuest legacy patch command probe", "Local test aliases for four inline legacy patches."),
+            "dripstone": ("TechQuest dripstone command probe", "Local test aliases for two inline dripstone clusters."),
+        }[args.kind]
         (content / "horizon-mod.toml").write_text(
             f'id="{module}"\nname="{name}"\nversion="0.1.0"\n'
             f'description="{description}"\n'

@@ -39,6 +39,11 @@ Horizon с шестью `.hmod` и дополнительным локальны
 **с 14 до 9**. Трава, оба гриба и тыква проверены после перезапуска; 800 patch-проб
 совпали, включая tries=96. [Результат старых ссылок](TERRALITH_LEGACY_REFERENCE_RUNTIME_RESULT.json).
 
+После миграции четырёх dripstone_cluster и двух large_dripstone configs осталось
+**4 отказа**. В тестовых пещерах все шесть features разместили блоки;
+они и свойства pointed dripstone сохранились после перезапуска.
+[Результат dripstone](TERRALITH_DRIPSTONE_RUNTIME_RESULT.json).
+
 Тест выполнен 10 ноября 2026; после восстановления среды 13 ноября его
 сохранённые результаты и SHA-256 всех выбранных исходных файлов проверены.
 Машиночитаемый результат: [TERRALITH_RUNTIME_RESULT.json](TERRALITH_RUNTIME_RESULT.json).
@@ -112,6 +117,14 @@ Horizon с шестью `.hmod` и дополнительным локальны
   Далее работают официальный upgrader и композиция patch-loop. Custom override
   этих четырёх definitions в источнике отклоняется для разбора. Новые production
   registry aliases не создаются, original-файлы и namespace ownership сохраняются.
+- Четыре `dripstone_cluster` стали generic `speleothem_cluster`: явно указаны
+  исходные dripstone_block/pointed_dripstone, переименованы три соответствующих
+  поля. Для двух large_dripstone явно указан прежний replacement-tag.
+  Радиусы, высоты, плотность, wetness, ветер и остальные распределения сохранены.
+  Используется существующий **объединённый** `dripstone_replaceable_blocks`:
+  Terralith добавляет dirt, blue ice, packed ice и через base-stone tag — blackstone.
+  Probe сравнил старую ваниль + эти additions с effective Horizon tags: 10/10
+  типов блоков совпали. Теги не заменены новым сокращённым списком.
 
 Выбрано 1867 файлов генератора, измерения, структур и worldgen-тегов.
 Включены теги новых биомов: наличие `.hmod` само по себе не гарантирует, что
@@ -286,6 +299,23 @@ brown_mushroom [161,220,128], red_mushroom [191,220,128], pumpkin [224,220,128].
 probes дали 800 совпадений по 26 880 координатам, результатам и следующему random
 draw. Обобщённый builder также воспроизвёл прежний SHA-256 root-probe hmod.
 
+Для inline dripstone clusters builder принимает `--kind dripstone` и создаёт
+`techquest_dripstone_probe` с двумя test-only aliases: spires и thermal.
+Ещё четыре конфигурации тестируются по настоящим именам `terralith:savanna/dripstone`,
+`terralith:savanna/shattered/teeth`, `terralith:cave/frostfire/pillar`,
+`terralith:cave/frostfire/pillar_huge`. Сначала запущены основные шесть hmod,
+затем седьмой тестовый. Построены отдельные каменные пещеры с blue-ice полом;
+наблюдаемые blocks и координаты записаны в JSON. Sparse cluster и малый pillar
+потребовали больше одного вызова до наблюдения блока в проверяемой области;
+параметры features для теста не менялись. Все шесть результатов сохранились;
+у pointed dripstone проверены vertical_direction, thickness, waterlogged.
+Outer placed modifiers, естественные пещеры и весь случайный алгоритм не сверялись.
+
+`probes/dripstone_tags.py` принимает `--legacy-server-jar`, `--work`,
+`--content-root` (эффективный root шести модулей) и новый `--output`. Он проверяет
+bundle, additive tags Terralith, отсутствие других source overrides этих тегов
+и сравнивает полный набор исходных modded block IDs с текущим объединённым.
+
 В отдельном серверном мире seed=263 протестированы `terralith:plains/patch_grass`,
 `terralith:birch/flowers` и `terralith:sakura/flowers` на травяных площадках Y=219.
 Проверены short_grass в [126,220,126], lily_of_the_valley в [152,220,127],
@@ -347,6 +377,10 @@ replaceable_blocks и missing block identifier. Оба отказа level_test_d
 nether_forest_vegetation, четыре dripstone_cluster, forest_rock,
 replaceable_blocks у frostfire columns и ошибочная старая block-state запись
 у basalt seed. Все пять unknown configured-feature references устранены.
+
+После dripstone остались **4**: три basic feature type (fix_snow,
+nether_forest_vegetation, forest_rock) и missing block identifier у basalt seed.
+Устранено ещё пять placed-feature отказов без новых пропусков.
 
 Полная генерация деревьев, растительности, структур/лута и визуальный паритет
 ещё не подтверждены. Не проверены вход лицензированного клиента, мультиплеер

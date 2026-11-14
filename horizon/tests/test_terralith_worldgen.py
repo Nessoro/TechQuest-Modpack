@@ -364,6 +364,35 @@ class TerralithWorldgenTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "symlink"):
                 adapter.load_legacy_features(root / "link.jar")
 
+    def test_dripstone_keeps_distributions_and_uses_merged_tag(self):
+        source = {"type": "minecraft:dripstone_cluster", "height": {"type": "minecraft:uniform", "min_inclusive": 1, "max_inclusive": 7},
+                  "dripstone_block_layer_thickness": 1,
+                  "chance_of_dripstone_column_at_max_distance_from_center": .4,
+                  "max_distance_from_edge_affecting_chance_of_dripstone_column": 2}
+        before = copy.deepcopy(source)
+        result, clusters, large = adapter.normalize_dripstone(source)
+        self.assertEqual((clusters, large), (1, 0))
+        self.assertEqual(source, before)
+        self.assertEqual(result["height"], before["height"])
+        self.assertEqual(result["speleothem_block_layer_thickness"], 1)
+        self.assertEqual(result["chance_of_speleothem_at_max_distance_from_center"], .4)
+        self.assertEqual(result["max_distance_from_edge_affecting_chance_of_speleothem"], 2)
+        self.assertEqual(result["replaceable_blocks"], "#minecraft:dripstone_replaceable_blocks")
+        self.assertEqual(adapter.normalize_dripstone(result), (result, 0, 0))
+
+    def test_large_dripstone_keeps_explicit_replacement_set(self):
+        source = {"type": "minecraft:large_dripstone", "column_radius": 2}
+        result, clusters, large = adapter.normalize_dripstone(source)
+        self.assertEqual((clusters, large), (0, 1))
+        self.assertEqual(result["column_radius"], 2)
+        custom = {**source, "replaceable_blocks": "#test:ice"}
+        self.assertEqual(adapter.normalize_dripstone(custom), (custom, 0, 0))
+
+    def test_conflicting_cluster_materials_require_review(self):
+        source = {"type": "minecraft:dripstone_cluster", "base_block": "test:custom"}
+        with self.assertRaises(ValueError):
+            adapter.normalize_dripstone(source)
+
     def test_existing_output_refused(self):
         with tempfile.TemporaryDirectory() as directory:
             base = Path(directory)

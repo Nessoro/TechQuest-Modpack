@@ -355,6 +355,45 @@ def normalize_roots(value):
     return {**result, "level_test_distance": 0, "max_level_deviation": 0}, count + 1
 
 
+def normalize_dripstone(value):
+    """Expose the old hardcoded materials/tag in the generic 26.3 feature.
+
+    Reuse the existing merged dripstone_replaceable_blocks tag, including
+    Terralith's appended dirt/ice and base-stone additions. Never replace it
+    with a newly invented block list.
+    """
+    if isinstance(value, list):
+        pairs = [normalize_dripstone(v) for v in value]
+        return [v for v, _, _ in pairs], sum(n for _, n, _ in pairs), sum(n for _, _, n in pairs)
+    if not isinstance(value, dict):
+        return value, 0, 0
+    pairs = {k: normalize_dripstone(v) for k, v in value.items()}
+    result = {k: v for k, (v, _, _) in pairs.items()}
+    clusters = sum(n for _, n, _ in pairs.values())
+    large = sum(n for _, _, n in pairs.values())
+    kind = value.get("type")
+    if kind in ("large_dripstone", "minecraft:large_dripstone"):
+        if "config" in value:
+            raise ValueError("expected an upgraded large dripstone configuration")
+        if "replaceable_blocks" not in value:
+            return {**result, "replaceable_blocks": "#minecraft:dripstone_replaceable_blocks"}, clusters, large + 1
+    if kind not in ("dripstone_cluster", "minecraft:dripstone_cluster"):
+        return result, clusters, large
+    renames = {
+        "dripstone_block_layer_thickness": "speleothem_block_layer_thickness",
+        "chance_of_dripstone_column_at_max_distance_from_center": "chance_of_speleothem_at_max_distance_from_center",
+        "max_distance_from_edge_affecting_chance_of_dripstone_column": "max_distance_from_edge_affecting_chance_of_speleothem",
+    }
+    if ("config" in value or not set(renames) <= set(value)
+            or (set(renames.values()) | {"base_block", "pointed_block", "replaceable_blocks"}) & set(value)):
+        raise ValueError("unreviewed or conflicting legacy dripstone configuration")
+    result = {renames.get(k, k): v for k, v in result.items()}
+    result.update(type="minecraft:speleothem_cluster", base_block="minecraft:dripstone_block",
+                  pointed_block="minecraft:pointed_dripstone",
+                  replaceable_blocks="#minecraft:dripstone_replaceable_blocks")
+    return result, clusters + 1, large
+
+
 def load_legacy_features(jar: Path):
     """Read four definitions from the official pinned bundle, without extracting it."""
     if jar.is_symlink() or any(p.is_symlink() for p in jar.parents):
@@ -520,21 +559,24 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                 raise ValueError("official upgrader did not convert noise parameters")
             converted[key] = spec
             path.unlink()  # Only our temporary conversion record, never a source file.
-        noise_converted, patches, multiface, roots = 0, 0, 0, 0
+        noise_converted, patches, multiface, roots, dripstone, large_dripstone = 0, 0, 0, 0, 0, 0
         deferred_patches = []
         for path in sorted((upgraded / "data").rglob("*.json")):
             value, count = inline_noise_parameters(json.loads(path.read_bytes()), converted)
             value, patch_count = normalize_patches(value)
             value, multiface_count = normalize_multiface(value)
             value, root_count = normalize_roots(value)
+            value, dripstone_count, large_dripstone_count = normalize_dripstone(value)
             if has_legacy_patch(value):
                 deferred_patches.append(path.relative_to(upgraded).as_posix())
-            if count or patch_count or multiface_count or root_count:
+            if count or patch_count or multiface_count or root_count or dripstone_count or large_dripstone_count:
                 path.write_text(json.dumps(value, indent=2) + "\n")
             noise_converted += count
             patches += patch_count
             multiface += multiface_count
             roots += root_count
+            dripstone += dripstone_count
+            large_dripstone += large_dripstone_count
         if noise_converted != noise_occurrences:
             raise ValueError("noise parameter occurrence count changed during official upgrade")
         report = {"schema": 1, "minecraft": "26.3", "source_minecraft": "1.21.1",
@@ -552,6 +594,8 @@ def prepare(work: Path, port_tool: Path, output: Path, resources: Path | None = 
                   "deferred_patch_files": deferred_patches,
                   "normalized_multiface_defaults": multiface,
                   "normalized_root_systems": roots,
+                  "normalized_dripstone_clusters": dripstone,
+                  "normalized_large_dripstone": large_dripstone,
                   "inlined_legacy_feature_references": legacy_references,
                   "legacy_vanilla_provenance": legacy_provenance,
                   "prepared_biomes_sha256": base_hash,
