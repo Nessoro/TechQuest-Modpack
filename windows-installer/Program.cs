@@ -492,6 +492,7 @@ internal sealed class InstallerForm : Form
                 relative == "config/explosionoverhaul/explosionoverhaul-client.toml" ||
                 relative == "config/jade/plugins.json" ||
                 relative == "config/healthindicatortxf.json5" ||
+                relative == "defaultconfigs/openpartiesandclaims-server.toml" ||
                 relative == "TECHQUEST_OPTIMIZED.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json";
             if (!allowed || relative.EndsWith("/", StringComparison.Ordinal))
