@@ -84,16 +84,16 @@ Include the **original Iskander Rocket Mod 2.0.1** in both TechQuest client and 
 ### Out of scope
 Developing new missiles or custom ballistics, integrating the Broken Arrow bridge, rewriting explosion mechanics, FTB Industrial, Colossal Reactors, replacing IC2 or publishing without approval.
 
-### New mandatory mining regression gate (owner test, November 14, 2026)
+### Mining regression and clean-reinstall evidence (updated owner tests, November 14, 2026)
 
-**The prior positive micro5 mining result was temporary.** The owner subsequently launched an older TechQuest installation to inspect a world seed, returned to micro5 and found that ordinary mining **again breaks extra blocks above the targeted block**.
+The owner reported a temporary recurrence of upward multi-block destruction after switching between older and micro5 builds. **The old and new versions were installed to different folders.** The owner then **deleted the affected disposable micro5 test folder and reinstalled the same micro5 mods into a fresh folder, and the defect disappeared**. This confirms normal mining in that fresh installation, not the root cause of the earlier intermittent behavior.
 
-- Track and resolve [issue #37](https://github.com/Nessoro/TechQuest-Modpack/issues/37) before a public micro5 release, alongside the existing inventory (#38) and map chunk-loading (#39) acceptance requirements.
-- Audit whether older and newer Launcher installations share a **Game Directory** and therefore preserved `options.txt`, `config`, world-level `serverconfig`, or `mods` files. Do not assume they share a directory without checking.
-- Reproduce in (a) the affected profile, (b) a fresh micro5 directory/new test world, (c) Ultimine deactivated/unbound, and (d) an isolated old-build → micro5 sequence. FTB Ultimine 2101.1.15 is pinned in `external_mods`; inspect selected mining shapes, keybinds and server settings. Physics Mod is client-only in this pack and should be tested as a secondary hypothesis, not presumed culpable.
-- Preserve valuable saves and player configs; test against backed-up copies. Never solve a configuration regression by blindly deleting all user data or removing an approved mod.
-- A passing build, client-to-menu smoke test or one successful mining session **does not meet** this acceptance gate; obtain an actual gameplay no-regression result after switching versions, with a documented cause and safe mitigation.
-- Keep Iskander Rocket and the established industrial core intact; do not auto-merge PRs or publish before all release criteria are met.
+- Track [issue #37](https://github.com/Nessoro/TechQuest-Modpack/issues/37) as **not reproduced after a clean micro5 reinstall; root cause unknown**. Do not infer that merely launching the older version changed micro5 or blame Ultimine/Physics Mod without controlled evidence.
+- A local-state difference (retained `config`, `options.txt`, extra/stale JARs, world-specific settings) or different test conditions is plausible, but unproven. The affected directory was deleted, so an exact before/after diff may be unavailable.
+- Before release, verify ordinary single-block mining in both **fresh micro5 installation** and **supported repeat/upgrade installation preserving user files**, after save/reload and client restart. Compare actual Launcher `Game Directory` paths if recurrence makes this relevant.
+- If it recurs, preserve the affected directory and logs for comparison with a working clone. Diagnose config/keybinds, FTB Ultimine activation/shapes and Physics Mod separately. Never blanket-delete user `saves`, `config`, `options.txt`, maps or installed world state.
+- Provide a safe, non-destructive troubleshooting/backup path. A root cause cannot be claimed until reproduced and isolated; do not hold up verified work based solely on speculative attribution, but do not release if mining is still demonstrably broken in a supported installation/upgrade scenario.
+- Preserve Iskander Rocket and the industrial core; retain remaining release acceptance requirements for inventory #38 and map chunk-loading #39.
 
 ### Conditional release authorization (owner decision, November 14, 2026)
 
