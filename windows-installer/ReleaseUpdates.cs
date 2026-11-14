@@ -45,7 +45,7 @@ internal static class ReleaseUpdates
         if (host is "api.github.com" or "github.com" or "release-assets.githubusercontent.com"
             or "objects.githubusercontent.com")
             return true;
-        return modDownload && host is "cdn.modrinth.com" or "raw.githubusercontent.com";
+        return modDownload && (host is "cdn.modrinth.com" or "raw.githubusercontent.com");
     }
 
     private static async Task<HttpResponseMessage> OpenAsync(
@@ -135,6 +135,7 @@ internal static class ReleaseUpdates
     private static bool SafeName(string value) =>
         value.Length is > 0 and <= 180 &&
         value == Path.GetFileName(value) &&
+        value.IndexOfAny(Path.GetInvalidFileNameChars()) < 0 &&
         !value.Contains("..", StringComparison.Ordinal) &&
         !value.Contains('\\') &&
         !value.Contains('/') &&
