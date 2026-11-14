@@ -35,6 +35,12 @@ internal sealed class InstallerForm : Form
     private readonly Button help = new() { Text = "Инструкция", Width = 130, Height = 37 };
     private readonly Button importAmw = new() { Text = "3. Добавить AMW", Width = 205, Height = 37 };
     private readonly Button cancel = new() { Text = "Отмена", Width = 100, Height = 37, Enabled = false };
+    private readonly Button checkUpdates = new() { Text = "Проверить GitHub", Width = 225, Height = 45 };
+    private readonly Button applyUpdate = new() { Text = "Обновить сборку", Width = 205, Height = 39, Enabled = false };
+    private readonly Button rollback = new() { Text = "Откатить обновление", Width = 205, Height = 39 };
+    private readonly Button downloadExe = new() { Text = "Новый EXE", Width = 205, Height = 39, Enabled = false };
+    private readonly CheckBox previewUpdates = new() { Text = "Включая тестовые релизы", Checked = true, AutoSize = true };
+    private TrustedRelease? availableRelease;
     private readonly ProgressBar progress = new() { Width = 695, Height = 19 };
     private readonly Label status = new() { Text = "Готово к установке. Minecraft Launcher и Java 21 устанавливаются отдельно.", AutoSize = false, Width = 710, Height = 45 };
     private CancellationTokenSource? cancellation;
@@ -46,8 +52,8 @@ internal sealed class InstallerForm : Form
     {
         Text = "TechQuest — установщик Minecraft 1.21.1";
         Width = 800;
-        Height = 680;
-        MinimumSize = new Size(760, 660);
+        Height = 785;
+        MinimumSize = new Size(760, 760);
         StartPosition = FormStartPosition.CenterScreen;
         BackColor = Color.FromArgb(15, 22, 34);
         ForeColor = Color.WhiteSmoke;
@@ -91,17 +97,23 @@ internal sealed class InstallerForm : Form
 
         install.Location = new Point(32, 421);
         neoforge.Location = new Point(246, 421);
+        checkUpdates.Location = new Point(462, 421);
         openFolder.Location = new Point(32, 488);
         help.Location = new Point(190, 488);
         cancel.Location = new Point(330, 488);
         importAmw.Location = new Point(462, 488);
         progress.Location = new Point(32, 535);
         status.Location = new Point(32, 557);
+        applyUpdate.Location = new Point(32, 616);
+        rollback.Location = new Point(246, 616);
+        downloadExe.Location = new Point(462, 616);
+        previewUpdates.Location = new Point(32, 675);
         install.BackColor = Color.FromArgb(168, 227, 117);
         install.ForeColor = Color.FromArgb(18, 33, 18);
         neoforge.BackColor = Color.FromArgb(41, 56, 79);
         neoforge.ForeColor = Color.White;
-        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importAmw })
+        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importAmw,
+                                      checkUpdates, applyUpdate, rollback, downloadExe })
         {
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
@@ -117,9 +129,16 @@ internal sealed class InstallerForm : Form
         cancel.Click += (_, _) => cancellation?.Cancel();
         help.Click += (_, _) => ShowInstructions();
         importAmw.Click += (_, _) => ImportAcceleratedMcWarfare();
+        checkUpdates.Click += async (_, _) => await CheckForUpdatesAsync();
+        applyUpdate.Click += async (_, _) => await ApplyUpdateAsync();
+        rollback.Click += async (_, _) => await RollbackAsync();
+        downloadExe.Click += async (_, _) => await DownloadNewInstallerAsync();
+        previewUpdates.CheckedChanged += async (_, _) => await CheckForUpdatesAsync();
+        Shown += async (_, _) => await CheckForUpdatesAsync();
         Controls.AddRange(new Control[] {
             title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
-            browse, safety, install, neoforge, openFolder, help, cancel, importAmw, progress, status
+            browse, safety, install, neoforge, checkUpdates, openFolder, help, cancel, importAmw,
+            progress, status, applyUpdate, rollback, downloadExe, previewUpdates
         });
         location.Text = Path.Combine(baseDir, "TechQuest_0.3.3_Alpha");
     }
@@ -130,6 +149,11 @@ internal sealed class InstallerForm : Form
         neoforge.Enabled = !busy;
         importAmw.Enabled = !busy;
         browse.Enabled = !busy;
+        checkUpdates.Enabled = !busy;
+        applyUpdate.Enabled = !busy && availableRelease != null;
+        rollback.Enabled = !busy;
+        downloadExe.Enabled = !busy && availableRelease != null;
+        previewUpdates.Enabled = !busy;
         location.ReadOnly = busy;
         cancel.Enabled = busy && cancellable;
         UseWaitCursor = busy;
@@ -138,7 +162,9 @@ internal sealed class InstallerForm : Form
     private void ShowInstructions()
     {
         MessageBox.Show(this,
-            "1. Нажмите «Установить моды»; Python и консоль не нужны.\n" +
+            "1. Нажмите «Установить моды»; Python и консоль не нужны.\\n" +
+            "   Требуются лицензионная Minecraft Java Edition, вход в официальный Launcher Microsoft.\\n" +
+            "   TechQuest никогда не запрашивает и не хранит пароль Microsoft, токены или cookies.\\n" +
             "2. Установите Java 21, если её нет на компьютере.\n" +
             "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
             "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
@@ -457,6 +483,140 @@ internal sealed class InstallerForm : Form
         }
     }
 
+    private async Task CheckForUpdatesAsync()
+    {
+        if (cancellation != null) return;
+        checkUpdates.Enabled = false;
+        applyUpdate.Enabled = false;
+        downloadExe.Enabled = false;
+        availableRelease = null;
+        try
+        {
+            status.Text = "Проверка подписанных обновлений GitHub (без авторизации)...";
+            var found = await ReleaseUpdates.CheckAsync(previewUpdates.Checked, CancellationToken.None);
+            if (found is null)
+            {
+                status.Text = "Подписанных обновлений пока нет. Существующие unsigned-релизы игнорируются.";
+                return;
+            }
+            availableRelease = found;
+            var current = TransactionalMods.GetInstalled(location.Text);
+            if (current != null && current.ReleaseTag == found.Tag)
+                status.Text = "Текущая версия " + found.Tag + " установлена. Проверка подписи успешна.";
+            else
+                status.Text = "Доступно подписанное обновление " + found.Tag +
+                    ". Установка только по вашему подтверждению.";
+            applyUpdate.Enabled = current != null && current.ReleaseTag != found.Tag;
+            downloadExe.Enabled = true;
+        }
+        catch (Exception ex)
+        {
+            // Do not log local paths, tokens, HTTP bodies or other private data.
+            status.Text = "Проверка обновлений недоступна или подпись не прошла проверку: " +
+                          ex.GetType().Name;
+        }
+        finally { checkUpdates.Enabled = true; }
+    }
+
+    private async Task ApplyUpdateAsync()
+    {
+        var release = availableRelease;
+        if (release is null) return;
+        string root = Path.GetFullPath(location.Text);
+        if (MessageBox.Show(this,
+            "Установить подписанный " + release.Tag + "?\n" +
+            "Будут заменены только управляемые моды. Миры, настройки, скриншоты и сторонние JAR не удаляются.\n" +
+            "Закройте Minecraft перед продолжением. При обновлении сервера потребуется такая же версия.",
+            "Обновление TechQuest", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+        cancellation = new CancellationTokenSource();
+        SetBusy(true, true);
+        try
+        {
+            if (Directory.Exists(root) &&
+                File.Exists(Path.Combine(root, ".techquest", "transaction.json")))
+                TransactionalMods.RecoverPending(root);
+            var pack = await ReleaseUpdates.DownloadPackAsync(release, cancellation.Token);
+            int count = await TransactionalMods.UpdateAsync(root, release, pack,
+                new Progress<string>(value => status.Text = value), cancellation.Token);
+            MessageBox.Show(this, $"Обновлено файлов: {count}.\nВерсия: {release.Tag}\n" +
+                "Запускайте игру через официальный Minecraft Launcher.",
+                "TechQuest обновлён", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            applyUpdate.Enabled = false;
+        }
+        catch (Exception ex)
+        {
+            status.Text = "Обновление не применено: " + ex.Message;
+            MessageBox.Show(this, "Обновление прервано. При необходимости восстановление будет " +
+                "выполнено следующим запуском.\n" + ex.Message,
+                "TechQuest: безопасная отмена", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        finally
+        {
+            SetBusy(false, false);
+            cancellation.Dispose();
+            cancellation = null;
+        }
+    }
+
+    private async Task RollbackAsync()
+    {
+        string root = Path.GetFullPath(location.Text);
+        if (MessageBox.Show(this,
+            "Вернуть предыдущий набор управляемых модов? Миры и пользовательские настройки не изменятся.",
+            "Откат TechQuest", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+        cancellation = new CancellationTokenSource();
+        SetBusy(true, true);
+        try
+        {
+            int count = await TransactionalMods.RollbackAsync(root,
+                new Progress<string>(value => status.Text = value), cancellation.Token);
+            status.Text = $"Откат завершён. Восстановлено модов: {count}.";
+            MessageBox.Show(this, "Предыдущая версия восстановлена. " +
+                "Если мир уже открывался в новой версии, его данные не откатывались.",
+                "Откат завершён", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            status.Text = "Откат не выполнен: " + ex.Message;
+            MessageBox.Show(this, ex.Message, "Ошибка отката",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        finally
+        {
+            SetBusy(false, false);
+            cancellation.Dispose();
+            cancellation = null;
+        }
+    }
+
+    private async Task DownloadNewInstallerAsync()
+    {
+        var release = availableRelease;
+        if (release is null) return;
+        cancellation = new CancellationTokenSource();
+        SetBusy(true, true);
+        try
+        {
+            string file = await ReleaseUpdates.DownloadInstallerAsync(release, baseDir, cancellation.Token);
+            status.Text = "Новый EXE скачан и проверен по подписанному SHA-256.";
+            MessageBox.Show(this, "Новый EXE проверен и сохранён:\n" + file + "\n\n" +
+                "Он не запускается автоматически. Закройте старый установщик и запустите новый вручную.",
+                "Подписанный установщик", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            status.Text = "Новый EXE не скачан: " + ex.GetType().Name;
+            MessageBox.Show(this, ex.Message, "Ошибка проверки EXE",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        finally
+        {
+            SetBusy(false, false);
+            cancellation.Dispose();
+            cancellation = null;
+        }
+    }
+
     private async Task InstallAsync()
     {
         string target = Path.GetFullPath(location.Text);
@@ -489,6 +649,8 @@ internal sealed class InstallerForm : Form
             if (Directory.Exists(mods)) Directory.Delete(mods, recursive: false);
             Directory.Move(staging, mods);
             InstallGuideOverrides(target);
+            using (var embedded = GetEmbeddedPack())
+                TransactionalMods.RecordInitialInstallation(target, embedded);
             installedGameDir = target;
             File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
                 "TechQuest 0.3.3 Alpha\n" +
