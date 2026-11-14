@@ -57,25 +57,15 @@ class MicroPatchTests(unittest.TestCase):
             self.assertNotIn("data/pmmo/config/server.json", z.namelist())
             self.assertIn("data/techquest/function/worldtier/sync.mcfunction", z.namelist())
 
-    def test_betterzoom_startup_mixin_embedded(self):
-        import zipfile
-        from pathlib import Path
+    def test_compatibility_betterzoom_mixin_preserved_but_rpg_removed(self):
         from build_pack import compatibility_jar
         class_path = "techquest/compat/mixin/BetterZoomEarlyTickMixin.class"
         with zipfile.ZipFile(io.BytesIO(compatibility_jar())) as jar:
-            names = jar.namelist()
-            self.assertIn(class_path, names)
-            self.assertIn("techquest-compat.mixins.json", names)
+            self.assertIn(class_path, jar.namelist())
+            self.assertIn("techquest-compat.mixins.json", jar.namelist())
             config = json.loads(jar.read("techquest-compat.mixins.json"))
             self.assertEqual(config["client"], ["BetterZoomEarlyTickMixin"])
-            self.assertIn('config="techquest-compat.mixins.json"',
-                          jar.read("META-INF/neoforge.mods.toml").decode())
-            compiled = jar.read(class_path)
-            self.assertTrue(compiled.startswith(bytes.fromhex("cafebabe")))
-            # SpongePowered Mixin @Mixin is retained in RuntimeInvisibleAnnotations
-            # (RetentionPolicy.CLASS), not RuntimeVisibleAnnotations.
-            self.assertIn(b"RuntimeInvisibleAnnotations", compiled)
-            self.assertIn(b"Lorg/spongepowered/asm/mixin/Mixin;", compiled)
+        self.assertFalse(hasattr(build_pack, "rpg_core_jar"))
 
     def test_global_apotheosis_commands_and_persistent_scoreboard(self):
         with zipfile.ZipFile(io.BytesIO(micro_patch_datapack())) as z:

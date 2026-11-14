@@ -9,6 +9,8 @@ on:
       - rpg-core/**
       - scripts/install_server.py
       - scripts/install_client.py
+      - scripts/mods_transaction.py
+      - scripts/audit_micro3_packages.py
       - windows-installer/**
       - scripts/security_audit.py
       - scripts/audit_jar_metadata.py
@@ -58,27 +60,8 @@ jobs:
           PY
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
-      - name: Enforce micro2 RPG replacement in full packaged client and server
-        run: |
-          python - <<'PY'
-          import json, zipfile
-          from pathlib import Path
-          name = "techquest-rpg-core-0.1.0.jar"
-          out = Path("output")
-          for side in ("client", "server"):
-              directory = out / side / "mods"
-              assert (directory / name).is_file(), f"{side} missing RPG Core"
-              assert not list(directory.glob("pmmo-*.jar")), f"{side} still contains PMMO"
-              with zipfile.ZipFile(directory / name) as core:
-                  assert "data/minecraft/tags/function/tick.json" in core.namelist()
-                  assert b'modLoader="lowcodefml"' in core.read("META-INF/neoforge.mods.toml")
-          with zipfile.ZipFile(out / "TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as pack:
-              assert "overrides/mods/" + name in pack.namelist()
-              files = json.loads(pack.read("modrinth.index.json"))["files"]
-              assert not any(row["path"].startswith("mods/pmmo-") for row in files)
-              assert "overrides/config/pmmo-client.toml" not in pack.namelist()
-          print("micro2: RPG Core present on both sides; PMMO absent")
-          PY
+      - name: Audit micro3 client/server/Modrinth manifests and both Compatibility payloads
+        run: python scripts/audit_micro3_packages.py
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
       - uses: actions/setup-java@v4
@@ -111,6 +94,7 @@ jobs:
           """
           with zipfile.ZipFile(p,"w",zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_server.py")
+              z.write("scripts/mods_transaction.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
               z.write(out/"TechQuest_1.21.1_0.3.3_ALPHA.mrpack",arcname="TechQuest.mrpack")
@@ -140,6 +124,7 @@ jobs:
           with zipfile.ZipFile(out/"TechQuest_Client_Bootstrap.zip","w",
                                zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_client.py")
+              z.write("scripts/mods_transaction.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
               z.write(out/"TechQuest_1.21.1_0.3.3_ALPHA.mrpack",arcname="TechQuest_Optimized.mrpack")
@@ -177,6 +162,7 @@ jobs:
             output/TechQuest_Client_Bootstrap.zip
             output/versions-lock.json
             output/BUILD_STATUS.json
+            output/micro3-package-audit.json
             output/jar-metadata-audit.json
             output/keybindings-audit.json
             output/keybindings-audit.md
@@ -242,6 +228,12 @@ jobs:
             $reader = [IO.StreamReader]::new($entry.Open())
             try { $index = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Close() }
             $paths = @($index.files | ForEach-Object { $_.path })
+            if($paths | Where-Object { $_ -match '^mods/(techquest-rpg-core|pmmo-|project-mmo)' }) {
+              throw 'Disallowed RPG Core/PMMO in GUI Modrinth manifest'
+            }
+            if($zip.Entries | Where-Object { $_.FullName -match '^overrides/mods/(techquest-rpg-core|pmmo-|project-mmo)' }) {
+              throw 'Disallowed RPG Core/PMMO in GUI overrides'
+            }
             foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft','xaero','healthindicator','patchouli','openloader')) {
               if(-not ($paths | Where-Object { $_ -match $mustHave })) { throw "Missing required mod: $mustHave" }
             }
@@ -370,6 +362,7 @@ jobs:
           echo "- Negative antivirus scans cannot guarantee absence of malicious code." >> "$GITHUB_STEP_SUMMARY"
 
   publish-preview:
+    # Historical micro2 publisher only; this branch never auto-publishes a release.
     name: Publish public installer preview (no account required)
     needs: [pack, windows-installer, security-scan]
     # Never publish unscanned binaries or make an unstable beta the stable release.

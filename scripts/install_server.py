@@ -10,6 +10,7 @@ import hashlib
 import json
 import re
 import shutil
+import tempfile
 import subprocess
 import sys
 import urllib.request
@@ -19,6 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import build_pack as packbuilder
+from scripts.mods_transaction import activate_staged_mods
 
 NEOFORGE_MAVEN = "https://maven.neoforged.net/releases/net/neoforged/neoforge"
 
@@ -29,16 +31,18 @@ def check_index(index):
     if deps.get("minecraft") != "1.21.1":
         raise packbuilder.BuildError("Expected Minecraft 1.21.1")
     version = deps.get("neoforge", "")
-    if not re.fullmatch(r"21\.1\.[0-9]+", version):
-        raise packbuilder.BuildError("Expected a NeoForge 21.1.x version")
+    if version != "21.1.264":
+        raise packbuilder.BuildError("Expected NeoForge 21.1.264")
     return version
 
 def server_records(index):
     seen = set()
     for item in index.get("files", []):
+        path = item.get("path", "")
+        if packbuilder.is_removed_mod_jar(path.removeprefix("mods/")):
+            raise packbuilder.BuildError("Removed mod in server manifest: " + path)
         if item.get("env", {}).get("server") == "unsupported":
             continue
-        path = item.get("path", "")
         if not path.startswith("mods/"):
             raise packbuilder.BuildError("Unexpected file path in .mrpack: " + path)
         name = packbuilder.safe_filename(path.removeprefix("mods/"))
@@ -68,13 +72,13 @@ def prepare_properties(target):
             "allow-flight=true\n", encoding="utf-8")
 
 def install_compatibility(pack_path, mods):
-    # Extract only our known resource mod, never arbitrary paths from an archive.
+    """Install TechQuest Compatibility JAR and preserve the Superb Warfare server workaround."""
     with zipfile.ZipFile(pack_path) as archive:
-        for filename in (packbuilder.COMPAT_JAR_NAME, packbuilder.RPG_JAR_NAME):
-            entry = "overrides/mods/" + filename
-            if entry not in archive.namelist():
-                raise packbuilder.BuildError("Missing first-party mod: " + filename)
-            (mods / filename).write_bytes(archive.read(entry))
+        name = packbuilder.COMPAT_JAR_NAME
+        entry = "overrides/mods/" + name
+        if entry not in archive.namelist():
+            raise packbuilder.BuildError("Missing TechQuest Compatibility JAR: " + name)
+        (mods / name).write_bytes(archive.read(entry))
     for path in mods.glob("superbwarfare-*.jar"):
         packbuilder.patch_superb_server_jar(path)
 
@@ -118,62 +122,73 @@ def install_neoforge(target, version):
     subprocess.run(["java", "-jar", name, "--installServer"], cwd=target,
                    check=True, timeout=900)
 
+def install_pack(pack, target, dry_run=False, skip_neoforge=False):
+    with zipfile.ZipFile(pack) as archive:
+        index = json.loads(archive.read("modrinth.index.json"))
+        entry = "overrides/mods/" + packbuilder.COMPAT_JAR_NAME
+        if entry not in archive.namelist():
+            raise packbuilder.BuildError("Missing TechQuest Compatibility in .mrpack")
+        if any(packbuilder.is_removed_mod_jar(name.removeprefix("overrides/mods/"))
+               for name in archive.namelist() if name.startswith("overrides/mods/")):
+            raise packbuilder.BuildError("Removed mod in .mrpack overrides")
+    ver = check_index(index)
+    files = list(server_records(index))
+    print(f"TechQuest: {len(files)} server-side JAR files; NeoForge {ver}")
+    if dry_run:
+        for x in files:
+            print(" -", x["file"]["filename"])
+        return 0
+    target = Path(target).expanduser().resolve()
+    mods = target / "mods"
+    if mods.is_dir() and any(mods.iterdir()) and not (target / "TECHQUEST_README.txt").is_file():
+        raise packbuilder.BuildError("Existing server mods are not a managed TechQuest installation")
+    target.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=".techquest-download-", dir=target))
+    try:
+        for i, info in enumerate(files, 1):
+            print(f"[{i}/{len(files)}] {info['file']['filename']}", flush=True)
+            packbuilder.download_checked(info, staging)
+        # Patch only the staged Superb Warfare server JAR, never the live one.
+        install_compatibility(pack, staging)
+        if not skip_neoforge:
+            install_neoforge(target, ver)
+
+        def finish():
+            install_guide_overrides(pack, target)
+            with zipfile.ZipFile(pack) as archive:
+                for name in ("TECHQUEST_OPTIONAL_LOCAL_MODS.json",
+                             "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"):
+                    entry = "overrides/" + name
+                    dest = target / name
+                    if entry in archive.namelist() and not dest.exists():
+                        dest.write_bytes(archive.read(entry))
+            prepare_properties(target)
+            (target / "TECHQUEST_README.txt").write_text(
+                "TechQuest 0.3.3-micro3: server JARs installed with hash checks.\n"
+                "TechQuest Compatibility retained; RPG Core and PMMO excluded.\n"
+                "Superb Warfare client mixin patched only in the server copy.\n"
+                "Existing worlds, config, properties and eula.txt are preserved.\n"
+                "Read Minecraft EULA; set eula=true only after explicit acceptance.\n"
+                "Start with ./run.sh nogui (Linux) or run.bat nogui (Windows).\n",
+                encoding="utf-8")
+        activate_staged_mods(target, staging, finish)
+    finally:
+        if staging.exists():
+            shutil.rmtree(staging)
+    print("Server files prepared at", target)
+    print("NEXT: review and accept Minecraft EULA yourself before starting.")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description="Install TechQuest server from .mrpack")
     ap.add_argument("--pack", required=True, type=Path, help="Path to Modrinth .mrpack")
-    ap.add_argument("--target", required=True, type=Path, help="New server folder")
+    ap.add_argument("--target", required=True, type=Path, help="Managed or new server folder")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--skip-neoforge", action="store_true",
                     help="Download mods but skip the official NeoForge installer")
     args = ap.parse_args()
-    with zipfile.ZipFile(args.pack) as z:
-        index = json.loads(z.read("modrinth.index.json"))
-    ver = check_index(index)
-    files = list(server_records(index))
-    print(f"TechQuest: {len(files)} server-side JAR files; NeoForge {ver}")
-    if args.dry_run:
-        for x in files:
-            print(" -", x["file"]["filename"])
-        return 0
-    target = args.target.expanduser().resolve()
-    target.mkdir(parents=True, exist_ok=True)
-    mods = target / "mods"
-    mods.mkdir(exist_ok=True)
-    for i, info in enumerate(files, 1):
-        print(f"[{i}/{len(files)}] {info['file']['filename']}", flush=True)
-        packbuilder.download_checked(info, mods)
-    install_compatibility(args.pack, mods)
-    install_guide_overrides(args.pack, target)
-    # Preserve first-party metadata for optional author-hosted manual imports.
-    with zipfile.ZipFile(args.pack) as archive:
-        metadata = "overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json"
-        if metadata in archive.namelist():
-            dest = target / "TECHQUEST_OPTIONAL_LOCAL_MODS.json"
-            if not dest.exists():
-                dest.write_bytes(archive.read(metadata))
-    with zipfile.ZipFile(args.pack) as archive:
-        entry = "overrides/TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"
-        if entry in archive.namelist():
-            info_target = target / "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"
-            if not info_target.exists():
-                info_target.write_bytes(archive.read(entry))
-    prepare_properties(target)
-    if not args.skip_neoforge:
-        install_neoforge(target, ver)
-    (target / "TECHQUEST_README.txt").write_text(
-        "TechQuest 0.3.3-alpha (PC test candidate).\\n"
-        "IndustrialCraft 2: Nostalgia is installed from pinned SHA-checked URL.\\n"
-        "Open Loader starter guide datapack placed in config/openloader/packs.\\n"
-        "Create-IC2 compatibility recipes installed automatically.\\n"
-        "Superb Warfare common client mixin removed only in dedicated server copy.\\n"
-        "Check all mod versions before playing. Back up the world.\\n"
-        "Read Minecraft EULA. If you accept, set eula=true in eula.txt.\\n"
-        "To start on Linux: ./run.sh nogui. On Windows: run.bat nogui.\\n"
-        "Use whitelist and online-mode. Do not open this untested server to public.\\n",
-        encoding="utf-8")
-    print("Server files prepared at", target)
-    print("NEXT: review and accept Minecraft EULA yourself before starting.")
-    return 0
+    return install_pack(args.pack, args.target, args.dry_run, args.skip_neoforge)
 
 if __name__ == "__main__":
     try:

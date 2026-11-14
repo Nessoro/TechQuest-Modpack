@@ -26,7 +26,12 @@ API = "https://api.modrinth.com/v2"
 UA = "TechQuest-Modpack/0.1 (modpack installer)"
 MAX_DOWNLOAD = 256 * 1024 * 1024
 COMPAT_JAR_NAME = "techquest-compat-1.0.0.jar"
-RPG_JAR_NAME = "techquest-rpg-core-0.1.0.jar"
+_REMOVED_JAR_PREFIXES = ("techquest-rpg-core", "pmmo-", "project-mmo")
+
+def is_removed_mod_jar(filename):
+    name = str(filename).lower()
+    return name.endswith(".jar") and name.startswith(_REMOVED_JAR_PREFIXES)
+
 
 class BuildError(Exception):
     pass
@@ -331,28 +336,6 @@ def compatibility_jar():
     return buffer.getvalue()
 
 
-def rpg_core_jar():
-    """Build our original NeoForge lowcodefml mod from first-party resources."""
-    import io
-    source = ROOT / "rpg-core"
-    required = (
-        "META-INF/neoforge.mods.toml",
-        "pack.mcmeta",
-        "data/minecraft/tags/function/tick.json",
-        "data/techquest_rpg/function/tick.mcfunction",
-    )
-    if any(not (source / filename).is_file() for filename in required):
-        raise BuildError("Missing TechQuest RPG Core resources")
-    buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
-        for path in sorted(source.rglob("*")):
-            if path.is_file() and path.suffix in {".toml", ".mcmeta", ".json", ".mcfunction"}:
-                info = zipfile.ZipInfo(path.relative_to(source).as_posix(), (2026, 1, 1, 0, 0, 0))
-                info.compress_type = zipfile.ZIP_DEFLATED
-                archive.writestr(info, path.read_bytes())
-    return buffer.getvalue()
-
-
 def patch_superb_server_jar(path):
     """Remove a client mixin from SBW 0.8.9.2's common list, on servers only.
 
@@ -473,6 +456,9 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
             "env": {"client": "required", "server": "required"},
             "downloads": [external["url"]],
             "fileSize": external["fileSize"]})
+    for entry in files:
+        if is_removed_mod_jar(entry["path"].removeprefix("mods/")):
+            raise BuildError("Removed mod cannot be packaged: " + entry["path"])
     idx = {"formatVersion": 1, "game": "minecraft", "versionId": cfg["version"],
            "name": cfg["pack_name"], "summary": cfg["description"],
            "files": files,
@@ -506,7 +492,6 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
             archive.writestr("overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                              json.dumps(local_mods, ensure_ascii=False, indent=2) + "\n")
         archive.writestr("overrides/mods/" + COMPAT_JAR_NAME, compatibility_jar())
-        archive.writestr("overrides/mods/" + RPG_JAR_NAME, rpg_core_jar())
     return len(files)
 
 
@@ -565,7 +550,6 @@ def main():
         expected.update(local["filename"] for local in manual)
         expected.update(extra["filename"] for extra in external)
         expected.add(COMPAT_JAR_NAME)
-        expected.add(RPG_JAR_NAME)
         remove_stale_generated_jars(directory, expected)
     for rec in resolved:
         env = rec["environment"]
@@ -583,10 +567,8 @@ def main():
         (client / extra["filename"]).write_bytes(extra["data"])
         (server / extra["filename"]).write_bytes(extra["data"])
     compat_bytes = compatibility_jar()
-    rpg_bytes = rpg_core_jar()
     for directory in (client, server):
         (directory / COMPAT_JAR_NAME).write_bytes(compat_bytes)
-        (directory / RPG_JAR_NAME).write_bytes(rpg_bytes)
     for jar in server.glob("superbwarfare-*.jar"):
         patch_superb_server_jar(jar)
     if client_options(cfg):
