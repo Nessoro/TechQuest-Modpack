@@ -78,25 +78,30 @@ jobs:
               assert not any(row["path"].startswith("mods/pmmo-") for row in index)
           print("micro3: Compatibility retained, RPG Core and PMMO excluded")
           PY
-      - name: Confirm micro4 client/server JARs and correct dependency sides
+      - name: Enforce micro4 logistics only, no unsupported reactor
         run: |
           python - <<'PY'
           from pathlib import Path
           import build_pack
           cfg = build_pack.load_cfg()
-          mods = cfg["modrinth_lock"]
-          pair = ("4QrnfueM", "LN9BxssP", "rOUBggPv", "XExdLWCQ",
-                  "x18RjbsF", "y16HgCOF", "p19vrgc2")
-          for project_id in pair:
-              x = mods[project_id]
+          locks = cfg["modrinth_lock"]
+          # Two user-requested mods and two required transitive dependencies.
+          for project_id in ("4QrnfueM", "LN9BxssP", "rOUBggPv", "XExdLWCQ"):
+              meta = locks[project_id]
               for side in ("client", "server"):
-                  f = Path("output") / side / "mods" / x["filename"]
-                  expected = x["environment"][side] != "unsupported"
-                  assert f.is_file() == expected, (
-                      side, project_id, x["filename"], "expected" if expected else "unexpected")
-          assert (Path("output") / "client/mods/techquest-compat-1.0.0.jar").exists()
-          assert not (Path("output") / "client/mods/techquest-rpg-core-0.1.0.jar").exists()
-          print("micro4: 3 mods + 4 dependencies, correct NeoForge client/server sides")
+                  jar = Path("output") / side / "mods" / meta["filename"]
+                  expected = meta["environment"][side] != "unsupported"
+                  assert jar.is_file() == expected, (side, project_id, expected)
+          for removed in ("x18RjbsF", "y16HgCOF", "p19vrgc2"):
+              assert removed not in locks, f"obsolete reactor dependency retained: {removed}"
+          for side in ("client", "server"):
+              mods = Path("output") / side / "mods"
+              assert not list(mods.glob("colossal_reactors-*.jar"))
+              assert not list(mods.glob("fusion-*.jar"))
+              assert not list(mods.glob("iska_lib-*.jar"))
+              assert (mods / "techquest-compat-1.0.0.jar").exists()
+              assert not (mods / "techquest-rpg-core-0.1.0.jar").exists()
+          print("micro4: Trash Cans and Pretty Pipes present; incorrect reactor excluded")
           PY
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
