@@ -12,6 +12,15 @@ These are persistent instructions for Codex and other coding agents working in t
 - Read before relevant work: `README.md`, `MODPACK_README_RU.md`, `CONTRIBUTING.md`, `modlist.json`, `build_pack.py`, the affected `scripts/`, `windows-installer/`, `tests/`, and `.github/workflows/`.
 - Start each task by checking the current branch, recent changes, and affected files. Avoid overwriting unrelated user or contributor changes.
 
+## Shared development journal — mandatory after each TechQuest change
+
+- **Single decision and status log:** `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. **Four patch specifications:** `docs/technical-specs/TZ_TechQuest_micro3.md`, `TZ_TechQuest_micro4.md`, `TZ_TechQuest_micro5.md`, `TZ_TechQuest_micro6.md`.
+- Before starting a task, inspect the journal, the relevant spec, the actual code/branches, and current PR/CI states. Historical journal entries must not be treated as fresher evidence than current code.
+- **At the end of any meaningful change**, update the journal in the same branch/PR (or a dedicated documentation PR) with the exact date, decision, affected paths/commits/PRs, tests actually executed and their results, open risks, and next step. Update the relevant spec when scope, acceptance criteria, or an owner decision changes.
+- Never erase an abandoned direction: add a **superseded/cancelled** dated entry and the replacement decision. Avoid duplicating source-of-truth data: keep exact current versions and checksums in `modlist.json`, with the journal linking to them.
+- Do not merge a PR, publish a release, update user worlds, or modify the default branch only to keep this journal synchronized. Use reviewable documentation commits. Do not assert that an unmerged PR is part of a published release.
+- Record confidential information **never**: secrets, personal details, private IPs, cookies and raw user saves do not belong in this journal.
+
 ## 2. Product requirements — do not regress
 
 - Core industrial progression: **BuildCraft Community Edition**, **Industrial Craft 2: Nostalgia**, **Create**, **Mekanism**, **Modern Industrialization**, and **Applied Energistics 2**. Preserve the rest of the intended technology, adventure, magic, and exploration experience unless the owner explicitly requests changes.
