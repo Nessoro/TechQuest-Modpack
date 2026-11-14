@@ -78,30 +78,58 @@ jobs:
               assert not any(row["path"].startswith("mods/pmmo-") for row in index)
           print("micro3: Compatibility retained, RPG Core and PMMO excluded")
           PY
-      - name: Enforce micro4 logistics only, no unsupported reactor
+      - name: Assert pinned micro4 client, server and Modrinth manifest
         run: |
           python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
           from pathlib import Path
           import build_pack
+
           cfg = build_pack.load_cfg()
           locks = cfg["modrinth_lock"]
-          # Two user-requested mods and two required transitive dependencies.
-          for project_id in ("4QrnfueM", "LN9BxssP", "rOUBggPv", "XExdLWCQ"):
-              meta = locks[project_id]
-              for side in ("client", "server"):
-                  jar = Path("output") / side / "mods" / meta["filename"]
-                  expected = meta["environment"][side] != "unsupported"
-                  assert jar.is_file() == expected, (side, project_id, expected)
-          for removed in ("x18RjbsF", "y16HgCOF", "p19vrgc2"):
-              assert removed not in locks, f"obsolete reactor dependency retained: {removed}"
+          expected_ids = ("4QrnfueM", "XExdLWCQ", "LN9BxssP", "rOUBggPv")
+          excluded_ids = ("x18RjbsF", "y16HgCOF", "p19vrgc2")
+          excluded_names = ("colossal", "iskand", "fusion", "ftb-industrial",
+                            "ftb_industrial", "techquest-rpg-core", "pmmo")
+          for project_id in excluded_ids:
+              assert project_id not in locks, ("excluded Modrinth lock", project_id)
+          for meta in locks.values():
+              label = (meta.get("title", "") + " " + meta.get("filename", "")).lower()
+              assert not any(name in label for name in excluded_names), label
+
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as archive:
+              assert archive.testzip() is None, "damaged mrpack ZIP"
+              index = json.loads(archive.read("modrinth.index.json"))
+              files = {row["path"]: row for row in index["files"]}
+              all_paths = set(archive.namelist()) | set(files)
+              for path in all_paths:
+                  assert not any(name in path.lower() for name in excluded_names), path
+              for project_id in expected_ids:
+                  lock = locks[project_id]
+                  name = lock["filename"]
+                  path = "mods/" + name
+                  assert path in files, ("missing from mrpack", project_id, path)
+                  row = files[path]
+                  assert row["hashes"]["sha512"] == lock["sha512"], path
+                  assert row["env"] == {"client": "required", "server": "required"}, path
+                  # .mrpack holds download references, never repacked third-party JARs.
+                  assert "overrides/" + path not in all_paths, path
+                  for side in ("client", "server"):
+                      jar = Path("output") / side / "mods" / name
+                      assert jar.is_file(), (side, project_id, "missing")
+                      assert hashlib.sha512(jar.read_bytes()).hexdigest() == lock["sha512"], jar
+              assert "overrides/mods/techquest-compat-1.0.0.jar" in all_paths
           for side in ("client", "server"):
-              mods = Path("output") / side / "mods"
-              assert not list(mods.glob("colossal_reactors-*.jar"))
-              assert not list(mods.glob("fusion-*.jar"))
-              assert not list(mods.glob("iska_lib-*.jar"))
-              assert (mods / "techquest-compat-1.0.0.jar").exists()
-              assert not (mods / "techquest-rpg-core-0.1.0.jar").exists()
-          print("micro4: Trash Cans and Pretty Pipes present; incorrect reactor excluded")
+              directory = Path("output") / side / "mods"
+              assert (directory / "techquest-compat-1.0.0.jar").is_file(), side
+              assert not any(
+                  any(name in jar.name.lower() for name in excluded_names)
+                  for jar in directory.glob("*.jar")
+              ), side
+          print("micro4 pinned JAR hashes, client/server outputs and mrpack verified")
+          print("No Minecraft gameplay or route-testing implied by this check")
           PY
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
