@@ -76,8 +76,8 @@ internal static class TransactionalMods
 
     private static void Validate(PackState state)
     {
-        if (state.Mods is null || state.Mods.Count > 1000 ||
-            state.ReleaseTag.Length > 100)
+        if (state.Mods is null || state.Mods.Count is < 1 or > 1000 ||
+            state.ReleaseTag is null || state.ReleaseTag.Length > 100)
             throw new SecurityException("Invalid local installation metadata");
         var seen = new HashSet<string>(NameComparer);
         foreach (var item in state.Mods)
@@ -187,6 +187,14 @@ internal static class TransactionalMods
             {
                 if ((File.GetAttributes(dest) & FileAttributes.ReparsePoint) != 0)
                     throw new SecurityException("Unsafe recovery destination");
+                // Do not erase a user-replaced file after an interrupted update.
+                try { ReleaseUpdates.VerifyFile(dest, next); }
+                catch (InvalidDataException)
+                {
+                    if (!oldMap.TryGetValue(next.Name, out var prior))
+                        throw new SecurityException("Unknown file at recovery destination: " + next.Name);
+                    ReleaseUpdates.VerifyFile(dest, prior);
+                }
                 File.Delete(dest);
             }
         }
@@ -276,13 +284,14 @@ internal static class TransactionalMods
                 ReleaseUpdates.VerifyFile(source, item);
                 File.Copy(source, dest);
                 return Task.CompletedTask;
-            }, progress, cancellation);
+            }, progress, cancellation, snapshot.CurrentTag);
     }
 
     private static async Task<int> ApplyAsync(
         string root, PackState desired,
         Func<ManagedMod, string, CancellationToken, Task> stageMissing,
-        IProgress<string>? progress, CancellationToken cancellation)
+        IProgress<string>? progress, CancellationToken cancellation,
+        string? expectedCurrentTag = null)
     {
         root = CanonicalRoot(root);
         string stateDir = StateDirectory(root);
@@ -296,6 +305,8 @@ internal static class TransactionalMods
             throw new SecurityException("Unknown profile. Reinstall with the current TechQuest installer first.");
         var current = ReadJson<PackState>(stateFile);
         Validate(current);
+        if (expectedCurrentTag != null && current.ReleaseTag != expectedCurrentTag)
+            throw new SecurityException("Installation changed while preparing rollback");
         var oldMap = current.Mods.ToDictionary(x => x.Name, NameComparer);
         foreach (var old in current.Mods)
             ReleaseUpdates.VerifyFile(ManagedPath(mods, old), old);
