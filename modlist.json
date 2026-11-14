@@ -63,6 +63,17 @@
       "note": "Refined Storage v2.0.9 (MIT) for NeoForge 1.21.1, alongside AE2; install on both client and dedicated server. Pin release artifact and SHA-512; test worlds/servers before public release."
     },
     {
+      "project": "refined-storage-jei-integration",
+      "group": "Интерфейс",
+      "required": true,
+      "version_id": "BYZmHubv",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Refined Storage – JEI Integration 1.0.0 (MIT), NeoForge 1.21.1. Official Modrinth dependencies: existing JEI u6dRKJwZ and Refined Storage KDvYkUg3; retain pinned JEI 19.64.0.455 and RS 2.0.9. Test JEI crafting/pattern transfer and automation in a disposable world."
+    },
+    {
       "project": "immersiveengineering",
       "group": "Технологии",
       "required": false
@@ -1664,6 +1675,17 @@
       "version_id": "yWmXD7GW",
       "filename": "open-parties-and-claims-neoforge-1.21.1-0.33.0.jar",
       "sha512": "646fd9796ef2dfd1132e22aacf1a417639233d90fb7eb862a718badfed955d54714c88327b7ddc651f98cd5b7d2a80e8c91233d2232680d4998fdd10ef392ffb",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "VzR5wiLo": {
+      "title": "Refined Storage - JEI Integration",
+      "version": "1.0.0",
+      "version_id": "BYZmHubv",
+      "filename": "refinedstorage-jei-integration-neoforge-1.0.0.jar",
+      "sha512": "95f91c5d634dd144c6acb8dcf946df47a1c09d348e987b00469acc8b5977c09a02f9810cc2d0636d07053c46f029cc3403c52c0759968a6a4673d643fd1543c2",
       "environment": {
         "client": "required",
         "server": "required"
