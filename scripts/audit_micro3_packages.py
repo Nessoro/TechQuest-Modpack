@@ -57,7 +57,7 @@ def audit(output=Path("output")):
         if any(build_pack.is_removed_mod_jar(name) for name in actual):
             raise ValueError("Removed RPG Core or PMMO in " + side)
         if actual != expected | {compat}:
-            raise ValueError(f"{side} manifest mismatch: missing={sorted(expected | {compat} - actual)}, extra={sorted(actual - expected - {compat})}")
+            raise ValueError(f"{side} manifest mismatch: missing={sorted((expected | {compat}) - actual)}, extra={sorted(actual - expected - {compat})}")
         if (directory / compat).read_bytes() != expected_bytes:
             raise ValueError(side + " Compatibility differs from generated JAR")
         files_by_side[side] = sorted(actual)
