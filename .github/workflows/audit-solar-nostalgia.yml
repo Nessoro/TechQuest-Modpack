@@ -1,0 +1,32 @@
+name: Audit Advanced Solar Panels against Nostalgia (experimental)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/audit_solar_nostalgia.py
+      - tests/test_solar_nostalgia_audit.py
+      - .github/workflows/audit-solar-nostalgia.yml
+permissions:
+  contents: read
+jobs:
+  solar-static-compatibility:
+    name: Official binary metadata and class linkage
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline unit tests (no external JAR downloads)
+        run: python -m unittest discover -s tests -p 'test_solar_nostalgia_audit.py' -v
+      - name: Inspect genuine CurseForge 1.21.1 JAR against pinned IC2 Nostalgia
+        run: python scripts/audit_solar_nostalgia.py
+      - name: Attach static-compatibility report (not a distributable mod)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Solar-Nostalgia-Audit
+          path: output/solar-nostalgia-audit.json
+          if-no-files-found: ignore
+          retention-days: 14
