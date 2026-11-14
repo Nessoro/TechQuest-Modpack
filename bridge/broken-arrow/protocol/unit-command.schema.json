@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TechQuest Bridge unit/building command (design v1)",
+  "description": "Design-only order schema. No territory capture, sectors, or zone scoring. Not an implemented API.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "operation_id",
+    "action",
+    "unit_id",
+    "requested_at",
+    "expires_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "operation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "deploy",
+        "move",
+        "defend_building",
+        "garrison_building",
+        "evacuate_building"
+      ]
+    },
+    "unit_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "unit_kind": {
+      "type": "string",
+      "enum": [
+        "infantry_squad",
+        "armored_vehicle",
+        "aircraft"
+      ]
+    },
+    "building_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dimension",
+        "x",
+        "y",
+        "z"
+      ],
+      "properties": {
+        "dimension": {
+          "type": "string",
+          "const": "minecraft:overworld"
+        },
+        "x": {
+          "type": "integer",
+          "minimum": -29999984,
+          "maximum": 29999984
+        },
+        "y": {
+          "type": "integer",
+          "minimum": -64,
+          "maximum": 319
+        },
+        "z": {
+          "type": "integer",
+          "minimum": -29999984,
+          "maximum": 29999984
+        }
+      }
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "deploy"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "unit_kind",
+          "target"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "move"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "target"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "enum": [
+              "defend_building",
+              "garrison_building",
+              "evacuate_building"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "building_id"
+        ]
+      }
+    }
+  ]
+}
