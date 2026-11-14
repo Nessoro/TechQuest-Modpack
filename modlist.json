@@ -52,6 +52,17 @@
       "required": true
     },
     {
+      "project": "refined-storage",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "lHHiI26k",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Refined Storage v2.0.9 (MIT) for NeoForge 1.21.1, alongside AE2; install on both client and dedicated server. Pin release artifact and SHA-512; test worlds/servers before public release."
+    },
+    {
       "project": "immersiveengineering",
       "group": "Технологии",
       "required": false
@@ -1620,6 +1631,17 @@
       "version_id": "M1b2lYax",
       "filename": "iskander-2.0.1+mc1.21-1.21.1-neoforge.jar",
       "sha512": "539ea44461455b3af6e799e17c59d8284300c06b81f6012f687fe8031452c5e60fa0a93d8e59229d4717d0032e53408f80ad7670a681a932acf736a574a7a07c",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "KDvYkUg3": {
+      "title": "Refined Storage",
+      "version": "2.0.9",
+      "version_id": "lHHiI26k",
+      "filename": "refinedstorage-neoforge-2.0.9.jar",
+      "sha512": "1f94acedf32e1687e59deb0198e2fb977fdec227661a820d10f7fb3950e20b29ca8acf36aabe233dcd31b6a30144327e51b4d87b9dbf817cde25a5772468e109",
       "environment": {
         "client": "required",
         "server": "required"
