@@ -26,6 +26,12 @@ API = "https://api.modrinth.com/v2"
 UA = "TechQuest-Modpack/0.1 (modpack installer)"
 MAX_DOWNLOAD = 256 * 1024 * 1024
 COMPAT_JAR_NAME = "techquest-compat-1.0.0.jar"
+_REMOVED_JAR_PREFIXES = ("techquest-rpg-core", "pmmo-", "project-mmo")
+
+def is_removed_mod_jar(filename):
+    name = str(filename).lower()
+    return name.endswith(".jar") and name.startswith(_REMOVED_JAR_PREFIXES)
+
 
 class BuildError(Exception):
     pass
@@ -450,6 +456,9 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
             "env": {"client": "required", "server": "required"},
             "downloads": [external["url"]],
             "fileSize": external["fileSize"]})
+    for entry in files:
+        if is_removed_mod_jar(entry["path"].removeprefix("mods/")):
+            raise BuildError("Removed mod cannot be packaged: " + entry["path"])
     idx = {"formatVersion": 1, "game": "minecraft", "versionId": cfg["version"],
            "name": cfg["pack_name"], "summary": cfg["description"],
            "files": files,

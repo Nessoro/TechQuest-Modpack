@@ -44,7 +44,9 @@ class RemoveRPGCoreTests(unittest.TestCase):
         self.assertIn('relative == "mods/techquest-compat-1.0.0.jar"', text)
         self.assertNotIn('relative == "mods/' + RPG_JAR + '"', text)
         self.assertIn('archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null', text)
-        self.assertIn('archive.GetEntry("overrides/mods/' + RPG_JAR + '") is not null', text)
+        self.assertIn('e.FullName.StartsWith("overrides/mods/techquest-rpg-core"', text)
+        self.assertIn('e.FullName.StartsWith("overrides/mods/pmmo-"', text)
+        self.assertIn('name.StartsWith("techquest-rpg-core"', text)
 
 
 if __name__ == "__main__":
