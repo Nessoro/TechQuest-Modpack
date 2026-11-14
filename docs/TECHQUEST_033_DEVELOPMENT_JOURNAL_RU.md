@@ -59,3 +59,10 @@
 - Предыдущая успешная CI сборка: https://github.com/Nessoro/TechQuest-Modpack/actions/runs/43531984868
 - Validation HEAD: https://github.com/Nessoro/TechQuest-Modpack/actions/runs/43532048326
 - Инструкция по ручному QA: docs/MICROPATCH_MICRO4_RU.md
+
+
+### Дополнение: исправления по ТЗ № 2
+
+В ту же ветку PR #31 внесены исходниковые изменения: инструкция micro4 без отменённого направления FTB Industrial, улучшенный Patchouli (Extraction Module, allowlist, изолированная сеть, три разновидности мусорок, ограниченный возврат вещей), новые проверки tests/test_tech_micro4.py и tests/test_adventure_rebalance.py, CI-проверка SHA-512 настоящих скачанных JAR и клиентских/серверных/.mrpack-списков, синхронизация сайта, исправление README и description modlist. Скрипт build_pack.py оставлен на прежнем verified-download пути; SHA-512 и version ID не изменены. Тесты маршрутов не симулируются и остаются ручными.
+
+**Состояние после первых коммитов:** Validate repository успешно отрабатывает на изменённых исходниках (например, run 43538860723 на commit 69655d8e). Build TechQuest alpha выполняется на изменениях CI и тестов; его завершение на итоговом SHA необходимо проверить отдельно. Публичная публикация не запускалась. Полный игровой функциональный и производительный тест отсутствует.
