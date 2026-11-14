@@ -33,6 +33,8 @@ jobs:
           python-version: '3.12'
       - name: Validate pack builder and server installer
         run: python -m unittest discover -s tests -v
+      - name: Review official Iskander Rocket NeoForge 1.21.1 metadata
+        run: python scripts/inspect_iskander_rocket.py
       - name: Validate GitHub-hosted IndustrialCraft JAR and download hash
         run: |
           python - <<'PY'
