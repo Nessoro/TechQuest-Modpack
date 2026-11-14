@@ -107,10 +107,11 @@ def class_refs_from_bytecode(data):
     refs = set()
     for idx in class_indices:
         name = utf8.get(idx, "")
-        if name.startswith("ic2/"):
+        if name.startswith(("ic2/", "me/halfcooler/ic2r/")):
             refs.add(name)
         elif name.startswith("["):
             refs.update("ic2/" + suffix for suffix in re.findall(r"Lic2/([A-Za-z0-9_$/]+);", name))
+            refs.update("me/halfcooler/ic2r/" + suffix for suffix in re.findall(r"Lme/halfcooler/ic2r/([A-Za-z0-9_$/]+);", name))
     return refs
 
 
@@ -139,7 +140,13 @@ def inspect(jar_data, solar_data, url):
         solar_class_examples = entries[:30]
         solar_resource_examples = [p for p in solar.namelist() if "recipe" in p.lower() or "solar" in p.lower()][:35]
     required_classes = {x for x in required_classes if x.startswith("ic2/")}
-    missing = sorted(required_classes - ic2_classes)
+    refactored_classes = {x for x in required_classes if x.startswith("me/halfcooler/ic2r/")}
+    required_nostalgia_classes = {x for x in required_classes if x.startswith("ic2/")}
+    missing = sorted(required_nostalgia_classes - ic2_classes)
+    # Hypothetical namespace remap is diagnostic only: methods/fields may not match.
+    remapped_refactored = {x: x.replace("me/halfcooler/ic2r/", "ic2/", 1) for x in refactored_classes}
+    missing_remap = sorted(x for x, mapped in remapped_refactored.items() if mapped not in ic2_classes)
+    refactored_modid = bool(re.search(r"""modId\s*=\s*["\u0027]ic2r["\u0027]""", meta))
     return {
         "minecraft_target": "1.21.1",
         "neoforge_target": "21.1.264",
@@ -158,10 +165,15 @@ def inspect(jar_data, solar_data, url):
         "solar_class_examples": solar_class_examples,
         "solar_resource_examples": solar_resource_examples,
         "solar_ic2_string_mentions": sorted(ic2_mentions)[:90],
-        "solar_ic2_class_references": len(required_classes),
+        "solar_ic2_class_references": len(required_nostalgia_classes),
+        "solar_ic2r_class_references": len(refactored_classes),
+        "solar_ic2r_class_examples": sorted(refactored_classes)[:75],
+        "solar_targets_ic2r_modid": refactored_modid,
+        "solar_ic2r_symbols_without_direct_nostalgia_class": len(missing_remap),
+        "solar_ic2r_symbols_not_naively_remappable": missing_remap[:75],
         "solar_ic2_missing_class_count": len(missing),
         "solar_ic2_missing_classes": missing,
-        "static_class_linkage_possible": bool(required_classes) and not missing,
+        "static_class_linkage_possible": bool(required_nostalgia_classes) and not missing and not refactored_classes and not refactored_modid,
         "ready_for_distribution": False,
         "runtime_compatible": "NOT_TESTED",
         "warnings": [
@@ -188,6 +200,10 @@ def main(argv=None):
     print("Solar metadata:", report["solar_metadata"][:1600])
     print("IC2 string mentions:", report["solar_ic2_string_mentions"][:40])
     print("Required IC2 symbols:", report["solar_ic2_class_references"])
+    print("Refactored IC2R mod ID present:", report["solar_targets_ic2r_modid"])
+    print("Refactored IC2R binary symbols:", report["solar_ic2r_class_references"])
+    print("Refactored IC2R symbol examples:", report["solar_ic2r_class_examples"][:25])
+    print("Symbols still missing after naive remap:", report["solar_ic2r_symbols_without_direct_nostalgia_class"])
     print("Missing IC2 classes in pinned Nostalgia:", report["solar_ic2_missing_class_count"])
     print("Missing class names:", report["solar_ic2_missing_classes"][:60])
     print("Full report:", outfile)
