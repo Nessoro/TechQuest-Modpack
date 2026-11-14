@@ -16,7 +16,9 @@ internal sealed record TrustedRelease(
 
 internal sealed record ManagedMod(string Name, string Sha512, long Size);
 internal sealed record DownloadMod(ManagedMod Identity, Uri Url, string? Sha1);
-internal sealed record ReleasePack(string VersionId, List<DownloadMod> Mods);
+internal sealed record BundledMod(ManagedMod Identity, byte[] Bytes);
+internal sealed record ReleasePack(
+    string VersionId, List<DownloadMod> Mods, List<BundledMod> BundledMods);
 
 internal static class ReleaseUpdates
 {
@@ -263,8 +265,30 @@ internal static class ReleaseUpdates
                 throw new SecurityException("Untrusted mod URL");
             mods.Add(new DownloadMod(new ManagedMod(path[5..], sha512.ToLowerInvariant(), size), uri, sha1));
         }
-        if (mods.Count == 0 || mods.Count > 1000) throw new InvalidDataException("Invalid mod count");
-        return new ReleasePack(version, mods);
+        var bundled = new List<BundledMod>();
+        foreach (var embedded in archive.Entries)
+        {
+            if (!embedded.FullName.StartsWith("overrides/mods/", StringComparison.Ordinal))
+                continue;
+            string name = embedded.FullName["overrides/mods/".Length..];
+            // Only our own compatibility JAR is automatically managed as an override.
+            if (!Regex.IsMatch(name, @"^techquest-compat-[A-Za-z0-9._-]+\.jar$", RegexOptions.CultureInvariant) ||
+                !SafeName(name) || !unique.Add(name) ||
+                embedded.Length is <= 0 or > 16 * 1024 * 1024)
+                throw new SecurityException("Invalid bundled TechQuest mod");
+            using var bundledStream = embedded.Open();
+            using var memory = new MemoryStream();
+            bundledStream.CopyTo(memory);
+            byte[] data = memory.ToArray();
+            if (data.LongLength != embedded.Length)
+                throw new InvalidDataException("Truncated bundled TechQuest JAR");
+            bundled.Add(new BundledMod(
+                new ManagedMod(name, Convert.ToHexString(SHA512.HashData(data)).ToLowerInvariant(),
+                    data.LongLength), data));
+        }
+        if (mods.Count == 0 || mods.Count + bundled.Count > 1000)
+            throw new InvalidDataException("Invalid mod count");
+        return new ReleasePack(version, mods, bundled);
     }
 
     internal static async Task<string> DownloadInstallerAsync(
