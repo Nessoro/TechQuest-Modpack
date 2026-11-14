@@ -53,6 +53,11 @@
 - [x] Nether vegetation перенесена с выбором state до air-check и исходными
   height gates. 450 traces совпали; все пять исходных опор, включая moss,
   проверены после перезапуска. Исправлены три unqualified block-tag entries.
+- [x] Все 15 оставшихся outside-файлов разобраны: пять recipe unlocks,
+  девять wolf selectors требуют реализации; один файл — авторские заметки.
+- [x] Локальный установщик сверяет шесть SDK hmod, адаптированный datapack,
+  канонические block tags и source hashes; новая установка прошла старт,
+  save/reopen, проверку lock и аудит генератора с нулём skips. Сервер остановлен.
 
 Источники доказательств: [сервер](SERVER_RUNTIME_RESULT.json),
 [Terralith](TERRALITH_RUNTIME_RESULT.json), [деревья](TERRALITH_TREE_RUNTIME_RESULT.json),
@@ -62,15 +67,17 @@
 [dripstone](TERRALITH_DRIPSTONE_RUNTIME_RESULT.json), [basalt](TERRALITH_BASALT_RUNTIME_RESULT.json),
 [широкий patch](TERRALITH_WIDE_PATCH_RUNTIME_RESULT.json), [камни](TERRALITH_ROCK_RUNTIME_RESULT.json),
 [текущий генератор](TERRALITH_VEGETATION_RUNTIME_RESULT.json).
-Проверки текущего этапа: 77 Horizon и 45 базовых тестов прошли.
+Новая установка: [инструкция](LOCAL_INSTALL_RU.md),
+[runtime-итог](LOCAL_INSTALL_RUNTIME_RESULT.json), [outside-аудит](TERRALITH_OUTSIDE_AUDIT.json).
+Проверки текущего этапа: 85 Horizon-тестов прошли; 45 базовых тестов — предыдущая проверка.
 
 ## Ближайшая работа
 
-1. Разобрать оставшиеся 15 outside-файлов Terralith и покрытие структур/лута.
+1. Восстановить пять recipe advancements Terralith с проверкой автоматического
+   открытия alternate recipes; исправить нативный wolf variant selector.
    Ноль decoder skips не означает, что весь исходный мод полностью перенесён.
-2. Подготовить воспроизводимую локальную установку согласованных шести hmod
-   и world datapack; для адаптера нужен --legacy-server-jar с проверенным
-   bundle 1.21.1. Исходные и игровые файлы не коммитить и ничего не публиковать.
+2. Проверить генерацию структур, лут и спавнеры четырёх YUNG's, включая сохранение.
+   Для воспроизводимой локальной установки использовать LOCAL_INSTALL_RU.md.
 3. Продолжить нативные механики TechQuest и подготовить проверку официальным
    лицензированным клиентом. Пользовательские данные не использовать.
 

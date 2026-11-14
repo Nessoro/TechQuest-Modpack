@@ -19,6 +19,11 @@ Forest rock совпал в 1124 traces, nether vegetation — в 450. Blue flow
 Вход клиента, мультиплеер и Java-механики не проверены.
 [Серверный результат](SERVER_RUNTIME_RESULT.json) · [Миграция Terralith](TERRALITH_RUNTIME_RU.md).
 [Текущий результат генератора](TERRALITH_VEGETATION_RUNTIME_RESULT.json).
+[Воспроизводимая локальная установка](LOCAL_INSTALL_RU.md) согласованных шести
+hmod и world datapack проверена настоящим стартом и save/reopen.
+Все 15 оставшихся outside-файлов Terralith [разобраны](TERRALITH_OUTSIDE_AUDIT.json):
+пять recipe advancements и девять wolf selectors требуют реализации;
+один текстовый файл содержит авторские заметки.
 
 ## Уже сделано
 
