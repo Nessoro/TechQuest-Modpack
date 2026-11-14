@@ -337,6 +337,10 @@ internal sealed class InstallerForm : Form
                 !path.EndsWith(".jar", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException("Недопустимый путь JAR в пакете: " + path);
             var name = path[5..];
+            if (name.StartsWith("techquest-rpg-core", StringComparison.OrdinalIgnoreCase) ||
+                name.StartsWith("pmmo-", StringComparison.OrdinalIgnoreCase) ||
+                name.StartsWith("project-mmo", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException("Удалённый мод запрещён в micro3: " + name);
             if (!known.Add(name)) throw new InvalidDataException("Повтор файла: " + name);
             var downloads = file.GetProperty("downloads");
             if (downloads.GetArrayLength() < 1 ||
@@ -565,25 +569,30 @@ internal sealed class InstallerForm : Form
                File.Exists(Path.Combine(target, "TECHQUEST_OPTIMIZED.txt"));
     }
 
-    // A single rolling backup, never one new game folder for every micro-patch.
-    // Downloads and hashes are verified BEFORE the existing mods folder moves.
-    // On any activation error the old mods folder is restored.
+    // Verified downloads are staged before swapping mods. Keep exactly one
+    // rolling backup, and park any older backup until activation succeeds.
     private static void ActivateStagedMods(string target, string staging, Action finishInstall)
     {
         string current = Path.Combine(target, "mods");
         string previous = Path.Combine(target, ".techquest-previous-mods");
-        bool hadMods = Directory.Exists(current);
-        if (hadMods && !Directory.EnumerateFileSystemEntries(current).Any())
-        {
+        string rotation = Path.Combine(target, ".techquest-backup-rotation");
+        if (Directory.Exists(rotation) || File.Exists(rotation))
+            throw new IOException("Незавершённая замена резервной копии: " + rotation +
+                ". Проверьте её вручную перед повторной установкой.");
+        if (File.Exists(current) || File.Exists(previous))
+            throw new IOException("Путь mods или резервной копии занят файлом.");
+        bool hadMods = Directory.Exists(current) &&
+                       Directory.EnumerateFileSystemEntries(current).Any();
+        if (Directory.Exists(current) && !hadMods)
             Directory.Delete(current);
-            hadMods = false;
-        }
-        if (hadMods && Directory.Exists(previous))
-            Directory.Delete(previous, recursive: true);
-        bool oldMoved = false;
-        bool newMoved = false;
+        bool olderParked = false, oldMoved = false, newMoved = false;
         try
         {
+            if (hadMods && Directory.Exists(previous))
+            {
+                Directory.Move(previous, rotation);
+                olderParked = true;
+            }
             if (hadMods)
             {
                 Directory.Move(current, previous);
@@ -596,10 +605,20 @@ internal sealed class InstallerForm : Form
         catch
         {
             if (newMoved && Directory.Exists(current))
-                Directory.Delete(current, recursive: true);
+                Directory.Move(current, staging);
             if (oldMoved && Directory.Exists(previous))
                 Directory.Move(previous, current);
+            if (olderParked && Directory.Exists(rotation))
+                Directory.Move(rotation, previous);
             throw;
+        }
+        // A successful install must not be rolled back because Windows locks
+        // obsolete backup files during cleanup. Inspect rotation if retained.
+        if (olderParked)
+        {
+            try { Directory.Delete(rotation, recursive: true); }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
         }
     }
 
@@ -692,7 +711,6 @@ internal sealed class InstallerForm : Form
                 }
                 updates.Report((Interlocked.Increment(ref completed), mod.Name, fromCache));
             });
-            // The unchanged filename previously kept an outdated Better Zoom
             // Retain TechQuest Compatibility only; do not stage RPG Core.
             StageFirstPartyCompatibilityJar(staging);
             cancellation.Token.ThrowIfCancellationRequested();
@@ -716,7 +734,7 @@ internal sealed class InstallerForm : Form
                             "Ваши миры, настройки и Game Directory сохранены.\n" +
                             "При необходимости повторно импортируйте дополнительные JAR." :
                             "Установите NeoForge 21.1.264 и укажите эту папку в Launcher."),
-                "TechQuest 0.3.3-micro1", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "TechQuest 0.3.3-micro3", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (OperationCanceledException)
         {
