@@ -105,6 +105,30 @@ jobs:
               assert not (mods / "techquest-rpg-core-0.1.0.jar").exists()
           print("micro4: Trash Cans and Pretty Pipes present; incorrect reactor excluded")
           PY
+      - name: Confirm Iskander Rocket in both client and dedicated-server packs
+        run: |
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          import build_pack
+          cfg = build_pack.load_cfg()
+          record = cfg["modrinth_lock"]["XUogRnhj"]
+          assert record["version_id"] == "M1b2lYax"
+          assert record["filename"] == "iskander-2.0.1+mc1.21-1.21.1-neoforge.jar"
+          assert record["environment"] == {"client": "required", "server": "required"}
+          for side in ("client", "server"):
+              jar = Path("output") / side / "mods" / record["filename"]
+              assert jar.is_file(), f"{side}: missing Iskander Rocket"
+              assert not list(jar.parent.glob("colossal_reactors-*.jar"))
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as archive:
+              files = json.loads(archive.read("modrinth.index.json"))["files"]
+              matches = [row for row in files if row["path"] == "mods/" + record["filename"]]
+              assert len(matches) == 1, "Iskander missing from Modrinth manifest"
+              assert matches[0]["hashes"]["sha512"] == record["sha512"]
+              assert matches[0]["env"] == {"client": "required", "server": "required"}
+              assert "overrides/patchouli_books/techquest_guide/en_us/entries/iskander_rocket.json" in archive.namelist()
+          print("micro5 Iskander Rocket: verified client/server, SHA-512, mrpack and guide")
+          PY
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
       - uses: actions/setup-java@v4
