@@ -4,7 +4,7 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3 micro2: оригинальный RPG Core вместо PMMO; бонусы за достижения и масштабирование мобов без XP/Vein Mining Подготовка micro4: Trash Cans, Pretty Pipes и Colossal Reactors с закреплёнными зависимостями (Fusion устанавливается и на сервер по требованию Colossal Reactors); солнечные панели IC2 Nostalgia отложены до проверки совместимости.",
+  "description": "TechQuest 0.3.3 micro2: оригинальный RPG Core вместо PMMO; бонусы за достижения и масштабирование мобов без XP/Vein Mining Подготовка micro4: Trash Cans и Pretty Pipes с закреплёнными зависимостями; Colossal Reactors исключён по просьбе владельца, FTB Industrial Contraptions пока не имеет совместимого порта 1.21.1 NeoForge, улучшенные солнечные панели IC2 Nostalgia требуют отдельной проверки.",
   "removed_mods": [
     {
       "project": "mcheli-modern-port",
@@ -466,28 +466,6 @@
         "server": "required"
       },
       "note": "Трубы без двигателей для автоматической транспортировки предметов (в том числе блоков как вещей) между контейнерами; не перемещают установленные блоки в мире."
-    },
-    {
-      "project": "colossal-reactors",
-      "group": "Технологии",
-      "required": true,
-      "version_id": "vEqPFJY7",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      },
-      "note": "Многоблочный ядерный реактор, известный по FTB Evolution 2. Специальная совместимая версия 2.3.2.0.2 для NeoForge 1.21.1, с Fusion + Iskandert's Library. Не FTB Industrial Contraptions."
-    },
-    {
-      "project": "fusion-connected-textures",
-      "group": "Библиотеки",
-      "required": true,
-      "version_id": "AYDaLPK8",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      },
-      "note": "Colossal Reactors hard-requires Fusion on dedicated server despite Modrinth listing Fusion client-only. Author FAQ confirms it is safe to install server-side and does nothing there; explicit reviewed side override, with in-game server boot still unverified."
     }
   ],
   "manual_mods": [
@@ -1620,39 +1598,6 @@
       "version_id": "lrhbGGSe",
       "filename": "PrettyPipes-1.22.0-all.jar",
       "sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      }
-    },
-    "x18RjbsF": {
-      "title": "Colossal Reactors",
-      "version": "2.3.2.0.2",
-      "version_id": "vEqPFJY7",
-      "filename": "colossal_reactors-2.3.2.0.2-neoforge-1.21.1.jar",
-      "sha512": "16176192833edb1d88e506e58c06a89e1af9f1139e942efa73471d0b1f499a00d9a5f200c73ac5bef27c17ad8fcc4a13152b0791019ecf7fb88f7f925046bb94",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      }
-    },
-    "y16HgCOF": {
-      "title": "Iskandert's Library",
-      "version": "1.9.0.0.0",
-      "version_id": "TqPQSxui",
-      "filename": "iska_lib-1.9.0.0.0-neoforge-1.21.1.jar",
-      "sha512": "63d12ac54e09c313db38d814ea3dbd6efa1e1ba746af7197c674eb94ee27e4d8f2461bd29a50b82a4f6b4acfc2bd1bfc4c4c53a497982be0611ba84d46b9bcbe",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      }
-    },
-    "p19vrgc2": {
-      "title": "Fusion (Connected Textures)",
-      "version": "1.3.16-neoforge-mc1.21.1",
-      "version_id": "AYDaLPK8",
-      "filename": "fusion-1.3.16-neoforge-mc1.21.1.jar",
-      "sha512": "0b65c3a78db5785c76a222639a56da0cd09fc8445e02cdfb84e4bb7c88dc2c5622ccb468291a12df30440205a881db2023d9857fdb7252e7d21238876fcc8608",
       "environment": {
         "client": "required",
         "server": "required"
