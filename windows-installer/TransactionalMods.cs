@@ -21,6 +21,7 @@ internal sealed class PendingTransaction
     public string BackupId { get; set; } = "";
     public PackState Previous { get; set; } = new();
     public PackState Desired { get; set; } = new();
+    public RollbackSnapshot? PreviousRollback { get; set; }
 }
 
 // Only TechQuest-managed mod JARs are in the transaction. Never touch the
@@ -112,7 +113,9 @@ internal static class TransactionalMods
     {
         if (!Directory.Exists(path)) return null;
         string root = CanonicalRoot(path);
-        string dir = StateDirectory(root);
+        string dir = Path.Combine(root, ".techquest");
+        if (!Directory.Exists(dir)) return null;
+        CheckDirectory(dir);
         string stateFile = Path.Combine(dir, "state.json");
         if (!File.Exists(stateFile)) return null;
         var state = ReadJson<PackState>(stateFile);
@@ -190,6 +193,12 @@ internal static class TransactionalMods
             if (changed) File.Copy(Path.Combine(backup, old.Name), Path.Combine(mods, old.Name), true);
         }
         WriteAtomic(Path.Combine(stateDir, "state.json"), journal.Previous);
+        string oldRollback = Path.Combine(stateDir, "rollback.json");
+        if (journal.PreviousRollback is null)
+        {
+            if (File.Exists(oldRollback)) File.Delete(oldRollback);
+        }
+        else WriteAtomic(oldRollback, journal.PreviousRollback);
         File.Delete(journalFile);
     }
 
@@ -204,6 +213,13 @@ internal static class TransactionalMods
         CheckDirectory(path);
         return path;
     }
+
+    // Test-only adapter: no network needed to exercise transactional guarantees.
+    internal static Task<int> ApplyForTestsAsync(
+        string root, PackState desired,
+        Func<ManagedMod, string, CancellationToken, Task> stage,
+        CancellationToken cancellation) =>
+        ApplyAsync(root, desired, stage, null, cancellation);
 
     internal static async Task<int> UpdateAsync(
         string root, TrustedRelease release, byte[] packBytes,
@@ -310,7 +326,9 @@ internal static class TransactionalMods
             // Durable journal is written only after all backups are verified.
             WriteAtomic(Path.Combine(stateDir, "transaction.json"), new PendingTransaction
             {
-                Previous = current, Desired = desired, BackupId = backupId
+                Previous = current, Desired = desired, BackupId = backupId,
+                PreviousRollback = File.Exists(Path.Combine(stateDir, "rollback.json"))
+                    ? ReadJson<RollbackSnapshot>(Path.Combine(stateDir, "rollback.json")) : null
             });
             journalWritten = true;
             foreach (var old in retiring)
