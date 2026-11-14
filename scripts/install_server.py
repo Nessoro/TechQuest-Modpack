@@ -92,7 +92,8 @@ def install_guide_overrides(pack_path, target):
             relative = entry.filename[len("overrides/"):]
             if not (relative.startswith("patchouli_books/techquest_guide/") or
                     relative in ("config/openloader/packs/techquest_starter_guide.zip",
-                                "config/openloader/packs/techquest_micropatch_033.zip")):
+                                "config/openloader/packs/techquest_micropatch_033.zip",
+                                "defaultconfigs/openpartiesandclaims-server.toml")):
                 continue
             if ".." in Path(relative).parts or any(c in relative for c in ("\\", "\x00", ":")):
                 raise packbuilder.BuildError("Unsafe guide override path: " + relative)
