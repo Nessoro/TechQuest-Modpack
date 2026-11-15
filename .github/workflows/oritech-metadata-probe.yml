@@ -1,0 +1,56 @@
+name: Probe official Oritech 1.21.1 NeoForge metadata
+on:
+  pull_request:
+    paths:
+      - .github/workflows/oritech-metadata-probe.yml
+permissions:
+  contents: read
+jobs:
+  modrinth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Identify latest compatible release and required libraries
+        run: |
+          python3 - <<'PY'
+          import json
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+          def get(u):
+              request=urllib.request.Request(u,headers={"User-Agent":"TechQuest-Modpack/0.3.3 (github.com/Nessoro/TechQuest-Modpack)"})
+              with urllib.request.urlopen(request, timeout=30) as resp: return json.load(resp)
+          url="https://api.modrinth.com/v2/project/4sYI62kA/version?" + urllib.parse.urlencode({
+              "loaders":json.dumps(["neoforge"]),"game_versions":json.dumps(["1.21.1"])
+          })
+          versions=get(url)
+          print("COMPAT_RELEASE_COUNT="+str(len(versions)))
+          for v in versions[:8]:print("COMPAT="+json.dumps({"id":v["id"],"number":v["version_number"],"type":v["version_type"],"published":v["date_published"],"title":v["name"]}))
+          releases=[x for x in versions if x["version_type"]=="release"]
+          assert releases, "No official 1.21.1 NeoForge stable release"
+          v=max(releases, key=lambda x:x["date_published"])
+          assert v["project_id"]=="4sYI62kA" and "neoforge" in v["loaders"] and "1.21.1" in v["game_versions"]
+          files=v["files"]
+          primary=[f for f in files if f.get("primary")] or files
+          assert len(primary)==1, [f["filename"] for f in files]
+          f=primary[0]
+          print("SELECTED_PROJECT="+v["project_id"])
+          print("SELECTED_VERSION_ID="+v["id"])
+          print("SELECTED_VERSION="+v["version_number"])
+          print("SELECTED_FILENAME="+f["filename"])
+          print("SELECTED_SHA512="+f["hashes"]["sha512"])
+          print("SELECTED_SHA1="+f["hashes"]["sha1"])
+          print("SELECTED_SIZE="+str(f["size"]))
+          print("SELECTED_DEPENDENCIES="+json.dumps(v.get("dependencies",[])))
+          cfg=json.loads(Path("modlist.json").read_text(encoding="utf-8"))
+          installed=set(cfg["modrinth_lock"])
+          print("INSTALLED_REQUIRED_DEPS=")
+          for dep in v.get("dependencies",[]):
+              if dep["dependency_type"]=="required":
+                  depid=dep.get("project_id")
+                  print(json.dumps({"project_id":depid,"in_lock":depid in installed,
+                                    "version_id":dep.get("version_id"),
+                                    "filename":dep.get("file_name")}))
+          print("PROJECT_LICENSE="+str(get("https://api.modrinth.com/v2/project/4sYI62kA").get("license")))
+          PY
