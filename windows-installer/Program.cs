@@ -22,7 +22,7 @@ internal static class Program
     }
 }
 
-internal sealed class InstallerForm : Form
+internal sealed partial class InstallerForm : Form
 {
     private const string NeoForgeVersion = "21.1.264";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
@@ -51,78 +51,27 @@ internal sealed class InstallerForm : Form
 
     internal InstallerForm()
     {
-        Text = "TechQuest — установщик Minecraft 1.21.1";
-        Width = 800;
-        Height = 785;
-        MinimumSize = new Size(760, 760);
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = Color.FromArgb(15, 22, 34);
-        ForeColor = Color.WhiteSmoke;
-        Font = new Font("Segoe UI", 10F);
-        FormBorderStyle = FormBorderStyle.FixedDialog;
-        MaximizeBox = false;
+        BuildLauncherLayout();
 
-        var title = new Label { Text = "TECHQUEST  ·  INSTALLER", Left = 30, Top = 26,
-            Width = 715, Height = 43, ForeColor = Color.FromArgb(172, 236, 125),
-            Font = new Font("Segoe UI", 21F, FontStyle.Bold) };
-        var subtitle = new Label { Text = "Minecraft Java 1.21.1  •  NeoForge " + NeoForgeVersion +
-            "  •  BuildCraft + IndustrialCraft", Left = 32, Top = 78, Width = 710, Height = 30,
-            ForeColor = Color.FromArgb(175, 194, 212) };
-        var heading = new Label { Text = "TechQuest 0.3.3 — приключения, физика и оптимизация", Left = 32, Top = 126,
-            Width = 700, Height = 30, Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
-        var liteDesc = new Label { Text = "Сохранены все игровые моды. Ускорение: Sodium, ImmediatelyFast, More Culling,",
-            Left = 36, Top = 168, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
-        var moreDesc = new Label { Text = "BadOptimizations, Dynamic FPS, FerriteCore и ModernFix. Без Iris и шейдеров.",
-            Left = 36, Top = 197, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
-        var pathHeading = new Label { Text = "Папка игры (новая, без других модов)", Left = 32, Top = 280,
-            Width = 690, Height = 26, Font = new Font("Segoe UI", 11F, FontStyle.Bold) };
-        location.Location = new Point(32, 311);
-        browse.Location = new Point(596, 309);
+        location.Text = Path.Combine(baseDir, "TechQuest_0.3.3_Alpha");
         browse.Click += (_, _) =>
         {
-            using var dialog = new FolderBrowserDialog {
-                Description = "Выберите отдельную пустую папку для TechQuest",
+            using var dialog = new FolderBrowserDialog
+            {
+                Description = "Выберите папку TechQuest (новую или ранее установленную)",
                 SelectedPath = Directory.Exists(location.Text) ? location.Text : baseDir,
                 ShowNewFolderButton = true
             };
-            if (dialog.ShowDialog(this) == DialogResult.OK)
-                location.Text = dialog.SelectedPath;
+            if (dialog.ShowDialog(this) == DialogResult.OK) location.Text = dialog.SelectedPath;
         };
+        location.TextChanged += (_, _) => RefreshProfileStatus();
 
-        var safety = new Label {
-            Text = "Единый набор игровых модов для любого ПК и общего сервера.\n" +
-                   "Моды скачиваются по HTTPS с проверкой SHA-512 / SHA-1.",
-            Left = 32, Top = 354, Width = 710, Height = 54,
-            ForeColor = Color.FromArgb(175, 194, 212)
-        };
-
-        install.Location = new Point(32, 421);
-        neoforge.Location = new Point(246, 421);
-        checkUpdates.Location = new Point(462, 421);
-        openFolder.Location = new Point(32, 488);
-        help.Location = new Point(190, 488);
-        cancel.Location = new Point(330, 488);
-        importAmw.Location = new Point(462, 488);
-        progress.Location = new Point(32, 535);
-        status.Location = new Point(32, 557);
-        applyUpdate.Location = new Point(32, 616);
-        rollback.Location = new Point(246, 616);
-        downloadExe.Location = new Point(462, 616);
-        previewUpdates.Location = new Point(32, 675);
-        install.BackColor = Color.FromArgb(168, 227, 117);
-        install.ForeColor = Color.FromArgb(18, 33, 18);
-        neoforge.BackColor = Color.FromArgb(41, 56, 79);
-        neoforge.ForeColor = Color.White;
-        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importAmw,
-                                      checkUpdates, applyUpdate, rollback, downloadExe })
-        {
-            button.FlatStyle = FlatStyle.Flat;
-            button.FlatAppearance.BorderSize = 0;
-        }
-
-        install.Click += async (_, _) => await InstallAsync();
+        install.Click += async (_, _) => await PrimaryActionAsync();
+        verifyIntegrity.Click += async (_, _) => await VerifyExistingAsync();
+        playOfficial.Click += (_, _) => LaunchMinecraftOfficially();
         neoforge.Click += async (_, _) => await NeoForgeAsync();
-        openFolder.Click += (_, _) => {
+        openFolder.Click += (_, _) =>
+        {
             var path = installedGameDir ?? location.Text;
             if (Directory.Exists(path))
                 Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
@@ -135,13 +84,12 @@ internal sealed class InstallerForm : Form
         rollback.Click += async (_, _) => await RollbackAsync();
         downloadExe.Click += async (_, _) => await DownloadNewInstallerAsync();
         previewUpdates.CheckedChanged += async (_, _) => await CheckForUpdatesAsync();
-        Shown += async (_, _) => await CheckForUpdatesAsync();
-        Controls.AddRange(new Control[] {
-            title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
-            browse, safety, install, neoforge, checkUpdates, openFolder, help, cancel, importAmw,
-            progress, status, applyUpdate, rollback, downloadExe, previewUpdates
-        });
-        location.Text = Path.Combine(baseDir, "TechQuest_0.3.3_Alpha");
+        Shown += async (_, _) =>
+        {
+            RefreshProfileStatus();
+            await CheckForUpdatesAsync();
+        };
+        RefreshProfileStatus();
     }
 
     private void SetBusy(bool busy, bool cancellable)
@@ -149,29 +97,34 @@ internal sealed class InstallerForm : Form
         install.Enabled = !busy;
         neoforge.Enabled = !busy;
         importAmw.Enabled = !busy;
+        playOfficial.Enabled = !busy;
+        verifyIntegrity.Enabled = !busy && currentProfile == ProfileMode.Managed;
         browse.Enabled = !busy;
         checkUpdates.Enabled = !busy;
         applyUpdate.Enabled = !busy && availableRelease != null && updateAvailable;
-        rollback.Enabled = !busy;
+        rollback.Enabled = !busy && currentProfile == ProfileMode.Managed &&
+            File.Exists(Path.Combine(location.Text, ".techquest", "rollback.json"));
         downloadExe.Enabled = !busy && availableRelease != null;
         previewUpdates.Enabled = !busy;
         location.ReadOnly = busy;
         cancel.Enabled = busy && cancellable;
         UseWaitCursor = busy;
+        if (!busy) RefreshProfileStatus();
     }
 
     private void ShowInstructions()
     {
         MessageBox.Show(this,
-            "1. Нажмите «Установить моды»; Python и консоль не нужны.\n" +
+            "1. Выберите новую или уже установленную папку TechQuest; Python и консоль не нужны.\n" +
             "   Требуются лицензионная Minecraft Java Edition, вход в официальный Launcher Microsoft.\n" +
             "   TechQuest никогда не запрашивает и не хранит пароль Microsoft, токены или cookies.\n" +
-            "2. Установите Java 21, если её нет на компьютере.\n" +
-            "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
-            "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
-            "5. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
-            "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
-            "7. AMW (необязательно): скачайте официальный JAR с CurseForge, затем нажмите «3. Добавить AMW».\n" +
+            "2. Для уже установленной TechQuest нажмите «Проверить TechQuest».\n" +
+            "3. Установите Java 21, если её нет на компьютере.\n" +
+            "4. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
+            "5. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
+            "6. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
+            "7. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
+            "8. AMW (необязательно): скачайте официальный JAR с CurseForge, затем нажмите «Добавить AMW».\n" +
             "   Для сервера положите тот же JAR в mods и проверьте совместимость с Incoming.\n" +
             "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
@@ -494,19 +447,19 @@ internal sealed class InstallerForm : Form
         updateAvailable = false;
         try
         {
-            status.Text = "Проверка подписанных обновлений GitHub (без авторизации)...";
+            releaseStatus.Text = "Проверяем подписанные публикации GitHub…";
             var found = await ReleaseUpdates.CheckAsync(previewUpdates.Checked, CancellationToken.None);
             if (found is null)
             {
-                status.Text = "Подписанных обновлений пока нет. Существующие unsigned-релизы игнорируются.";
+                releaseStatus.Text = "Подписанных релизов пока нет. Существующие выпуски можно установить вручную.";
                 return;
             }
             availableRelease = found;
             var current = TransactionalMods.GetInstalled(location.Text);
             if (current != null && current.ReleaseTag == found.Tag)
-                status.Text = "Текущая версия " + found.Tag + " установлена. Проверка подписи успешна.";
+                releaseStatus.Text = "Установлена последняя подписанная версия " + found.Tag;
             else
-                status.Text = "Доступно подписанное обновление " + found.Tag +
+                releaseStatus.Text = "Доступно проверенное обновление " + found.Tag +
                     ". Установка только по вашему подтверждению.";
             updateAvailable = current != null && current.ReleaseTag != found.Tag;
             applyUpdate.Enabled = updateAvailable;
@@ -515,10 +468,10 @@ internal sealed class InstallerForm : Form
         catch (Exception ex)
         {
             // Do not log local paths, tokens, HTTP bodies or other private data.
-            status.Text = "Проверка обновлений недоступна или подпись не прошла проверку: " +
+            releaseStatus.Text = "Нет соединения или подпись не прошла проверку: " +
                           ex.GetType().Name;
         }
-        finally { checkUpdates.Enabled = true; }
+        finally { checkUpdates.Enabled = true; RefreshProfileStatus(); }
     }
 
     private async Task ApplyUpdateAsync()
@@ -688,6 +641,7 @@ internal sealed class InstallerForm : Form
             SetBusy(false, false);
             cancellation?.Dispose();
             cancellation = null;
+            RefreshProfileStatus();
         }
     }
 
