@@ -47,6 +47,28 @@
       "required": true
     },
     {
+      "project": "oritech",
+      "group": "Технологии",
+      "required": true,
+      "version_id": "BR0KKypH",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Official Oritech v1.2.13 for NeoForge MC 1.21.1; requires existing Architectury API and Geckolib plus Athena 4.0.6. Test tech compatibility with Create, IC2, Mekanism and MI on disposable worlds."
+    },
+    {
+      "project": "fluidic-tanks",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "991No08g",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Fluidic Tanks 1.1.1 provides multiblock fluid reservoirs compatible with Create, Mekanism and Modern Industrialization. Chosen instead of XyCraft: World (which does not contain XyCraft Machines fluid tanks). Modrinth ARR; distribute by official downloads only. Test fluid loss when breaking/splitting tanks."
+    },
+    {
       "project": "ae2",
       "group": "Технологии",
       "required": true
@@ -324,6 +346,18 @@
       "project": "geckolib",
       "group": "Библиотеки",
       "required": true
+    },
+    {
+      "project": "b1ZV3DIJ",
+      "group": "Библиотеки",
+      "required": true,
+      "client_only": true,
+      "version_id": "dJgL278E",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      },
+      "note": "Official Athena 4.0.6, Modrinth canonical project ID b1ZV3DIJ (avoid ambiguous athena slug), required client-side visual library for Oritech; marked server unsupported in Modrinth. Game-server launch still needs testing."
     },
     {
       "project": "superb-warfare",
@@ -1686,6 +1720,39 @@
       "version_id": "BYZmHubv",
       "filename": "refinedstorage-jei-integration-neoforge-1.0.0.jar",
       "sha512": "95f91c5d634dd144c6acb8dcf946df47a1c09d348e987b00469acc8b5977c09a02f9810cc2d0636d07053c46f029cc3403c52c0759968a6a4673d643fd1543c2",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "4sYI62kA": {
+      "title": "Oritech",
+      "version": "1.2.13",
+      "version_id": "BR0KKypH",
+      "filename": "oritech-neoforge-1.21.1-1.2.13.jar",
+      "sha512": "9a688409643075051d759da1b7dc732dd97f5f3ae584a12c5908689858af145373a69046d9c1881e6e0f41916c742e2850512296e05dbcd39fc0f214ecfc3cdf",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "b1ZV3DIJ": {
+      "title": "Athena",
+      "version": "4.0.6",
+      "version_id": "dJgL278E",
+      "filename": "athena-neoforge-1.21.1-4.0.6.jar",
+      "sha512": "ab40a306a26ce834daae921a1e87768cd2538a4bfe27a4480f97af854084cc334e7416b1bd0b7583834a32a86951283f29fd4b1df7b98a967a6b26a3ec05e2cf",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "yAyrQXJ6": {
+      "title": "Fluidic Tanks",
+      "version": "1.1.1",
+      "version_id": "991No08g",
+      "filename": "fluidic_tanks-1.1.1.jar",
+      "sha512": "aced593ef1c018d1cb6807b8f2e6b1b6acb8cc4358e388fbed49bed7be798abeb2a5348a5382454e1b5d9595d7ba364b079ceab29f5b3b3b2d668f4a764c6161",
       "environment": {
         "client": "required",
         "server": "required"
