@@ -39,10 +39,13 @@ hmod и world datapack проверена настоящим стартом и s
 142 позиции, 46 loot references и 17 спавнеров совпали с исходным NeoForge
 до и после перезапуска. [Текущий результат YUNG's](YUNG_CHEST_RUNTIME_RESULT.json).
 Остальные custom processors ещё требуют переноса.
+Для начала промышленного переноса подготовлен [эталон Pretty Pipes](PRETTY_PIPES_REFERENCE_RU.md):
+оригинальный NeoForge переносит восемь предметов и сохраняет партию в пути через
+перезапуск. Нативная логистика Horizon пока не реализована.
 
 ## Уже сделано
 
-1. [Снимок NeoForge 0.3.3](source/techquest-0.3.3-candidate.json): актуальный main `918b4bf`, 89 закреплённых Modrinth-проектов и исходные метаданные. [Происхождение](source/SOURCE.md). Это **не** готовый Horizon-модпак; отчёты ниже о старых 86 компонентах — история прежнего входа.
+1. [Снимок после PR #48](source/techquest-post-pr48-candidate.json): merge `f5d7797`, 101 точный Modrinth-пин и 54 проверенные обязательные связи. 77 прямых деклараций включают один неразрешённый optional `iron-chests`. [Происхождение и прежний worldgen-источник](source/SOURCE.md). Это **не** готовый Horizon-модпак; новые промышленные механики ещё требуют переноса.
 2. [План по каждому моду](tools/port_inventory.py): offline JSON/Markdown-отчёт с классификацией. Команда: `python horizon/tools/port_inventory.py`. Полный перенос исходных модов ещё не подтверждён: **0 полных портов**. Частичные игровые проверки перечислены в runtime-отчётах.
 3. [Первый собственный Horizon-мод](first_party/expedition_marker/): **TechQuest Expedition Marker**, простой блок из ванильных материалов с рецептом, добычей и моделью. API Horizon 0.2, тип content, сторона both. **Это оригинальный прототип, не перенос Create/IC2/Wyrmroost.**
 4. [Структурная сборка демонстрационного ZIP](tools/build_demo_hmod.py) и unit-тесты. **Ни наличие .hmod, ни успешный unit-тест не подтверждают реальную загрузку в Horizon.**
