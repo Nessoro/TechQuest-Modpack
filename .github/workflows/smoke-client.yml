@@ -34,17 +34,20 @@ jobs:
           python -m unittest discover -s tests -v
           python build_pack.py
           python scripts/audit_jar_metadata.py
-      - name: Verify both new storage and claim mods in client and server
+      - name: Verify all retained mod systems, Oritech, Athena, and Fluidic Tanks
         run: |
           python - <<'PY'
           import hashlib
           import json
           from pathlib import Path
           cfg = json.loads(Path("modlist.json").read_text(encoding="utf-8"))
-          for project in ("KDvYkUg3", "gF3BGWvG"):
+          for project in ("KDvYkUg3", "u6dRKJwZ", "VzR5wiLo", "gF3BGWvG", "4sYI62kA", "b1ZV3DIJ", "yAyrQXJ6"):
               lock = cfg["modrinth_lock"][project]
               for side in ("client", "server"):
                   jar = Path("output") / side / "mods" / lock["filename"]
+                  if lock["environment"][side] == "unsupported":
+                      assert not jar.exists(), ("unsupported-side JAR", jar)
+                      continue
                   assert jar.is_file(), (side, lock["filename"])
                   assert hashlib.sha512(jar.read_bytes()).hexdigest() == lock["sha512"], jar
               print("Verified both sides:", lock["title"], lock["version"])
