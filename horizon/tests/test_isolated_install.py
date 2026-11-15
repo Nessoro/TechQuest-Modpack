@@ -13,6 +13,24 @@ import install_isolated_server as installer
 
 
 class IsolatedInstallTests(unittest.TestCase):
+    def test_pipe_content_cannot_be_declared_without_native_code(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.installation(Path(temp) / "server")
+            report = json.loads((root / installer.LOCK).read_text())
+            report["modules"]["prettypipes"] = {}
+            (root / installer.LOCK).write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, "no native extension"):
+                installer.verify(root)
+
+    def test_unreviewed_seventh_module_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.installation(Path(temp) / "server")
+            report = json.loads((root / installer.LOCK).read_text())
+            report["modules"]["unknown_machine"] = {}
+            (root / installer.LOCK).write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, "unrecognized"):
+                installer.verify(root)
+
     def test_changed_native_source_bundle_is_rejected_before_sdk(self):
         with tempfile.TemporaryDirectory() as temp:
             tools = Path(temp)

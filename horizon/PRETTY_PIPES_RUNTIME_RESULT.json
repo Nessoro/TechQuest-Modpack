@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-15",
+  "minecraft": "26.3",
+  "original_minecraft": "1.21.1",
+  "original_version": "Pretty Pipes 1.22.0",
+  "source_manifest_commit": "f5d779750c56762dcfa6ea0c4c76e088a8782759",
+  "source_pretty_pipes_commit": "1f8ac61c6de5b191f3b28da2c23d8040a231047f",
+  "source_license": "MIT",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "native_module": "techquest_pretty_pipes",
+  "native_version": "0.1.0",
+  "content_modules": 7,
+  "native_modules": [
+    {
+      "id": "techquest_terralith_wolves",
+      "version": "0.1.0",
+      "sha256": "243f1bb11cd5e09bc955c38423c57fda0856018bef6cb42bb070056be96ed140",
+      "api": "native-1/c78187dffffb60f31517eadcb87413386e8ce729/5a64af938ec86b00d53d16a408aabc0038fb3e57"
+    },
+    {
+      "id": "techquest_yung_dungeons",
+      "version": "0.1.0",
+      "sha256": "d6b6c286ac3972c3502a2b7d19139d6917fb7a6a16ef00fbea3ce0f7ff71cfed",
+      "api": "native-1/c78187dffffb60f31517eadcb87413386e8ce729/5a64af938ec86b00d53d16a408aabc0038fb3e57"
+    },
+    {
+      "id": "techquest_pretty_pipes",
+      "version": "0.1.0",
+      "sha256": "a920f3cba9adcfb6f12025037d2ac57c4d9cce3466c9d9a8749de150b6d54bab",
+      "api": "native-1/c78187dffffb60f31517eadcb87413386e8ce729/5a64af938ec86b00d53d16a408aabc0038fb3e57"
+    }
+  ],
+  "native_injections_total": 7,
+  "support_modules_total": 2,
+  "engine_sha256": "f0eed4f663d369cc04555de251037096d47251527cf9659af0ddf76e61378a3f",
+  "source_bundle_sdk_validated": true,
+  "tested_content_hmod_sha256": "7ef066e4f211f8dd2e2ca16d9faf2b1a6d7d53a605ccd635a6c25ee40c92d33e",
+  "licensed_content_hmod_sha256": "40981a942fec7b50f28d656f8dbf8fcc2d6ab67f772837dbd1c6e94a2a69277b",
+  "license_update": {
+    "only_manifest_comments_changed": true,
+    "all_gameplay_and_asset_payloads_identical": true,
+    "sdk_passed": true
+  },
+  "source_jar_sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
+  "content_sdk_validated": true,
+  "source_asset_sha256": [
+    {
+      "path": "assets/prettypipes/textures/block/pipe.png",
+      "sha256": "cc65d3146ba0f72700ab5395449bca329c2184a19eaa3435b6de0e6684ab0cc6"
+    },
+    {
+      "path": "assets/prettypipes/textures/item/blank_module.png",
+      "sha256": "a0bcd8d01665f7977691b451493683827c5e8236d33afa3e6acaa784db729d2c"
+    },
+    {
+      "path": "assets/prettypipes/textures/item/low_extraction_module.png",
+      "sha256": "b53ad251f452f6ef490cfdbb56460d9f241eaad8a6abd38aaf8677348b6ff79f"
+    },
+    {
+      "path": "assets/prettypipes/textures/item/medium_extraction_module.png",
+      "sha256": "d259959447f176d157d325dbce6863ccf1a7aa2ce1e849b8526a15113f1a0096"
+    },
+    {
+      "path": "assets/prettypipes/textures/item/high_extraction_module.png",
+      "sha256": "4e3a0ad1a62cddcfa93284417d3203d448ec768dd3a52b782f35604b11aa76c5"
+    }
+  ],
+  "world": "techquest-horizon-test",
+  "port": 25614,
+  "bind": "127.0.0.1",
+  "online_mode": true,
+  "whitelist": true,
+  "players_connected": 0,
+  "seed": 263,
+  "prepare": {
+    "without_extraction_module": {
+      "input": 8,
+      "output": 0
+    },
+    "low_module_delivery": {
+      "input": 0,
+      "output": 8
+    },
+    "disconnected_network": {
+      "input": 8,
+      "output": 0
+    },
+    "saved_while_in_flight": {
+      "input": 0,
+      "output": 0
+    }
+  },
+  "verify": {
+    "immediately_after_reopen": {
+      "input": 0,
+      "output": 8
+    },
+    "delivery_after_reopen": {
+      "input": 0,
+      "output": 8
+    }
+  },
+  "original_control_outcomes_match": true,
+  "native_transport_executed": true,
+  "in_flight_save_reopen_delivery_verified": true,
+  "new_items_created_after_reopen": false,
+  "native_queue_slots": 64,
+  "native_graph_node_limit": 4096,
+  "vanilla_container_apis_used": true,
+  "java_runtime_used_for_horizon_transport": false,
+  "server_status": "stopped",
+  "installation_lock_reverified": true,
+  "python_tests_passed": 108,
+  "unverified": [
+    "Normal player module installation and removal",
+    "Recipes and crafting",
+    "Client visuals and moving items",
+    "Exact per-segment movement and tick timing",
+    "Filters, priorities and branching",
+    "Full/removed destinations and pipe removal while in flight",
+    "Containers other than the chest fixture",
+    "Configured/malformed module NBT and complex item components",
+    "Licensed client and multiplayer",
+    "Other industrial mod mechanics"
+  ],
+  "full_pretty_pipes_ported": false,
+  "full_modpack_ported": false,
+  "main_changed": false,
+  "published": false,
+  "local_evidence_root": "/workspace/horizon-runtime",
+  "local_evidence_sha256": {
+    "pretty-pipes-native-prepare-v1.json": "0efd072c6b5b86ca9ebebfb5eaceec78e788fb1ae7ad13a9176b15aaa4cddaa7",
+    "pretty-pipes-native-verify-v1.json": "a81adf51089468eab7a2d50c76af6d3ef78adf3b57f5dfe07dad9136c753e405",
+    "pretty-pipes-native-sdk-v1.json": "c355551eded3fd41f969701fab10797fa0ab788a623d88e5a2aa51d55c4d7c2f",
+    "pretty-pipes-native-apply-v4.json": "cb6f5f5d7d40e6a16372fff2c11d6c398395e1950edee38fe23666a55f639383",
+    "pretty-pipes-license-delta.json": "d3dfaafd224011ab8de3fbea86ea7d05f9a1bdb934dde46a1010fac9aed160bf"
+  }
+}

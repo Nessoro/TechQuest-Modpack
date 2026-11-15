@@ -15,7 +15,7 @@
 Три noise-provider совпали с оригиналом в 384 пробах, patch-композиции — в 1800.
 Forest rock совпал в 1124 traces, nether vegetation — в 450. Blue flowers,
 включая moss support, проверены после перезапуска. Это серверный прототип
-с шестью content-модулями; промышленные Java-механики ещё не перенесены.
+с шестью базовыми content-модулями; полный перенос промышленных механик ещё не завершён.
 Вход клиента, мультиплеер и Java-механики не проверены.
 [Серверный результат](SERVER_RUNTIME_RESULT.json) · [Миграция Terralith](TERRALITH_RUNTIME_RU.md).
 [Текущий результат генератора](TERRALITH_VEGETATION_RUNTIME_RESULT.json).
@@ -41,7 +41,10 @@ hmod и world datapack проверена настоящим стартом и s
 Остальные custom processors ещё требуют переноса.
 Для начала промышленного переноса подготовлен [эталон Pretty Pipes](PRETTY_PIPES_REFERENCE_RU.md):
 оригинальный NeoForge переносит восемь предметов и сохраняет партию в пути через
-перезапуск. Нативная логистика Horizon пока не реализована.
+перезапуск. Затем [нативный прототип](first_party/pretty_pipes/README.md) повторил
+все четыре контроля на настоящем Horizon, включая доставку сохранённой партии.
+Опциональная установка содержит семь content-модулей и три native bundles.
+Рецепты, player module interaction, GUI и полный Pretty Pipes ещё не перенесены.
 
 ## Уже сделано
 

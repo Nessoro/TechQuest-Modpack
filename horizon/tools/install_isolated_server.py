@@ -69,9 +69,12 @@ def run(args, *, cwd: Path, env=None, timeout=180) -> str:
     return result.stdout
 
 
-def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, work: Path) -> dict:
+def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, work: Path,
+                  pretty_pipes: Path | None = None) -> dict:
     files = {mod: checked_path(terralith if mod == "terralith" else modules / f"{mod}.hmod")
              for mod in MODULES}
+    if pretty_pipes is not None:
+        files["prettypipes"] = checked_path(pretty_pipes)
     owners, result = {}, {}
     for mod, path in files.items():
         check = json.loads(run([sdk, "check", path, "--json"], cwd=path.parent))
@@ -81,6 +84,8 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
                 or facts.get("api") != "0.2" or facts.get("side") != "both"
                 or facts.get("sha256") != checksum):
             raise ValueError("SDK rejected module identity/API/checksum: " + mod)
+        if mod == "prettypipes" and facts.get("version") != "0.1.0":
+            raise ValueError("expected the reviewed Pretty Pipes content prototype")
         with zipfile.ZipFile(path) as archive:
             names = archive.namelist()
             if len(names) != len(set(names)):
@@ -189,7 +194,8 @@ def check_native_modules(tools: Path, sdk: Path) -> list[dict]:
 
 def install(*, resources: Path, tools: Path, work: Path, modules: Path,
             terralith: Path, datapack: Path, sdk: Path, upstream: Path,
-            output: Path, port: int, accept_eula: bool) -> dict:
+            output: Path, port: int, accept_eula: bool,
+            pretty_pipes: Path | None = None) -> dict:
     output = checked_path(output)
     if output.exists():
         raise ValueError("installation directory must be new")
@@ -197,6 +203,9 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
         raise ValueError("test port must be between 1024 and 65535")
     inputs = [resources, tools, work, modules, terralith, datapack, sdk, upstream]
     resources, tools, work, modules, terralith, datapack, sdk, upstream = map(checked_path, inputs)
+    if pretty_pipes is not None:
+        pretty_pipes = checked_path(pretty_pipes)
+        inputs.append(pretty_pipes)
     for origin in inputs:
         origin = checked_path(origin)
         if output == origin or origin in output.parents or output in origin.parents:
@@ -211,8 +220,10 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
         raise ValueError("upstream checkout differs from the pinned commit")
     run([tools / "horizon-prepare", "--check", "--root", upstream, "--output", resources], cwd=upstream)
     payloads = validate_trial(datapack, work)
-    mods = check_modules(modules, terralith, datapack, sdk, work)
+    mods = check_modules(modules, terralith, datapack, sdk, work, pretty_pipes)
     native = check_native_modules(tools, sdk)
+    if pretty_pipes is not None and not any(m["id"] == "techquest_pretty_pipes" for m in native):
+        raise ValueError("Pretty Pipes content requires its declared compiled native extension")
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".techquest-install-", dir=output.parent) as temporary:
         temporary = Path(temporary)
@@ -238,13 +249,13 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
         mod_dir.mkdir(exist_ok=True)
         for mod, spec in mods.items():
             shutil.copyfile(spec["path"], mod_dir / f"{mod}.hmod")
-        (stage / "horizon-mods.txt").write_text("".join(f"mod.{mod}:true\n" for mod in MODULES))
+        (stage / "horizon-mods.txt").write_text("".join(f"mod.{mod}:true\n" for mod in mods))
         for name, path in payloads.items():
             target = stage / PACK / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(path, target)
         relative = ["server.toml", "eula.txt", "horizon-mods.txt"]
-        relative += [f"horizon-mods/{mod}.hmod" for mod in MODULES]
+        relative += [f"horizon-mods/{mod}.hmod" for mod in mods]
         relative += [f"{PACK}/{name}" for name in payloads]
         external = {str((tools / name).resolve()): digest(tools / name) for name in BINARIES}
         external[str((tools / "build-result.json").resolve())] = digest(tools / "build-result.json")
@@ -277,10 +288,13 @@ def verify(server_dir: Path) -> dict:
     report = json.loads((server_dir / LOCK).read_text())
     if (report.get("schema") != 1 or report.get("upstream_commit") != UPSTREAM
             or report.get("minecraft") != "26.3" or report.get("world") != WORLD
-            or set(report.get("modules", {})) != set(MODULES)):
+            or set(report.get("modules", {})) not in (set(MODULES), set(MODULES) | {"prettypipes"})):
         raise ValueError("unrecognized local installation lock")
+    if "prettypipes" in report["modules"] and not any(
+            m.get("id") == "techquest_pretty_pipes" for m in report.get("native_modules", [])):
+        raise ValueError("Pretty Pipes installation has no native extension declaration")
     hashes = report["files"]
-    expected_mods = {f"{mod}.hmod" for mod in MODULES}
+    expected_mods = {f"{mod}.hmod" for mod in report["modules"]}
     if set(tree_files(server_dir / "horizon-mods")) != expected_mods:
         raise ValueError("installed module set changed")
     expected_pack = {name[len(PACK) + 1:] for name in hashes if name.startswith(PACK + "/")}
@@ -331,6 +345,8 @@ def main() -> int:
         add.add_argument("--" + name, type=Path, required=True)
     add.add_argument("--port", type=int, default=25600)
     add.add_argument("--accept-eula", action="store_true")
+    add.add_argument("--pretty-pipes", type=Path,
+                     help="Optional SDK-checked transport content prototype; needs its native extension")
     for name in ("verify", "start"):
         sub = commands.add_parser(name)
         sub.add_argument("--server-dir", type=Path, required=True)

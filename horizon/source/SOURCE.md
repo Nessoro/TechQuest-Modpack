@@ -25,8 +25,9 @@ latest, не скачивает и не запускает JAR. Это пров�
 88 общих пинов совпадают полностью. MCHeli, TaCZ и ParCool не возвращены;
 validator отклоняет их также при обращении через canonical project ID.
 Новый состав включает Oritech, Fluidic Tanks, Refined Storage, Pretty Pipes,
-Sophisticated Storage и другие компоненты. Нативная работа этих новых
-механик пока не подтверждена.
+Sophisticated Storage и другие компоненты. Полный перенос новых механик не
+подтверждён; первый [native Pretty Pipes transport](../PRETTY_PIPES_RUNTIME_RESULT.json)
+прошёл отдельные серверные контроли и остаётся частичным прототипом.
 
 ## Источник уже выполненных worldgen-тестов
 

@@ -1,0 +1,54 @@
+[mod]
+id = "techquest_pretty_pipes"
+version = "0.1.0"
+
+[compatibility]
+horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
+
+[[injection]]
+id = "create"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity"
+kind = "HEAD"
+helper = "create.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "entity", ty = "&mut Option<(String, horizon_world::nbt::Compound)>", value = "entity" },
+]
+
+[[injection]]
+id = "ticking"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_ticks"
+kind = "HEAD"
+helper = "ticking.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "ticks", ty = "&mut bool", value = "ticks" },
+]
+
+[[injection]]
+id = "declare_slots"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_container"
+kind = "HEAD"
+helper = "container.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "value", ty = "&mut Option<horizon_client_lib::containers::ModContainer>", value = "container" },
+]
+
+[[injection]]
+id = "tick"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_tick"
+kind = "HEAD"
+helper = "tick.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "entity", ty = "&mut horizon_client_lib::containers::ModBlockEntity", value = "entity" },
+]
+
+[[module]]
+id = "routing"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_pretty_pipes"
+source = "logic.rs"
+visibility = "pub(crate)"

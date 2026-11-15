@@ -20,6 +20,14 @@ Better Dungeons hmod: [адаптер и проверка YUNG's](YUNG_RUNTIME_R
 с Terralith Wolves. Обычный CountCap без этого расширения повторяет лимит
 в каждом чанке; один SDK-check hmod такой дефект не обнаруживает.
 
+Первая промышленная опция — [native Pretty Pipes transport](first_party/pretty_pipes/README.md).
+Для неё собрать контент через `tools/stage_pretty_pipes.py` и движок с тремя
+native bundles; добавить к `install` параметр `--pretty-pipes /path/to/prettypipes.hmod`.
+Установщик проверяет седьмой hmod и требует `techquest_pretty_pipes` среди
+задекларированных native extensions. Старые шестимодульные установки совместимы.
+Это проверенный серверный transport fixture; crafting и установка модулей
+обычным действием игрока пока отсутствуют, полный модпак не объявляется готовым.
+
 ## Входные файлы
 
 - Официальный Horizon `c78187dffffb60f31517eadcb87413386e8ce729` и SDK.

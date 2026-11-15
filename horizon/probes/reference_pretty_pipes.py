@@ -37,7 +37,7 @@ def snapshot(reference):
 
 def sprint(reference, ticks):
     def clock():
-        match = re.search(r"The time is (\d+)", reference.command("time query gametime"))
+        match = re.search(r"The (?:game )?time is (\d+)", reference.command("time query gametime"))
         if not match:
             raise RuntimeError("original game clock unavailable")
         return int(match.group(1))

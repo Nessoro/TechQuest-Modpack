@@ -37,7 +37,8 @@ Fluidic Tanks, Refined Storage и Pretty Pipes. Снимок #48 теперь с
 проверены по Modrinth; один optional `iron-chests` остаётся неразрешённым.
 Текущий planning inventory использует этот вход. Игровые тесты YUNG's/Terralith
 продолжают относиться к прежним JAR, чьи SHA-512 повторно совпали с новым lock.
-Наличие новых промышленных модов в Horizon пока не подтверждено.
+Подтверждён первый частичный native Pretty Pipes transport; прочие новые
+промышленные механики Horizon пока не подтверждены.
 
 ## Постоянные ограничения
 
@@ -121,7 +122,14 @@ Fluidic Tanks, Refined Storage и Pretty Pipes. Снимок #48 теперь с
 - [x] Оригинальный Pretty Pipes 1.22.0 запущен на отдельном NeoForge: без модуля
   и при разрыве сети перенос не происходит, с low module доставлены восемь
   слитков. Восемь предметов, сохранённых в пути, доставлены после reopen без
-  дублирования. MIT tag проверен; нативная логистика Horizon ещё не реализована.
+  дублирования. MIT tag проверен; этот original oracle стал входом следующего этапа.
+- [x] Первый native Pretty Pipes transport на настоящем Horizon: Rust-хуки создают
+  и тикают pipe block entity, используют vanilla container APIs и сохраняют очередь
+  в её 64 внутренних слотах/NBT. Семимодульная установка с тремя native bundles
+  повторила четыре original controls: no module, delivery, broken pipe и партия
+  в пути через restart. Восемь слитков сохранены без потерь/дублирования. Контент и
+  source bundle прошли SDK, lock проверен; сервер остановлен. GUI, рецепты и полный
+  routing/timing/фильтры ещё не перенесены; полный промышленный модпак не готов.
 
 Источники доказательств: [сервер](SERVER_RUNTIME_RESULT.json),
 [Terralith](TERRALITH_RUNTIME_RESULT.json), [деревья](TERRALITH_TREE_RUNTIME_RESULT.json),
@@ -140,16 +148,18 @@ Fluidic Tanks, Refined Storage и Pretty Pipes. Снимок #48 теперь с
 [Ограничения сундуков и нативная область подсчёта](YUNG_CHEST_RUNTIME_RESULT.json).
 [Новый source audit](source/POST_PR48_VALIDATION.json),
 [оригинальный эталон Pretty Pipes](PRETTY_PIPES_REFERENCE_RESULT.json).
-Проверки текущего этапа: 106 Horizon Python-тестов прошли;
+[Первый нативный transport](PRETTY_PIPES_RUNTIME_RESULT.json).
+Проверки текущего этапа: 108 Horizon Python-тестов прошли;
 3 Rust-теста контекста и 45 базовых тестов — предыдущая проверка.
 
 ## Ближайшая работа
 
-1. Реализовать нативные Pretty Pipes inventory/routing и сохранение очереди
-   предметов. Воспроизвести на Horizon 26.3 четыре готовых оригинальных контроли,
-   включая партию в пути через restart. Только затем утверждать частичную
-   работоспособность этого промышленного переноса. Source tag MIT и reference
-   server описаны в PRETTY_PIPES_REFERENCE_RU.md; новые пины — в source/SOURCE.md.
+1. Продолжить Pretty Pipes: реальные рецепты и обычная установка/снятие модулей
+   игроком, корректный module NBT и инвентарь, затем фильтры, ветвления, приоритеты,
+   переполнение и поведение при удалении трубы с партией в пути. Базовый transport
+   уже прошёл server/save/reopen; не выдавать fixture за полный mod port.
+   Исходный tag MIT и reference server — PRETTY_PIPES_REFERENCE_RU.md;
+   native code/install — first_party/pretty_pipes/README.md; новые пины — source/SOURCE.md.
 2. Продолжить перенос YUNG's: оставшиеся 27 отброшенных processors в трёх малых
    списках; спавнеры больших zombie/skeleton dungeons; 16 неподдерживаемых
    определений, условия пулов и enhanced terrain. Проверить естественную
