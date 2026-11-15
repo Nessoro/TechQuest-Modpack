@@ -209,7 +209,7 @@ internal sealed class InstallerForm : Form
                 string miWorld = Path.Combine(probe, "saves", "mi-world", "serverconfig");
                 Directory.CreateDirectory(miWorld);
                 string miPath = Path.Combine(miWorld, "modern_industrialization-server.toml");
-                const string miOriginal = "forgeEnergyPerEu = 17\\nspawnWithGuideBook = true\\nrespawnWithGuideBook = true\\n[recipes]\\ncompostableToPlantOil = false\\n";
+                const string miOriginal = "forgeEnergyPerEu = 17\nspawnWithGuideBook = true\nrespawnWithGuideBook = true\n[recipes]\ncompostableToPlantOil = false\n";
                 File.WriteAllText(miPath, miOriginal);
                 InstallGuideOverrides(probe);
                 string miAfter = File.ReadAllText(miPath);
