@@ -348,7 +348,7 @@
       "required": true
     },
     {
-      "project": "athena",
+      "project": "b1ZV3DIJ",
       "group": "Библиотеки",
       "required": true,
       "client_only": true,
@@ -357,7 +357,7 @@
         "client": "required",
         "server": "unsupported"
       },
-      "note": "Official Athena 4.0.6 NeoForge 1.21.1 required by Oritech, client-side texture library per Modrinth server unsupported; check actual server metadata and startup before approval."
+      "note": "Official Athena 4.0.6, Modrinth canonical project ID b1ZV3DIJ (avoid ambiguous athena slug), required client-side visual library for Oritech; marked server unsupported in Modrinth. Game-server launch still needs testing."
     },
     {
       "project": "superb-warfare",
