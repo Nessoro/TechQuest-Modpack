@@ -226,6 +226,94 @@ internal static class TransactionalMods
         return path;
     }
 
+    // Safe repair for the SAME exact embedded mod manifest. Never overwrites an
+    // existing file, even if it fails hash verification: modified user data is
+    // preserved for review. This is not an untrusted-mod migration tool.
+    internal static async Task<int> RestoreMissingFromEmbeddedAsync(
+        string root, Stream embedded, IProgress<string>? progress,
+        CancellationToken cancellation)
+    {
+        var pack = ReleaseUpdates.ParsePack(embedded);
+        var sources = pack.Mods.ToDictionary(x => x.Identity.Name, NameComparer);
+        var bundled = pack.BundledMods.ToDictionary(x => x.Identity.Name, NameComparer);
+        var expected = pack.Mods.Select(x => x.Identity)
+            .Concat(pack.BundledMods.Select(x => x.Identity)).ToList();
+        return await RestoreMissingCoreAsync(root, expected, async (item, destination, token) =>
+        {
+            if (bundled.TryGetValue(item.Name, out var asset))
+                await File.WriteAllBytesAsync(destination, asset.Bytes, token);
+            else
+                await ReleaseUpdates.DownloadCheckedAsync(sources[item.Name].Url,
+                    destination, item, sources[item.Name].Sha1, token);
+        }, progress, cancellation);
+    }
+
+    internal static Task<int> RestoreMissingForTestsAsync(
+        string root, List<ManagedMod> expected,
+        Func<ManagedMod, string, CancellationToken, Task> fetch, CancellationToken token) =>
+        RestoreMissingCoreAsync(root, expected, fetch, null, token);
+
+    private static async Task<int> RestoreMissingCoreAsync(
+        string root, List<ManagedMod> expected,
+        Func<ManagedMod, string, CancellationToken, Task> fetch,
+        IProgress<string>? progress, CancellationToken token)
+    {
+        root = CanonicalRoot(root);
+        string stateDir = StateDirectory(root);
+        string mods = Path.Combine(root, "mods");
+        if (!Directory.Exists(mods))
+            throw new DirectoryNotFoundException("Managed mods directory does not exist");
+        using var guard = Lock(stateDir);
+        RecoverLocked(root, stateDir);
+        var state = GetInstalled(root)
+            ?? throw new SecurityException("Unknown installation. Refusing to repair user mods.");
+        Validate(state);
+        var exact = expected.ToDictionary(x => x.Name, NameComparer);
+        if (exact.Count != expected.Count || exact.Count != state.Mods.Count ||
+            state.Mods.Any(x => !exact.TryGetValue(x.Name, out var other) ||
+                                x.Size != other.Size ||
+                                !string.Equals(x.Sha512, other.Sha512,
+                                    StringComparison.OrdinalIgnoreCase)))
+            throw new SecurityException("Installed version differs from embedded pack. Use a signed update.");
+
+        var missing = new List<ManagedMod>();
+        foreach (var mod in state.Mods)
+        {
+            string target = Path.Combine(mods, mod.Name);
+            if (File.Exists(target))
+            {
+                // A modified managed JAR is never silently overwritten or deleted.
+                ReleaseUpdates.VerifyFile(target, mod);
+            }
+            else missing.Add(mod);
+        }
+        if (missing.Count == 0) return 0;
+
+        string staging = Path.Combine(stateDir, "repair-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(staging);
+        try
+        {
+            for (int i = 0; i < missing.Count; i++)
+            {
+                token.ThrowIfCancellationRequested();
+                var mod = missing[i];
+                string temp = Path.Combine(staging, mod.Name);
+                progress?.Report($"Восстановление {i + 1}/{missing.Count}: {mod.Name}");
+                await fetch(mod, temp, token);
+                ReleaseUpdates.VerifyFile(temp, mod);
+            }
+            // Download-and-verify everything before any move into the live mods folder.
+            token.ThrowIfCancellationRequested();
+            foreach (var mod in missing)
+                File.Move(Path.Combine(staging, mod.Name), Path.Combine(mods, mod.Name), false);
+            return missing.Count;
+        }
+        finally
+        {
+            if (Directory.Exists(staging)) Directory.Delete(staging, recursive: true);
+        }
+    }
+
     // Test-only adapter: no network needed to exercise transactional guarantees.
     internal static Task<int> ApplyForTestsAsync(
         string root, PackState desired,
