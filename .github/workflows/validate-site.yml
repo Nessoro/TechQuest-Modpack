@@ -32,6 +32,7 @@ jobs:
       - name: Check synchronized catalog and JavaScript
         run: |
           python scripts/sync_site_mods.py
+          git diff -- docs/index.html | head -n 140 || true
           git diff --exit-code -- docs/index.html
           node --check docs/site.js
       - name: Install browser test dependencies
