@@ -152,15 +152,31 @@ Fluidic Tanks, Refined Storage и Pretty Pipes. Снимок #48 теперь с
 Проверки текущего этапа: 108 Horizon Python-тестов прошли;
 3 Rust-теста контекста и 45 базовых тестов — предыдущая проверка.
 
+- [x] Pretty Pipes 0.2: пять рецептов и pipe loot table перенесены в hmod;
+  оригинальный и нативный менеджеры рецептов совпали на 22 успешных и 44
+  отрицательных сетках. Default extractor получил `native_use_item_on`;
+  shared install/codec прошёл пять Rust-тестов по исходному NeoForge oracle,
+  включая расход в creative и исходный default count. Новый сервер с 7 hmod
+  и 3 native bundles повторил transport/save/reopen; lock проверен, сервер
+  остановлен, 109 Python-тестов прошли. Возврат модуля и партии
+  при замене/разрушении загруженной трубы проверен по оригиналу; преобразовано
+  loot condition `condition` → `type`, сама труба выпадает. Реальный Game dispatcher
+  с игроком, GUI и снятие без разрушения ещё не проверены/не реализованы.
+  [Доказательства и ограничения](PRETTY_PIPES_MODULES_RESULT.json).
+
 ## Ближайшая работа
 
-1. Продолжить Pretty Pipes: реальные рецепты и обычная установка/снятие модулей
-   игроком, корректный module NBT и инвентарь, затем фильтры, ветвления, приоритеты,
-   переполнение и поведение при удалении трубы с партией в пути. Базовый transport
-   уже прошёл server/save/reopen; не выдавать fixture за полный mod port.
+1. Продолжить Pretty Pipes: реализовать снятие/GUI и проверить Game dispatcher
+   с игроком, включая creative и offhand. Возврат установленных модулей и партии
+   при замене/разрушении загруженной трубы уже реализован и проверен; bulk edits
+   и точная позиция/скорость выпавших предметов ещё нет. Рецепты, shared install
+   logic и базовый transport/save/reopen уже проверены; обычное меню крафта
+   ещё нет. Затем фильтры, ветвления, приоритеты, переполнение, bulk edits и точные drop semantics; не выдавать fixture за полный mod port.
    Исходный tag MIT и reference server — PRETTY_PIPES_REFERENCE_RU.md;
    native code/install — first_party/pretty_pipes/README.md; новые пины — source/SOURCE.md.
-2. Продолжить перенос YUNG's: оставшиеся 27 отброшенных processors в трёх малых
+2. Проверить старые loot condition discriminators в YUNG loot tables и реальные
+   результаты выдачи лута: загрузка JSON не доказывает исполнение условия в 26.3.
+   Продолжить перенос YUNG's: оставшиеся 27 отброшенных processors в трёх малых
    списках; спавнеры больших zombie/skeleton dungeons; 16 неподдерживаемых
    определений, условия пулов и enhanced terrain. Проверить естественную
    генерацию, открытие лута и активацию спавнеров игроком. Ноль feature decoder

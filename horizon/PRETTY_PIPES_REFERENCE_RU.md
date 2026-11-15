@@ -11,8 +11,8 @@
 Исходники для изучения — tag `1.22.0`, commit
 [`1f8ac61c6de5b191f3b28da2c23d8040a231047f`](https://github.com/Ellpeck/PrettyPipes/tree/1f8ac61c6de5b191f3b28da2c23d8040a231047f).
 Корневой LICENSE этого commit проверен: MIT, Copyright (c) 2020–2021 Ellpeck.
-Прочитаны Registry, PipeBlockEntity, ModuleItem, ExtractionModuleItem и части
-PipeItem. Java-код в Horizon не копировался и не запускался как мод Horizon.
+Прочитаны Registry, PipeBlock, PipeBlockEntity, ModuleItem, ExtractionModuleItem,
+Utility.dropInventory и части network/PipeItem. Java-код в Horizon не копировался и не запускался как мод Horizon.
 При адаптации исходного кода в Rust сохранить copyright/license и атрибуцию.
 
 Original reference: Minecraft 1.21.1 / NeoForge 21.1.264, JDK 25,
@@ -69,6 +69,6 @@ Prepare создаёт fixture в тестовом мире, проверяет 
 Проба проверяет SHA-512 JAR, EULA, server isolation и отсутствие игроков;
 секреты и raw NBT в отчёты не попадают.
 
-Следующий этап — нативные pipe inventory/routing и очередь предметов с сохранением,
-после чего повторить эти же контроли на настоящем Horizon 26.3.
+Эти контроли повторены на настоящем Horizon: [transport 0.1](PRETTY_PIPES_RUNTIME_RESULT.json)
+и [recipes/module logic 0.2](PRETTY_PIPES_MODULES_RESULT.json). Полный порт ещё не завершён.
 [Результат reference-прогона](PRETTY_PIPES_REFERENCE_RESULT.json).

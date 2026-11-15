@@ -13,6 +13,19 @@ import install_isolated_server as installer
 
 
 class IsolatedInstallTests(unittest.TestCase):
+    def test_mixed_pipe_versions_block_start_before_spawning(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = self.installation(Path(temp) / "server")
+            report = json.loads((root / installer.LOCK).read_text())
+            report["modules"]["prettypipes"] = {"version": "0.2.0"}
+            report["native_modules"] = [{"id": "techquest_pretty_pipes", "version": "0.1.0"}]
+            (root / installer.LOCK).write_text(json.dumps(report))
+            with patch.object(installer.subprocess, "run") as run:
+                with self.assertRaisesRegex(ValueError, "version mismatch"):
+                    installer.start(root)
+                run.assert_not_called()
+            self.assertFalse((root / ".runs").exists())
+
     def test_pipe_content_cannot_be_declared_without_native_code(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self.installation(Path(temp) / "server")

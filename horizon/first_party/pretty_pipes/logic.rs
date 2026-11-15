@@ -1,7 +1,11 @@
 // Initial native routing and persistent in-flight ownership for Pretty Pipes.
 // Tier rates follow Pretty Pipes 1.22.0 (Ellpeck, MIT); see LICENSE-PRETTY-PIPES.
 // This prototype does not yet implement filters, priorities, GUI or exact timing.
+// Copyright (c) 2020-2021 Ellpeck, MIT (extraction semantics).
+// Stack-size fallback: Copyright (c) 2026 Ludovic Marie and Horizon contributors,
+// MIT; see LICENSE-HORIZON. Routing and native integration are first-party code.
 use super::Game;
+use horizon_client_lib::techquest_pretty_pipes_modules as modules;
 use horizon_client_lib::{containers::ModBlockEntity, items::ItemStack};
 use horizon_core::geometry::Direction;
 use horizon_world::nbt::{Compound, JavaString, Tag};
@@ -9,6 +13,31 @@ use std::collections::{BTreeSet, VecDeque};
 
 const PIPE: &str = "prettypipes:pipe";
 const MAX_NODES: usize = 4096;
+
+pub(super) fn replace_contents(
+    game: &mut Game<'_>,
+    pos: [i32; 3],
+    state: horizon_world::registry::BlockStateId,
+) {
+    if game.native_block(pos) != PIPE || game.res.facts().get(state).name.as_ref() == PIPE {
+        return;
+    }
+    let contents = game
+        .native_with_mod_block_entity(pos, |entity| {
+            if entity.id != PIPE {
+                return None;
+            }
+            let mut items = std::mem::take(&mut entity.items);
+            items.extend(modules::take(&mut entity.nbt));
+            items.retain(Option::is_some);
+            Some(items)
+        })
+        .flatten();
+    if let Some(items) = contents {
+        let at = horizon_core::position::BlockPos::new(pos[0], pos[1], pos[2]);
+        game.with_level(|_, level, _| level.drop_lost_contents(at, items));
+    }
+}
 
 fn at(pos: [i32; 3], direction: Direction) -> [i32; 3] {
     let delta = direction.normal();
@@ -22,25 +51,32 @@ fn number(nbt: &Compound, key: &str) -> Option<i32> {
     }
 }
 
-fn tier(entity: &ModBlockEntity) -> Option<(i64, u32)> {
-    let Tag::Compound(modules) = entity.nbt.get(&JavaString::from("modules"))? else {
-        return None;
-    };
-    let Tag::List(items) = modules.get(&JavaString::from("Items"))? else {
-        return None;
-    };
-    for item in items {
-        let Some(Tag::String(id)) = item.get("id") else {
-            continue;
-        };
-        match id.to_string_lossy().as_ref() {
-            "prettypipes:low_extraction_module" => return Some((20, 1)),
-            "prettypipes:medium_extraction_module" => return Some((15, 8)),
-            "prettypipes:high_extraction_module" => return Some((10, 64)),
-            _ => {}
-        }
+pub(super) fn use_module(game: &mut Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
+    if game.native_block(pos) != PIPE || modules::rates(&stack.item).is_none() {
+        return false;
     }
-    None
+    let Some(held) = game
+        .held()
+        .filter(|s| s.count > 0 && s.same_item_same_components(stack))
+    else {
+        return false;
+    };
+    let mut hand = Some(held.clone());
+    let dimension = game.native_dimension();
+    let can_have_modules = Direction::ALL.iter().any(|d| {
+        game.native_container_slots(dimension, at(pos, *d), d.opposite())
+            .is_some_and(|slots| !slots.is_empty())
+    });
+    let installed = game
+        .native_with_mod_block_entity(pos, |entity| {
+            entity.id == PIPE && modules::install(&mut entity.nbt, &mut hand, can_have_modules)
+        })
+        .unwrap_or(false);
+    if installed {
+        *game.held_mut() = hand;
+        game.native_block_entity_sync(pos);
+    }
+    installed
 }
 
 /// A shortest pipe-only route to a reachable inventory, excluding the source.
@@ -124,7 +160,7 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
             entity.items[slot] = Some(stack);
         }
     }
-    let Some((period, amount)) = tier(entity) else {
+    let Some((period, amount)) = modules::tier(&entity.nbt) else {
         return;
     };
     if game.world.game_time % period != 0 {

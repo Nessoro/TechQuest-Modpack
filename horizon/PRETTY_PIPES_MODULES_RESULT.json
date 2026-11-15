@@ -1,0 +1,305 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-15T20:46:59.671778+00:00",
+  "minecraft": "26.3",
+  "native_version": "0.2.0",
+  "content_version": "0.2.0",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "source": {
+    "pretty_pipes": "1.22.0",
+    "pretty_pipes_git_commit": "1f8ac61c6de5b191f3b28da2c23d8040a231047f",
+    "pretty_pipes_jar_sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.264",
+    "neoforge_jar_sha256": "dd8680641ad05f3d796a77829c682ee999e3907e3dae77074c39ee804dc33411",
+    "pretty_pipes_license": "MIT",
+    "neoforge_java_source_read": false,
+    "synthetic_actor": true,
+    "client_login_tested": false
+  },
+  "artifacts": {
+    "horizon_engine_sha256": "2107e96bd12823605b4f71daebd4ea5452353650ff768488c44e3f50a6f156e3",
+    "native_bundle_sha256": "4d657a824e01b6b819d443601cc02c36140412c37b6f0c34ffd5c7851ca2a7f0",
+    "native_source_bundle_matches_checked_files": true,
+    "native_sdk_checked": true,
+    "content_hmod_sha256": "d3178894b5a5baabe185335a4947e2ae222b5edf44a82c794165bd625d22c92c",
+    "content_sdk_checked": true,
+    "original_probe_jar_sha256": "b20d66334932bd405a16aed14608abda4762ec7326f0e93d2f07ed9786416335",
+    "original_probe_source_sha256": "53c374e10cab161e1da1d73cf92faeb6de50573403df3d9cebd9792c6f4a849d",
+    "crafting_cases_sha256": "0d8fdd5a09b266b08393674652751abcf068425dbb6353b79ba1e275e8bdfd35",
+    "original_oracle_json_sha256": "eb8463ef2397ff521d08ca9841f28581befd670c595ae1f05f686e8954b5b4d1",
+    "native_crafting_json_sha256": "47272502f868f22ffedd33c4a1733c8119dc246e4e4a0c4267c57b88c3533a2c",
+    "installation_lock_sha256": "e3ed072f597a3cf1c855b131e7e9aa00463281fa44e1f217617fe42dc1cff4b3",
+    "native_removal_json_sha256": "760d52871e10c80b47dcd1837618cfeeb82c1a505f478010920b2e461ccc7cf0"
+  },
+  "module_interaction": {
+    "original_server_checks": {
+      "survival_install": {
+        "installed": 1,
+        "consumes_action": true,
+        "held": 1
+      },
+      "duplicate_rejected": {
+        "installed": 1,
+        "consumes_action": false,
+        "held": 2
+      },
+      "creative_install": {
+        "installed": 1,
+        "consumes_action": true,
+        "held": 1
+      },
+      "no_inventory": {
+        "installed": 0,
+        "consumes_action": false,
+        "held": 2
+      },
+      "blank_rejected": {
+        "installed": 0,
+        "consumes_action": false,
+        "held": 2
+      },
+      "nbt_counts": {
+        "-1": 1,
+        "0": 1,
+        "1": 1,
+        "2": 2
+      },
+      "removal": {
+        "replace": {
+          "pipe_removed": true,
+          "dropped": {
+            "prettypipes:low_extraction_module": 1,
+            "minecraft:iron_ingot": 8
+          }
+        },
+        "destroy": {
+          "pipe_removed": true,
+          "dropped": {
+            "prettypipes:pipe": 1,
+            "prettypipes:low_extraction_module": 1,
+            "minecraft:iron_ingot": 8
+          }
+        },
+        "creative": {
+          "pipe_removed": true,
+          "dropped": {
+            "prettypipes:low_extraction_module": 1,
+            "minecraft:iron_ingot": 8
+          }
+        }
+      }
+    },
+    "rust_tests_passed": 5,
+    "native_use_item_on_head_compiled": true,
+    "shared_install_logic_matches_original": true,
+    "components_and_pending_nbt_preserved_tested": true,
+    "game_dispatcher_with_player_tested": false,
+    "transport_fixture_installs_modules_via_nbt": true,
+    "removal_or_break_returns_modules": true,
+    "removal_scope_verified": "Loaded pipe, command replacement and destructive break; synthetic queue/module fixture",
+    "creative_player_dispatch_in_horizon_tested": false
+  },
+  "crafting": {
+    "original_recipe_manager_executed": true,
+    "native_recipe_manager_executed": true,
+    "positive_grids": 22,
+    "negative_grids": 44,
+    "matches_original": true,
+    "recipes": 5,
+    "pipe_output_count": 4,
+    "glass_members": [
+      "minecraft:black_stained_glass",
+      "minecraft:blue_stained_glass",
+      "minecraft:brown_stained_glass",
+      "minecraft:cyan_stained_glass",
+      "minecraft:glass",
+      "minecraft:gray_stained_glass",
+      "minecraft:green_stained_glass",
+      "minecraft:light_blue_stained_glass",
+      "minecraft:light_gray_stained_glass",
+      "minecraft:lime_stained_glass",
+      "minecraft:magenta_stained_glass",
+      "minecraft:orange_stained_glass",
+      "minecraft:pink_stained_glass",
+      "minecraft:purple_stained_glass",
+      "minecraft:red_stained_glass",
+      "minecraft:tinted_glass",
+      "minecraft:white_stained_glass",
+      "minecraft:yellow_stained_glass"
+    ],
+    "missing_optional_legacy_tags": [
+      "forge:glass",
+      "forge:glass_colorless",
+      "forge:glass_silica",
+      "forge:glass_tinted"
+    ],
+    "other_mod_glass_contributions_ported": false,
+    "crafting_menu_consumption_tested": false,
+    "source_data": [
+      {
+        "path": "data/prettypipes/recipe/pipe.json",
+        "sha256": "27d6197bb080f4cd0261ab0669b93872170e976bb5977d7cf022c2eccd75204c"
+      },
+      {
+        "path": "data/prettypipes/recipe/blank_module.json",
+        "sha256": "0596ca2e17817d6b82850197b5c6694a77094eba3962b33d16eecab68612e7b1"
+      },
+      {
+        "path": "data/prettypipes/recipe/low_extraction_module.json",
+        "sha256": "d43eb548ebc73379af45a35bfe17a008b21d9e1ec97a2937b152b88755ae0b76"
+      },
+      {
+        "path": "data/prettypipes/recipe/medium_extraction_module.json",
+        "sha256": "389617b8cbb1070c1a41642f6664a34f33f297713c58c5441df142a3f0caf0d7"
+      },
+      {
+        "path": "data/prettypipes/recipe/high_extraction_module.json",
+        "sha256": "edbb3394f4f6f48a03dbaed4e555f33e1f50a9730199132ed3cf94c61ab0ccb8"
+      },
+      {
+        "path": "data/prettypipes/loot_table/blocks/pipe.json",
+        "sha256": "b897b05d32fd77e2f9e5f12a3bef0ae1644f502693c9a4788e59889abf4f47a1"
+      }
+    ],
+    "pipe_self_drop_runtime_tested": true,
+    "pipe_loot_table_adapted": true,
+    "loot_condition_discriminators_normalized": 1,
+    "native_loot_table_evaluated": true
+  },
+  "transport": {
+    "content_modules": 7,
+    "compiled_native_modules": 3,
+    "head_injections": 10,
+    "support_modules": 3,
+    "prepare": {
+      "without_extraction_module": {
+        "input": 8,
+        "output": 0
+      },
+      "low_module_delivery": {
+        "input": 0,
+        "output": 8
+      },
+      "disconnected_network": {
+        "input": 8,
+        "output": 0
+      },
+      "saved_while_in_flight": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "verify": {
+      "immediately_after_reopen": {
+        "input": 0,
+        "output": 0
+      },
+      "delivery_after_reopen": {
+        "input": 0,
+        "output": 8
+      }
+    },
+    "save_reopen_delivery_verified": true,
+    "new_items_created_after_reopen": false,
+    "native_transport_executed": true,
+    "exact_timing_tested": false
+  },
+  "verification": {
+    "python_tests_passed": 109,
+    "module_rust_tests_passed": 5,
+    "native_engine_build_passed": true,
+    "installation_lock_reverified": true,
+    "new_profile": true,
+    "old_profile_lock_reverified": true,
+    "loopback_only": true,
+    "online_mode": true,
+    "whitelist_enabled": true,
+    "players_connected": 0,
+    "native_server_status": "stopped",
+    "original_reference_exit_code": 0,
+    "original_reference_status": "stopped"
+  },
+  "unverified_or_unimplemented": [
+    "Licensed client launch and connection",
+    "Game dispatcher with a player, creative and offhand actions",
+    "Crafting menu ingredient consumption",
+    "Module GUI and removal without destroying the pipe",
+    "Configured extraction, filters, priorities, branch routing and full overflow behavior",
+    "Special IPipeConnectable and other mods glass contributions",
+    "Bulk block edits, unloaded saved entities, exact drop positions/motion/pickup delay, explosion-specific drops"
+  ],
+  "full_pretty_pipes_ported": false,
+  "full_modpack_ported": false,
+  "published": false,
+  "removal": {
+    "original": {
+      "replace": {
+        "pipe_removed": true,
+        "dropped": {
+          "prettypipes:low_extraction_module": 1,
+          "minecraft:iron_ingot": 8
+        }
+      },
+      "destroy": {
+        "pipe_removed": true,
+        "dropped": {
+          "prettypipes:pipe": 1,
+          "prettypipes:low_extraction_module": 1,
+          "minecraft:iron_ingot": 8
+        }
+      },
+      "creative": {
+        "pipe_removed": true,
+        "dropped": {
+          "prettypipes:low_extraction_module": 1,
+          "minecraft:iron_ingot": 8
+        }
+      }
+    },
+    "baseline_without_removal_hooks_and_loot_normalization": {
+      "replace": {
+        "dropped": {},
+        "pipe_removed": true
+      },
+      "destroy": {
+        "dropped": {
+          "minecraft:iron_ingot": 8
+        },
+        "pipe_removed": true
+      }
+    },
+    "baseline_engine_sha256": "767835ab57706659e1701571c262e32f7e95fed49039f0978b81cea71a53d653",
+    "native": {
+      "schema": 1,
+      "minecraft": "26.3",
+      "checks": {
+        "replace": {
+          "dropped": {
+            "minecraft:iron_ingot": 8,
+            "prettypipes:low_extraction_module": 1
+          },
+          "pipe_removed": true
+        },
+        "destroy": {
+          "dropped": {
+            "prettypipes:pipe": 1,
+            "minecraft:iron_ingot": 8,
+            "prettypipes:low_extraction_module": 1
+          },
+          "pipe_removed": true
+        }
+      },
+      "matches_original": true,
+      "queue_and_module_fixture_injected": true,
+      "drop_query_positive_control_passed": true,
+      "same_pipe_state_preserves_inventory": true,
+      "repeated_removal_no_duplicates": true,
+      "creative_player_dispatch_tested": false,
+      "real_client_tested": false
+    },
+    "natural_transport_tested_separately": true,
+    "exact_drop_positions_motion_and_delay_tested": false
+  }
+}

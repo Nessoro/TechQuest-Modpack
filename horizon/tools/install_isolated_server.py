@@ -84,7 +84,7 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
                 or facts.get("api") != "0.2" or facts.get("side") != "both"
                 or facts.get("sha256") != checksum):
             raise ValueError("SDK rejected module identity/API/checksum: " + mod)
-        if mod == "prettypipes" and facts.get("version") != "0.1.0":
+        if mod == "prettypipes" and facts.get("version") not in ("0.1.0", "0.2.0"):
             raise ValueError("expected the reviewed Pretty Pipes content prototype")
         with zipfile.ZipFile(path) as archive:
             names = archive.namelist()
@@ -122,6 +122,17 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
                             raise ValueError("Terralith hmod block tags differ from canonical source: " + name)
         result[mod] = {"path": path, "sha256": checksum, "version": facts["version"]}
     return result
+
+
+def check_pipe_pair(mods: dict, native: list[dict]):
+    if "prettypipes" not in mods:
+        return
+    matching = [m for m in native if m.get("id") == "techquest_pretty_pipes"]
+    if len(matching) != 1:
+        raise ValueError("Pretty Pipes installation has no native extension declaration")
+    version = mods["prettypipes"].get("version")
+    if version not in ("0.1.0", "0.2.0") or matching[0].get("version") != version:
+        raise ValueError("Pretty Pipes content/native version mismatch")
 
 
 def validate_trial(datapack: Path, work: Path) -> dict[str, Path]:
@@ -222,8 +233,7 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
     payloads = validate_trial(datapack, work)
     mods = check_modules(modules, terralith, datapack, sdk, work, pretty_pipes)
     native = check_native_modules(tools, sdk)
-    if pretty_pipes is not None and not any(m["id"] == "techquest_pretty_pipes" for m in native):
-        raise ValueError("Pretty Pipes content requires its declared compiled native extension")
+    check_pipe_pair(mods, native)
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".techquest-install-", dir=output.parent) as temporary:
         temporary = Path(temporary)
@@ -290,9 +300,7 @@ def verify(server_dir: Path) -> dict:
             or report.get("minecraft") != "26.3" or report.get("world") != WORLD
             or set(report.get("modules", {})) not in (set(MODULES), set(MODULES) | {"prettypipes"})):
         raise ValueError("unrecognized local installation lock")
-    if "prettypipes" in report["modules"] and not any(
-            m.get("id") == "techquest_pretty_pipes" for m in report.get("native_modules", [])):
-        raise ValueError("Pretty Pipes installation has no native extension declaration")
+    check_pipe_pair(report["modules"], report.get("native_modules", []))
     hashes = report["files"]
     expected_mods = {f"{mod}.hmod" for mod in report["modules"]}
     if set(tree_files(server_dir / "horizon-mods")) != expected_mods:
