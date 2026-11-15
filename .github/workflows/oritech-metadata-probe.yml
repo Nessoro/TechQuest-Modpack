@@ -53,4 +53,23 @@ jobs:
                                     "version_id":dep.get("version_id"),
                                     "filename":dep.get("file_name")}))
           print("PROJECT_LICENSE="+str(get("https://api.modrinth.com/v2/project/4sYI62kA").get("license")))
+          for project in ("b1ZV3DIJ", "yAyrQXJ6"):
+              p=get("https://api.modrinth.com/v2/project/"+project)
+              vers=get("https://api.modrinth.com/v2/project/"+project+"/version?" + urllib.parse.urlencode({
+                  "loaders":json.dumps(["neoforge"]),"game_versions":json.dumps(["1.21.1"])
+              }))
+              compatible=[x for x in vers if x.get("version_type")=="release"]
+              print("EXTRA_PROJECT="+project+" TITLE="+p.get("title","?")+" LICENSE="+p.get("license",{}).get("id","?")+" RELEASE_COUNT="+str(len(compatible)))
+              for x in compatible[:4]:
+                  print("EXTRA_CANDIDATE="+json.dumps({"project":project,"number":x["version_number"],"version_id":x["id"],"published":x["date_published"]}))
+              assert compatible, ("no release",project)
+              v=max(compatible,key=lambda x:x["date_published"])
+              f=[f for f in v["files"] if f.get("primary")] or v["files"]
+              assert len(f)==1,(project,[x["filename"] for x in f])
+              f=f[0]
+              print("EXTRA_SELECTED="+json.dumps({"project":project,"version_id":v["id"],
+                 "version":v["version_number"],"filename":f["filename"],"sha512":f["hashes"]["sha512"],
+                 "sha1":f["hashes"]["sha1"],"size":f["size"],"dependencies":v.get("dependencies",[]),
+                 "game_versions":v["game_versions"],"loaders":v["loaders"],
+                 "client_side":p.get("client_side"),"server_side":p.get("server_side")}))
           PY
