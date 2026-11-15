@@ -50,7 +50,7 @@ def main():
             page.on("pageerror", lambda error: errors.append(str(error)))
             page.add_init_script("window.open=(url)=>{window.__draft=url;return null}")
             page.goto(url, wait_until="networkidle")
-            assert page.locator(".mod-card").count() == 12
+            assert page.locator(".mod-card").count() == 6
             assert page.locator("#download-link").get_attribute("href").endswith("/456/artifacts/123")
             assert "<script>bad()</script>" in page.locator("#issues-feed").inner_text()
             assert page.locator("#issues-feed script").count() == 0
@@ -63,6 +63,7 @@ def main():
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), width
                 if width == 390:
                     page.screenshot(path=str(output / "mobile.png"))
+            page.locator("#mods > summary").click()
             page.locator("#show-all-mods").click()
             count = page.evaluate("window.TQ_MODS.length")
             assert page.locator(".mod-card").count() == count
@@ -76,6 +77,7 @@ def main():
             assert page.locator('[data-category="Мобы"]').get_attribute("aria-pressed") == "true"
             assert page.locator(".mod-card").count() > 0
             assert all(t == "Мобы" for t in page.locator(".mod-card .category").all_text_contents())
+            page.locator("#feedback > summary").click()
             for form_id in ("bug-form", "mod-form"):
                 form = page.locator("#" + form_id)
                 form.locator('[name="title"]').fill("Проверка формы")
