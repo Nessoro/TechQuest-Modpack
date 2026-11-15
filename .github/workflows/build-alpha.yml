@@ -9,6 +9,8 @@ on:
       - rpg-core/**
       - scripts/install_server.py
       - scripts/install_client.py
+      - scripts/mods_transaction.py
+      - scripts/audit_micro3_packages.py
       - windows-installer/**
       - scripts/security_audit.py
       - scripts/audit_jar_metadata.py
@@ -33,6 +35,8 @@ jobs:
           python-version: '3.12'
       - name: Validate pack builder and server installer
         run: python -m unittest discover -s tests -v
+      - name: Inspect official Iskander Rocket metadata
+        run: python scripts/inspect_iskander_rocket.py
       - name: Validate GitHub-hosted IndustrialCraft JAR and download hash
         run: |
           python - <<'PY'
@@ -58,26 +62,179 @@ jobs:
           PY
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
-      - name: Enforce micro2 RPG replacement in full packaged client and server
+      - name: Verify new JEI integration and pinned foundation in client/server
         run: |
           python - <<'PY'
-          import json, zipfile
+          import hashlib
+          import json
+          import zipfile
           from pathlib import Path
-          name = "techquest-rpg-core-0.1.0.jar"
-          out = Path("output")
+
+          cfg = json.loads(Path("modlist.json").read_text(encoding="utf-8"))
+          expected = {
+              "VzR5wiLo": ("BYZmHubv", "refinedstorage-jei-integration-neoforge-1.0.0.jar"),
+              "KDvYkUg3": ("lHHiI26k", "refinedstorage-neoforge-2.0.9.jar"),
+              "u6dRKJwZ": ("iv3KiVkE", "jei-1.21.1-neoforge-19.64.0.455.jar"),
+              "gF3BGWvG": ("yWmXD7GW", "open-parties-and-claims-neoforge-1.21.1-0.33.0.jar"),
+          }
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as archive:
+              rows = json.loads(archive.read("modrinth.index.json"))["files"]
+              for project, (version, filename) in expected.items():
+                  lock = cfg["modrinth_lock"][project]
+                  assert lock["version_id"] == version, (project, "unexpected version")
+                  assert lock["filename"] == filename, (project, "unexpected artifact")
+                  paths = [row for row in rows if row["path"] == "mods/" + filename]
+                  assert len(paths) == 1, (filename, "duplicate/missing mrpack record")
+                  assert paths[0]["hashes"]["sha512"] == lock["sha512"]
+                  for side in ("client", "server"):
+                      path = Path("output") / side / "mods" / filename
+                      assert path.is_file(), path
+                      assert hashlib.sha512(path.read_bytes()).hexdigest() == lock["sha512"], path
+                      with zipfile.ZipFile(path) as jar:
+                          assert jar.testzip() is None, ("corrupted JAR", path)
+                  print("Exact pinned client/server JAR validated:", project, version)
+              assert "overrides/defaultconfigs/openpartiesandclaims-server.toml" in archive.namelist()
+          PY
+      - name: Verify pinned Oritech Athena and Fluidic Tanks in client and server
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+          cfg=json.loads(Path("modlist.json").read_text(encoding="utf-8"))
+          expected = {
+              "4sYI62kA": ("BR0KKypH", "oritech-neoforge-1.21.1-1.2.13.jar",
+                           {"client":"required","server":"required"}),
+              "b1ZV3DIJ": ("dJgL278E", "athena-neoforge-1.21.1-4.0.6.jar",
+                           {"client":"required","server":"unsupported"}),
+              "yAyrQXJ6": ("991No08g", "fluidic_tanks-1.1.1.jar",
+                           {"client":"required","server":"required"}),
+          }
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as archive:
+              index=json.loads(archive.read("modrinth.index.json"))
+              for project,(version,filename,sides) in expected.items():
+                  lock=cfg["modrinth_lock"][project]
+                  assert (lock["version_id"],lock["filename"],lock["environment"]) == (version,filename,sides)
+                  rows=[r for r in index["files"] if r["path"]=="mods/"+filename]
+                  assert len(rows)==1,("missing or duplicate mrpack JAR",filename)
+                  assert rows[0]["hashes"]["sha512"]==lock["sha512"]
+                  assert rows[0]["env"]==sides
+                  assert "overrides/mods/"+filename not in archive.namelist()
+                  for side in ("client","server"):
+                      path=Path("output")/side/"mods"/filename
+                      if sides[side]=="unsupported":
+                          assert not path.exists(),("client-only library leaked to server",path)
+                          continue
+                      assert path.is_file(),("missing",path)
+                      assert hashlib.sha512(path.read_bytes()).hexdigest()==lock["sha512"],path
+                      with zipfile.ZipFile(path) as jar:
+                          assert jar.testzip() is None,("corrupt",path)
+                  print("Oritech+Fluidic exact release and sides verified:",project,version)
+          PY
+      - name: Audit micro3 client/server/Modrinth manifests and both Compatibility payloads
+        run: python scripts/audit_micro3_packages.py
+      - name: Assert pinned micro4 client, server and Modrinth manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+          import build_pack
+
+          cfg = build_pack.load_cfg()
+          locks = cfg["modrinth_lock"]
+          expected_ids = ("4QrnfueM", "XExdLWCQ", "LN9BxssP", "rOUBggPv")
+          excluded_ids = ("x18RjbsF", "y16HgCOF", "p19vrgc2")
+          excluded_names = ("colossal", "iskandert", "fusion", "ftb-industrial",
+                            "ftb_industrial", "techquest-rpg-core", "pmmo")
+          for project_id in excluded_ids:
+              assert project_id not in locks, ("excluded Modrinth lock", project_id)
+          for meta in locks.values():
+              label = (meta.get("title", "") + " " + meta.get("filename", "")).lower()
+              assert not any(name in label for name in excluded_names), label
+
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as archive:
+              assert archive.testzip() is None, "damaged mrpack ZIP"
+              index = json.loads(archive.read("modrinth.index.json"))
+              files = {row["path"]: row for row in index["files"]}
+              all_paths = set(archive.namelist()) | set(files)
+              # Only JARs under mod directories can be installed as mods.
+              # Patchouli pages such as colossal_enemies.json are not reactor mods.
+              def forbidden_mod_jar(path):
+                  lowered = path.lower()
+                  if not lowered.startswith(("mods/", "overrides/mods/")):
+                      return False
+                  if not lowered.endswith(".jar"):
+                      return False
+                  return any(name in Path(lowered).name for name in excluded_names)
+
+              # Regression checks: keep false positives out and real banned JARs out.
+              assert not forbidden_mod_jar(
+                  "overrides/patchouli_books/techquest_guide/en_us/entries/colossal_enemies.json")
+              assert forbidden_mod_jar("mods/colossal-reactors-1.0.jar")
+              assert not forbidden_mod_jar("mods/iskander-2.0.1.jar")
+              for path in all_paths:
+                  assert not forbidden_mod_jar(path), path
+              for project_id in expected_ids:
+                  lock = locks[project_id]
+                  name = lock["filename"]
+                  path = "mods/" + name
+                  assert path in files, ("missing from mrpack", project_id, path)
+                  row = files[path]
+                  assert row["hashes"]["sha512"] == lock["sha512"], path
+                  assert row["env"] == {"client": "required", "server": "required"}, path
+                  # .mrpack holds download references, never repacked third-party JARs.
+                  assert "overrides/" + path not in all_paths, path
+                  for side in ("client", "server"):
+                      jar = Path("output") / side / "mods" / name
+                      assert jar.is_file(), (side, project_id, "missing")
+                      assert hashlib.sha512(jar.read_bytes()).hexdigest() == lock["sha512"], jar
+              assert "overrides/mods/techquest-compat-1.0.0.jar" in all_paths
           for side in ("client", "server"):
-              directory = out / side / "mods"
-              assert (directory / name).is_file(), f"{side} missing RPG Core"
-              assert not list(directory.glob("pmmo-*.jar")), f"{side} still contains PMMO"
-              with zipfile.ZipFile(directory / name) as core:
-                  assert "data/minecraft/tags/function/tick.json" in core.namelist()
-                  assert b'modLoader="lowcodefml"' in core.read("META-INF/neoforge.mods.toml")
-          with zipfile.ZipFile(out / "TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as pack:
-              assert "overrides/mods/" + name in pack.namelist()
-              files = json.loads(pack.read("modrinth.index.json"))["files"]
-              assert not any(row["path"].startswith("mods/pmmo-") for row in files)
-              assert "overrides/config/pmmo-client.toml" not in pack.namelist()
-          print("micro2: RPG Core present on both sides; PMMO absent")
+              directory = Path("output") / side / "mods"
+              assert (directory / "techquest-compat-1.0.0.jar").is_file(), side
+              assert not any(
+                  any(name in jar.name.lower() for name in excluded_names)
+                  for jar in directory.glob("*.jar")
+              ), side
+          print("micro4 pinned JAR hashes, client/server outputs and mrpack verified")
+          print("No Minecraft gameplay or route-testing implied by this check")
+          PY
+      - name: Verify original Iskander in client, server, and Modrinth manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+          import build_pack
+
+          cfg = build_pack.load_cfg()
+          mod = next(x for x in cfg["mods"] if x["project"] == "iskander-rocket-mod")
+          lock = cfg["modrinth_lock"]["XUogRnhj"]
+          assert mod["version_id"] == lock["version_id"] == "M1b2lYax"
+          assert lock["filename"] == "iskander-2.0.1+mc1.21-1.21.1-neoforge.jar"
+          assert lock["environment"] == {"client": "required", "server": "required"}
+          for side in ("client", "server"):
+              jar = Path("output") / side / "mods" / lock["filename"]
+              assert jar.is_file(), (side, "Iskander missing")
+              assert hashlib.sha512(jar.read_bytes()).hexdigest() == lock["sha512"], jar
+              with zipfile.ZipFile(jar) as archive:
+                  assert archive.testzip() is None, (side, "corrupted jar")
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as archive:
+              assert archive.testzip() is None
+              index = json.loads(archive.read("modrinth.index.json"))
+              path = "mods/" + lock["filename"]
+              rows = [row for row in index["files"] if row["path"] == path]
+              assert len(rows) == 1, (path, "expected exactly one original mod entry")
+              assert rows[0]["hashes"]["sha512"] == lock["sha512"]
+              assert rows[0]["env"] == {"client": "required", "server": "required"}
+              assert "overrides/" + path not in archive.namelist(), "do not repackage author jar"
+              guide = "overrides/patchouli_books/techquest_guide/en_us/entries/iskander_rocket.json"
+              assert guide in archive.namelist(), "missing Patchouli rocket guide"
+          print("micro5: Iskander 2.0.1 original pinned SHA-512 and client/server mrpack verified")
           PY
       - name: Check built JAR game ranges and required mod presence
         run: python scripts/audit_jar_metadata.py
@@ -111,6 +268,7 @@ jobs:
           """
           with zipfile.ZipFile(p,"w",zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_server.py")
+              z.write("scripts/mods_transaction.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
               z.write(out/"TechQuest_1.21.1_0.3.3_ALPHA.mrpack",arcname="TechQuest.mrpack")
@@ -140,6 +298,7 @@ jobs:
           with zipfile.ZipFile(out/"TechQuest_Client_Bootstrap.zip","w",
                                zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_client.py")
+              z.write("scripts/mods_transaction.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
               z.write(out/"TechQuest_1.21.1_0.3.3_ALPHA.mrpack",arcname="TechQuest_Optimized.mrpack")
@@ -177,6 +336,7 @@ jobs:
             output/TechQuest_Client_Bootstrap.zip
             output/versions-lock.json
             output/BUILD_STATUS.json
+            output/micro3-package-audit.json
             output/jar-metadata-audit.json
             output/keybindings-audit.json
             output/keybindings-audit.md
@@ -242,7 +402,13 @@ jobs:
             $reader = [IO.StreamReader]::new($entry.Open())
             try { $index = $reader.ReadToEnd() | ConvertFrom-Json } finally { $reader.Close() }
             $paths = @($index.files | ForEach-Object { $_.path })
-            foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft','xaero','healthindicator','patchouli','openloader')) {
+            if($paths | Where-Object { $_ -match '^mods/(techquest-rpg-core|pmmo-|project-mmo)' }) {
+              throw 'Disallowed RPG Core/PMMO in GUI Modrinth manifest'
+            }
+            if($zip.Entries | Where-Object { $_.FullName -match '^overrides/mods/(techquest-rpg-core|pmmo-|project-mmo)' }) {
+              throw 'Disallowed RPG Core/PMMO in GUI overrides'
+            }
+            foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft','xaero','healthindicator','patchouli','openloader','jei-1.21.1-neoforge-19.64.0.455.jar','refinedstorage-neoforge-2.0.9.jar','refinedstorage-jei-integration-neoforge-1.0.0.jar','open-parties-and-claims-neoforge-1.21.1-0.33.0.jar','oritech-neoforge-1.21.1-1.2.13.jar','athena-neoforge-1.21.1-4.0.6.jar','fluidic_tanks-1.1.1.jar')) {
               if(-not ($paths | Where-Object { $_ -match $mustHave })) { throw "Missing required mod: $mustHave" }
             }
             if($paths | Where-Object { $_ -match '^mods/iris-' }) { throw 'Optimized pack contains Iris unexpectedly' }
@@ -370,6 +536,7 @@ jobs:
           echo "- Negative antivirus scans cannot guarantee absence of malicious code." >> "$GITHUB_STEP_SUMMARY"
 
   publish-preview:
+    # Historical micro2 publisher only; this branch never auto-publishes a release.
     name: Publish public installer preview (no account required)
     needs: [pack, windows-installer, security-scan]
     # Never publish unscanned binaries or make an unstable beta the stable release.

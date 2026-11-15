@@ -68,7 +68,8 @@ class ClientControlsTests(unittest.TestCase):
                 self.assertEqual(preset["zoomMode"], "WHEEL")
                 self.assertFalse(preset["hideGui"])
                 self.assertNotIn("overrides/config/pmmo-client.toml", archive.namelist())
-                self.assertIn("overrides/mods/" + build_pack.RPG_JAR_NAME, archive.namelist())
+                self.assertIn("overrides/mods/" + build_pack.COMPAT_JAR_NAME, archive.namelist())
+                self.assertNotIn("overrides/mods/techquest-rpg-core-0.1.0.jar", archive.namelist())
                 install_client.install_guide_overrides(archive, root / "client")
                 (root / "client/options.txt").write_text("player-options")
                 target = root / "client/config/betterzoom-client.toml"
