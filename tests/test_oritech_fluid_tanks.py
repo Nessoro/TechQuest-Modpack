@@ -17,7 +17,7 @@ NEW = {
                 "oritech-neoforge-1.21.1-1.2.13.jar",
                 "9a688409643075051d759da1b7dc732dd97f5f3ae584a12c5908689858af145373a69046d9c1881e6e0f41916c742e2850512296e05dbcd39fc0f214ecfc3cdf",
                 {"client": "required", "server": "required"}),
-    "b1ZV3DIJ": ("athena", "4.0.6", "dJgL278E",
+    "b1ZV3DIJ": ("b1ZV3DIJ", "4.0.6", "dJgL278E",
                 "athena-neoforge-1.21.1-4.0.6.jar",
                 "ab40a306a26ce834daae921a1e87768cd2538a4bfe27a4480f97af854084cc334e7416b1bd0b7583834a32a86951283f29fd4b1df7b98a967a6b26a3ec05e2cf",
                 {"client": "required", "server": "unsupported"}),
@@ -62,10 +62,10 @@ class OritechFluidTanksTests(unittest.TestCase):
                 self.assertEqual(filename, lock["filename"])
                 self.assertEqual(sha, lock["sha512"])
                 self.assertEqual(sides, lock["environment"])
-        self.assertTrue(next(m for m in self.mods if m["project"] == "athena")["client_only"])
+        self.assertTrue(next(m for m in self.mods if m["project"] == "b1ZV3DIJ")["client_only"])
 
     def test_required_dependencies_no_duplicate_libraries(self):
-        for slug in ("geckolib", "architectury-api", "athena",
+        for slug in ("geckolib", "architectury-api", "b1ZV3DIJ",
                      "oritech", "fluidic-tanks"):
             self.assertEqual(1, sum(m["project"] == slug for m in self.mods), slug)
         self.assertIn("8BmcQJ2H", self.pins)  # GeckoLib
