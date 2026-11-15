@@ -73,3 +73,7 @@ jobs:
                  "game_versions":v["game_versions"],"loaders":v["loaders"],
                  "client_side":p.get("client_side"),"server_side":p.get("server_side")}))
           PY
+      - name: Inspect generated Pages catalog differences
+        run: |
+          python3 scripts/sync_site_mods.py
+          git diff -- docs/index.html | head -n 160 || true
