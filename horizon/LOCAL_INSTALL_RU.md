@@ -14,6 +14,11 @@ world datapack в **новой** папке. Это текущий сервер�
 Better Dungeons hmod: [адаптер и проверка YUNG's](YUNG_RUNTIME_RU.md).
 Его передают через новую папку `--modules`, заменяя в ней только исходный
 `betterdungeons.hmod`. Уже установленный payload и lock не редактировать.
+Текущий адаптер также восстанавливает default chest limits. Для правильного
+подсчёта по шаблону нужен движок со вторым нативным расширением
+[TechQuest YUNG Dungeons](first_party/yung_dungeons/README.md), собранным вместе
+с Terralith Wolves. Обычный CountCap без этого расширения повторяет лимит
+в каждом чанке; один SDK-check hmod такой дефект не обнаруживает.
 
 ## Входные файлы
 

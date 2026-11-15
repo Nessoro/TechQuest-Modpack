@@ -28,6 +28,13 @@ def observe(binary: Path, server: Path, plan: dict) -> dict:
                   "block_present": present, "template": candidate["template"],
                   "source_loot_table": candidate["source_loot_table"],
                   "source_spawn_entity": candidate["source_spawn_entity"]}
+        result["actual_block"] = candidate["block"] if present else None
+        if not present:
+            for block in ("minecraft:air", "minecraft:cave_air"):
+                marker = "TQ_REPLACEMENT_" + uuid.uuid4().hex
+                if marker in command(f"execute if block {position} {block} run say {marker}"):
+                    result["actual_block"] = block
+                    break
         if present:
             # Sequential queries keep command responses associated with their
             # own block; only identifiers and numeric spawner fields leave here.
@@ -72,6 +79,31 @@ def compare_reference(report, reference):
             "mismatch_positions": mismatches}
 
 
+def compare_containers(report, reference):
+    if (reference.get("minecraft"), reference.get("seed")) != ("1.21.1", report["seed"]):
+        raise ValueError("expected original container observations with the same seed")
+    expected = {tuple(c["position"]): c for s in reference["structures"] for c in s["candidates"]}
+    actual = {tuple(c["position"]): c for s in report["structures"] for c in s["candidates"]
+              if c["expected_block"] != "minecraft:spawner"}
+    if not expected or set(expected) != set(actual):
+        raise ValueError("reference container positions differ from native cases")
+    mismatches = []
+    for pos, original in expected.items():
+        native = actual[pos]
+        if original["actual_block"] is None:
+            raise ValueError("original container replacement was not classified")
+        if (native["actual_block"] != original["actual_block"] or
+                native["expected_block"] != original["expected_block"] or
+                native.get("loot_table") != original["loot_table"]):
+            mismatches.append({"position": list(pos), "expected_block": original["actual_block"],
+                               "actual_block": native["actual_block"],
+                               "expected_loot": original["loot_table"],
+                               "actual_loot": native.get("loot_table")})
+    return {"cases": len(expected), "original_containers": sum(c["block_present"] for c in expected.values()),
+            "native_containers": sum(c["block_present"] for c in actual.values()),
+            "mismatches": mismatches}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--binary", type=Path, required=True)
@@ -80,6 +112,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--reference", type=Path,
                         help="Optional output of reference_yung_spawners.py")
+    parser.add_argument("--reference-containers", type=Path,
+                        help="Optional output of reference_yung_containers.py")
     args = parser.parse_args()
     plans = json.loads(args.plans.read_text())
     if args.output.exists():
@@ -92,6 +126,8 @@ def main():
                              for p in plans["plans"]]}
     if args.reference:
         report["original_comparison"] = compare_reference(report, json.loads(args.reference.read_text()))
+    if args.reference_containers:
+        report["container_comparison"] = compare_containers(report, json.loads(args.reference_containers.read_text()))
     with args.output.open("x") as stream:
         json.dump(report, stream, indent=2)
         stream.write("\n")
@@ -102,6 +138,8 @@ def main():
               "loot references:", sum(c.get("loot_table") is not None for c in present))
     if args.reference and report["original_comparison"]["mismatch_positions"]:
         raise SystemExit("original/native spawner comparison failed; see output")
+    if args.reference_containers and report["container_comparison"]["mismatches"]:
+        raise SystemExit("original/native container comparison failed; see output")
 
 
 if __name__ == "__main__":

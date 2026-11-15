@@ -1,0 +1,310 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-15",
+  "working_base_commit": "b69d3c9",
+  "resume_gate": {
+    "pr": 48,
+    "state": "MERGED",
+    "mergedAt": "2026-11-15T11:20:42Z",
+    "mergeCommit": "f5d779750c56762dcfa6ea0c4c76e088a8782759",
+    "baseRefName": "feat/micro5-refined-storage-jei-033",
+    "main_at_resume": "bd46f1ee74f3be1037dcf3bc15dfe928f2dd3384",
+    "modlist_sha256": "3fed6bbcc4662631619035ba6378cc0c345441cbdb341779965246aa23e39005",
+    "direct_mods": 77,
+    "added_direct_mods_since_pinned_snapshot": [
+      "architectury-api",
+      "b1ZV3DIJ",
+      "fluidic-tanks",
+      "iskander-rocket-mod",
+      "open-parties-and-claims",
+      "oritech",
+      "pretty-pipes",
+      "refined-storage",
+      "refined-storage-jei-integration",
+      "sophisticated-storage",
+      "trash-cans"
+    ],
+    "removed_direct_mods_since_pinned_snapshot": [
+      "project-mmo"
+    ],
+    "source_pin_changed": false,
+    "worldgen_test_uses_original_pinned_jars": true
+  },
+  "minecraft": "26.3",
+  "source_minecraft": "1.21.1",
+  "source_loader": "NeoForge 21.1.264",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "seed": 263,
+  "bind": "127.0.0.1",
+  "port": 25611,
+  "online_mode": true,
+  "whitelist": true,
+  "players_connected": 0,
+  "content_modules": 6,
+  "compiled_native_modules": [
+    {
+      "id": "techquest_terralith_wolves",
+      "version": "0.1.0",
+      "sha256": "243f1bb11cd5e09bc955c38423c57fda0856018bef6cb42bb070056be96ed140",
+      "api": "native-1/c78187dffffb60f31517eadcb87413386e8ce729/5a64af938ec86b00d53d16a408aabc0038fb3e57"
+    },
+    {
+      "id": "techquest_yung_dungeons",
+      "version": "0.1.0",
+      "sha256": "d6b6c286ac3972c3502a2b7d19139d6917fb7a6a16ef00fbea3ce0f7ff71cfed",
+      "api": "native-1/c78187dffffb60f31517eadcb87413386e8ce729/5a64af938ec86b00d53d16a408aabc0038fb3e57"
+    }
+  ],
+  "engine_sha256": "2b718dfc39b5e107e3e37dfd011e739784c702b34cba9b32a38da4017ac26314",
+  "headless_build_default_features": false,
+  "build_profile": "fast",
+  "final_compile_duration": "3m 56s after cache warming",
+  "native_injections": 3,
+  "support_modules": 1,
+  "staged_rust_files_changed": [
+    "crates/horizon-client/src/client_lib.rs",
+    "crates/horizon-client/src/game/creatures.rs",
+    "crates/horizon-client/src/mobs/tame.rs",
+    "crates/horizon-world/src/worldgen/structure/processor.rs"
+  ],
+  "cargo_lock_changed": false,
+  "original_upstream_tracked_code_changed": false,
+  "derived_dungeons_hmod_sha256": "bb671e34be1283aadc7aa62c76094e4c1e33bd36ad1979d2859f86cf212324b5",
+  "derived_dungeons_sdk_validated": true,
+  "source_jar_sha1": "73a660c13063450e555e5e2c015ae24d606b32b4",
+  "restored_fixed_mob_processors": 3,
+  "restored_chest_limit_processors": 3,
+  "chest_configuration": {
+    "min": 1,
+    "max": 2,
+    "chance": 0.2,
+    "replacement": "minecraft:cave_air",
+    "source_configuration": "original mod defaults"
+  },
+  "other_dropped_processors_in_selected_lists": 27,
+  "original_default_min_max_verified": true,
+  "original_observations_reproduced": true,
+  "original_java_source_read_or_decompiled": false,
+  "baseline_with_count_cap_only": {
+    "native_containers": 93,
+    "original_containers": 46,
+    "mismatch_positions": 47,
+    "cause": "CountCap clipped block processing to the current chunk and repeated the minimum"
+  },
+  "native_scope_fix": "Evaluate CountCap over the entire template; retain final chunk write clipping. Other processor decisions use the original method.",
+  "container_comparison": {
+    "cases": 142,
+    "original_containers": 46,
+    "native_containers": 46,
+    "mismatches": []
+  },
+  "observed_container_states": {
+    "minecraft:chest": 28,
+    "minecraft:cave_air": 96,
+    "minecraft:barrel": 18
+  },
+  "loot_table_ids_compared": 46,
+  "spawner_comparison": {
+    "cases": 17,
+    "numeric_fields_compared": 119,
+    "source_mobs": [
+      "minecraft:skeleton",
+      "minecraft:spider",
+      "minecraft:zombie"
+    ],
+    "mismatch_positions": []
+  },
+  "per_structure": [
+    {
+      "chunk": [
+        8,
+        8
+      ],
+      "container_candidates": 9,
+      "present_containers": 3,
+      "removed_as_cave_air": 6
+    },
+    {
+      "chunk": [
+        8,
+        32
+      ],
+      "container_candidates": 4,
+      "present_containers": 1,
+      "removed_as_cave_air": 3
+    },
+    {
+      "chunk": [
+        16,
+        32
+      ],
+      "container_candidates": 8,
+      "present_containers": 2,
+      "removed_as_cave_air": 6
+    },
+    {
+      "chunk": [
+        24,
+        32
+      ],
+      "container_candidates": 7,
+      "present_containers": 3,
+      "removed_as_cave_air": 4
+    },
+    {
+      "chunk": [
+        32,
+        32
+      ],
+      "container_candidates": 10,
+      "present_containers": 5,
+      "removed_as_cave_air": 5
+    },
+    {
+      "chunk": [
+        40,
+        32
+      ],
+      "container_candidates": 12,
+      "present_containers": 3,
+      "removed_as_cave_air": 9
+    },
+    {
+      "chunk": [
+        48,
+        32
+      ],
+      "container_candidates": 4,
+      "present_containers": 1,
+      "removed_as_cave_air": 3
+    },
+    {
+      "chunk": [
+        56,
+        32
+      ],
+      "container_candidates": 8,
+      "present_containers": 2,
+      "removed_as_cave_air": 6
+    },
+    {
+      "chunk": [
+        64,
+        32
+      ],
+      "container_candidates": 9,
+      "present_containers": 4,
+      "removed_as_cave_air": 5
+    },
+    {
+      "chunk": [
+        72,
+        32
+      ],
+      "container_candidates": 9,
+      "present_containers": 3,
+      "removed_as_cave_air": 6
+    },
+    {
+      "chunk": [
+        80,
+        32
+      ],
+      "container_candidates": 9,
+      "present_containers": 3,
+      "removed_as_cave_air": 6
+    },
+    {
+      "chunk": [
+        88,
+        32
+      ],
+      "container_candidates": 14,
+      "present_containers": 6,
+      "removed_as_cave_air": 8
+    },
+    {
+      "chunk": [
+        96,
+        32
+      ],
+      "container_candidates": 4,
+      "present_containers": 1,
+      "removed_as_cave_air": 3
+    },
+    {
+      "chunk": [
+        104,
+        32
+      ],
+      "container_candidates": 12,
+      "present_containers": 2,
+      "removed_as_cave_air": 10
+    },
+    {
+      "chunk": [
+        112,
+        32
+      ],
+      "container_candidates": 6,
+      "present_containers": 2,
+      "removed_as_cave_air": 4
+    },
+    {
+      "chunk": [
+        120,
+        32
+      ],
+      "container_candidates": 8,
+      "present_containers": 2,
+      "removed_as_cave_air": 6
+    },
+    {
+      "chunk": [
+        128,
+        32
+      ],
+      "container_candidates": 9,
+      "present_containers": 3,
+      "removed_as_cave_air": 6
+    }
+  ],
+  "save_reopen_verified": true,
+  "all_observations_identical_after_reopen": true,
+  "final_install_lock_verified": true,
+  "python_tests_passed": 98,
+  "native_helper_rustfmt_check_passed": true,
+  "reference_server_exit_code": 0,
+  "reference_server_stopped_gracefully": true,
+  "native_server_statuses": {
+    "techquest-yung-chest-server": "stopped",
+    "techquest-yung-chest-fixed-server": "stopped"
+  },
+  "unverified": [
+    "Player opening and lazy loot rolls/item delivery",
+    "Natural structure generation and biome eligibility",
+    "Spawner activation with a real player",
+    "Full RNG trace, decorative and terrain parity",
+    "Custom chest configuration and unobserved trapped-chest cases",
+    "The remaining 27 dropped processors and 16 unsupported structure definitions",
+    "Full native industrial gameplay and licensed client/multiplayer",
+    "New industrial mods from the post-PR48 source snapshot"
+  ],
+  "source_pin_changed": false,
+  "main_changed": false,
+  "published": false,
+  "full_modpack_ported": false,
+  "local_evidence_root": "/workspace/horizon-runtime",
+  "local_evidence_sha256": {
+    "pr48-resume-facts.json": "fd33e5a4fdad50ad9557a93d25828699b2f7fea00231e9cb4bb6bd1957b32493",
+    "yung-original-containers-v1.json": "1140e5d66c116f1be6c5e842f74aa81d8c8aac7d7a9892624250631404d45876",
+    "yung-original-containers-reproduced.json": "1140e5d66c116f1be6c5e842f74aa81d8c8aac7d7a9892624250631404d45876",
+    "yung-chest-live-v1.json": "01e4ff9085b990be364dbf9b65df16243dde0629ba7bd6c8b66930a47de06f09",
+    "yung-chest-fixed-live.json": "62ef6126f55faccd94fe094e1d7139e36fb3e570d9d5b5515dcef7684c3fc3f6",
+    "yung-chest-fixed-reopened.json": "62ef6126f55faccd94fe094e1d7139e36fb3e570d9d5b5515dcef7684c3fc3f6",
+    "yung-chest-fixed-final-verify.json": "6c6dccce63df12cd17326085240709c1603ed1688c90845c58da2053081f5362",
+    "yung-native-sdk-result-v2.json": "682ea491c307e67cbbbe80b49f3979c9471ce81ddb283e68cedd28a209b14856",
+    "yung-native-apply-v2.json": "52fbace8a19ff148d4908c4243d37c96ea7db441a1f1103ef1e1bdbd0943fe43"
+  }
+}

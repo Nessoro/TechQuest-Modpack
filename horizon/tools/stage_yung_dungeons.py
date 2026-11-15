@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Restore three fixed-mob processors in a separate Better Dungeons hmod.
+"""Restore fixed-mob processors and default chest limits in Better Dungeons.
 
 Reads public JSON data from the pinned original JAR, never Java code. This
 partial adapter leaves all other dropped processors explicitly unresolved.
@@ -46,7 +46,7 @@ def replacements(jar: Path, carry: Path):
                         if p["processor_type"].startswith("minecraft:")]
             if json.loads(read_checked(carry / name)) != {"processors": expected}:
                 raise ValueError("carried rules differ from reviewed source: " + name)
-            converted, restored = [], 0
+            converted, restored, chest_caps = [], 0, 0
             for processor in original["processors"]:
                 kind = processor["processor_type"]
                 if kind.startswith("minecraft:"):
@@ -70,10 +70,22 @@ def replacements(jar: Path, carry: Path):
                         "block_entity_modifier": {"type": "minecraft:append_static",
                                                   "data": {"id": "minecraft:mob_spawner"}}}]})
                     restored += 1
+                elif kind == "betterdungeons:small_dungeon_chest_processor":
+                    if processor != {"processor_type": kind}:
+                        raise ValueError("unreviewed chest processor fields")
+                    # Native CountCap is documented for this processor; use
+                    # the original default configuration, not arbitrary limits.
+                    converted.append({"processor_type": "horizon:count_cap",
+                                      "blocks": ["minecraft:chest", "minecraft:trapped_chest"],
+                                      "min": 1, "max": 2, "chance": 0.2,
+                                      "replacement": {"id": "minecraft:cave_air"}})
+                    chest_caps += 1
                 else:
                     unresolved.append({"file": name, "processor_type": kind})
             if restored != 1:
                 raise ValueError("expected exactly one fixed-mob processor per list")
+            if chest_caps != 1:
+                raise ValueError("expected exactly one chest processor per list")
             payloads[name] = (json.dumps({"processors": converted}, indent=2) + "\n").encode()
             provenance[name] = hashlib.sha256(raw).hexdigest()
     return payloads, unresolved, provenance
@@ -128,6 +140,10 @@ def stage(work: Path, jar: Path, sdk: Path, output: Path):
                   "source_version": VERSION, "source_jar_sha1": SOURCE_SHA1,
                   "source_json_sha256": provenance, "sha256": checksum,
                   "restored_fixed_mob_processors": 3, "adapted_files": sorted(overrides),
+                  "restored_chest_limit_processors": 3,
+                  "chest_configuration": {"min": 1, "max": 2, "chance": 0.2,
+                                          "replacement": "minecraft:cave_air",
+                                          "source_configuration": "original mod defaults"},
                   "native_spawner_block_entity_id_restored": True,
                   "still_dropped_in_selected_lists": unresolved,
                   "source_files_modified": False, "sdk_validated": True,

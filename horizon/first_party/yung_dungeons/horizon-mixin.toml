@@ -1,0 +1,16 @@
+[mod]
+id = "techquest_yung_dungeons"
+version = "0.1.0"
+
+[compatibility]
+horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
+
+[[injection]]
+id = "count_scope"
+target = "horizon_world::worldgen::structure::processor::Processor::evaluates_entire_piece"
+kind = "HEAD"
+cancellable = true
+helper = "count_scope.rs"
+bindings = [
+  { name = "processor", ty = "&crate::worldgen::structure::processor::Processor", value = "self" },
+]

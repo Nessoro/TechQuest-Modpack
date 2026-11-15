@@ -1,4 +1,4 @@
-# YUNG's: структуры и восстановление спавнеров
+# YUNG's: структуры, спавнеры и ограничения сундуков
 
 Проверка 15 ноября 2026 года использует Horizon 26.3 `c78187d` и отдельный
 исходный сервер Minecraft 1.21.1 / NeoForge 21.1.264. Оба сервера привязаны
@@ -46,11 +46,35 @@ LGPL Java-кода. 17 точек с seed 263 охватывают три вид
 моб, единственный SpawnPotential и семь числовых полей каждого спавнера.
 Все 17 мобов, 119 числовых полей и SpawnPotentials совпали; повторное чтение
 после save/reopen сохранило результат. 96 Horizon Python-тестов прошли.
-Это частичное исправление: RNG trace и геометрическая/декоративная идентичность
-всего dungeon не подтверждены. В тех же трёх списках остаются 30 отброшенных
-других processors. Например, в контрольной раскладке native оставляет девять
-container-кандидатов, оригинал — три; chest limits ещё требуют переноса.
+На первом этапе это оставляло 30 других processors отброшенными. Контрольная
+раскладка сохраняла девять native container-кандидатов вместо трёх оригинальных.
+Следующий этап восстанавливает три chest processors; остаются 27 других.
+RNG trace и геометрическая/декоративная идентичность всего dungeon не подтверждены.
 Спавнеры zombie/skeleton больших подземелий этим адаптером не исправляются.
+
+## Ограничения сундуков
+
+`stage_yung_dungeons.py` теперь восстанавливает также
+`betterdungeons:small_dungeon_chest_processor` через `horizon:count_cap`.
+Используются исходные defaults: min=1, max=2, chance=0.2; лишний сундук становится
+`minecraft:cave_air`. Ограничение относится к шаблону с этим processor list;
+loot-pile templates и бочки не получают искусственного общего лимита на dungeon.
+Изменённые пользовательские min/max этим адаптером не импортируются.
+
+Для правильной области подсчёта нужен второй нативный bundle
+[TechQuest YUNG Dungeons](first_party/yung_dungeons/README.md). Pinned engine
+обрабатывает обычный CountCap после предварительного chunk clipping: гарантированный
+минимум повторяется в каждом чанке. Один HEAD-hook включает обработку всего шаблона
+для CountCap; финальная запись по-прежнему ограничена chunk bounding box.
+Остальные processors сохраняют исходное решение engine.
+
+На 17 подземельях исходный NeoForge сохранил 46 из 142 container-кандидатов:
+28 сундуков, 18 бочек; остальные 96 позиций — cave_air. Обычный native CountCap
+оставлял 93, с 47 расхождениями. С нативным расширением все 142 позиции и
+46 loot table IDs совпали; прежние 17 спавнеров также сохранили совпадение.
+Весь набор совпал и после save/reopen; итоговый installation lock проверен.
+98 Python-тестов прошли. [Текущий отчёт](YUNG_CHEST_RUNTIME_RESULT.json).
+Выдача предметов при открытии контейнера игроком остаётся непроверенной.
 
 ## Воспроизведение локальной сборки
 
@@ -111,8 +135,16 @@ python horizon/probes/live_yung_structures.py \
   --output /path/to/new-native-observations.json
 ```
 
+Для сравнения контейнеров сначала запустить `probes/reference_yung_containers.py`
+на исходном NeoForge с теми же `--server-dir`, `--plans`, `--output`. Проба проверяет
+default min/max в конфигурации, читает каждый container-кандидат и классифицирует
+удалённые блоки как air/cave_air. Передать полученный файл native-пробе через
+`--reference-containers /path/to/original-container-observations.json`.
+Непустой `container_comparison.mismatches` приводит к ненулевому exit status.
+
 Эта проба только читает мир. Нулевой exit status вместе с пустым
 `original_comparison.mismatch_positions` подтверждает совпадение наблюдений.
 Для проверки сохранения выполнить `save-all flush`, штатно остановить сервер,
 повторно запустить установщиком и повторить чтение без размещения структур.
-Результаты этапа: [YUNG_RUNTIME_RESULT.json](YUNG_RUNTIME_RESULT.json).
+Первый этап структур/спавнеров: [YUNG_RUNTIME_RESULT.json](YUNG_RUNTIME_RESULT.json).
+Текущая проверка ограничений: [YUNG_CHEST_RUNTIME_RESULT.json](YUNG_CHEST_RUNTIME_RESULT.json).
