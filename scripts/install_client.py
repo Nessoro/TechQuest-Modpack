@@ -73,6 +73,7 @@ def install_guide_overrides(archive, game_dir):
                                 "config/explosionoverhaul/explosionoverhaul-client.toml",
                                 "config/jade/plugins.json",
                                 "config/healthindicatortxf.json5",
+                                "defaultconfigs/openpartiesandclaims-server.toml",
                                 "TECHQUEST_INGAME_GUIDE.txt",
                                 "TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                                  "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json")):
