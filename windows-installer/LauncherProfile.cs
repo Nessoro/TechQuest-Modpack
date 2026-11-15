@@ -34,13 +34,13 @@ internal sealed partial class InstallerForm
                 case ProfileMode.Legacy:
                     profileBadge.Text = "Обнаружены моды без данных лаунчера. Можно проверить и подключить.";
                     install.Text = "Подключить сборку";
-                    playOfficial.Enabled = true;
+                    playOfficial.Enabled = false;
                     verifyIntegrity.Enabled = false;
                     break;
                 default:
                     profileBadge.Text = "TechQuest не установлен в выбранной папке";
                     install.Text = "Установить TechQuest";
-                    playOfficial.Enabled = true;
+                    playOfficial.Enabled = false;
                     verifyIntegrity.Enabled = false;
                     break;
             }
@@ -56,6 +56,7 @@ internal sealed partial class InstallerForm
             profileBadge.Text = "Невозможно проверить папку. Выберите отдельную папку TechQuest.";
             install.Text = "Папка недоступна";
             install.Enabled = false;
+            playOfficial.Enabled = false;
             verifyIntegrity.Enabled = false;
             rollback.Enabled = false;
             applyUpdate.Enabled = false;
