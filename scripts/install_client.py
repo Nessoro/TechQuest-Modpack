@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import build_pack
 from scripts.mods_transaction import activate_staged_mods
+from scripts.mi_guide_config import patch_existing_mi_worlds
 
 def client_records(index):
     if index.get("game") != "minecraft":
@@ -74,6 +75,7 @@ def install_guide_overrides(archive, game_dir):
                                 "config/jade/plugins.json",
                                 "config/healthindicatortxf.json5",
                                 "defaultconfigs/openpartiesandclaims-server.toml",
+                                "defaultconfigs/modern_industrialization-server.toml",
                                 "TECHQUEST_INGAME_GUIDE.txt",
                                 "TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                                  "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json")):
@@ -124,6 +126,7 @@ def install(pack: Path, game_dir: Path, dry_run=False):
         def finish():
             with zipfile.ZipFile(pack) as archive:
                 install_guide_overrides(archive, destination)
+            patch_existing_mi_worlds(destination)
             (destination / "TECHQUEST_LAUNCHER_README.txt").write_text(
                 "TechQuest 0.3.3-micro3: client mods installed with SHA verification.\n"
                 "TechQuest Compatibility (Create-IC2 and Better Zoom Mixin) installed.\n"
