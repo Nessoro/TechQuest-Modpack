@@ -56,6 +56,12 @@ class AdventureRebalanceTests(unittest.TestCase):
                 self.assertEqual(m["version_prefix"], "0.4.3+mc1.21.1")
 
     def test_gameplay_genre_distribution(self):
+        self.assertEqual(self.mods["trash-cans"]["group"], "Комфорт")
+        self.assertEqual(self.mods["pretty-pipes"]["group"], "Технологии")
+        self.assertNotIn("ftb-industrial-contraptions", self.mods)
+        self.assertNotIn("colossal-reactors", self.mods)
+        # Micro5 expanded with owner-requested Oritech and Fluidic Tanks: 2 more tech mods.
+        # Preserve adventure/exploration counts while recording the actual technology share.
         counts = Counter(m["group"] for m in self.cfg["mods"])
         counts.update(m.get("group", "Технологии") for m in self.cfg.get("manual_mods", []))
         counts.update(m.get("group", "Военная техника") for m in self.cfg.get("external_mods", []))
@@ -65,10 +71,10 @@ class AdventureRebalanceTests(unittest.TestCase):
         exploration = sum(counts[g] for g in EXPLORATION)
         military = sum(counts[g] for g in MILITARY)
         total = tech + adventure + exploration + military
-        self.assertEqual((tech, adventure, exploration, military), (12, 21, 5, 6))
-        self.assertEqual(total, 44)
-        self.assertLess(tech / total, 0.30)
-        self.assertGreater((adventure + exploration) / total, 0.55)
+        self.assertEqual((tech, adventure, exploration, military), (16, 20, 6, 7))
+        self.assertEqual(total, 49)
+        self.assertLess(tech / total, 0.34)
+        self.assertGreater((adventure + exploration) / total, 0.52)
 
     def test_documentation_for_exploration(self):
         from scripts.guide_assets import ENTRIES

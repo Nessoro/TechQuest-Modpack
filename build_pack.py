@@ -26,6 +26,12 @@ API = "https://api.modrinth.com/v2"
 UA = "TechQuest-Modpack/0.1 (modpack installer)"
 MAX_DOWNLOAD = 256 * 1024 * 1024
 COMPAT_JAR_NAME = "techquest-compat-1.0.0.jar"
+_REMOVED_JAR_PREFIXES = ("techquest-rpg-core", "pmmo-", "project-mmo")
+
+def is_removed_mod_jar(filename):
+    name = str(filename).lower()
+    return name.endswith(".jar") and name.startswith(_REMOVED_JAR_PREFIXES)
+
 
 class BuildError(Exception):
     pass
@@ -422,6 +428,26 @@ def client_config_overrides(cfg):
     return result
 
 
+def opac_config_overrides(cfg):
+    """Seed a safe Open Parties and Claims config for NEW NeoForge worlds only.
+
+    The installer copies this to <game>/defaultconfigs and does not overwrite
+    world/serverconfig in existing saves. NeoForge then populates the world
+    config on world creation. Server owners can change their own limits.
+    """
+    opac = next((m for m in cfg.get("mods", [])
+                 if m["project"] == "open-parties-and-claims"), None)
+    if not opac:
+        return {}
+    lock = cfg.get("modrinth_lock", {}).get("gF3BGWvG", {})
+    if (opac.get("version_id") != "yWmXD7GW" or
+            lock.get("version_id") != "yWmXD7GW" or
+            opac.get("environment") != {"client": "required", "server": "required"}):
+        raise BuildError("Review Open Parties and Claims default config against pinned release")
+    config = ROOT / "compat" / "opac" / "openpartiesandclaims-server.toml"
+    return {"defaultconfigs/openpartiesandclaims-server.toml": config.read_bytes()}
+
+
 def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
     files = []
     for rec in mods:
@@ -450,6 +476,9 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
             "env": {"client": "required", "server": "required"},
             "downloads": [external["url"]],
             "fileSize": external["fileSize"]})
+    for entry in files:
+        if is_removed_mod_jar(entry["path"].removeprefix("mods/")):
+            raise BuildError("Removed mod cannot be packaged: " + entry["path"])
     idx = {"formatVersion": 1, "game": "minecraft", "versionId": cfg["version"],
            "name": cfg["pack_name"], "summary": cfg["description"],
            "files": files,
@@ -467,6 +496,8 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
         for relative, data in guide_overrides().items():
             archive.writestr("overrides/" + relative, data)
         for relative, data in client_config_overrides(cfg).items():
+            archive.writestr("overrides/" + relative, data)
+        for relative, data in opac_config_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
         # CurseForge-only, All Rights Reserved additions stay user-supplied.
         # Include metadata for the GUI and server operator, never the author JAR.
@@ -568,6 +599,11 @@ def main():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
+    for relative, data in opac_config_overrides(cfg).items():
+        for side in ("client", "server"):
+            target = out / side / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
     for relative, data in guide_overrides().items():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
