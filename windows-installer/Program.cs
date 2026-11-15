@@ -67,7 +67,7 @@ internal sealed partial class InstallerForm : Form
         location.TextChanged += (_, _) => RefreshProfileStatus();
 
         install.Click += async (_, _) => await PrimaryActionAsync();
-        verifyIntegrity.Click += async (_, _) => await VerifyExistingAsync();
+        verifyIntegrity.Click += async (_, _) => await RepairMissingAsync();
         playOfficial.Click += (_, _) => LaunchMinecraftOfficially();
         neoforge.Click += async (_, _) => await NeoForgeAsync();
         openFolder.Click += (_, _) =>
