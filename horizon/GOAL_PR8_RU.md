@@ -68,6 +68,13 @@
   cases, 512 масок, 67 vanilla controls и три Rust-теста прошли. На настоящем
   сервере проверены все девять вариантов и overlap-case, save/reopen десяти
   сущностей. Естественный спавн, breeding и клиент остаются непроверенными.
+- [x] Четыре структуры YUNG's размещены настоящим сервером: 208 блоков-кандидатов,
+  24 спавнера и 179 loot references проверены после save/reopen. Из 20 исходных
+  определений decoder поддерживает только четыре; остальные 16 ещё не исполняются.
+- [x] В отдельном Better Dungeons hmod восстановлены три fixed-mob processors
+  малых подземелий и ID их блочной сущности. Все 17 спавнеров, 119 числовых полей
+  и SpawnPotentials совпали с исходным NeoForge, включая save/reopen. Полный RNG
+  trace, chest limits, прочие custom processors и активация игроком ещё не проверены.
 
 Источники доказательств: [сервер](SERVER_RUNTIME_RESULT.json),
 [Terralith](TERRALITH_RUNTIME_RESULT.json), [деревья](TERRALITH_TREE_RUNTIME_RESULT.json),
@@ -81,13 +88,18 @@
 [runtime-итог](LOCAL_INSTALL_RUNTIME_RESULT.json), [outside-аудит](TERRALITH_OUTSIDE_AUDIT.json).
 [Рецепты и текущая установка](TERRALITH_RECIPES_RUNTIME_RESULT.json).
 [Нативный bundle и текущий сервер](TERRALITH_WOLF_RUNTIME_RESULT.json).
-Проверки текущего этапа: 92 Horizon Python-теста и 3 Rust-теста контекста прошли;
-45 базовых тестов — предыдущая проверка.
+[Структуры и спавнеры YUNG's](YUNG_RUNTIME_RESULT.json),
+[воспроизведение частичного исправления](YUNG_RUNTIME_RU.md).
+Проверки текущего этапа: 96 Horizon Python-тестов прошли;
+3 Rust-теста контекста и 45 базовых тестов — предыдущая проверка.
 
 ## Ближайшая работа
 
-1. Проверить генерацию структур, лут и спавнеры четырёх YUNG's, включая сохранение.
-   Ноль decoder skips не означает, что весь исходный мод полностью перенесён.
+1. Продолжить перенос YUNG's: chest limits и другие отброшенные processors малых
+   подземелий; спавнеры больших zombie/skeleton dungeons; 16 неподдерживаемых
+   определений, условия пулов и enhanced terrain. Проверить естественную
+   генерацию, открытие лута и активацию спавнеров игроком. Ноль feature decoder
+   skips не означает, что весь исходный мод полностью перенесён.
 2. Продолжить естественный спавн/прочие biome-tag правила Terralith и проверить
    пять recipe advancements с настоящим лицензированным игроком. Глобальные mob
    tags базового движка обрезают custom biome IDs; wolf extension обходит это
