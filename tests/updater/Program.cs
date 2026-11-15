@@ -81,6 +81,29 @@ try
 
     var start = TransactionalMods.GetInstalled(root)!;
     Assert(start.Mods.Count == 2, "initial managed state");
+    File.Delete(Path.Combine(mods, same.Name));
+    int repaired = await TransactionalMods.RestoreMissingForTestsAsync(
+        root, start.Mods, (file, path, ct) =>
+        {
+            Assert(file.Name == same.Name, "restore should fetch only missing managed JAR");
+            File.WriteAllBytes(path, sameBytes);
+            return Task.CompletedTask;
+        }, CancellationToken.None);
+    Assert(repaired == 1, "one missing managed JAR restored");
+    Assert(File.ReadAllBytes(Path.Combine(mods, same.Name)).SequenceEqual(sameBytes),
+        "restoration has verified bytes");
+    bool userModifiedRejected = false;
+    File.WriteAllText(Path.Combine(mods, same.Name), "manually changed mod");
+    try
+    {
+        await TransactionalMods.RestoreMissingForTestsAsync(root, start.Mods,
+            (file, path, ct) => throw new Exception("unexpected fetch"), CancellationToken.None);
+    }
+    catch (InvalidDataException) { userModifiedRejected = true; }
+    Assert(userModifiedRejected, "repair refuses to overwrite modified JAR");
+    Assert(File.ReadAllText(Path.Combine(mods, same.Name)) == "manually changed mod",
+        "modified JAR remains untouched");
+    File.WriteAllBytes(Path.Combine(mods, same.Name), sameBytes);
     Assert(!start.Mods.Any(x => x.Name == "manual.jar"), "unmanaged mod is not tracked");
 
     var desired = new PackState { ReleaseTag = "v0.3.3-micro3-preview", Mods = new() { same, next } };
