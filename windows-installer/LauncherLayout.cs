@@ -209,7 +209,7 @@ internal sealed partial class InstallerForm
         };
         right.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         right.RowStyles.Add(new RowStyle(SizeType.Absolute, 405));
-        right.RowStyles.Add(new RowStyle(SizeType.Absolute, 238));
+        right.RowStyles.Add(new RowStyle(SizeType.Absolute, 305));
         right.Controls.Add(Surface(updates), 0, 0);
         right.Controls.Add(Surface(tools), 0, 1);
 
