@@ -34,14 +34,14 @@ jobs:
           python -m unittest discover -s tests -v
           python build_pack.py
           python scripts/audit_jar_metadata.py
-      - name: Verify all retained mod systems, Oritech, Athena, and Fluidic Tanks
+      - name: Verify retained mod systems, DimStorage, EdivadLib and exact client/server JARs
         run: |
           python - <<'PY'
           import hashlib
           import json
           from pathlib import Path
           cfg = json.loads(Path("modlist.json").read_text(encoding="utf-8"))
-          for project in ("KDvYkUg3", "u6dRKJwZ", "VzR5wiLo", "gF3BGWvG", "4sYI62kA", "b1ZV3DIJ", "yAyrQXJ6"):
+          for project in ("KDvYkUg3", "u6dRKJwZ", "VzR5wiLo", "gF3BGWvG", "4sYI62kA", "b1ZV3DIJ", "yAyrQXJ6", "8lnmIJH7", "a8Jk9kpK"):
               lock = cfg["modrinth_lock"][project]
               for side in ("client", "server"):
                   jar = Path("output") / side / "mods" / lock["filename"]
