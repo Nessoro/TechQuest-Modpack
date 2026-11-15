@@ -97,7 +97,7 @@ internal sealed partial class InstallerForm : Form
         install.Enabled = !busy;
         neoforge.Enabled = !busy;
         importAmw.Enabled = !busy;
-        playOfficial.Enabled = !busy;
+        playOfficial.Enabled = !busy && currentProfile == ProfileMode.Managed;
         verifyIntegrity.Enabled = !busy && currentProfile == ProfileMode.Managed;
         browse.Enabled = !busy;
         checkUpdates.Enabled = !busy;
