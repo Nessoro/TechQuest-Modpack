@@ -16,7 +16,7 @@ NAMES = {
     "ae2": "Applied Energistics 2",
     "oritech": "Oritech",
     "fluidic-tanks": "Fluidic Tanks",
-    "b1ZV3DIJ": "Athena"
+    "b1ZV3DIJ": "Athena",
     "refined-storage": "Refined Storage",
     "refined-storage-jei-integration": "Refined Storage — JEI Integration",
     "open-parties-and-claims": "Open Parties and Claims",
