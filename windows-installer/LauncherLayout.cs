@@ -29,7 +29,7 @@ internal sealed partial class InstallerForm
     };
     private readonly Button verifyIntegrity = new()
     {
-        Text = "Проверить файлы", Height = 40, AutoSize = false
+        Text = "Восстановить отсутствующие", Height = 40, AutoSize = false
     };
 
     private static Label Caption(string text, float size, Color color, bool bold = false)
