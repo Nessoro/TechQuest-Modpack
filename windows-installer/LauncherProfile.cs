@@ -21,6 +21,7 @@ internal sealed partial class InstallerForm
                     SearchOption.TopDirectoryOnly).Any();
             currentProfile = installed != null ? ProfileMode.Managed
                 : anyJar ? ProfileMode.Legacy : ProfileMode.New;
+            install.Enabled = true;
             switch (currentProfile)
             {
                 case ProfileMode.Managed:
@@ -154,6 +155,52 @@ internal sealed partial class InstallerForm
                 "Проверка целостности", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         finally { SetBusy(false, false); RefreshProfileStatus(); }
+    }
+
+    private async Task RepairMissingAsync()
+    {
+        if (currentProfile != ProfileMode.Managed) return;
+        string root = Path.GetFullPath(location.Text);
+        if (MessageBox.Show(this,
+            "Восстанавливать будем только отсутствующие JAR исходной версии TechQuest.\n" +
+            "Существующие файлы, пользовательские моды, миры и настройки не изменяются.\n" +
+            "Если версия отличается от встроенной, лаунчер предложит подписанное обновление.",
+            "Восстановить отсутствующие файлы?",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+        cancellation = new CancellationTokenSource();
+        SetBusy(true, true);
+        progress.Style = ProgressBarStyle.Marquee;
+        try
+        {
+            using var embedded = GetEmbeddedPack();
+            int recovered = await TransactionalMods.RestoreMissingFromEmbeddedAsync(
+                root, embedded, new Progress<string>(message => status.Text = message),
+                cancellation.Token);
+            status.Text = recovered == 0
+                ? "Все управляемые моды на месте и прошли проверку SHA-512."
+                : $"Восстановлено отсутствующих модов: {recovered}.";
+        }
+        catch (OperationCanceledException)
+        {
+            status.Text = "Восстановление отменено. Установленные файлы сохранены.";
+        }
+        catch (Exception)
+        {
+            status.Text = "Восстановление остановлено: обнаружено несовпадение версии или файла.";
+            MessageBox.Show(this,
+                "Нельзя безопасно восстановить моды из встроенного пакета.\n" +
+                "Проверьте текущую версию и подписанные обновления. " +
+                "Изменённые JAR не перезаписываются автоматически.",
+                "Восстановление остановлено", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        finally
+        {
+            progress.Style = ProgressBarStyle.Continuous;
+            SetBusy(false, false);
+            cancellation.Dispose();
+            cancellation = null;
+            RefreshProfileStatus();
+        }
     }
 
     private void LaunchMinecraftOfficially()
