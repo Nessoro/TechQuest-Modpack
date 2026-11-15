@@ -52,8 +52,12 @@ def main():
             page.goto(url, wait_until="networkidle")
             assert page.locator(".mod-card").count() == 6
             assert page.locator("#download-link").get_attribute("href").endswith("/456/artifacts/123")
+            assert not page.locator("#mods").evaluate("(el) => el.open")
+            assert not page.locator("#feedback").evaluate("(el) => el.open")
+            page.locator("#issues > summary").click()
             assert "<script>bad()</script>" in page.locator("#issues-feed").inner_text()
             assert page.locator("#issues-feed script").count() == 0
+            page.locator("#issues > summary").click()
             page.screenshot(path=str(output / "desktop.png"))
             page.locator("#download").screenshot(path=str(output / "download.png"))
             page.locator("#feedback").screenshot(path=str(output / "feedback.png"))
@@ -94,6 +98,7 @@ def main():
             context.route("https://api.github.com/**", lambda route: route.fulfill(status=403, json={}))
             page.reload(wait_until="networkidle")
             assert "Не удалось" in page.locator("#build-status").inner_text()
+            page.locator("#issues > summary").click()
             assert "недоступны" in page.locator("#issues-feed").inner_text()
             assert "/actions/workflows/build-alpha.yml" in page.locator("#download-link").get_attribute("href")
             assert not errors, errors
