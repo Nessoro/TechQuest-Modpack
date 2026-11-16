@@ -114,6 +114,9 @@ def main():
     output(RES / "assets/techquest_hybrid/lang/en_us.json", names_en)
     output(RES / "data/minecraft/tags/item/trimmable_armor.json", {"replace": False, "values": ids})
     output(RES / "data/c/tags/item/armors.json", {"replace": False, "values": ids})
+    # Superb Warfare checks this tag for the higher 30-point armor-plate capacity.
+    output(RES / "data/superbwarfare/tags/item/military_armor.json",
+           {"replace": False, "values": [x for x in ids if "_chest_" in x]})
     output(RES / "data/minecraft/tags/item/head_armor.json",
            {"replace": False, "values": [x for x in ids if "helmet" in x]})
     output(RES / "data/minecraft/tags/item/chest_armor.json",
