@@ -32,10 +32,12 @@ def main():
             context = browser.new_context(viewport={"width": 1440, "height": 1000}, device_scale_factor=1)
 
             def github(route):
-                if "/releases/tags/" in route.request.url:
-                    data = {"published_at": "2026-11-11T12:00:00Z",
-                            "assets": [{"name": "TechQuestInstaller.exe", "state": "uploaded",
-                                "browser_download_url": "https://github.com/Nessoro/TechQuest-Modpack/releases/download/v0.3.3-micro1-preview/TechQuestInstaller.exe"}]}
+                if "/artifacts" in route.request.url:
+                    data = {"artifacts": [{"id": 123, "name": "TechQuest-Windows-GUI-Installer", "expired": False}]}
+                elif "/actions/" in route.request.url:
+                    data = {"workflow_runs": [{"id": 456, "conclusion": "success", "head_sha": "abcdef123456",
+                            "created_at": "2026-11-08T12:00:00Z",
+                            "html_url": "https://github.com/Nessoro/TechQuest-Modpack/actions/runs/456"}]}
                 else:
                     data = [{"number": 21, "title": "<script>bad()</script> Обновление установщика",
                              "html_url": "https://github.com/Nessoro/TechQuest-Modpack/issues/21",
@@ -48,10 +50,14 @@ def main():
             page.on("pageerror", lambda error: errors.append(str(error)))
             page.add_init_script("window.open=(url)=>{window.__draft=url;return null}")
             page.goto(url, wait_until="networkidle")
-            assert page.locator(".mod-card").count() == 12
-            assert page.locator("#download-link").get_attribute("href").endswith("/releases/download/v0.3.3-micro1-preview/TechQuestInstaller.exe")
+            assert page.locator(".mod-card").count() == 6
+            assert page.locator("#download-link").get_attribute("href").endswith("/456/artifacts/123")
+            assert not page.locator("#mods").evaluate("(el) => el.open")
+            assert not page.locator("#feedback").evaluate("(el) => el.open")
+            page.locator("#issues > summary").click()
             assert "<script>bad()</script>" in page.locator("#issues-feed").inner_text()
             assert page.locator("#issues-feed script").count() == 0
+            page.locator("#issues > summary").click()
             page.screenshot(path=str(output / "desktop.png"))
             page.locator("#download").screenshot(path=str(output / "download.png"))
             page.locator("#feedback").screenshot(path=str(output / "feedback.png"))
@@ -61,6 +67,7 @@ def main():
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), width
                 if width == 390:
                     page.screenshot(path=str(output / "mobile.png"))
+            page.locator("#mods > summary").click()
             page.locator("#show-all-mods").click()
             count = page.evaluate("window.TQ_MODS.length")
             assert page.locator(".mod-card").count() == count
@@ -74,6 +81,7 @@ def main():
             assert page.locator('[data-category="Мобы"]').get_attribute("aria-pressed") == "true"
             assert page.locator(".mod-card").count() > 0
             assert all(t == "Мобы" for t in page.locator(".mod-card .category").all_text_contents())
+            page.locator("#feedback > summary").click()
             for form_id in ("bug-form", "mod-form"):
                 form = page.locator("#" + form_id)
                 form.locator('[name="title"]').fill("Проверка формы")
@@ -89,9 +97,10 @@ def main():
             context.unroute("https://api.github.com/**", github)
             context.route("https://api.github.com/**", lambda route: route.fulfill(status=403, json={}))
             page.reload(wait_until="networkidle")
-            assert "Публичный EXE ещё не подтверждён" in page.locator("#build-status").inner_text()
+            assert "Не удалось" in page.locator("#build-status").inner_text()
+            page.locator("#issues > summary").click()
             assert "недоступны" in page.locator("#issues-feed").inner_text()
-            assert "/releases" in page.locator("#download-link").get_attribute("href")
+            assert "/actions/workflows/build-alpha.yml" in page.locator("#download-link").get_attribute("href")
             assert not errors, errors
             context.close()
             context = browser.new_context(java_script_enabled=False)

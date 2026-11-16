@@ -39,7 +39,7 @@ function renderMods() {
   grid.replaceChildren();
   const filtered = filteredMods();
   const limited = !expanded && !query && selectedCategory === 'all';
-  for (const mod of limited ? filtered.slice(0, 12) : filtered) {
+  for (const mod of limited ? filtered.slice(0, 6) : filtered) {
     const card = create('article','mod-card');
     const top = create('div','mod-card-top');
     top.append(create('span','category',mod.group));
@@ -51,7 +51,7 @@ function renderMods() {
   if(!filtered.length) grid.append(create('p','empty','Ничего не найдено. Попробуй другой запрос.'));
   document.querySelector('#mod-counter').textContent = String(filtered.length);
   const more = document.querySelector('#show-all-mods');
-  more.classList.toggle('hide', !limited || filtered.length <= 12);
+  more.classList.toggle('hide', !limited || filtered.length <= 6);
   more.textContent = `Показать все ${mods.length} позиций ↓`;
 }
 function setupSearch() {
@@ -110,7 +110,7 @@ async function renderIssues(){
     try{response=await fetch(`https://api.github.com/repos/${REPO}/issues?state=open&per_page=15`,{signal:controller.signal,headers:{Accept:'application/vnd.github+json'}})}
     finally{clearTimeout(timeout)}
     if(!response.ok)throw new Error(`GitHub API: ${response.status}`);
-    const issues=(await response.json()).filter(issue=>!issue.pull_request).slice(0,7);
+    const issues=(await response.json()).filter(issue=>!issue.pull_request).slice(0,5);
     feed.replaceChildren();
     if(!issues.length){feed.append(create('div','issue-placeholder','Пока нет открытых обращений. Можешь создать первое!'));return}
     for(const issue of issues){
@@ -139,23 +139,30 @@ async function githubJSON(url) {
 }
 async function latestBuild() {
   const status = document.querySelector('#build-status');
-  const link = document.querySelector('#download-link');
-  // Public GitHub Releases work without authentication and do not expire as
-  // Actions artifacts do. The HTML fallback links to the public Releases page.
   try {
-    const release = await githubJSON(`https://api.github.com/repos/${REPO}/releases/tags/v0.3.3-micro1-preview`);
-    const asset = release.assets?.find(item => item.name === 'TechQuestInstaller.exe' && item.state === 'uploaded');
-    const prefix = `${GH}/releases/download/v0.3.3-micro1-preview/`;
-    if(!asset || !asset.browser_download_url?.startsWith(prefix))
-      throw new Error('Public Windows EXE not yet available');
-    link.href = asset.browser_download_url;
-    status.textContent = `Публичный тестовый выпуск: ${relativeDate(release.published_at || release.created_at)} · ${asset.name}. Для скачивания регистрация не нужна.`;
+    const result = await githubJSON(`https://api.github.com/repos/${REPO}/actions/workflows/build-alpha.yml/runs?branch=main&status=success&per_page=1`);
+    const run = result.workflow_runs?.[0];
+    if(!run || run.conclusion !== 'success' || !run.html_url.startsWith(`${GH}/actions/runs/`)) throw new Error('No successful main build');
+    const resultArtifacts = await githubJSON(`https://api.github.com/repos/${REPO}/actions/runs/${run.id}/artifacts`);
+    const artifact = resultArtifacts.artifacts?.find(item=>item.name === 'TechQuest-Windows-GUI-Installer' && !item.expired);
+    if(!artifact) throw new Error('Installer artifact unavailable');
+    document.querySelector('#download-link').href = `${run.html_url}/artifacts/${artifact.id}`;
+    status.textContent = `Последняя успешная сборка main: ${relativeDate(run.created_at)} · ${run.head_sha.slice(0,7)}. Отчёт Security Audit — в том же запуске.`;
   } catch {
-    status.textContent = 'Публичный EXE ещё не подтверждён. Открой список релизов: выпуски появляются после проверки безопасности.';
+    status.textContent = 'Не удалось получить актуальный EXE. Открой список сборок и проверь зелёный статус и срок хранения Artifacts.';
   }
 }
-
-initLinks();renderMods();setupSearch();setupForms();renderIssues();latestBuild();
+function revealHashPanel() {
+  if (!window.location.hash) return;
+  let id;
+  try { id = decodeURIComponent(window.location.hash.slice(1)); }
+  catch { return; }
+  const target = document.getElementById(id);
+  const panel = target && target.closest('details.fold');
+  if (panel) panel.open = true;
+}
+window.addEventListener('hashchange', revealHashPanel);
+initLinks();renderMods();setupSearch();setupForms();renderIssues();latestBuild();revealHashPanel();
 
 
 });
