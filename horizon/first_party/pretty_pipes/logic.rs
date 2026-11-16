@@ -1,6 +1,6 @@
 // Initial native routing and persistent in-flight ownership for Pretty Pipes.
 // Tier rates follow Pretty Pipes 1.22.0 (Ellpeck, MIT); see LICENSE-PRETTY-PIPES.
-// This prototype does not yet implement filters, priorities, GUI or exact timing.
+// This prototype does not yet implement filters, priorities or exact timing.
 // Copyright (c) 2020-2021 Ellpeck, MIT (extraction semantics).
 // Stack-size fallback: Copyright (c) 2026 Ludovic Marie and Horizon contributors,
 // MIT; see LICENSE-HORIZON. Routing and native integration are first-party code.
@@ -13,6 +13,65 @@ use std::collections::{BTreeSet, VecDeque};
 
 const PIPE: &str = "prettypipes:pipe";
 const MAX_NODES: usize = 4096;
+
+fn synchronize(entity: &mut ModBlockEntity) -> bool {
+    let fields = &mut **entity;
+    modules::synchronize(&mut fields.nbt, &mut fields.items).is_some()
+}
+
+fn has_inventory(game: &Game<'_>, pos: [i32; 3]) -> bool {
+    let dimension = game.native_dimension();
+    Direction::ALL.iter().any(|d| {
+        game.native_container_slots(dimension, at(pos, *d), d.opposite())
+            .is_some_and(|slots| !slots.is_empty())
+    })
+}
+
+pub(super) fn allow_open(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
+    if game.held().is_some()
+        || game.hand != horizon_client_lib::first_person::Hand::Main
+        || !has_inventory(game, pos)
+    {
+        return false;
+    }
+    // The engine normally builds this table on its first block-entity tick.
+    // Opening a newly placed pipe must also work before that tick (or while
+    // the world is frozen), without advancing the simulation.
+    let state = game.world.block(pos[0], pos[1], pos[2]);
+    if game.world.block_entities.mod_container(state.0).is_none() {
+        let containers = game.native_containers();
+        game.world.block_entities.set_mod_containers(containers);
+    }
+    game.native_with_mod_block_entity(pos, synchronize)
+        .unwrap_or(false)
+}
+
+/// A chorus-plant geometry template has no vanilla OpenMenu effect. Preserve
+/// Horizon's right-click hook order and secondary-use rule, then open only our
+/// empty-main-hand interaction. Other blocks/hands keep the original path.
+pub(super) fn interact(
+    game: &mut Game<'_>,
+    hit: Option<&crate::game::Hit>,
+) -> std::ops::ControlFlow<horizon_client_lib::Result<bool>> {
+    let Some(hit) = hit else {
+        return std::ops::ControlFlow::Continue(());
+    };
+    if game.native_block(hit.pos) != PIPE
+        || (game.keys.held(crate::game::Mapping::Sneak) && game.offhand.is_some())
+        || !allow_open(game, hit.pos)
+    {
+        return std::ops::ControlFlow::Continue(());
+    }
+    let mut canceled = false;
+    game.native_right_click_block(hit.pos, hit.face, &mut canceled);
+    game.native_right_click_block_v2(hit.pos, hit.face, game.hand, &mut canceled);
+    game.use_failed = canceled;
+    if !canceled {
+        game.open_menu(hit.pos);
+        game.swing_arm();
+    }
+    std::ops::ControlFlow::Break(Ok(true))
+}
 
 pub(super) fn replace_contents(
     game: &mut Game<'_>,
@@ -27,8 +86,8 @@ pub(super) fn replace_contents(
             if entity.id != PIPE {
                 return None;
             }
-            let mut items = std::mem::take(&mut entity.items);
-            items.extend(modules::take(&mut entity.nbt));
+            let fields = &mut **entity;
+            let mut items = modules::take_inventory(&mut fields.nbt, &mut fields.items)?;
             items.retain(Option::is_some);
             Some(items)
         })
@@ -62,14 +121,14 @@ pub(super) fn use_module(game: &mut Game<'_>, stack: &ItemStack, pos: [i32; 3]) 
         return false;
     };
     let mut hand = Some(held.clone());
-    let dimension = game.native_dimension();
-    let can_have_modules = Direction::ALL.iter().any(|d| {
-        game.native_container_slots(dimension, at(pos, *d), d.opposite())
-            .is_some_and(|slots| !slots.is_empty())
-    });
+    let can_have_modules = has_inventory(game, pos);
     let installed = game
         .native_with_mod_block_entity(pos, |entity| {
-            entity.id == PIPE && modules::install(&mut entity.nbt, &mut hand, can_have_modules)
+            if entity.id != PIPE || !synchronize(entity) {
+                return false;
+            }
+            let installed = modules::install(&mut entity.nbt, &mut hand, can_have_modules);
+            installed && synchronize(entity)
         })
         .unwrap_or(false);
     if installed {
@@ -129,9 +188,12 @@ fn route(
 }
 
 pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEntity) {
+    if !synchronize(entity) {
+        return;
+    }
     // Items are in the engine's owned container slots: normal chunk saves and
     // breaking the pipe retain/drop them through the existing container path.
-    for slot in 0..entity.items.len() {
+    for slot in modules::MODULE_SLOTS..modules::TOTAL_SLOTS {
         let key = JavaString::from(format!("techquest_pending_{slot}").as_str());
         let Some(Tag::Compound(mut pending)) = entity.nbt.get(&key).cloned() else {
             continue;
@@ -166,7 +228,9 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
     if game.world.game_time % period != 0 {
         return;
     }
-    let Some(free) = entity.items.iter().position(Option::is_none) else {
+    let Some(free) =
+        (modules::MODULE_SLOTS..modules::TOTAL_SLOTS).find(|&i| entity.items[i].is_none())
+    else {
         return;
     };
     let dimension = game.native_dimension();

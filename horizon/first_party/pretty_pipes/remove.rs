@@ -15,10 +15,13 @@ fn spill_pipe_contents(
     }
     // Take ownership before the engine's usual container removal, so that a
     // destructive break cannot drop the in-flight queue a second time.
-    let mut contents = std::mem::take(&mut entity.items);
-    contents.extend(horizon_client_lib::techquest_pretty_pipes_modules::take(
-        &mut entity.nbt,
-    ));
+    let fields: &mut horizon_client_lib::containers::ModBlockEntityFields = entity;
+    let Some(contents) = horizon_client_lib::techquest_pretty_pipes_modules::take_inventory(
+        &mut fields.nbt,
+        &mut fields.items,
+    ) else {
+        return;
+    };
     for stack in contents.into_iter().flatten() {
         level.drop_item_stack(pos, Some(stack));
     }

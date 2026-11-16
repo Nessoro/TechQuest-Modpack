@@ -1,6 +1,6 @@
 [mod]
 id = "techquest_pretty_pipes"
-version = "0.2.0"
+version = "0.3.0"
 
 [compatibility]
 horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
@@ -91,4 +91,48 @@ bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "pos", ty = "[i32; 3]", value = "pos" },
   { name = "state", ty = "horizon_world::registry::BlockStateId", value = "state" },
+]
+
+[[injection]]
+id = "module_screen"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen"
+kind = "HEAD"
+helper = "screen.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "screen", ty = "&mut Option<crate::mod_api::NativeScreen>", value = "screen" },
+]
+
+[[injection]]
+id = "open_modules"
+target = "horizon_client::game::native_hooks::Game<'_>::open_mod_menu"
+kind = "HEAD"
+cancellable = true
+helper = "open.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "key", ty = "(i32, i32, i32)", value = "key" },
+]
+
+[[injection]]
+id = "module_slot_rules"
+target = "horizon_client_lib::menu::Menu::mod_slot"
+kind = "RETURN"
+helper = "slot_rules.rs"
+bindings = [
+  { name = "menu", ty = "&crate::menu::Menu", value = "&*self" },
+  { name = "slot", ty = "usize", value = "s" },
+  { name = "stack", ty = "&horizon_items::items::ItemStack", value = "stack" },
+  { name = "value", ty = "(bool, u32)", value = "$value" },
+]
+
+[[injection]]
+id = "interact_pipe"
+target = "horizon_client::game::Game<'_>::use_hand"
+kind = "HEAD"
+cancellable = true
+helper = "interact.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "hit", ty = "Option<&crate::game::Hit>", value = "block_hit" },
 ]

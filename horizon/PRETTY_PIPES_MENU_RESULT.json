@@ -1,0 +1,259 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-16T10:48:24.227552+00:00",
+  "minecraft": "26.3",
+  "prototype_version": "0.3.0",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "source": {
+    "pretty_pipes": "1.22.0",
+    "git_commit": "1f8ac61c6de5b191f3b28da2c23d8040a231047f",
+    "jar_sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
+    "license": "MIT",
+    "reference_minecraft": "1.21.1",
+    "reference_loader": "NeoForge 21.1.264",
+    "neoforge_java_source_read": false
+  },
+  "artifacts": {
+    "engine_sha256": "f515b65ca7299c8c82b1c5f7925bf518296bf59e06e5ab865e8b3939ebac23ad",
+    "native_bundle_sha256": "bfb3eb8a175987f4b7906fa3d352fb5af64da2cebdff4c0636d5bba1e47ab342",
+    "native_bundle_matches_checked_source": true,
+    "native_sdk_checked": true,
+    "content_hmod_sha256": "1ce6c15b364b2178dd779b0890931dbb335265edd146c8c5cc36b56de747d85d",
+    "content_sdk_checked": true,
+    "installation_lock_sha256": "7a39d3543b6974e6d1303826f261c8b22a2f5bd4c74eb6483440d64edacf97a4",
+    "original_menu_probe_source_sha256": "855b6ccea5d3932ac9e8c2f9302f5a4adc2aa7a5f7cd4bc084ef9b4c847b3d3d",
+    "original_menu_probe_jar_sha256": "8c57e00e12981ea88df748de0518b4ac2942883b99284ad3253d3f4ec4edf5d4",
+    "original_menu_result_sha256": "9c1e11f8779227f47b34c40d2874bf0b8802520c5e72d7cf16ac80fafe051567",
+    "native_menu_result_sha256": "d15bb00c6667c9bf6f8f3321859620cb5bc1da32d2c830d3eedc6eaad6765fbf",
+    "game_packet_result_sha256": "4d02389632d5cc7ba4a83b16320f57708aa8d47df84bd8755233770561f134de",
+    "graphical_probe_source_sha256": "076a5c1cea6ca81880c8a4a28f65d966b453bc86c85f3484ddaf7fac4611ee46",
+    "graphical_actions_sha256": "3520aec36723a3395510e3d0e5ddcd164cde4b2d49d1af5bbfa253530a04da8a"
+  },
+  "layout": {
+    "module_slots": 3,
+    "hidden_queue_slots": 64,
+    "wire_container_slots": 67,
+    "inventory_slots": 36,
+    "module_slot_limit": 1,
+    "head_injections": 13,
+    "return_injections": 1,
+    "support_modules": 3,
+    "custom_menus_declared": 1,
+    "source_name_keys_per_language": 5,
+    "languages": [
+      "en_us",
+      "ru_ru"
+    ]
+  },
+  "original_menu": {
+    "actual_original_menu_executed": true,
+    "synthetic_actor": true,
+    "steps": 20,
+    "source_queue_fixture_injected": true,
+    "reference_shutdown_clean": true,
+    "real_client_tested": false
+  },
+  "native_menu": {
+    "actual_menu_engine_executed": true,
+    "steps_match_original": 20,
+    "hidden_slot_actions_blocked": 5,
+    "visible_slot_positive_controls_passed": 5,
+    "full_inventory_cursor_modules_drops_and_queue_compared": true,
+    "custom_data_marker_compared": true,
+    "all_gui_screens_ported": false
+  },
+  "game_packet_route": {
+    "schema": 1,
+    "minecraft": "26.3",
+    "connected_local_harness_client": true,
+    "game_player_dispatch_tested": true,
+    "survival_install_consumes_one": true,
+    "creative_install_consumes_one": true,
+    "duplicate_extractor_rejected": true,
+    "all_three_tiers_installed_by_hand": true,
+    "unattached_install_and_menu_rejected": true,
+    "menu_open_and_close_tested": true,
+    "module_persists_after_close": true,
+    "wire_container_slots": 67,
+    "menu_click_packet_dispatch_tested": false,
+    "graphical_gui_rendered": false,
+    "licensed_account_or_dedicated_join_tested": false,
+    "published": false
+  },
+  "inventory": {
+    "rust_tests_passed": 8,
+    "physical_module_slots_authoritative": true,
+    "nbt_compatibility_view_with_snapshot": true,
+    "save_before_next_tick_tested": true,
+    "components_preserved": true,
+    "legacy_pending_keys_shifted_with_items": true
+  },
+  "dedicated_server": {
+    "content_modules": 7,
+    "compiled_native_modules": 3,
+    "loopback_only": true,
+    "online_mode": true,
+    "whitelist_enabled": true,
+    "players_connected": 0,
+    "prepare": {
+      "without_extraction_module": {
+        "input": 8,
+        "output": 0
+      },
+      "low_module_delivery": {
+        "input": 0,
+        "output": 8
+      },
+      "disconnected_network": {
+        "input": 8,
+        "output": 0
+      },
+      "saved_while_in_flight": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "reopen": {
+      "immediately_after_reopen": {
+        "input": 0,
+        "output": 0
+      },
+      "delivery_after_reopen": {
+        "input": 0,
+        "output": 8
+      }
+    },
+    "removal": {
+      "schema": 1,
+      "minecraft": "26.3",
+      "checks": {
+        "replace": {
+          "dropped": {
+            "prettypipes:low_extraction_module": 1,
+            "minecraft:iron_ingot": 8
+          },
+          "pipe_removed": true
+        },
+        "destroy": {
+          "dropped": {
+            "prettypipes:pipe": 1,
+            "prettypipes:low_extraction_module": 1,
+            "minecraft:iron_ingot": 8
+          },
+          "pipe_removed": true
+        }
+      },
+      "matches_original": true,
+      "queue_and_module_fixture_injected": true,
+      "drop_query_positive_control_passed": true,
+      "same_pipe_state_preserves_inventory": true,
+      "repeated_removal_no_duplicates": true,
+      "creative_player_dispatch_tested": false,
+      "real_client_tested": false
+    },
+    "status": "stopped",
+    "lock_reverified": true
+  },
+  "world_migration": {
+    "from_version": "0.2.0",
+    "to_version": "0.3.0",
+    "new_disposable_source_profile": true,
+    "fresh_target_profile_before_copy": true,
+    "player_files_and_locks_excluded": true,
+    "new_items_created_after_copy": false,
+    "source_prepare": {
+      "without_extraction_module": {
+        "input": 8,
+        "output": 0
+      },
+      "low_module_delivery": {
+        "input": 0,
+        "output": 8
+      },
+      "disconnected_network": {
+        "input": 8,
+        "output": 0
+      },
+      "saved_while_in_flight": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "target_reopen": {
+      "immediately_after_reopen": {
+        "input": 0,
+        "output": 0
+      },
+      "delivery_after_reopen": {
+        "input": 0,
+        "output": 8
+      }
+    },
+    "state_and_single_module_drop": {
+      "schema": 1,
+      "inventory_schema": 3,
+      "module_in_physical_slot_zero": true,
+      "queue_empty_after_delivery": true,
+      "dropped": {
+        "prettypipes:pipe": 1,
+        "prettypipes:high_extraction_module": 1
+      },
+      "legacy_world_migration_executed": true,
+      "player_files_copied": false,
+      "real_player_data_used": false
+    }
+  },
+  "crafting": {
+    "positive_grids": 22,
+    "negative_grids": 44,
+    "matches_original": true,
+    "pipe_loot_evaluated": true
+  },
+  "verification": {
+    "python_tests_passed": 109,
+    "rust_inventory_tests_passed": 8,
+    "old_profile_lock_still_valid": true,
+    "mojang_http_manifest_status": 200,
+    "minecraft_http_publickeys_status": 200,
+    "http_check_includes_account_authentication": false
+  },
+  "known_gaps": [
+    "Licensed account authentication and dedicated-server join",
+    "Real offhand use and module configuration screens",
+    "Filters, priorities, redstone, branches, full overflow and IPipeConnectable interop",
+    "Bulk edits, unloaded saved entities, exact drop motion/position/pickup delay and explosion variants",
+    "Hardware GPU and audio (graphical validation uses software Vulkan without audio)"
+  ],
+  "full_pretty_pipes_ported": false,
+  "full_modpack_ported": false,
+  "published": false,
+  "graphical_game_packet_route": {
+    "schema": 1,
+    "minecraft": "26.3",
+    "graphical_gui_rendered": true,
+    "connected_local_graphical_client": true,
+    "menu_click_packet_dispatch_tested": true,
+    "coordinate_mouse_pickup_tested": true,
+    "survival_hand_install_tested": true,
+    "visible_module_slots": 3,
+    "queue_slots_hidden": 64,
+    "cursor_pickup_and_inventory_putdown": true,
+    "shift_install_and_remove": true,
+    "duplicate_extractor_rejected": true,
+    "module_absent_after_close_reopen": true,
+    "no_item_loss_or_duplication": true,
+    "protocol_decode_errors": 0,
+    "renderer": "Vulkan",
+    "device_type": "cpu",
+    "driver": "llvmpipe Mesa 25.0.7-2+deb13u1 (LLVM 19.1.7)",
+    "engine_exit_code": 0,
+    "licensed_account_or_dedicated_join_tested": false,
+    "full_pretty_pipes_ported": false,
+    "published": false,
+    "screenshots_sha256": {
+      "pipe-menu.png": "a7b8a14124ea3c52630769e65450ba4d8264e4b9a98a70e9241687aacdde7a2a",
+      "module-removed.png": "9a8003199aa3b8fcec9ecbfdb36fb85c93e6b76b773ccf8752af41916baad551"
+    }
+  }
+}

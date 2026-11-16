@@ -4,6 +4,82 @@
 use horizon_items::{item_nbt, items::ItemStack};
 use horizon_world::nbt::{Compound, JavaString, Tag};
 
+pub const MODULE_SLOTS: usize = 3;
+pub const QUEUE_SLOTS: usize = 64;
+pub const TOTAL_SLOTS: usize = MODULE_SLOTS + QUEUE_SLOTS;
+const SCHEMA: &str = "techquest_inventory_schema";
+const SNAPSHOT: &str = "techquest_modules_snapshot";
+
+fn encoded(slots: &[Option<ItemStack>]) -> Tag {
+    Tag::compound([
+        ("Size", Tag::Int(3)),
+        ("Items", item_nbt::encode_items(slots)),
+    ])
+}
+
+/// Physical module slots are authoritative between menu clicks. The original
+/// module NBT is a compatibility view; a changed view imports an explicit NBT
+/// edit once. The snapshot distinguishes it from an unsaved menu change.
+pub fn synchronize(nbt: &mut Compound, items: &mut Vec<Option<ItemStack>>) -> Option<()> {
+    let source = read(nbt)?;
+    let legacy = match nbt.get(&JavaString::from(SCHEMA)) {
+        None => true,
+        Some(Tag::Int(3)) => false,
+        _ => return None,
+    };
+    if items.len() > TOTAL_SLOTS || (legacy && items.iter().skip(QUEUE_SLOTS).any(Option::is_some))
+    {
+        return None;
+    }
+    let import =
+        legacy || nbt.get(&JavaString::from("modules")) != nbt.get(&JavaString::from(SNAPSHOT));
+    items.resize(TOTAL_SLOTS, None);
+    if legacy {
+        for i in (0..QUEUE_SLOTS).rev() {
+            items[i + MODULE_SLOTS] = items[i].take();
+        }
+        let pending: Vec<_> = (0..QUEUE_SLOTS)
+            .map(|i| nbt.remove(&JavaString::from(format!("techquest_pending_{i}").as_str())))
+            .collect();
+        for (i, value) in pending.into_iter().enumerate() {
+            if let Some(value) = value {
+                nbt.insert(
+                    JavaString::from(format!("techquest_pending_{}", i + MODULE_SLOTS).as_str()),
+                    value,
+                );
+            }
+        }
+        nbt.insert(SCHEMA.into(), Tag::Int(3));
+    }
+    if import {
+        items[..MODULE_SLOTS].clone_from_slice(&source);
+    }
+    let view = encoded(&items[..MODULE_SLOTS]);
+    if nbt.get(&JavaString::from("modules")) != Some(&view) {
+        nbt.insert("modules".into(), view.clone());
+    }
+    if nbt.get(&JavaString::from(SNAPSHOT)) != Some(&view) {
+        nbt.insert(SNAPSHOT.into(), view);
+    }
+    Some(())
+}
+
+pub fn menu_accepts(items: &[Option<ItemStack>], stack: &ItemStack) -> bool {
+    stack.count > 0
+        && rates(&stack.item).is_some()
+        && items.iter().take(MODULE_SLOTS).all(Option::is_none)
+}
+
+pub fn take_inventory(
+    nbt: &mut Compound,
+    items: &mut Vec<Option<ItemStack>>,
+) -> Option<Vec<Option<ItemStack>>> {
+    synchronize(nbt, items)?;
+    nbt.remove(&JavaString::from("modules"));
+    nbt.remove(&JavaString::from(SNAPSHOT));
+    Some(std::mem::take(items))
+}
+
 pub fn rates(item: &str) -> Option<(i64, u32)> {
     match item {
         "prettypipes:low_extraction_module" => Some((20, 1)),
@@ -231,5 +307,66 @@ mod tests {
         }
         assert!(take(&mut nbt).iter().all(Option::is_none));
         assert_eq!(held.unwrap().count, 1);
+    }
+
+    #[test]
+    fn legacy_queue_migrates_once_with_pending_metadata() {
+        let mut nbt = Compound::new();
+        let mut hand = Some(ItemStack::new("prettypipes:low_extraction_module", 1));
+        assert!(install(&mut nbt, &mut hand, true));
+        let pending = Tag::compound([("remaining", Tag::Int(29))]);
+        nbt.insert("techquest_pending_63".into(), pending.clone());
+        let mut items = vec![None; 64];
+        items[63] = Some(ItemStack::new("minecraft:iron_ingot", 8));
+        synchronize(&mut nbt, &mut items).unwrap();
+        assert_eq!(items[66].as_ref().unwrap().count, 8);
+        assert_eq!(items[0].as_ref().unwrap().count, 1);
+        assert_eq!(nbt[&JavaString::from("techquest_pending_66")], pending);
+        assert!(!nbt.contains_key(&JavaString::from("techquest_pending_63")));
+        let before = (nbt.clone(), items.clone());
+        synchronize(&mut nbt, &mut items).unwrap();
+        assert_eq!((nbt.clone(), items.clone()), before);
+        let taken = take_inventory(&mut nbt, &mut items).unwrap();
+        assert_eq!(taken.iter().flatten().map(|s| s.count).sum::<u32>(), 9);
+        assert!(
+            take_inventory(&mut nbt, &mut items)
+                .unwrap()
+                .iter()
+                .all(Option::is_none)
+        );
+    }
+
+    #[test]
+    fn physical_menu_removal_survives_a_save_before_next_tick() {
+        let mut nbt = Compound::new();
+        let mut items = vec![None; 64];
+        let mut hand = Some(ItemStack::new("prettypipes:low_extraction_module", 1));
+        assert!(install(&mut nbt, &mut hand, true));
+        synchronize(&mut nbt, &mut items).unwrap();
+        let removed = items[0].take().unwrap();
+        let mut saved_nbt = nbt.clone();
+        let mut saved_items = items.clone();
+        synchronize(&mut saved_nbt, &mut saved_items).unwrap();
+        assert!(read(&saved_nbt).unwrap().iter().all(Option::is_none));
+        assert!(saved_items.iter().all(Option::is_none));
+        assert_eq!(removed.count, 1);
+    }
+
+    #[test]
+    fn explicit_nbt_edit_updates_modules_without_touching_queue() {
+        let mut nbt = Compound::new();
+        nbt.insert(SCHEMA.into(), Tag::Int(3));
+        let mut items = vec![None; TOTAL_SLOTS];
+        items[3] = Some(ItemStack::new("minecraft:iron_ingot", 8));
+        synchronize(&mut nbt, &mut items).unwrap();
+        let mut hand = Some(ItemStack::new("prettypipes:high_extraction_module", 2));
+        assert!(install(&mut nbt, &mut hand, true));
+        synchronize(&mut nbt, &mut items).unwrap();
+        assert_eq!(
+            &*items[0].as_ref().unwrap().item,
+            "prettypipes:high_extraction_module"
+        );
+        assert_eq!(items[3].as_ref().unwrap().count, 8);
+        assert_eq!(hand.unwrap().count, 1);
     }
 }

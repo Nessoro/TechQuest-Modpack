@@ -68,13 +68,17 @@ def stage(jar, sdk, output, neoforge_jar):
     if pin["version"] != "1.22.0" or hashlib.sha512(raw).hexdigest() != pin["sha512"]:
         raise ValueError("expected the pinned original Pretty Pipes 1.22.0 JAR")
     glass, missing_tags = glass_members(read_checked(neoforge_jar))
-    payloads = {"horizon-mod.toml": b'id = "prettypipes"\nname = "TechQuest Pretty Pipes transport prototype"\nversion = "0.2.0"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n'}
+    payloads = {"horizon-mod.toml": b'id = "prettypipes"\nname = "TechQuest Pretty Pipes transport prototype"\nversion = "0.3.0"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n'}
     license_text = read_checked(Path(__file__).resolve().parents[1] /
                                 "first_party/pretty_pipes/LICENSE-PRETTY-PIPES").decode()
     payloads["horizon-mod.toml"] = ("\n".join("# " + line for line in license_text.splitlines()) + "\n").encode() + payloads["horizon-mod.toml"]
 
     def data(name, value):
         payloads[name] = (json.dumps(value, indent=2) + "\n").encode()
+
+    # Three visible module slots and 64 slots hidden by native_screen on both
+    # client and server. Hidden queue slots refuse all menu transfers.
+    data("data/prettypipes/horizon/menu/pipe.json", {"slots": 67})
 
     data("data/prettypipes/horizon/block/pipe.json", {
         "template": "minecraft:chorus_plant", "properties": {"hardness": 2.0, "occludes": False},
@@ -99,6 +103,13 @@ def stage(jar, sdk, output, neoforge_jar):
     source_assets = []
     source_data = []
     with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        language_keys = {"block.prettypipes.pipe"} | {"item.prettypipes." + n for n in RECIPE_NAMES if n != "pipe"}
+        for language in ("en_us", "ru_ru"):
+            name = f"assets/prettypipes/lang/{language}.json"
+            original_language = json.loads(archive.read(name))
+            if not language_keys <= original_language.keys():
+                raise ValueError("missing source item names")
+            data(name, {key: original_language[key] for key in sorted(language_keys)})
         for recipe in RECIPE_NAMES:
             name = f"data/prettypipes/recipe/{recipe}.json"
             original = archive.read(name)
@@ -154,7 +165,7 @@ def stage(jar, sdk, output, neoforge_jar):
         checksum = hashlib.sha256(package.read_bytes()).hexdigest()
         if not verdict.get("ok") or verdict["report"].get("sha256") != checksum:
             raise ValueError("SDK rejected the content prototype")
-        report = {"schema": 1, "id": "prettypipes", "prototype_version": "0.2.0",
+        report = {"schema": 1, "id": "prettypipes", "prototype_version": "0.3.0",
                   "source_version": "1.22.0", "source_jar_sha512": pin["sha512"],
                   "sha256": checksum, "sdk_validated": True, "source_assets": source_assets,
                   "requires_native_module": "techquest_pretty_pipes", "java_code_included": False,
@@ -164,6 +175,8 @@ def stage(jar, sdk, output, neoforge_jar):
                   "glass_reference_sha256": NEOFORGE_SHA256,
                   "glass_members": glass, "missing_optional_legacy_tags": missing_tags,
                   "other_mod_glass_contributions_ported": False,
+                  "module_menu_declared": True, "visible_module_slots": 3,
+                  "hidden_transport_slots": 64, "gui_runtime_tested": False,
                   "gui_ported": False, "gameplay_tested": False,
                   "full_mod_ported": False}
         (root / "techquest-pretty-pipes-trial.json").write_text(json.dumps(report, indent=2) + "\n")

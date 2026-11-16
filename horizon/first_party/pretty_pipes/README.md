@@ -1,70 +1,103 @@
-# Native Pretty Pipes prototype 0.2.0
+# Native Pretty Pipes prototype 0.3.0
 
-Rust-код перемещает предметы между контейнерами по pipe blocks, сохраняет партии
-в пути и обрабатывает использование default extraction module на трубе.
-Источник — Pretty Pipes 1.22.0, MIT tag `1f8ac61`; оригинальный серверный эталон —
-[PRETTY_PIPES_REFERENCE_RU.md](../../PRETTY_PIPES_REFERENCE_RU.md).
+Прототип Horizon 26.3 поддерживает default extraction tiers, пять рецептов,
+установку модуля предметом и главное меню из трёх module slots. Источник —
+Pretty Pipes 1.22.0, MIT commit `1f8ac61`.
+[Оригинальный эталон](../../PRETTY_PIPES_REFERENCE_RU.md),
+[проверки 0.2](../../PRETTY_PIPES_MODULES_RESULT.json),
+[проверки меню 0.3](../../PRETTY_PIPES_MENU_RESULT.json).
 Полный Pretty Pipes и промышленный модпак ещё не перенесены.
 
-Семь HEAD-хуков создают и тикают `prettypipes:pipe`, объявляют внутренний контейнер
-и обрабатывают `native_use_item_on`, удаление и замену трубы. Routing module
-живёт в `game.rs`, общий module codec — в `client_lib.rs`. Используются штатные Horizon container APIs.
-64 внутренних слота содержат настоящие ItemStack партий в пути; их назначение
-и задержка хранятся в NBT. Внешние hopper faces внутренней очереди закрыты.
+## Главное меню и хранение
 
-Default extraction tiers: low 1/20, medium 8/15, high 64/10 (batch/period).
-Использование extractor на трубе рядом с доступным инвентарём записывает один
-модуль в исходный формат `modules.Size=3, modules.Items`; второй extractor,
-blank module и установка без инвентаря отклоняются. Расходуется один предмет,
-включая creative, как показал оригинальный сервер. Компоненты ItemStack сохраняются.
-Другие комбинации модулей, настройки извлечения и специальная интеграция
-IPipeConnectable ещё не реализованы.
+Три первых физических слота block entity принадлежат модулям, следующие 64 —
+партиям в пути. Menu type `prettypipes:pipe` имеет 67 сетевых слотов плюс
+инвентарь игрока; native screen показывает только первые три. Остальные получают
+`Role::Hidden` и на сервере: pickup, shift-click, swap, throw и pickup-all
+не могут взять транспортируемые предметы через меню.
 
-Поиск — BFS по загруженным pipe blocks, максимум 4096 nodes, с исключением
-исходного контейнера. Задержка приближённая: 20 ticks на pipe. Покадровое движение,
-отрисовка предметов, точный timing, GUI, фильтры, приоритеты и полные правила
-переполнения/rerouting отсутствуют. При удалении загруженной трубы модуль и партия
-передаются обработчику выпадения один раз. Для команд замены нужен отдельный
-хук: движок предварительно очищает block entity. GUI и снятие модулей без
-разрушения трубы ещё не реализованы. Позиции/скорости выпавших предметов и
-bulk edits не проверены.
+RETURN-вставка в настоящий `Menu::mod_slot` ограничивает module slots одним
+предметом, принимает только реализованные extractors и проверяет совместимость
+по текущему инвентарю. Low/medium/high extractors несовместимы между собой;
+blank material и обычные предметы отклоняются. Остальные menu types не меняются.
+Координаты трёх слотов и инвентаря взяты из исходного MainPipeContainer;
+используется обычная панель Horizon с переводимыми названиями.
+
+Пустая основная рука открывает меню у трубы с соседним инвентарём. Предмет
+модуля устанавливает один extractor; расходуется один предмет и в creative,
+как в оригинале. Вариант геометрии на основе chorus plant сам не создаёт
+vanilla OpenMenu effect, поэтому отдельный обработчик сохраняет порядок
+right-click hooks и открывает только меню нашей трубы. Таблица ModContainer
+подготавливается до первого block-entity tick, если её ещё нет: первая попытка
+открытия работает и при замороженном мире, без продвижения симуляции.
+
+Физические module slots — владелец предметов. Исходный `modules.Size/Items`
+сохранён как NBT view со snapshot: явно изменённый NBT импортируется один раз,
+изменения меню записываются обратно при следующем тике/взаимодействии. Сохранение
+между кликом и следующим тиком сохраняет физические слоты; старый view не
+восстанавливает снятый модуль. Старый формат 0.2 преобразуется один раз:
+очередь и её pending metadata сдвигаются на три слота. Новые сущности помечены
+`techquest_inventory_schema=3`. Неизвестный формат не чинится с потерей предметов.
+
+При замене/разрушении загруженной трубы physical module slots и очередь
+передаются обработчику выпадения один раз; NBT view не становится второй копией
+инвентаря. Проверены сохранность компонентов и отсутствие дублирования.
+
+## Транспорт и ограничения
+
+Default tiers сохраняют batch/period: low 1/20, medium 8/15, high 64/10.
+Loaded-only BFS ограничен 4096 pipe nodes, исходный контейнер исключается.
+Задержка приближённая — 20 ticks на pipe. При недоступной цели партия остаётся
+в сохранённой очереди. Внешние hopper faces внутреннего инвентаря закрыты.
+
+Не реализованы полные фильтры, module configuration screens, приоритеты,
+ветвления/переполнение/rerouting, redstone module и IPipeConnectable interop.
+Не проверены точные позиции, скорость и pickup delay выпавших предметов,
+explosion-specific drops, bulk edits и удаление ещё не загруженной сущности.
 
 ## Проверки
 
-[Результат 0.2](../../PRETTY_PIPES_MODULES_RESULT.json) фиксирует:
+- Оригинальный MainPipeContainer на отдельном NeoForge: 20 операций с
+  синтетическим FakePlayer — вставка, снятие, оба клика, shift-click, hotbar swap,
+  выбрасывание и отказы для неверных предметов. Сравниваются все три модуля,
+  36 inventory slots, cursor, dropped items, custom-data marker и очередь.
+- Настоящий Horizon Menu engine со скомпилированной RETURN-вставкой повторяет
+  все 20 операций. Пять обращений к hidden slot блокируются; те же операции
+  на видимом слоте срабатывают как положительные контроли.
+- Восемь Rust-тестов codec/ownership: оригинальные count defaults, расход,
+  компоненты, перенос старой очереди/pending NBT, однократное выпадение,
+  сохранение снятия до следующего тика и явное изменение NBT view.
+- Stock command harness запускает настоящий интегрированный сервер и
+  подключённого headless-владельца. Через UseItemOn проверены все три tiers,
+  survival/creative, отказ второму extractor, отсутствие меню при установке,
+  открытие/закрытие пустой рукой, сохранение модуля после закрытия и отказ без
+  соседнего инвентаря. Это синтетический локальный клиент, не Microsoft login.
+- Отдельный dedicated profile с семью hmod и тремя native bundles повторяет
+  transport/save/reopen и удаление трубы по независимому оригинальному эталону.
+  Пять рецептов сверены на 22 успешных и 44 отрицательных сетках; pipe loot table
+  реально выдаёт одну трубу. 109 Python-тестов проходят.
+- Графический локальный клиент отрисовал окно в Xvfb через программный Vulkan
+  llvmpipe. Координатный клик мышью и ContainerClick проверяют снятие на cursor,
+  перенос в inventory, Shift-click в обе стороны, отказ второму extractor,
+  закрытие/повторное открытие. Survival-установка расходует один из двух модулей;
+  итоговые два предмета сохраняются, protocol decode errors = 0. Снимки остаются
+  только в scratch runtime; их SHA-256 записаны в отчёт.
+- Настоящий мир 0.2 с восемью предметами в пути открыт новой установкой 0.3:
+  партия доставлена ровно один раз, module slot мигрирован, разрушение выдаёт
+  один модуль и одну трубу. Пользовательские player files и locks не копировались.
 
-- оригинальный NeoForge 21.1.264 / Minecraft 1.21.1: пять действий синтетического
-  FakePlayer и четыре варианта count в module NBT; это не клиентский вход;
-- пять Rust-тестов настоящего module codec/install по этому независимому
-  эталону, включая сохранность компонентов, отказ при неверном формате и однократный возврат;
-- менеджеры рецептов оригинала и Horizon: 22 успешные сетки (18 видов стекла
-  для трубы и четыре остальных рецепта), 44 отрицательные, все результаты совпали;
-- настоящий Horizon 26.3: семь hmod и три native bundles, отсутствие извлечения
-  без модуля/при разрыве, доставка low module, save/stop/reopen партии high module;
-- замена/разрушение загруженной трубы совпадают с оригиналом: модуль и восемь
-  слитков возвращаются; destroy также выдаёт одну трубу. Изменение свойства
-  той же трубы сохраняет инвентарь, повторное удаление не дублирует предметы;
-- 109 Python-тестов, SDK-check обоих пакетов, повторная проверка installation lock.
-
-Обработчик использования предмета скомпилирован в движок; Rust-тест проверяет
-его общую логику установки. Сам Game dispatcher с настоящим игроком, обычное
-потребление ингредиентов в меню крафта и графический клиент не проверены.
-Транспортный fixture устанавливает модули командами NBT, как и предыдущая версия.
-Исторический [отчёт 0.1](../../PRETTY_PIPES_RUNTIME_RESULT.json) сохранён отдельно.
-Все тестовые серверы после проверки остановлены.
+Графическая проверка использует отдельного локального игрока без Microsoft
+login и программный рендерер. Настоящий offhand player flow, аппаратная GPU,
+звук и подключение лицензированного клиента к online-mode dedicated server
+ещё требуют проверки. Configuration screens прочих модулей не реализованы.
 
 ## Сборка и установка
 
-Собирать вместе с двумя ранее проверенными native-модулями через pinned Mixins
-`5a64af9` для Horizon `c78187d`, как в
-[wolf extension](../terralith_wolves/README.md). Итого десять HEAD injections
-и три support modules. Headless build не проверяет клиентский запуск.
-
-Содержимое `.hnmod`: корневой `horizon-native.json`, в
-`mixins/techquest_pretty_pipes/` — `horizon-mixin.toml`, все девять `.rs` из этой
-папки и оба LICENSE-файла. Выполнить SDK-check; объявить SHA-256 source bundle
-в новой папке native-tools вместе с SHA-256 собранного движка. Старые tools,
-profiles и locks не менять.
+Собирать все три native modules через Mixins `5a64af9` для Horizon `c78187d`,
+как в [wolf extension](../terralith_wolves/README.md). Итого 13 HEAD-вставок,
+одна RETURN и три support modules. Native bundle содержит корневой
+`horizon-native.json`, а в `mixins/techquest_pretty_pipes/` — TOML, все 13 `.rs`
+из этой папки и оба LICENSE-файла. SDK-check и SHA-256 bundle/engine обязательны.
 
 ```bash
 python horizon/tools/stage_pretty_pipes.py \
@@ -74,47 +107,52 @@ python horizon/tools/stage_pretty_pipes.py \
   --output /path/to/new-pipe-content
 ```
 
-Ассемблер проверяет оба пина, копирует пять MIT textures, адаптирует pipe loot table
-(`condition` → `type` в условии 26.3) и переносит пять исходных shaped recipes в формат ингредиентов 26.3. Исходный
-`c:glass_blocks` заменён частным alias `prettypipes:source/glass_blocks` с 18
-vanilla members минимального исходного сервера. Это не общий namespace `c` и
-не поддержка стекла из остальных модов; отсутствующие optional Forge tags
-записываются в отчёт. Из NeoForge читается только общедоступный JSON тегов,
-Java-код NeoForge не читается и не копируется. Полный MIT notice включён в hmod.
+Ассемблер проверяет оба пина, переносит пять recipes, преобразует loot condition
+`condition` → `type`, копирует пять MIT textures и пять названий на английском
+и русском. Исходный `c:glass_blocks` заменяется частным alias с 18 vanilla
+members минимального исходного сервера; стекло остальных модов не реализовано.
+Из NeoForge читается только public tag JSON, Java source не читается/не копируется.
+Полный MIT notice включён в hmod.
 
-Вызвать [установщик](../../LOCAL_INSTALL_RU.md) с дополнительным
-`--pretty-pipes /path/to/new-pipe-content/target/horizon-mod/prettypipes.hmod`.
-Он принимает версии 0.1.0/0.2.0 и требует совпадающую версию native bundle
-`techquest_pretty_pipes`. Старые шестимодульные установки совместимы.
+[Установщик](../../LOCAL_INSTALL_RU.md) принимает дополнительный
+`--pretty-pipes /path/to/prettypipes.hmod` и требует совпадающую версию native
+bundle (0.1/0.2/0.3). Уже установленные profiles, tools и locks не редактировать.
 
-`probes/live_pretty_pipes.py --server-dir ... --phase prepare --output ...`
-сам сохраняет/останавливает сервер. Повторно запустить установщиком тот же мир
-с новыми homes, затем `--phase verify`; verify новых предметов не создаёт.
+Проверки на новых scratch-путях, вне Git checkout и пользовательских миров:
 
-Входы крафта воспроизводятся `probes/pretty_pipes_crafting_cases.py --jar ...
---neoforge-jar ... --output ...`. Developer-only `PrettyPipesInteractionProbe.java`
-собирается JDK 25 с `--release 21 -proc:none`: mapped Minecraft `*-srg.jar`
-ставится первым в classpath, затем NeoForge libraries без `*-slim.jar` и
-`*-unpacked.jar`, затем original Pretty Pipes JAR. Упаковать собственные classes
-с javafml `[4,)` mod ID `techquest_reference_probe`; запускать только в отдельном
-reference server с оригинальным Pretty Pipes. Системные свойства
-`techquest.reference.result` и `techquest.reference.crafting_cases` указывают
-новый файл результата и входы. Oracle сам штатно останавливает сервер.
+```bash
+python horizon/probes/live_pretty_pipes_game.py \
+  --server-dir /path/to/verified-isolated-server --work /path/to/new-game-harness
+# Нужны X11 display и Vulkan/OpenGL driver; допускается Xvfb + llvmpipe.
+xvfb-run -a python horizon/probes/live_pretty_pipes_gui.py \
+  --server-dir /path/to/verified-isolated-server --work /path/to/new-graphical-world
+python horizon/probes/live_pretty_pipes.py \
+  --server-dir /path/to/running-server --phase prepare --output /path/to/new-prepare.json
+# Prepare сохраняет/останавливает сервер. Запустить тот же мир с новыми homes.
+python horizon/probes/live_pretty_pipes.py \
+  --server-dir /path/to/running-server --phase verify --output /path/to/new-verify.json
+python horizon/probes/live_pretty_pipes_removal.py \
+  --server-dir /path/to/running-server --original /path/to/removal-oracle.json \
+  --output /path/to/new-removal.json
+```
 
-`probes/pretty_pipes_crafting.rs` связывается с библиотеками того же native build;
-аргументы: effective content root, cases JSON, original oracle JSON. Для module
-тестов включить `modules.rs` через `#[path]` в scratch example `horizon-items`;
-`cargo test --profile fast --locked --offline -p horizon-items --example NAME`
-с `TQ_PRETTY_PIPES_INTERACTION_ORACLE` на исходный результат.
+`PrettyPipesMenuProbe.java` — отдельный developer-only NeoForge mod с ID
+`techquest_reference_probe`, как `PrettyPipesInteractionProbe.java` в проверке
+0.2. JDK 25, `--release 21 -proc:none`, mapped Minecraft `*-srg.jar` первым в
+classpath, затем NeoForge libraries без `*-slim.jar`/`*-unpacked.jar`, затем
+Pretty Pipes JAR. Запускать только с оригинальным Pretty Pipes в новом
+loopback/online-mode/whitelist reference server, с отдельными homes и миром
+`techquest-reference-*`. `techquest.reference.result` задаёт новый JSON.
+Синтетическая pathless queue очищается перед сохранением; oracle штатно
+останавливает сервер. Java для Horizon runtime не требуется.
+
+`pretty_pipes_menu.rs` связывается с client-lib/items/world библиотеками того же
+native build. Аргументы: effective content root, menu declaration JSON,
+извлечённый из установленного locked hmod, original menu oracle JSON.
+`pretty_pipes_crafting.rs` принимает root, original cases JSON и interaction
+oracle JSON. Входы крафта генерирует `pretty_pipes_crafting_cases.py`.
+Для Rust unit tests включить `modules.rs` через `#[path]` в scratch example
+`horizon-items`; задать `TQ_PRETTY_PIPES_INTERACTION_ORACLE` на interaction oracle.
 
 Атрибуция — LICENSE-файлы и [notice](../../THIRD_PARTY_NOTICES.md).
-Игровые JAR, textures, hmod, prepared resources и миры в Git не включены.
-Ничего не публиковалось.
-
-Проверка удаления: `probes/live_pretty_pipes_removal.py --server-dir ...
---original /path/to/original-oracle.json --output /path/to/new-result.json`.
-Она внедряет синтетическую очередь и module NBT, проверяет наблюдение предметов
-положительным контролем и сама сохраняет/останавливает сервер. Это проверка
-onRemove, отдельно от естественного transport/save/reopen. Оригинальный oracle
-проверяет также creative FakePlayer; настоящий creative player в Horizon ещё
-не проверен.
+Игровые JAR, hmod, textures, prepared resources, логи и миры в Git не включены.

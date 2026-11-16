@@ -32,3 +32,10 @@ of the minimal reference are used in a private tag; optional missing legacy
 Forge tags and the official artifact SHA-256 are recorded in the build report.
 No NeoForge Java source is read or copied. The developer oracle calls its public
 binary API on an isolated server.
+
+The 0.3 main menu layout adapts Pretty Pipes `MainPipeContainer` and the
+compatibility rule of `PipeBlockEntity.modules`; both are MIT at the pinned tag.
+The private content output also includes five names from each of the original
+English and Russian language files. The hand-use hook ordering and lazy
+container-table preparation follow Horizon `Game::use_hand` and
+`game/block_entity_ticks.rs` (same MIT pin and retained license).

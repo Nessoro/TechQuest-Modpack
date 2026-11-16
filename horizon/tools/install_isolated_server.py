@@ -84,7 +84,7 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
                 or facts.get("api") != "0.2" or facts.get("side") != "both"
                 or facts.get("sha256") != checksum):
             raise ValueError("SDK rejected module identity/API/checksum: " + mod)
-        if mod == "prettypipes" and facts.get("version") not in ("0.1.0", "0.2.0"):
+        if mod == "prettypipes" and facts.get("version") not in ("0.1.0", "0.2.0", "0.3.0"):
             raise ValueError("expected the reviewed Pretty Pipes content prototype")
         with zipfile.ZipFile(path) as archive:
             names = archive.namelist()
@@ -131,7 +131,7 @@ def check_pipe_pair(mods: dict, native: list[dict]):
     if len(matching) != 1:
         raise ValueError("Pretty Pipes installation has no native extension declaration")
     version = mods["prettypipes"].get("version")
-    if version not in ("0.1.0", "0.2.0") or matching[0].get("version") != version:
+    if version not in ("0.1.0", "0.2.0", "0.3.0") or matching[0].get("version") != version:
         raise ValueError("Pretty Pipes content/native version mismatch")
 
 
