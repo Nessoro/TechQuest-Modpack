@@ -15,7 +15,8 @@ class GraphicalFixture:
     def __init__(self, server, work, version, world, player):
         self.server, self.work = server.resolve(), work.absolute()
         lock = verify(self.server)
-        if lock["modules"].get("prettypipes", {}).get("version") != version:
+        self.version = lock["modules"].get("prettypipes", {}).get("version")
+        if self.version not in ((version,) if isinstance(version, str) else version):
             raise ValueError("unexpected content version")
         if (self.work.exists() or self.work.is_symlink()
                 or any(p.is_symlink() for p in self.work.parents)

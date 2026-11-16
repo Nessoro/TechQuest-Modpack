@@ -62,7 +62,7 @@ def main():
                 raise RuntimeError("pipe placement failed")
             # A synthetic queue and module inventory, matching the original's
             # onRemove fixture. Natural transport is tested separately.
-            queue_slot = 3 if lock["modules"]["prettypipes"]["version"] == "0.3.0" else 0
+            queue_slot = 3 if lock["modules"]["prettypipes"]["version"] in ("0.3.0", "0.4.0", "0.5.0") else 0
             native.command(f'data merge block {POSITION} {{modules:{{Size:3,Items:[{{Slot:0b,id:"prettypipes:low_extraction_module",count:1}}]}},Items:[{{Slot:{queue_slot}b,id:"minecraft:iron_ingot",count:8}}]}}')
             state = native.command(f"data get block {POSITION}")
             if 'prettypipes:low_extraction_module' not in state or 'minecraft:iron_ingot' not in state:

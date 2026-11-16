@@ -200,10 +200,21 @@ Python-тестов прошли; установщик отказывает menu
 [Отчёт фильтров 0.4](PRETTY_PIPES_FILTER_RESULT.json). Новая проверенная установка —
 `/workspace/horizon-runtime/techquest-pipes-04b-server`, остановлена, lock проверен.
 
+Этап 0.5 завершил базовый расчёт вместимости и учёт партий в пути для
+medium/high. 126 случаев с оригинальным destination method совпали; 0.4
+расходился в 51. Во всех native случаях источник уменьшался ровно на новую
+партию, Items цели до прибытия не менялись. Графический клиент без подставных
+очередей проверил два high extractors к общей цели и собственные партии medium
+8 + 2; оба мира доставили сохранённые партии после перезапуска. Регрессия
+фильтра, dedicated transport/save/reopen/removal и 112 Python-тестов прошли.
+[Отчёт вместимости 0.5](PRETTY_PIPES_CAPACITY_RESULT.json). Финальная установка
+`/workspace/horizon-runtime/techquest-pipes-05b-server` остановлена, lock проверен.
+Схема хранения 3/67 slots сохранена; старые profiles/tools/locks не редактировались.
+
 1. Продолжить Pretty Pipes: equality/filter-increase modules и их экраны,
-   ветвления, приоритеты, capacity reservations/preventOversending, переполнение и rerouting; проверить offhand, bulk edits,
+   ветвления, приоритеты, insertion-limiting modules/сложные slot limits, переполнение и rerouting; проверить offhand, bulk edits,
    unloaded entities и точные drop semantics. Установка/снятие, основное GUI,
-   рецепты, базовый transport/save/reopen, sample filter и direction selector уже проверены; обычное меню крафта
+   рецепты, базовый transport/save/reopen, sample filter, direction selector и базовые capacity reservations уже проверены; обычное меню крафта
    ещё нет. Не выдавать этот прототип за полный mod port.
    Исходный tag MIT и reference server — PRETTY_PIPES_REFERENCE_RU.md;
    native code/install — first_party/pretty_pipes/README.md; новые пины — source/SOURCE.md.

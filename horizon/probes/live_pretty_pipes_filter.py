@@ -17,7 +17,7 @@ def main():
     parser.add_argument("--server-dir", type=Path, required=True)
     parser.add_argument("--work", type=Path, required=True)
     args = parser.parse_args()
-    game = GraphicalFixture(args.server_dir,args.work,"0.4.0","techquest-pipe-filter","TQFilterProbe")
+    game = GraphicalFixture(args.server_dir,args.work,("0.4.0","0.5.0"),"techquest-pipe-filter","TQFilterProbe")
     call, command, settle = game.call, game.command, game.settle
     def items(x):
         text = command(f"data get block {x} 200 0 Items")
@@ -104,7 +104,7 @@ def main():
         call("click-slot",slot,"shift");settle();assert modules()==saved
         status=call("status");assert status['server']['decode_errors']==0 and status['server']['joined']
         call("close");call("save")
-        report={"schema":1,"minecraft":"26.3","prototype_version":"0.4.0",
+        report={"schema":1,"minecraft":"26.3","prototype_version":game.version,
                 "connected_local_graphical_client":True,"ghost_sample_edits_via_menu_button_packet":True,
                 "cursor_and_inventory_counts_preserved":True,"blacklist_blocks_only_sample_item":True,
                 "whitelist_allows_only_sample_item":True,"single_pipe_west_to_east_route":True,

@@ -48,3 +48,10 @@ MIT notice in the content module and native source bundle. The compact Horizon
 controls and native transport integration are first-party code. The original
 runtime/Data.CODEC oracle is distinct from the observed stale cached component
 serialization; see `PRETTY_PIPES_FILTER_RESULT.json`.
+
+Pretty Pipes 0.5 destination-capacity and in-flight count policy follows the
+MIT `PipeBlockEntity.getAvailableDestination` and `PipeNetwork.getItemsOnTheWay`
+from the same pinned Pretty Pipes source. The read-only insertion view adapts
+MIT Horizon `game/machines.rs` container rules; see the retained
+`LICENSE-HORIZON`. No Java source from NeoForge or LGPL/GPL dependencies was
+read or decompiled; the original reference runs binary dependencies only.

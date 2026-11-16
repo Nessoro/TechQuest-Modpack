@@ -120,6 +120,55 @@ fn number(nbt: &Compound, key: &str) -> Option<i32> {
     }
 }
 
+/// The original network subtracts every item's count on its way to the
+/// inventory, including other item types. The current ticking pipe is out of
+/// the world's block-entity map and must be counted explicitly, once.
+fn on_the_way(game: &Game<'_>, current: &ModBlockEntity, destination: [i32; 3]) -> u32 {
+    let count = |entity: &ModBlockEntity| {
+        if entity.id != PIPE {
+            return 0u32;
+        }
+        let first = if entity
+            .nbt
+            .get(&JavaString::from("techquest_inventory_schema"))
+            == Some(&Tag::Int(3))
+        {
+            modules::MODULE_SLOTS
+        } else {
+            0
+        };
+        entity
+            .items
+            .iter()
+            .enumerate()
+            .skip(first)
+            .fold(0u32, |total, (slot, item)| {
+                let key = JavaString::from(format!("techquest_pending_{slot}").as_str());
+                let matching = entity
+                    .nbt
+                    .get(&key)
+                    .and_then(|p| p.get("destination"))
+                    .is_some_and(
+                        |p| matches!(p,Tag::IntArray(p) if p.as_slice() == destination.as_slice()),
+                    );
+                total.saturating_add(if matching {
+                    item.as_ref().map_or(0, |s| s.count)
+                } else {
+                    0
+                })
+            })
+    };
+    game.world
+        .block_entities
+        .values()
+        .fold(count(current), |total, entity| {
+            total.saturating_add(match entity {
+                horizon_client_lib::containers::BlockEntity::Mod(entity) => count(entity),
+                _ => 0,
+            })
+        })
+}
+
 pub(super) fn use_module(game: &mut Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
     if game.native_block(pos) != PIPE || modules::rates(&stack.item).is_none() {
         return false;
@@ -157,19 +206,11 @@ fn route(
     item: &ItemStack,
     destination: Option<[i32; 3]>,
     settings: Option<&filter::Settings>,
-) -> Option<([i32; 3], Direction, i32)> {
-    let dimension = game.native_dimension();
+    current: &ModBlockEntity,
+    prevent_oversending: bool,
+) -> Option<([i32; 3], Direction, i32, u32)> {
     let mut seen = BTreeSet::from([start]);
     let mut queue = VecDeque::from([(start, 1)]);
-    let maximum = item
-        .data()
-        .and_then(|d| d.other("minecraft:max_stack_size"))
-        .and_then(|n| match n {
-            Tag::Int(n) => Some((*n).clamp(1, 99) as u32),
-            _ => None,
-        })
-        .or_else(|| game.native_max_stack_size(&item.item))
-        .unwrap_or(64);
     while let Some((pos, distance)) = queue.pop_front() {
         for direction in Direction::ALL {
             let neighbor = at(pos, direction);
@@ -216,15 +257,19 @@ fn route(
                 continue;
             }
             let face = direction.opposite();
-            let Some(slots) = game.native_container_slots(dimension, neighbor, face) else {
+            let Some(space) = super::machines::techquest_pretty_pipes_capacity::capacity(
+                game, neighbor, face, item,
+            ) else {
                 continue;
             };
-            if slots.iter().any(|s| {
-                s.stack
-                    .as_ref()
-                    .is_none_or(|held| held.same_item_same_components(item) && held.count < maximum)
-            }) {
-                return Some((neighbor, face, distance));
+            let available = if prevent_oversending {
+                space.saturating_sub(on_the_way(game, current, neighbor))
+            } else {
+                space
+            };
+            let accepted = item.count.min(available);
+            if accepted > 0 {
+                return Some((neighbor, face, distance, accepted));
             }
         }
     }
@@ -266,9 +311,18 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
             pending.insert("remaining".into(), Tag::Int(remaining - 1));
             entity.items[slot] = Some(stack);
             entity.nbt.insert(key, Tag::Compound(pending));
-        } else if let Some((target, face, _)) =
-            destination.and_then(|d| route(game, pos, pos, &stack, Some(d), settings.as_ref()))
-        {
+        } else if let Some((target, face, _, _)) = destination.and_then(|d| {
+            route(
+                game,
+                pos,
+                pos,
+                &stack,
+                Some(d),
+                settings.as_ref(),
+                entity,
+                false,
+            )
+        }) {
             entity.items[slot] = game.native_insert_item(target, face, stack);
             if entity.items[slot].is_none() {
                 entity.nbt.remove(&key);
@@ -309,12 +363,24 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
             if !settings.as_ref().is_some_and(|s| s.allows(&item)) {
                 continue;
             }
-            let Some((destination, _, distance)) =
-                route(game, pos, source, &item, None, settings.as_ref())
-            else {
+            let requested = ItemStack {
+                count: item.count.min(amount),
+                ..item.clone()
+            };
+            let Some((destination, _, distance, accepted)) = route(
+                game,
+                pos,
+                source,
+                &requested,
+                None,
+                settings.as_ref(),
+                entity,
+                amount > 1,
+            ) else {
                 continue;
             };
-            let Some(stack) = game.native_extract_item(dimension, source, face, slot.slot, amount)
+            let Some(stack) =
+                game.native_extract_item(dimension, source, face, slot.slot, accepted)
             else {
                 continue;
             };

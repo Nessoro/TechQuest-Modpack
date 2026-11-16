@@ -1,4 +1,4 @@
-# Native Pretty Pipes prototype 0.4.0
+# Native Pretty Pipes prototype 0.5.0
 
 Прототип Horizon 26.3 поддерживает default extraction tiers, пять рецептов,
 установку/снятие модуля, главное меню и базовые фильтры экстрактора. Источник —
@@ -6,7 +6,8 @@ Pretty Pipes 1.22.0, MIT commit `1f8ac61`.
 [Оригинальный эталон](../../PRETTY_PIPES_REFERENCE_RU.md),
 [проверки 0.2](../../PRETTY_PIPES_MODULES_RESULT.json),
 [проверки меню 0.3](../../PRETTY_PIPES_MENU_RESULT.json),
-[фильтры и стороны 0.4](../../PRETTY_PIPES_FILTER_RESULT.json).
+[фильтры и стороны 0.4](../../PRETTY_PIPES_FILTER_RESULT.json),
+[вместимость и очереди 0.5](../../PRETTY_PIPES_CAPACITY_RESULT.json).
 Полный Pretty Pipes и промышленный модпак ещё не перенесены.
 
 ## Главное меню и хранение
@@ -88,6 +89,46 @@ NeoForge с синтетическим игроком: 27 последовате
 Английские подписи и доступные русские ключи взяты из MIT JAR; отсутствующие
 в исходном ru_ru ключи используют обычный английский fallback.
 
+## Вместимость и партии в пути (0.5)
+
+Маршрут теперь вычисляет реальную доступную вместимость через read-only
+правила вставки pinned Horizon: доступные стороне slots, тип/компоненты стека
+и ограничения furnace input/fuel. Предметы не вставляются и не забираются
+ради расчёта. Поддержаны те же обычные инвентари, что перечислены в connection
+теге: chest/trapped chest/barrel, hopper, furnace/blast furnace/smoker.
+Иные inventory kinds и межмодовые handlers требуют отдельного переноса.
+
+Из источника забирается только количество, помещающееся в цель. Для medium/high
+из вместимости вычитаются все партии, уже направленные в эту координату
+инвентаря, включая другие типы предметов — исходная консервативная эвристика
+Pretty Pipes. Low не вычитает партии в пути, как в оригинале. Текущая тикающая
+труба находится вне общей block-entity map, поэтому её собственная очередь
+учитывается явно. Резерв получается из реальных сохранённых queue slots и
+pending destination; отдельного несохранённого счётчика нет.
+
+Проверены 126 исходных capacity cases: 96 chest (включая шесть component cases),
+18 hopper и 12 furnace. По 42 случая на каждый tier; запросы 1/8/64, свободное
+место 0/1/2/8/64 и партии в пути 0/1/8. Оригинальный public destination method
+исполнялся на NeoForge. На Horizon каждый случай исполнил ровно один период
+настоящего extraction tick с отдельным источником и синтетической очередью
+другой трубы. Уменьшение источника равно новой партии; Items цели до прибытия
+не меняются. Старый 0.4 движок расходился в 51 случае, 0.5 совпал во всех.
+Это не проверка полного исходного network timing, priorities или rerouting.
+
+Графический локальный клиент без подставных queue entries установил два high
+extractors к общей цели с тремя свободными местами: суммарно отправлены ровно
+три предмета. Отдельный medium extractor при десяти свободных местах отправил
+8 + 2 и остановился, учитывая собственные партии. Оба мира сохранены с реальными
+партиями в пути и после перезапуска доставили их без потерь/дублирования.
+Регрессия фильтров, обычный dedicated transport/save/reopen и удаление трубы
+также прошли. [Отчёт 0.5](../../PRETTY_PIPES_CAPACITY_RESULT.json).
+
+Остаются insertion-limiting modules, сложные/межмодовые slot limits,
+oversized stack components, aliases double chest при резервировании,
+полная семантика ветвлений/приоритетов и перерасчёт пути при изменении цели.
+Для обычных поддержанных инвентарей повторно проверены базовые оба режима
+фильтра и directional single-pipe routing. Старые установки не изменялись.
+
 ## Транспорт и ограничения
 
 Default tiers сохраняют batch/period: low 1/20, medium 8/15, high 64/10.
@@ -96,7 +137,7 @@ Loaded-only BFS ограничен 4096 pipe nodes, исходный конте�
 в сохранённой очереди. Внешние hopper faces внутреннего инвентаря закрыты.
 
 Не реализованы equality/filter-increase modules и их экраны, приоритеты,
-ветвления/переполнение/rerouting, reservation-based preventOversending,
+полная семантика ветвлений/переполнения/rerouting, insertion-limiting modules,
 redstone module и IPipeConnectable interop. Компонент фильтра должен иметь
 исходный размер соответствующего tier; расширенные или malformed configs
 отклоняются с остановкой извлечения, без удаления сохранённых данных.
@@ -143,8 +184,8 @@ login и программный рендерер. Настоящий offhand pla
 
 Собирать все три native modules через Mixins `5a64af9` для Horizon `c78187d`,
 как в [wolf extension](../terralith_wolves/README.md). Итого 18 HEAD-вставок,
-одна RETURN и пять support modules. Native bundle содержит корневой
-`horizon-native.json`, а в `mixins/techquest_pretty_pipes/` — TOML, все 20 `.rs`
+одна RETURN и шесть support modules. Native bundle содержит корневой
+`horizon-native.json`, а в `mixins/techquest_pretty_pipes/` — TOML, все 21 `.rs`
 из этой папки и оба LICENSE-файла. SDK-check и SHA-256 bundle/engine обязательны.
 
 ```bash
@@ -164,7 +205,7 @@ members минимального исходного сервера; стекло
 
 [Установщик](../../LOCAL_INSTALL_RU.md) принимает дополнительный
 `--pretty-pipes /path/to/prettypipes.hmod` и требует совпадающую версию native
-bundle (0.1/0.2/0.3/0.4). Уже установленные profiles, tools и locks не редактировать.
+bundle (0.1/0.2/0.3/0.4/0.5). Уже установленные profiles, tools и locks не редактировать.
 
 Проверки на новых scratch-путях, вне Git checkout и пользовательских миров:
 
@@ -173,9 +214,9 @@ python horizon/probes/live_pretty_pipes_game.py \
   --server-dir /path/to/verified-isolated-server --work /path/to/new-game-harness
 # Нужны X11 display и Vulkan/OpenGL driver; допускается Xvfb + llvmpipe.
 xvfb-run -a python horizon/probes/live_pretty_pipes_filter.py \
-  --server-dir /path/to/verified-04-server --work /path/to/new-filter-world
+  --server-dir /path/to/verified-server --work /path/to/new-filter-world
 xvfb-run -a python horizon/probes/live_pretty_pipes_filter_layout.py \
-  --server-dir /path/to/verified-04-server --work /path/to/new-layout-world
+  --server-dir /path/to/verified-server --work /path/to/new-layout-world
 python horizon/probes/live_pretty_pipes.py \
   --server-dir /path/to/running-server --phase prepare --output /path/to/new-prepare.json
 # Prepare сохраняет/останавливает сервер. Запустить тот же мир с новыми homes.
@@ -213,3 +254,18 @@ LGPL Java source не читается. `pretty_pipes_filter.rs` связыва�
 items/world и serde_json **той же новой native сборки** и принимает original
 filter-result JSON. Проверяется прямой исходный codec, а cached module snapshots
 сохраняются для отдельного учёта описанного расхождения.
+
+`PrettyPipesCapacityProbe.java` — developer-only original destination oracle;
+для компиляции дополнительно нужны вложенные binary JAR dependencies из
+Pretty Pipes JAR (Java source зависимостей не читается). Все синтетические
+PipeItems удаляются до сохранения. Результат задаётся через
+`techquest.reference.result`, как у других oracle mods.
+
+```bash
+python horizon/probes/live_pretty_pipes_capacity.py \
+  --server-dir /path/to/verified-05-server --work /path/to/new-capacity-harness \
+  --original /path/to/original-capacity-result.json
+# Контроль прежнего SDK-valid 0.4 движка: отдельный --work и --baseline.
+xvfb-run -a python horizon/probes/live_pretty_pipes_capacity_gui.py \
+  --server-dir /path/to/verified-05-server --work /path/to/new-capacity-gui-world
+```
