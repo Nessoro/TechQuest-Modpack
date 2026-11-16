@@ -69,6 +69,17 @@
       "note": "Fluidic Tanks 1.1.1 provides multiblock fluid reservoirs compatible with Create, Mekanism and Modern Industrialization. Chosen instead of XyCraft: World (which does not contain XyCraft Machines fluid tanks). Modrinth ARR; distribute by official downloads only. Test fluid loss when breaking/splitting tanks."
     },
     {
+      "project": "dimstorage",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "R7rQFgQh",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Official DimStorage 9.1.1 for NeoForge 1.21.1. Dimensional Chest/Tank/Tablet with owner, frequency and access control; requires EdivadLib 3.0.0. Test frequency isolation, tank integration and multiplayer before merging."
+    },
+    {
       "project": "ae2",
       "group": "Технологии",
       "required": true
@@ -511,6 +522,17 @@
       "group": "Библиотеки",
       "required": true,
       "version_id": "1IiqEQGl"
+    },
+    {
+      "project": "edivadlib",
+      "group": "Библиотеки",
+      "required": true,
+      "version_id": "exl6hgWJ",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Required official EdivadLib 3.0.0 for DimStorage 9.1.1, version ID exl6hgWJ, NeoForge 1.21.1. Shared library must be present on client and server."
     },
     {
       "project": "trash-cans",
@@ -1753,6 +1775,28 @@
       "version_id": "991No08g",
       "filename": "fluidic_tanks-1.1.1.jar",
       "sha512": "aced593ef1c018d1cb6807b8f2e6b1b6acb8cc4358e388fbed49bed7be798abeb2a5348a5382454e1b5d9595d7ba364b079ceab29f5b3b3b2d668f4a764c6161",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "8lnmIJH7": {
+      "title": "DimStorage",
+      "version": "9.1.1",
+      "version_id": "R7rQFgQh",
+      "filename": "DimStorage-1.21.1-9.1.1.jar",
+      "sha512": "b15b3e7ef7f0d5814d899ee7b9e87b4abf5add8039ad623ae97d77ad29de31dfe6407637c95b5c50b75c9a5698bbd193da45ece34bfabed7a7fa1c9069dae78f",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "a8Jk9kpK": {
+      "title": "EdivadLib",
+      "version": "3.0.0",
+      "version_id": "exl6hgWJ",
+      "filename": "EdivadLib-1.21-3.0.0.jar",
+      "sha512": "3cb39fdc7ce4b68bf4681ef7395fb6b81961372b10a68784abedd33e2026d9c3841daa93d29a44f9872ef0287eac276f10ab8640a8543ae67e9ae294f28bd8b6",
       "environment": {
         "client": "required",
         "server": "required"

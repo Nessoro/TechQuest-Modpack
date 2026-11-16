@@ -10,6 +10,7 @@ on:
       - scripts/install_server.py
       - scripts/install_client.py
       - scripts/mods_transaction.py
+      - scripts/mi_guide_config.py
       - scripts/audit_micro3_packages.py
       - windows-installer/**
       - scripts/security_audit.py
@@ -131,6 +132,36 @@ jobs:
                       with zipfile.ZipFile(path) as jar:
                           assert jar.testzip() is None,("corrupt",path)
                   print("Oritech+Fluidic exact release and sides verified:",project,version)
+          PY
+      - name: Verify pinned DimStorage and EdivadLib on client/server
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+          cfg=json.loads(Path("modlist.json").read_text(encoding="utf-8"))
+          expected={
+              "8lnmIJH7": ("R7rQFgQh","DimStorage-1.21.1-9.1.1.jar"),
+              "a8Jk9kpK": ("exl6hgWJ","EdivadLib-1.21-3.0.0.jar"),
+          }
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as archive:
+              rows=json.loads(archive.read("modrinth.index.json"))["files"]
+              for project,(vid,filename) in expected.items():
+                  lock=cfg["modrinth_lock"][project]
+                  assert (lock["version_id"],lock["filename"]) == (vid,filename)
+                  matches=[r for r in rows if r["path"]=="mods/"+filename]
+                  assert len(matches)==1,("missing/duplicate mrpack file",filename)
+                  assert matches[0]["hashes"]["sha512"]==lock["sha512"]
+                  assert matches[0]["env"]=={"client":"required","server":"required"}
+                  assert "overrides/mods/"+filename not in archive.namelist()
+                  for side in ("client","server"):
+                      jar=Path("output")/side/"mods"/filename
+                      assert jar.is_file(),("missing required jar",jar)
+                      assert hashlib.sha512(jar.read_bytes()).hexdigest()==lock["sha512"],jar
+                      with zipfile.ZipFile(jar) as z:
+                          assert z.testzip() is None,("corrupted jar",jar)
+                  print("Verified exact client/server DimStorage family JAR:",project,vid)
           PY
       - name: Audit micro3 client/server/Modrinth manifests and both Compatibility payloads
         run: python scripts/audit_micro3_packages.py
@@ -269,6 +300,7 @@ jobs:
           with zipfile.ZipFile(p,"w",zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_server.py")
               z.write("scripts/mods_transaction.py")
+              z.write("scripts/mi_guide_config.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
               z.write(out/"TechQuest_1.21.1_0.3.3_ALPHA.mrpack",arcname="TechQuest.mrpack")
@@ -299,6 +331,7 @@ jobs:
                                zipfile.ZIP_DEFLATED) as z:
               z.write("scripts/install_client.py")
               z.write("scripts/mods_transaction.py")
+              z.write("scripts/mi_guide_config.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
               z.write(out/"TechQuest_1.21.1_0.3.3_ALPHA.mrpack",arcname="TechQuest_Optimized.mrpack")
@@ -408,7 +441,7 @@ jobs:
             if($zip.Entries | Where-Object { $_.FullName -match '^overrides/mods/(techquest-rpg-core|pmmo-|project-mmo)' }) {
               throw 'Disallowed RPG Core/PMMO in GUI overrides'
             }
-            foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft','xaero','healthindicator','patchouli','openloader','jei-1.21.1-neoforge-19.64.0.455.jar','refinedstorage-neoforge-2.0.9.jar','refinedstorage-jei-integration-neoforge-1.0.0.jar','open-parties-and-claims-neoforge-1.21.1-0.33.0.jar','oritech-neoforge-1.21.1-1.2.13.jar','athena-neoforge-1.21.1-4.0.6.jar','fluidic_tanks-1.1.1.jar')) {
+            foreach ($mustHave in @('immediatelyfast','moreculling','badoptimizations','dynamic-fps','buildcraft','industrial-craft','xaero','healthindicator','patchouli','openloader','jei-1.21.1-neoforge-19.64.0.455.jar','refinedstorage-neoforge-2.0.9.jar','refinedstorage-jei-integration-neoforge-1.0.0.jar','open-parties-and-claims-neoforge-1.21.1-0.33.0.jar','oritech-neoforge-1.21.1-1.2.13.jar','athena-neoforge-1.21.1-4.0.6.jar','fluidic_tanks-1.1.1.jar','DimStorage-1.21.1-9.1.1.jar','EdivadLib-1.21-3.0.0.jar')) {
               if(-not ($paths | Where-Object { $_ -match $mustHave })) { throw "Missing required mod: $mustHave" }
             }
             if($paths | Where-Object { $_ -match '^mods/iris-' }) { throw 'Optimized pack contains Iris unexpectedly' }
