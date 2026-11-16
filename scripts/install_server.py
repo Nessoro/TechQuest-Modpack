@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import build_pack as packbuilder
 from scripts.mods_transaction import activate_staged_mods
+from scripts.mi_guide_config import patch_existing_mi_worlds
 
 NEOFORGE_MAVEN = "https://maven.neoforged.net/releases/net/neoforged/neoforge"
 
@@ -93,7 +94,8 @@ def install_guide_overrides(pack_path, target):
             if not (relative.startswith("patchouli_books/techquest_guide/") or
                     relative in ("config/openloader/packs/techquest_starter_guide.zip",
                                 "config/openloader/packs/techquest_micropatch_033.zip",
-                                "defaultconfigs/openpartiesandclaims-server.toml")):
+                                "defaultconfigs/openpartiesandclaims-server.toml",
+                                "defaultconfigs/modern_industrialization-server.toml")):
                 continue
             if ".." in Path(relative).parts or any(c in relative for c in ("\\", "\x00", ":")):
                 raise packbuilder.BuildError("Unsafe guide override path: " + relative)
@@ -156,6 +158,7 @@ def install_pack(pack, target, dry_run=False, skip_neoforge=False):
 
         def finish():
             install_guide_overrides(pack, target)
+            patch_existing_mi_worlds(target, dedicated_server=True)
             with zipfile.ZipFile(pack) as archive:
                 for name in ("TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                              "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json"):

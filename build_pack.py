@@ -448,6 +448,28 @@ def opac_config_overrides(cfg):
     return {"defaultconfigs/openpartiesandclaims-server.toml": config.read_bytes()}
 
 
+
+def mi_guide_config_overrides(cfg):
+    """Keep MI onboarding on first join, disable duplicate guides on respawn.
+
+    This is the NeoForge SERVER config template for new worlds. Existing
+    world/serverconfig files are patched one-key-only by installers.
+    """
+    mi = next((m for m in cfg.get("mods", []) if m["project"] == "modern-industrialization"), None)
+    if not mi:
+        return {}
+    lock = cfg.get("modrinth_lock", {}).get("Gov5Dboq", {})
+    if (lock.get("version_id") != "xGrDqc07" or
+            lock.get("filename") != "Modern-Industrialization-2.5.12.jar"):
+        raise BuildError("Review MI guide config against pinned version before changing")
+    path = ROOT / "compat" / "modern-industrialization" / "modern_industrialization-server.toml"
+    data = path.read_bytes()
+    if (b"spawnWithGuideBook = true" not in data or
+            b"respawnWithGuideBook = false" not in data):
+        raise BuildError("Invalid MI respawn guide preset")
+    return {"defaultconfigs/modern_industrialization-server.toml": data}
+
+
 def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
     files = []
     for rec in mods:
@@ -498,6 +520,8 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
         for relative, data in client_config_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
         for relative, data in opac_config_overrides(cfg).items():
+            archive.writestr("overrides/" + relative, data)
+        for relative, data in mi_guide_config_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
         # CurseForge-only, All Rights Reserved additions stay user-supplied.
         # Include metadata for the GUI and server operator, never the author JAR.
@@ -600,6 +624,11 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
     for relative, data in opac_config_overrides(cfg).items():
+        for side in ("client", "server"):
+            target = out / side / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+    for relative, data in mi_guide_config_overrides(cfg).items():
         for side in ("client", "server"):
             target = out / side / relative
             target.parent.mkdir(parents=True, exist_ok=True)

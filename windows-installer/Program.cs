@@ -190,6 +190,7 @@ internal sealed class InstallerForm : Form
             if (archive.GetEntry("overrides/patchouli_books/techquest_guide/book.json") is null ||
                 archive.GetEntry("overrides/config/openloader/packs/techquest_starter_guide.zip") is null ||
                 archive.GetEntry("overrides/config/openloader/packs/techquest_micropatch_033.zip") is null ||
+                archive.GetEntry("overrides/defaultconfigs/modern_industrialization-server.toml") is null ||
                  fileNames.Any(n => n.StartsWith("pmmo-", StringComparison.OrdinalIgnoreCase)) ||
                  archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null ||
                  archive.Entries.Any(e =>
@@ -201,6 +202,24 @@ internal sealed class InstallerForm : Form
             try
             {
                 InstallGuideOverrides(probe);
+                string miDefault = File.ReadAllText(Path.Combine(probe, "defaultconfigs",
+                    "modern_industrialization-server.toml"));
+                if (!miDefault.Contains("spawnWithGuideBook = true") ||
+                    !miDefault.Contains("respawnWithGuideBook = false")) return 27;
+                string miWorld = Path.Combine(probe, "saves", "mi-world", "serverconfig");
+                Directory.CreateDirectory(miWorld);
+                string miPath = Path.Combine(miWorld, "modern_industrialization-server.toml");
+                const string miOriginal = "forgeEnergyPerEu = 17\nspawnWithGuideBook = true\nrespawnWithGuideBook = true\n[recipes]\ncompostableToPlantOil = false\n";
+                File.WriteAllText(miPath, miOriginal);
+                InstallGuideOverrides(probe);
+                string miAfter = File.ReadAllText(miPath);
+                if (!miAfter.Contains("spawnWithGuideBook = true") ||
+                    !miAfter.Contains("respawnWithGuideBook = false") ||
+                    !miAfter.Contains("forgeEnergyPerEu = 17") ||
+                    !miAfter.Contains("compostableToPlantOil = false")) return 28;
+                if (File.ReadAllText(miPath + ".techquest-original.bak") != miOriginal) return 29;
+                InstallGuideOverrides(probe);
+                if (File.ReadAllText(miPath + ".techquest-original.bak") != miOriginal) return 30;
                 string options = File.ReadAllText(Path.Combine(probe, "options.txt"));
                 if (!options.Split('\n').Contains("graphicsMode:0") ||
                     !options.Split('\n').Contains("maxFps:60")) return 8;
@@ -493,6 +512,7 @@ internal sealed class InstallerForm : Form
                 relative == "config/jade/plugins.json" ||
                 relative == "config/healthindicatortxf.json5" ||
                 relative == "defaultconfigs/openpartiesandclaims-server.toml" ||
+                relative == "defaultconfigs/modern_industrialization-server.toml" ||
                 relative == "TECHQUEST_OPTIMIZED.txt" ||
                 relative == "TECHQUEST_OPTIONAL_LOCAL_MODS.json";
             if (!allowed || relative.EndsWith("/", StringComparison.Ordinal))
@@ -512,8 +532,72 @@ internal sealed class InstallerForm : Form
             using var output = File.Create(destination);
             source.CopyTo(output);
         }
+        DisableMiRespawnGuideInExistingWorlds(gameDirectory);
     }
 
+
+    private static void DisableMiRespawnGuideInExistingWorlds(string gameDirectory)
+    {
+        // Explicit one-key opt-out requested by pack owner. Preserve all world
+        // data, recipes and other config keys; back up the original once.
+        const string name = "modern_industrialization-server.toml";
+        var candidates = new List<string>
+        {
+            Path.Combine(gameDirectory, "config", name) // legacy MI config location
+        };
+        string savesRoot = Path.Combine(gameDirectory, "saves");
+        if (Directory.Exists(savesRoot))
+        {
+            foreach (string worldDir in Directory.EnumerateDirectories(savesRoot))
+            {
+                if ((File.GetAttributes(worldDir) & FileAttributes.ReparsePoint) != 0)
+                    continue;
+                candidates.Add(Path.Combine(worldDir, "serverconfig", name));
+            }
+        }
+        foreach (string configPath in candidates)
+        {
+            if (!File.Exists(configPath) ||
+                (File.GetAttributes(configPath) & FileAttributes.ReparsePoint) != 0)
+                continue;
+            byte[] bytes = File.ReadAllBytes(configPath);
+            bool hasBom = bytes.Length >= 3 && bytes[0] == 0xEF &&
+                          bytes[1] == 0xBB && bytes[2] == 0xBF;
+            int offset = hasBom ? 3 : 0;
+            string current = new UTF8Encoding(false, true)
+                .GetString(bytes, offset, bytes.Length - offset);
+            if (current.Contains('\0')) continue;
+            string updated = System.Text.RegularExpressions.Regex.Replace(
+                current, @"(?m)^([ \t]*respawnWithGuideBook[ \t]*=[ \t]*)true\b",
+                m => m.Groups[1].Value + "false",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (updated == current)
+            {
+                if (current.Contains("respawnWithGuideBook", StringComparison.Ordinal))
+                    continue; // already false or unknown syntax: do not alter it
+                updated = "respawnWithGuideBook = false\n" + current;
+            }
+            string backup = configPath + ".techquest-original.bak";
+            if (File.Exists(backup) &&
+                (File.GetAttributes(backup) & FileAttributes.ReparsePoint) != 0)
+                throw new IOException("Unsafe MI guide backup path: " + backup);
+            if (!File.Exists(backup))
+                File.Copy(configPath, backup, overwrite: false);
+            string temporary = configPath + ".techquest-" + Guid.NewGuid().ToString("N") + ".tmp";
+            byte[] payload = Encoding.UTF8.GetBytes(updated);
+            if (hasBom)
+                payload = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(payload).ToArray();
+            try
+            {
+                File.WriteAllBytes(temporary, payload);
+                File.Move(temporary, configPath, overwrite: true);
+            }
+            finally
+            {
+                if (File.Exists(temporary)) File.Delete(temporary);
+            }
+        }
+    }
 
     private void ImportAcceleratedMcWarfare()
     {
