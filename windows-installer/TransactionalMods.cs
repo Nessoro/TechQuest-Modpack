@@ -26,7 +26,7 @@ internal sealed class PendingTransaction
 
 // Only TechQuest-managed mod JARs are in the transaction. Never touch the
 // user's saves, screenshots, options, config, resource packs, accounts or launcher.
-internal static class TransactionalMods
+internal static partial class TransactionalMods
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
     private static readonly StringComparer NameComparer = StringComparer.OrdinalIgnoreCase;
