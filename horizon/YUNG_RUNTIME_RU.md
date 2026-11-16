@@ -1,4 +1,4 @@
-# YUNG's: структуры, спавнеры и ограничения сундуков
+# YUNG's: структуры, спавнеры, сундуки и лут
 
 Проверка 15 ноября 2026 года использует Horizon 26.3 `c78187d` и отдельный
 исходный сервер Minecraft 1.21.1 / NeoForge 21.1.264. Оба сервера привязаны
@@ -24,8 +24,9 @@ small Nether dungeon и fortress. Fortress использует `yungsapi:yung_j
 
 Классификация видов использует пустой biome resolver и не проверяет biome gates.
 Раскладки строятся полным GeneratorData, затем отдельно проверяются настоящим
-сервером. Естественная генерация, открытие сундуков игроком и активация спавнеров
-пока не проверены. Ссылка LootTable в NBT не доказывает выдачу предметов.
+сервером. Естественная генерация, открытие сундуков внутри сгенерированных
+структур и активация спавнеров пока не проверены. Отдельные loot tables открыты
+локальным графическим клиентом 16 ноября; область этой проверки описана ниже.
 
 ## Исправленные спавнеры малых подземелий
 
@@ -148,3 +149,64 @@ default min/max в конфигурации, читает каждый container
 повторно запустить установщиком и повторить чтение без размещения структур.
 Первый этап структур/спавнеров: [YUNG_RUNTIME_RESULT.json](YUNG_RUNTIME_RESULT.json).
 Текущая проверка ограничений: [YUNG_CHEST_RUNTIME_RESULT.json](YUNG_CHEST_RUNTIME_RESULT.json).
+
+## Лут: игровой клиент и исправление компонентов (16 ноября)
+
+[Отчёт](YUNG_LOOT_RUNTIME_RESULT.json). В семи установленных content-модулях
+нашлось 27 таблиц YUNG's: 8 Better Dungeons, 10 Better Strongholds и 9 Better
+Fortresses. Mineshafts не добавляет собственных таблиц. `condition`/`function`
+уже преобразованы прежним carry; повторная миграция схемы не потребовалась.
+
+Найдена другая несовместимость: native holder lookup не дописывает `minecraft:`
+к коротким enchantment IDs, а `set_components` с ключом `potion_contents`
+сохраняет неизвестный компонент вместо игрового potion value. Это давало обычные
+книги/меч без ожидаемых чар и зелья/стрелы без нужного эффекта.
+
+`stage_yung_dungeons.py` теперь сверяет все восемь carried таблиц с публичными
+JSON закреплённого JAR, явно дописывает namespace девяти enchantment references
+и преобразует 18 одиночных potion patches в поддерживаемый Horizon
+`minecraft:set_potion`. Значение исходного зелья и порядок остальных функций
+сохранены. Сложные/условные patches отклоняются для отдельного разбора.
+Меняются только пять loot tables; остальные члены hmod, включая восстановленные
+spawner/chest processors, побайтно равны прежнему модулю.
+
+Оригинальный сервер NeoForge исполнил публичные loot codec/functions на 23
+изолированных исходных entries с seed 1, 263 и 987654321. Сравнивались ID,
+count, damage, все чары и potion ID. В прежнем native модуле все 69 rolls
+расходились с эталоном; после адаптации все совпали. Это проверка конкретных
+entries, а не полного RNG trace всех таблиц между версиями Minecraft.
+
+Настоящий графический клиент Horizon открыл все 27 таблиц в отдельных fixture
+сундуках, увидел предметы и проверил точные слоты/компоненты после save/reopen.
+Сохранённый LootTable marker исчезает после открытия; неизвестная таблица даёт
+пустой контроль в обоих запусках. Horizon может заранее вычислять roll при
+загрузке и хранить marker до открытия — момент вычисления RNG этим тестом
+не утверждается. В зафиксированном seed наблюдались четыре potion stacks и
+девять stacks с чарами; protocol decode errors = 0.
+
+Использованы Xvfb и программный Vulkan, отдельный локальный игрок и новый мир.
+Это не Microsoft login, не join dedicated server и не открытие лута внутри
+естественно сгенерированной структуры. Новая loopback/online/whitelist
+server installation с исправленным модулем отдельно запущена, ответила на команду,
+штатно остановлена и прошла проверку lock. Старые profiles/hmod/locks сохранены.
+112 Python-тестов прошли.
+
+Воспроизведение после сборки нового модуля и установки в новый профиль:
+
+```bash
+xvfb-run -a python horizon/probes/live_yung_loot.py \
+  --server-dir /path/to/new-verified-server --work /path/to/new-graphical-loot-world
+python horizon/probes/yung_loot_cases.py \
+  --jar /path/to/pinned-original-betterdungeons.jar \
+  --module /path/to/new-betterdungeons.hmod --output /path/to/new-cases.json
+```
+
+`YungLootModifierProbe.java` — собственный developer-only NeoForge mod с ID
+`techquest_reference_probe`, собираемый как Pretty Pipes oracle. Свойства
+`techquest.reference.cases` и `techquest.reference.result` задают scratch JSON;
+новый reference server с исходными модами останавливается после пробы.
+Java source оригинальных LGPL модов не читается и не декомпилируется.
+`yung_loot_modifiers.rs` связывается с world/core/serde_json библиотеками той же
+native сборки; аргументы — effective content root, cases JSON и original result.
+Для контрольного старого hmod передать четвёртым аргументом `baseline`:
+в этом режиме ожидаются ровно 69 воспроизведённых несовпадений.

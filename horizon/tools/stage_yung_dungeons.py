@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Restore fixed-mob processors and default chest limits in Better Dungeons.
+"""Restore processors and adapt potion/enchantment loot in Better Dungeons.
 
 Reads public JSON data from the pinned original JAR, never Java code. This
 partial adapter leaves all other dropped processors explicitly unresolved.
@@ -18,6 +18,75 @@ from stage_terralith_content import read_checked
 
 SOURCE_SHA1 = "73a660c13063450e555e5e2c015ae24d606b32b4"
 VERSION = "1.21.1-NeoForge-5.1.4"
+
+
+def carried_loot(value):
+    """The reviewed Port Pack schema conversion, before identifier adaptation."""
+    if isinstance(value, list):
+        return [carried_loot(v) for v in value]
+    if isinstance(value, dict):
+        return {({"functions": "modifier", "function": "type", "conditions": "condition"}
+                 .get(key, key)): carried_loot(v) for key, v in value.items()}
+    return value
+
+
+def upgrade_loot(value, counts):
+    if isinstance(value, list):
+        return [upgrade_loot(v, counts) for v in value]
+    if not isinstance(value, dict):
+        return value
+    result = {k: upgrade_loot(v, counts) for k, v in value.items()}
+    if result.get("type") == "minecraft:enchant_randomly" and isinstance(result.get("options"), list):
+        options = []
+        for name in result["options"]:
+            if not isinstance(name, str) or not name:
+                raise ValueError("unreviewed enchantment holder")
+            if ":" not in name:
+                if name not in ("smite", "bane_of_arthropods", "sweeping_edge", "fire_aspect"):
+                    raise ValueError("unreviewed unqualified enchantment")
+                name = "minecraft:" + name
+                counts["enchantment_ids"] += 1
+            options.append(name)
+        result["options"] = options
+    if result.get("type") == "minecraft:set_components" and "potion_contents" in result.get("components", {}):
+        components = result["components"]
+        if (set(result) != {"type", "components"} or set(components) != {"potion_contents"}
+                or not isinstance(components["potion_contents"], str)
+                or not components["potion_contents"].startswith("minecraft:")):
+            raise ValueError("unreviewed potion component patch")
+        # Horizon's chest loot component patch preserves unknown keys instead
+        # of populating the modelled potion. Its supported set_potion function
+        # gives the same fresh-stack value and makes server gameplay use it.
+        counts["potion_modifiers"] += 1
+        return {"type": "minecraft:set_potion", "id": components["potion_contents"]}
+    return result
+
+
+def loot_replacements(jar: Path, carry: Path):
+    raw = read_checked(jar)
+    if hashlib.sha1(raw).hexdigest() != SOURCE_SHA1:
+        raise ValueError("expected the pinned Better Dungeons 5.1.4 JAR")
+    overrides, provenance = {}, {}
+    counts = {"enchantment_ids": 0, "potion_modifiers": 0}
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        if len(archive.namelist()) != len(set(archive.namelist())):
+            raise ValueError("duplicate source archive entries")
+        names = sorted(n for n in archive.namelist()
+                       if n.startswith("data/betterdungeons/loot_table/") and n.endswith(".json"))
+        if len(names) != 8:
+            raise ValueError("expected eight original loot tables")
+        for name in names:
+            original = archive.read(name)
+            expected = carried_loot(json.loads(original))
+            if json.loads(read_checked(carry / name)) != expected:
+                raise ValueError("carried loot differs from reviewed source: " + name)
+            converted = upgrade_loot(expected, counts)
+            if converted != expected:
+                overrides[name] = (json.dumps(converted, indent=2) + "\n").encode()
+            provenance[name] = hashlib.sha256(original).hexdigest()
+    if counts != {"enchantment_ids": 9, "potion_modifiers": 18}:
+        raise ValueError("unexpected source loot changes; review required")
+    return overrides, provenance, counts
 
 
 def upgraded_states(value):
@@ -110,6 +179,9 @@ def stage(work: Path, jar: Path, sdk: Path, output: Path):
             "betterdungeons", VERSION, "0.2", "both"):
         raise ValueError("unexpected source module identity")
     overrides, unresolved, provenance = replacements(jar, carry)
+    loot_overrides, loot_provenance, loot_counts = loot_replacements(jar, carry)
+    overrides.update(loot_overrides)
+    provenance.update(loot_provenance)
     payloads = {"horizon-mod.toml": manifest}
     for kind in ("assets", "data"):
         for path in sorted((carry / kind).rglob("*")):
@@ -145,6 +217,8 @@ def stage(work: Path, jar: Path, sdk: Path, output: Path):
                                           "replacement": "minecraft:cave_air",
                                           "source_configuration": "original mod defaults"},
                   "native_spawner_block_entity_id_restored": True,
+                  "adapted_loot_tables": sorted(loot_overrides),
+                  "loot_changes": loot_counts,
                   "still_dropped_in_selected_lists": unresolved,
                   "source_files_modified": False, "sdk_validated": True,
                   "random_trace_parity_verified": False, "full_mod_ported": False}

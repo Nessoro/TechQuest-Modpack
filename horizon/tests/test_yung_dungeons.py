@@ -78,6 +78,32 @@ class SourceValidationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "exactly one chest"):
                 adapter.replacements(self.jar, self.carry)
 
+    def test_changed_carried_loot_is_rejected_before_rewriting(self):
+        with zipfile.ZipFile(self.jar, "w") as archive:
+            for i in range(8):
+                name = f"data/betterdungeons/loot_table/chests/test_{i}.json"
+                archive.writestr(name, '{"pools": []}')
+                path = self.carry / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('{"pools": []}')
+        path.write_text('{"pools": [{"rolls": 99}]}')
+        with patch.object(adapter, "SOURCE_SHA1", hashlib.sha1(self.jar.read_bytes()).hexdigest()):
+            with self.assertRaisesRegex(ValueError, "carried loot differs"):
+                adapter.loot_replacements(self.jar, self.carry)
+
+    def test_potion_adapter_refuses_to_discard_additional_components(self):
+        future = {"type": "minecraft:set_components", "components": {
+            "potion_contents": "minecraft:weakness", "minecraft:custom_name": "Keep me"}}
+        with self.assertRaisesRegex(ValueError, "unreviewed potion"):
+            adapter.upgrade_loot(future, {"enchantment_ids": 0, "potion_modifiers": 0})
+
+    def test_potion_adapter_refuses_to_discard_a_condition(self):
+        future = {"type": "minecraft:set_components", "components": {
+            "potion_contents": "minecraft:weakness"},
+            "condition": {"type": "minecraft:random_chance", "chance": 0.5}}
+        with self.assertRaisesRegex(ValueError, "unreviewed potion"):
+            adapter.upgrade_loot(future, {"enchantment_ids": 0, "potion_modifiers": 0})
+
 
 if __name__ == "__main__":
     unittest.main()

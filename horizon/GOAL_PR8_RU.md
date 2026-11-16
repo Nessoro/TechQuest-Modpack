@@ -164,6 +164,16 @@ Fluidic Tanks, Refined Storage и Pretty Pipes. Снимок #48 теперь с
   с игроком, GUI и снятие без разрушения ещё не проверены/не реализованы.
   [Доказательства и ограничения](PRETTY_PIPES_MODULES_RESULT.json).
 
+- [x] После Pretty Pipes 0.3 проверены все 27 carried loot tables YUNG's:
+  старых discriminators нет. Исправлены девять коротких enchantment IDs и
+  18 potion modifiers в пяти таблицах Better Dungeons. На 23 исходных entries
+  с тремя seed оригинальный NeoForge дал эталон для 69 native rolls: прежде
+  69 несовпадений, после исправления ноль. Графический локальный клиент открыл
+  все 27 fixture-сундуков и проверил точное содержимое после save/reopen;
+  новая изолированная dedicated installation запущена и остановлена, lock верен.
+  Естественные структуры, полный RNG и лицензированный join остаются вне проверки.
+  [Результат лута](YUNG_LOOT_RUNTIME_RESULT.json).
+
 ## Ближайшая работа
 
 Итерация Pretty Pipes 0.3 завершила основное меню: три физических module
@@ -188,10 +198,11 @@ Xvfb/программный Vulkan; Microsoft login и dedicated join не вы�
    Исходный tag MIT и reference server — PRETTY_PIPES_REFERENCE_RU.md;
    native code/install — first_party/pretty_pipes/README.md; новые пины — source/SOURCE.md.
 
-2. Проверить старые loot condition discriminators в YUNG loot tables и реальные
-   результаты выдачи лута: загрузка JSON не доказывает исполнение условия в 26.3.
-   Продолжить перенос YUNG's: оставшиеся 27 отброшенных processors в трёх малых
-   списках; спавнеры больших zombie/skeleton dungeons; 16 неподдерживаемых
+2. Продолжить YUNG's: проверить лут в естественных структурах и double chests,
+   полный original RNG trace и зачарования между версиями. 27 отдельных таблиц
+   уже открыты игровым клиентом; исправление пяти loot tables не переносит
+   оставшиеся processors/структуры. Продолжить перенос 27 отброшенных processors
+   в трёх малых списках; спавнеры больших zombie/skeleton dungeons; 16 неподдерживаемых
    определений, условия пулов и enhanced terrain. Проверить естественную
    генерацию, открытие лута и активацию спавнеров игроком. Ноль feature decoder
    skips не означает, что весь исходный мод полностью перенесён.
