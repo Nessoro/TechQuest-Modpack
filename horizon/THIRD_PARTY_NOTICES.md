@@ -39,3 +39,12 @@ The private content output also includes five names from each of the original
 English and Russian language files. The hand-use hook ordering and lazy
 container-table preparation follow Horizon `Game::use_hand` and
 `game/block_entity_ticks.rs` (same MIT pin and retained license).
+
+Pretty Pipes 0.4 extraction filters adapt the MIT `ItemFilter`, `FilterSlot`,
+`DirectionSelector` and default `ItemEquality` behavior from the same pinned
+Ellpeck source. Original component IDs, basic filter/direction codec fields,
+English labels and the available Russian labels are reused with the complete
+MIT notice in the content module and native source bundle. The compact Horizon
+controls and native transport integration are first-party code. The original
+runtime/Data.CODEC oracle is distinct from the observed stale cached component
+serialization; see `PRETTY_PIPES_FILTER_RESULT.json`.

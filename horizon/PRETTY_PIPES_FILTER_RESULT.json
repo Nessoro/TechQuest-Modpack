@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-16T14:39:35.941239+00:00",
+  "minecraft": "26.3",
+  "prototype_version": "0.4.0",
+  "working_base_commit": "dbea556",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "source": {
+    "pretty_pipes": "1.22.0",
+    "git_commit": "1f8ac61c6de5b191f3b28da2c23d8040a231047f",
+    "jar_sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
+    "license": "MIT",
+    "reference_minecraft": "1.21.1",
+    "reference_loader": "NeoForge 21.1.264",
+    "lgpl_java_source_read_or_decompiled": false
+  },
+  "implementation": {
+    "sample_slots_by_tier": [
+      3,
+      6,
+      9
+    ],
+    "allow_deny_modes": true,
+    "default_item_identity_comparison": true,
+    "count_damage_components_preserved_but_not_used_for_identity": true,
+    "direction_cycle": [
+      "down",
+      "up",
+      "north",
+      "south",
+      "west",
+      "east",
+      "all"
+    ],
+    "selected_extraction_side_excluded_from_destinations": true,
+    "ghost_samples_are_not_owned_inventory": true,
+    "wire_container_slots": 67,
+    "owned_module_slots": 3,
+    "hidden_queue_slots": 64,
+    "menu_data_slots": 21,
+    "native_component_types": [
+      "prettypipes:item_filter_data",
+      "prettypipes:direction_selector_data"
+    ],
+    "head_injections": 18,
+    "return_injections": 1,
+    "support_modules": 5
+  },
+  "original_oracle": {
+    "actual_filter_slots_filter_logic_direction_and_data_codecs_executed": true,
+    "synthetic_actor": true,
+    "states": 27,
+    "item_checks": 108,
+    "direction_checks": 162,
+    "raw_cached_snapshots_differ_from_direct_codec": 18,
+    "native_comparison_uses": "original live behavior and direct ItemFilter.Data/DirectionSelector.Data CODEC outputs",
+    "cached_serialization_bug_reproduced_in_native": false,
+    "reference_shutdown_exit_code": 0,
+    "real_client_tested": false
+  },
+  "native_oracle": {
+    "component_snapshots_match": true,
+    "cursor_and_sample_counts_match": true,
+    "direction_cases": 162,
+    "filter_item_cases": 108,
+    "malformed_component_rejected": true,
+    "out_of_range_ghost_edits_rejected": true,
+    "real_client_tested": false,
+    "schema": 1,
+    "steps_match_original": 27
+  },
+  "graphical_gameplay": {
+    "schema": 1,
+    "minecraft": "26.3",
+    "prototype_version": "0.4.0",
+    "connected_local_graphical_client": true,
+    "ghost_sample_edits_via_menu_button_packet": true,
+    "cursor_and_inventory_counts_preserved": true,
+    "blacklist_blocks_only_sample_item": true,
+    "whitelist_allows_only_sample_item": true,
+    "single_pipe_west_to_east_route": true,
+    "single_pipe_east_to_west_route": true,
+    "extraction_side_excluded_as_destination": true,
+    "sample_replaced_without_duplication": true,
+    "settings_persist_after_restart": true,
+    "settings_persist_after_module_remove_reinstall": true,
+    "own_module_slots": 3,
+    "hidden_queue_slots": 64,
+    "protocol_decode_errors": 0,
+    "renderer": "Vulkan",
+    "device_type": "cpu",
+    "licensed_account_or_dedicated_join_tested": false,
+    "full_pretty_pipes_ported": false,
+    "published": false,
+    "screenshots_sha256": {
+      "blacklist.png": "5710a8146e5d0a2222d3b752139225e35e638f370233da54ce9506f5bc27f6cb",
+      "whitelist-east.png": "9895fbeabdcc5bdcb533f792cf6fed4c996d2d30e96d1f0032330bc11b961e0f",
+      "reopened.png": "0c45e6fcf468ffe851481d64d66a9d1e8845af518a1a28a91dbee348b8ff40d5"
+    }
+  },
+  "graphical_layouts": {
+    "schema": 1,
+    "graphical_tiers": [
+      {
+        "tier": "low",
+        "sample_slots": 3,
+        "first_and_last_slot_edited": true,
+        "last_sample_cleared": true,
+        "inventory_counts_preserved": true
+      },
+      {
+        "tier": "medium",
+        "sample_slots": 6,
+        "first_and_last_slot_edited": true,
+        "last_sample_cleared": true,
+        "inventory_counts_preserved": true
+      },
+      {
+        "tier": "high",
+        "sample_slots": 9,
+        "first_and_last_slot_edited": true,
+        "last_sample_cleared": true,
+        "inventory_counts_preserved": true
+      }
+    ],
+    "wire_component_roundtrip_tested": true,
+    "no_ghost_items_returned_with_modules": true,
+    "protocol_decode_errors": 0,
+    "licensed_account_or_dedicated_join_tested": false,
+    "published": false,
+    "screenshots_sha256": {
+      "low-filter.png": "a5cbfafc51ee4cc802964ade5298ba96f65c2334d4648b0a569506f91c241e59",
+      "medium-filter.png": "d71d1f484a3fb4dce9162fbfe3950d33292581277d21c68c05247d4edbe4870d",
+      "high-filter.png": "1f68fb560b67a0aa7cc803247ec4251c13e0ff9a0d45e038fdba918031a834b8"
+    }
+  },
+  "dedicated_server": {
+    "content_modules": 7,
+    "native_modules": 3,
+    "loopback_only": true,
+    "online_mode": true,
+    "whitelist": true,
+    "human_players_connected": 0,
+    "prepare": {
+      "without_extraction_module": {
+        "input": 8,
+        "output": 0
+      },
+      "low_module_delivery": {
+        "input": 0,
+        "output": 8
+      },
+      "disconnected_network": {
+        "input": 8,
+        "output": 0
+      },
+      "saved_while_in_flight": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "reopen": {
+      "immediately_after_reopen": {
+        "input": 0,
+        "output": 0
+      },
+      "delivery_after_reopen": {
+        "input": 0,
+        "output": 8
+      }
+    },
+    "status": "stopped",
+    "lock_verified": true
+  },
+  "verification": {
+    "python_tests_passed": 112,
+    "native_sdk_validated": true,
+    "content_sdk_validated": true,
+    "native_bundle_matches_checked_source": true,
+    "old_profile_locks_valid": true,
+    "invalid_sdk_valid_menu_rejected_before_output_creation": {
+      "old_sdk_valid_menu_without_data_slots_rejected": true,
+      "output_not_created": true,
+      "exit_code": 2
+    },
+    "gui_screenshots_visually_inspected": true,
+    "current_content_stager_reproduces_tested_hmod": true
+  },
+  "artifacts_sha256": {
+    "engine": "0c77ef55c986fcefcd7dcd9310b099ae3240eda1f0d990ae967ef8d4fc511552",
+    "native_bundle": "d00c1f0765dcef2322cafbd83c44c124543e345e884425577adcc39f337036e6",
+    "content_hmod": "ddbb681504fdcc54b0f9094cdb5fe817d416329ca71fd82c95c097538e0fa7f6",
+    "installation_lock": "3971fb7f5630226226245835dd4714921cbc73558f4b895e04f13bfbab14c224",
+    "apply_report": "a92ee1770f4823b17286b9d6d5a8cfa520c15e045b69da592b5223a0b7439b9d",
+    "native_build_log": "c6fcd1acc8081ec33035923ec4a7084fb2c9d71d6b2ac0301810579cb3f77a3b",
+    "original_probe_source": "1f2737ca3ce8095215a02a5f4286d49db1c72132dd41127db4c843c2c3e87edd",
+    "original_probe_jar": "a7889fd7b88b265f07d8088bb59a5743ed5a66a8c1ab12a3fb197ed9de0392a4",
+    "original_result": "4c1b16a8d4dde11fedaaa95613662716010818d94ebf3557893b9aee3f8eaf7a",
+    "native_probe_source": "752eb3484e36b5e223348ecd39c3cdb5935da31d0d45ac4ce6af393f5ab92921",
+    "native_result": "219ced64a1336a7222bd989a05eff442a84fa46f9cfeaeddf793bd483793887d",
+    "graphical_fixture_source": "21616addb2d4a48794b298a04bce5ae7be37c7d97fa08c972eeebb0ec953e4b9",
+    "graphical_gameplay_source": "1258c64bfff7dad0ff6444c62d148e038d5370a84309ead89ca570b854955ea9",
+    "graphical_gameplay_actions": "beda891b42bf4a7bf3451dfd4b9c7f3c75715a42732bc61611bd7d9791dcbebe",
+    "graphical_layout_source": "15e288f235289084238243457fd3584db01957dac74996042924432b19c2fdb7",
+    "graphical_layout_actions": "e3c41ccbbf238caa5b5d1ee5c8d362a7212344889819a78876cfdca0f3a0923b",
+    "headless_game_result": "4d02389632d5cc7ba4a83b16320f57708aa8d47df84bd8755233770561f134de",
+    "headless_game_probe_source": "a9d4e966ff3fff886d5061d821af05d3015d0e2ab6a6fc4f2d6da2ad86b5ef4c",
+    "content_stager_source": "3d96a387f59bee9c5d12e5f189aca0b63faaaa1e3d11eb75ec10cc2efcd11b2f",
+    "installer_source": "29d2bcc39af2c6629819579240fdaf28166b484dd2759f5ad54d539f065d877e"
+  },
+  "known_gaps": [
+    "Full original tabs and screens for unimplemented modules",
+    "Equality/filter-increase modifiers and non-tier-sized filter configs",
+    "Branches, priorities, rerouting, capacity reservations and full preventOversending",
+    "IPipeConnectable and other-mod inventory interop",
+    "Offhand player flow, bulk edits, unloaded removal and exact drop motion",
+    "Licensed account/dedicated-server client join, hardware GPU and audio"
+  ],
+  "full_pretty_pipes_ported": false,
+  "full_modpack_ported": false,
+  "published": false,
+  "headless_game_player_regression": {
+    "schema": 1,
+    "minecraft": "26.3",
+    "connected_local_harness_client": true,
+    "game_player_dispatch_tested": true,
+    "survival_install_consumes_one": true,
+    "creative_install_consumes_one": true,
+    "duplicate_extractor_rejected": true,
+    "all_three_tiers_installed_by_hand": true,
+    "unattached_install_and_menu_rejected": true,
+    "menu_open_and_close_tested": true,
+    "module_persists_after_close": true,
+    "wire_container_slots": 67,
+    "menu_click_packet_dispatch_tested": false,
+    "graphical_gui_rendered": false,
+    "licensed_account_or_dedicated_join_tested": false,
+    "published": false
+  }
+}

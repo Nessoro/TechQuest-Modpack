@@ -85,8 +85,8 @@ def main():
     args = parser.parse_args()
     server = args.server_dir.resolve()
     lock = verify(server)
-    if lock["modules"].get("prettypipes", {}).get("version") != "0.3.0":
-        raise ValueError("requires the reviewed 0.3 module-menu installation")
+    if lock["modules"].get("prettypipes", {}).get("version") not in ("0.3.0", "0.4.0"):
+        raise ValueError("requires a reviewed module-menu installation (0.3/0.4)")
     work = args.work.absolute()
     if (work.exists() or work.is_symlink() or any(p.is_symlink() for p in work.parents)
             or server in work.parents or work in server.parents):

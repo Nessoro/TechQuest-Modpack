@@ -190,10 +190,20 @@ Xvfb/программный Vulkan; Microsoft login и dedicated join не вы�
 [код и воспроизведение](first_party/pretty_pipes/README.md).
 Ничего не публиковалось; старые profiles/locks не изменялись.
 
-1. Продолжить Pretty Pipes: configuration screens, фильтры, ветвления,
-   приоритеты, переполнение и rerouting; проверить offhand, bulk edits,
+Следующий этап 0.4 также завершён: базовые sample filters 3/6/9, allow/deny,
+выбор стороны и single-pipe routing. 27 исходных runtime/direct-codec состояний,
+108 item checks и 162 direction checks совпали; stale cached serialization
+оригинала отдельно зафиксирована и не воспроизводится. Графический клиент проверил
+все три layouts, настройку, оба режима, оба направления передачи и сохранение
+после перезапуска/повторной установки. Dedicated transport/save/reopen и 112
+Python-тестов прошли; установщик отказывает menu без 21 data slot.
+[Отчёт фильтров 0.4](PRETTY_PIPES_FILTER_RESULT.json). Новая проверенная установка —
+`/workspace/horizon-runtime/techquest-pipes-04b-server`, остановлена, lock проверен.
+
+1. Продолжить Pretty Pipes: equality/filter-increase modules и их экраны,
+   ветвления, приоритеты, capacity reservations/preventOversending, переполнение и rerouting; проверить offhand, bulk edits,
    unloaded entities и точные drop semantics. Установка/снятие, основное GUI,
-   рецепты и базовый transport/save/reopen уже проверены; обычное меню крафта
+   рецепты, базовый transport/save/reopen, sample filter и direction selector уже проверены; обычное меню крафта
    ещё нет. Не выдавать этот прототип за полный mod port.
    Исходный tag MIT и reference server — PRETTY_PIPES_REFERENCE_RU.md;
    native code/install — first_party/pretty_pipes/README.md; новые пины — source/SOURCE.md.

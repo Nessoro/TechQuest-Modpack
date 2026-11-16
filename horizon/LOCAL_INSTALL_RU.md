@@ -24,7 +24,7 @@ Better Dungeons hmod: [адаптер и проверка YUNG's](YUNG_RUNTIME_R
 Для неё собрать контент через `tools/stage_pretty_pipes.py` и движок с тремя
 native bundles; добавить к `install` параметр `--pretty-pipes /path/to/prettypipes.hmod`.
 Установщик проверяет седьмой hmod и требует `techquest_pretty_pipes` среди
-задекларированных native extensions с той же версией (0.1.0/0.2.0/0.3.0). Старые
+задекларированных native extensions с той же версией (0.1.0/0.2.0/0.3.0/0.4.0). Старые
 шестимодульные установки совместимы. В 0.2 перенесены пять рецептов и обработчик
 установки default extractor; менеджер рецептов и общая логика установки проверены
 по оригиналу. В 0.3 добавлены три module slots и native screen: Menu engine сверён с оригиналом,
@@ -32,6 +32,10 @@ native bundles; добавить к `install` параметр `--pretty-pipes /
 клиента. Графический локальный клиент проверил отрисовку, снятие мышью и Shift-click
 через ContainerClick; online-mode join лицензированным клиентом ещё не
 проверен; полный модпак не объявляется готовым.
+В 0.4 добавлены sample filters 3/6/9, allow/deny и выбор стороны; графический
+клиент проверил настройку, single-pipe routing и сохранение. Установщик требует
+67 container slots и 21 data slot для передачи настроек.
+[Проверки и ограничения 0.4](PRETTY_PIPES_FILTER_RESULT.json).
 
 Последний Better Dungeons stage также исправляет potion/enchantment loot в пяти
 таблицах; пересобирать только в новый каталог и устанавливать в новый профиль.

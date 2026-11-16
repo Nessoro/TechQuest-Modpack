@@ -1,10 +1,11 @@
 // Initial native routing and persistent in-flight ownership for Pretty Pipes.
 // Tier rates follow Pretty Pipes 1.22.0 (Ellpeck, MIT); see LICENSE-PRETTY-PIPES.
-// This prototype does not yet implement filters, priorities or exact timing.
+// This prototype does not yet implement equality modifiers, priorities or exact timing.
 // Copyright (c) 2020-2021 Ellpeck, MIT (extraction semantics).
 // Stack-size fallback: Copyright (c) 2026 Ludovic Marie and Horizon contributors,
 // MIT; see LICENSE-HORIZON. Routing and native integration are first-party code.
 use super::Game;
+use horizon_client_lib::techquest_pretty_pipes_filter as filter;
 use horizon_client_lib::techquest_pretty_pipes_modules as modules;
 use horizon_client_lib::{containers::ModBlockEntity, items::ItemStack};
 use horizon_core::geometry::Direction;
@@ -42,8 +43,17 @@ pub(super) fn allow_open(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
         let containers = game.native_containers();
         game.world.block_entities.set_mod_containers(containers);
     }
-    game.native_with_mod_block_entity(pos, synchronize)
-        .unwrap_or(false)
+    let res = game.res.clone();
+    game.native_with_mod_block_entity(pos, |entity| {
+        if !synchronize(entity) {
+            return false;
+        }
+        // The menu's fixed data width is ready before it opens, including
+        // in a frozen world before the next block-entity tick.
+        super::techquest_pretty_pipes_ui::update(res.items(), entity);
+        true
+    })
+    .unwrap_or(false)
 }
 
 /// A chorus-plant geometry template has no vanilla OpenMenu effect. Preserve
@@ -146,6 +156,7 @@ fn route(
     source: [i32; 3],
     item: &ItemStack,
     destination: Option<[i32; 3]>,
+    settings: Option<&filter::Settings>,
 ) -> Option<([i32; 3], Direction, i32)> {
     let dimension = game.native_dimension();
     let mut seen = BTreeSet::from([start]);
@@ -168,7 +179,40 @@ fn route(
                 }
                 continue;
             }
-            if pos == start || neighbor == source || destination.is_some_and(|d| d != neighbor) {
+            if neighbor == source || destination.is_some_and(|d| d != neighbor) {
+                continue;
+            }
+            let direction_index = Direction::ALL.iter().position(|d| *d == direction).unwrap();
+            let accepts = if pos == start {
+                settings.is_none_or(|s| !s.has_direction(direction_index))
+            } else if let Some(horizon_client_lib::containers::BlockEntity::Mod(entity)) =
+                game.world.block_entities.get(&(pos[0], pos[1], pos[2]))
+            {
+                // Physical slots own current menu edits. A not-yet-migrated
+                // neighbour still stores modules in the original NBT view.
+                let saved;
+                let items = if entity
+                    .nbt
+                    .get(&JavaString::from("techquest_inventory_schema"))
+                    == Some(&Tag::Int(3))
+                {
+                    &entity.items
+                } else {
+                    saved = modules::read(&entity.nbt).unwrap_or_default();
+                    &saved
+                };
+                items
+                    .iter()
+                    .take(3)
+                    .flatten()
+                    .find(|s| filter::slots(&s.item).is_some())
+                    .is_none_or(|s| {
+                        filter::Settings::load(s).is_some_and(|s| !s.has_direction(direction_index))
+                    })
+            } else {
+                true
+            };
+            if !accepts {
                 continue;
             }
             let face = direction.opposite();
@@ -189,6 +233,17 @@ fn route(
 
 pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEntity) {
     if !synchronize(entity) {
+        return;
+    }
+    super::techquest_pretty_pipes_ui::update(game.res.items(), entity);
+    let module = entity
+        .items
+        .iter()
+        .take(3)
+        .flatten()
+        .find(|s| filter::slots(&s.item).is_some());
+    let settings = module.and_then(filter::Settings::load);
+    if module.is_some() && settings.is_none() {
         return;
     }
     // Items are in the engine's owned container slots: normal chunk saves and
@@ -212,7 +267,7 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
             entity.items[slot] = Some(stack);
             entity.nbt.insert(key, Tag::Compound(pending));
         } else if let Some((target, face, _)) =
-            destination.and_then(|d| route(game, pos, pos, &stack, Some(d)))
+            destination.and_then(|d| route(game, pos, pos, &stack, Some(d), settings.as_ref()))
         {
             entity.items[slot] = game.native_insert_item(target, face, stack);
             if entity.items[slot].is_none() {
@@ -235,6 +290,13 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
     };
     let dimension = game.native_dimension();
     for direction in Direction::ALL {
+        let direction_index = Direction::ALL.iter().position(|d| *d == direction).unwrap();
+        if !settings
+            .as_ref()
+            .is_some_and(|s| s.has_direction(direction_index))
+        {
+            continue;
+        }
         let source = at(pos, direction);
         let face = direction.opposite();
         let Some(slots) = game.native_container_slots(dimension, source, face) else {
@@ -244,7 +306,12 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
             let Some(item) = slot.stack.filter(|_| slot.can_take) else {
                 continue;
             };
-            let Some((destination, _, distance)) = route(game, pos, source, &item, None) else {
+            if !settings.as_ref().is_some_and(|s| s.allows(&item)) {
+                continue;
+            }
+            let Some((destination, _, distance)) =
+                route(game, pos, source, &item, None, settings.as_ref())
+            else {
                 continue;
             };
             let Some(stack) = game.native_extract_item(dimension, source, face, slot.slot, amount)
