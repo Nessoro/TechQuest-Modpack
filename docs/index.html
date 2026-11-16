@@ -29,6 +29,20 @@ window.TQ_MODS = [
     "url": "https://github.com/zentixua/incoming/releases/tag/v3.10.4"
   },
   {
+    "name": "FTB Library",
+    "group": "Комфорт",
+    "required": true,
+    "description": "Библиотека или инструмент FTB Ultimine для NeoForge 1.21.1.",
+    "url": "https://maven.ftb.dev/releases/"
+  },
+  {
+    "name": "FTB Ultimine",
+    "group": "Комфорт",
+    "required": true,
+    "description": "Библиотека или инструмент FTB Ultimine для NeoForge 1.21.1.",
+    "url": "https://maven.ftb.dev/releases/"
+  },
+  {
     "name": "Industrial Craft 2: Nostalgia",
     "group": "Технологии",
     "required": true,
@@ -64,11 +78,46 @@ window.TQ_MODS = [
     "url": "https://modrinth.com/mod/modern-industrialization"
   },
   {
+    "name": "Oritech",
+    "group": "Технологии",
+    "required": true,
+    "description": "Многоэтапные технологические производства и машины; новая техническая ветка для NeoForge 1.21.1.",
+    "url": "https://modrinth.com/mod/oritech"
+  },
+  {
+    "name": "Fluidic Tanks",
+    "group": "Хранение",
+    "required": true,
+    "description": "Сборные многоблочные резервуары для жидкостей с поддержкой Create, Mekanism и Modern Industrialization.",
+    "url": "https://modrinth.com/mod/fluidic-tanks"
+  },
+  {
+    "name": "DimStorage",
+    "group": "Хранение",
+    "required": true,
+    "description": "Межпространственные сундуки и жидкостные резервуары с частотами, правами доступа и планшетом; требует EdivadLib.",
+    "url": "https://modrinth.com/mod/dimstorage"
+  },
+  {
     "name": "Applied Energistics 2",
     "group": "Технологии",
     "required": true,
     "description": "Цифровые склады и промышленная логистика.",
     "url": "https://modrinth.com/mod/ae2"
+  },
+  {
+    "name": "Refined Storage",
+    "group": "Хранение",
+    "required": true,
+    "description": "Альтернативная цифровая сеть хранения и автокрафта; AE2 остаётся. Проверка совместимости и производительности ожидается.",
+    "url": "https://modrinth.com/mod/refined-storage"
+  },
+  {
+    "name": "Refined Storage — JEI Integration",
+    "group": "Интерфейс",
+    "required": true,
+    "description": "Перенос рецептов JEI в Crafting Grid/Pattern Grid, поиск и призрачные ингредиенты; совместимость с RS 2.0.9 и JEI 19.64.0.455 проходит тестирование.",
+    "url": "https://modrinth.com/mod/refined-storage-jei-integration"
   },
   {
     "name": "Immersiveengineering",
@@ -125,13 +174,6 @@ window.TQ_MODS = [
     "required": false,
     "description": "Кандидат; совместимость требует отдельной проверки.",
     "url": "https://modrinth.com/mod/skill-tree"
-  },
-  {
-    "name": "Project Mmo",
-    "group": "RPG",
-    "required": false,
-    "description": "Кандидат; совместимость требует отдельной проверки.",
-    "url": "https://modrinth.com/mod/project-mmo"
   },
   {
     "name": "Naturalist",
@@ -365,6 +407,13 @@ window.TQ_MODS = [
     "url": "https://modrinth.com/mod/geckolib"
   },
   {
+    "name": "Athena",
+    "group": "Библиотеки",
+    "required": true,
+    "description": "Клиентская библиотека текстур, необходимая для Oritech; для сервера по официальным метаданным не устанавливается.",
+    "url": "https://modrinth.com/mod/b1ZV3DIJ"
+  },
+  {
     "name": "Superb Warfare",
     "group": "Военная техника",
     "required": true,
@@ -449,6 +498,13 @@ window.TQ_MODS = [
     "url": "https://modrinth.com/mod/xaeros-world-map"
   },
   {
+    "name": "Open Parties and Claims",
+    "group": "Карта и интерфейс",
+    "required": true,
+    "description": "Выделение территории и выборочная загрузка чанков через Xaero. Новые миры: 64 закреплённых / 4 загруженных чанка на игрока; beta.",
+    "url": "https://modrinth.com/mod/open-parties-and-claims"
+  },
+  {
     "name": "Health Indicator TXF (HP цифрами)",
     "group": "Карта и интерфейс",
     "required": true,
@@ -503,6 +559,48 @@ window.TQ_MODS = [
     "required": true,
     "description": "Обязательная библиотека Aquamirae, версия 5.4.0.",
     "url": "https://modrinth.com/mod/fragmentum"
+  },
+  {
+    "name": "Sophisticated Storage",
+    "group": "Хранение",
+    "required": true,
+    "description": "Улучшаемые сундуки и фильтры; Iron Chests сохранён.",
+    "url": "https://modrinth.com/mod/sophisticated-storage"
+  },
+  {
+    "name": "Architectury API",
+    "group": "Библиотеки",
+    "required": true,
+    "description": "Библиотека NeoForge для FTB Library и Ultimine.",
+    "url": "https://modrinth.com/mod/architectury-api"
+  },
+  {
+    "name": "EdivadLib",
+    "group": "Библиотеки",
+    "required": true,
+    "description": "Обязательная библиотека DimStorage 9.1.1; требуется на клиенте и сервере.",
+    "url": "https://modrinth.com/mod/edivadlib"
+  },
+  {
+    "name": "Trash Cans",
+    "group": "Комфорт",
+    "required": true,
+    "description": "Раздельные предметные, жидкостные и энергетические мусорки. Только в изолированной сети отходов и с проверенными фильтрами.",
+    "url": "https://modrinth.com/mod/trash-cans"
+  },
+  {
+    "name": "Pretty Pipes",
+    "group": "Технологии",
+    "required": true,
+    "description": "Только предметы (включая блоки как вещи), без двигателей. Не передаёт жидкости, энергию или установленные блоки.",
+    "url": "https://modrinth.com/mod/pretty-pipes"
+  },
+  {
+    "name": "Iskander Rocket Mod",
+    "group": "Военная техника",
+    "required": true,
+    "description": "Баллистическая ракета с пультом координат и дальностью до 10 000 блоков. Большие взрывы разрушают мир — тестируйте вне основной базы.",
+    "url": "https://modrinth.com/mod/iskander-rocket-mod"
   }
 ];
   </script>

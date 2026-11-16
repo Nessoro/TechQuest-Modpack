@@ -36,8 +36,9 @@ class IncomingTests(unittest.TestCase):
         self.assertEqual(self.cfg["loader_version"], "21.1.264")
         self.assertEqual(self.cfg["version"], "0.3.3-alpha")
         mods = self.cfg["external_mods"]
-        self.assertEqual(len(mods), 1)
+        self.assertEqual(len(mods), 3)
         self.assertEqual(mods[0]["name"], "Incoming: Air Strikes & Nukes")
+        self.assertEqual({m["name"] for m in mods[1:]}, {"FTB Library", "FTB Ultimine"})
         self.assertEqual(mods[0]["version"], "3.10.4")
         self.assertTrue(mods[0]["required"])
         self.assertIn("/v3.10.4/incoming-3.10.4.jar", mods[0]["download_url"])

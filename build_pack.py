@@ -26,6 +26,12 @@ API = "https://api.modrinth.com/v2"
 UA = "TechQuest-Modpack/0.1 (modpack installer)"
 MAX_DOWNLOAD = 256 * 1024 * 1024
 COMPAT_JAR_NAME = "techquest-compat-1.0.0.jar"
+_REMOVED_JAR_PREFIXES = ("techquest-rpg-core", "pmmo-", "project-mmo")
+
+def is_removed_mod_jar(filename):
+    name = str(filename).lower()
+    return name.endswith(".jar") and name.startswith(_REMOVED_JAR_PREFIXES)
+
 
 class BuildError(Exception):
     pass
@@ -276,12 +282,16 @@ def external_records(cfg):
         filename = safe_filename(mod["file_name"])
         url = mod["download_url"]
         parsed = urllib.parse.urlsplit(url)
-        expected_path = (
-            "/zentixua/incoming/releases/download/v3.10.4/"
-            "incoming-3.10.4.jar"
-        )
-        if (parsed.scheme != "https" or parsed.hostname != "github.com"
-                or parsed.path != expected_path or parsed.query or parsed.fragment):
+        trusted = {
+            "incoming-3.10.4.jar": (
+                "github.com", "/zentixua/incoming/releases/download/v3.10.4/incoming-3.10.4.jar"),
+            "ftb-library-neoforge-2101.1.39.jar": (
+                "maven.ftb.dev", "/releases/dev/ftb/mods/ftb-library-neoforge/2101.1.39/ftb-library-neoforge-2101.1.39.jar"),
+            "ftb-ultimine-neoforge-2101.1.15.jar": (
+                "maven.ftb.dev", "/releases/dev/ftb/mods/ftb-ultimine-neoforge/2101.1.15/ftb-ultimine-neoforge-2101.1.15.jar"),
+        }
+        if (parsed.scheme != "https" or (parsed.hostname, parsed.path) != trusted.get(filename)
+                or parsed.query or parsed.fragment):
             raise BuildError("Unexpected author release URL: " + url)
         size = mod["file_size"]
         expected = mod["sha256"]
@@ -418,6 +428,48 @@ def client_config_overrides(cfg):
     return result
 
 
+def opac_config_overrides(cfg):
+    """Seed a safe Open Parties and Claims config for NEW NeoForge worlds only.
+
+    The installer copies this to <game>/defaultconfigs and does not overwrite
+    world/serverconfig in existing saves. NeoForge then populates the world
+    config on world creation. Server owners can change their own limits.
+    """
+    opac = next((m for m in cfg.get("mods", [])
+                 if m["project"] == "open-parties-and-claims"), None)
+    if not opac:
+        return {}
+    lock = cfg.get("modrinth_lock", {}).get("gF3BGWvG", {})
+    if (opac.get("version_id") != "yWmXD7GW" or
+            lock.get("version_id") != "yWmXD7GW" or
+            opac.get("environment") != {"client": "required", "server": "required"}):
+        raise BuildError("Review Open Parties and Claims default config against pinned release")
+    config = ROOT / "compat" / "opac" / "openpartiesandclaims-server.toml"
+    return {"defaultconfigs/openpartiesandclaims-server.toml": config.read_bytes()}
+
+
+
+def mi_guide_config_overrides(cfg):
+    """Keep MI onboarding on first join, disable duplicate guides on respawn.
+
+    This is the NeoForge SERVER config template for new worlds. Existing
+    world/serverconfig files are patched one-key-only by installers.
+    """
+    mi = next((m for m in cfg.get("mods", []) if m["project"] == "modern-industrialization"), None)
+    if not mi:
+        return {}
+    lock = cfg.get("modrinth_lock", {}).get("Gov5Dboq", {})
+    if (lock.get("version_id") != "xGrDqc07" or
+            lock.get("filename") != "Modern-Industrialization-2.5.12.jar"):
+        raise BuildError("Review MI guide config against pinned version before changing")
+    path = ROOT / "compat" / "modern-industrialization" / "modern_industrialization-server.toml"
+    data = path.read_bytes()
+    if (b"spawnWithGuideBook = true" not in data or
+            b"respawnWithGuideBook = false" not in data):
+        raise BuildError("Invalid MI respawn guide preset")
+    return {"defaultconfigs/modern_industrialization-server.toml": data}
+
+
 def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
     files = []
     for rec in mods:
@@ -446,6 +498,9 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
             "env": {"client": "required", "server": "required"},
             "downloads": [external["url"]],
             "fileSize": external["fileSize"]})
+    for entry in files:
+        if is_removed_mod_jar(entry["path"].removeprefix("mods/")):
+            raise BuildError("Removed mod cannot be packaged: " + entry["path"])
     idx = {"formatVersion": 1, "game": "minecraft", "versionId": cfg["version"],
            "name": cfg["pack_name"], "summary": cfg["description"],
            "files": files,
@@ -463,6 +518,10 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
         for relative, data in guide_overrides().items():
             archive.writestr("overrides/" + relative, data)
         for relative, data in client_config_overrides(cfg).items():
+            archive.writestr("overrides/" + relative, data)
+        for relative, data in opac_config_overrides(cfg).items():
+            archive.writestr("overrides/" + relative, data)
+        for relative, data in mi_guide_config_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
         # CurseForge-only, All Rights Reserved additions stay user-supplied.
         # Include metadata for the GUI and server operator, never the author JAR.
@@ -564,6 +623,16 @@ def main():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
+    for relative, data in opac_config_overrides(cfg).items():
+        for side in ("client", "server"):
+            target = out / side / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+    for relative, data in mi_guide_config_overrides(cfg).items():
+        for side in ("client", "server"):
+            target = out / side / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
     for relative, data in guide_overrides().items():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)

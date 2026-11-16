@@ -18,7 +18,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 USER_AGENT = "TechQuest-SecurityAudit/0.1"
-HOSTS = {"cdn.modrinth.com", "raw.githubusercontent.com", "github.com"}
+HOSTS = {"cdn.modrinth.com", "raw.githubusercontent.com", "github.com", "maven.ftb.dev"}
+PINNED_FTB_MAVEN = {
+    "/releases/dev/ftb/mods/ftb-library-neoforge/2101.1.39/ftb-library-neoforge-2101.1.39.jar",
+    "/releases/dev/ftb/mods/ftb-ultimine-neoforge/2101.1.15/ftb-ultimine-neoforge-2101.1.15.jar",
+}
 AUTHOR_RELEASE = "/zentixua/incoming/releases/download/v3.10.4/incoming-3.10.4.jar"
 GITHUB_CDN_HOSTS = {"release-assets.githubusercontent.com", "objects.githubusercontent.com"}
 PINNED_GITHUB = re.compile(
@@ -61,6 +65,9 @@ def manifest_entries(paths):
             if url.hostname == "github.com" and (
                     url.path != AUTHOR_RELEASE or url.query or url.fragment):
                 raise AuditError("Unexpected GitHub release: " + urls[0])
+            if url.hostname == "maven.ftb.dev" and (
+                    url.path not in PINNED_FTB_MAVEN or url.query or url.fragment):
+                raise AuditError("Unexpected FTB Maven asset: " + urls[0])
             hashes = {x: item.get("hashes", {}).get(x) for x in ("sha512", "sha1")}
             if not any(hashes.values()):
                 raise AuditError("Missing digest: " + dest)
@@ -157,7 +164,7 @@ def audit(pack, directory, report_dir):
         checked.append(download_and_verify(item, directory))
     result = {
         "checked_at_utc": datetime.now(timezone.utc).isoformat(),
-        "source_commit_audit": "Sources restricted to Modrinth, pinned IC2 commit, official Incoming release",
+        "source_commit_audit": "Sources restricted to Modrinth, pinned IC2 commit, Incoming release, exact FTB Maven assets",
         "pack_mods": len(packs[pack.name]),
         "unique_jar_files": len(items),
         "result": "HASH_AND_ARCHIVE_OK",
