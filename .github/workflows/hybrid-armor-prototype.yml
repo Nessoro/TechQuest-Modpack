@@ -1,0 +1,56 @@
+name: Build hybrid armor addon (prototype)
+on:
+  pull_request:
+    paths:
+      - 'addons/hybrid-warfare-armor/**'
+      - '.github/workflows/hybrid-armor-prototype.yml'
+  workflow_dispatch:
+jobs:
+  hybrid-addon:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Generate armor recipes and textures
+        working-directory: addons/hybrid-warfare-armor
+        run: python scripts/generate_assets.py
+      - name: Validate generated JSON and PNG
+        working-directory: addons/hybrid-warfare-armor
+        run: |
+          python - <<'PY'
+          import json, pathlib, struct
+          root = pathlib.Path('src/main/resources')
+          recipes = list((root / 'data/techquest_hybrid/recipe').glob('*.json'))
+          assert len(recipes) == 20, len(recipes)
+          for path in root.rglob('*.json'):
+              json.loads(path.read_text())
+          tag = json.loads((root / 'data/minecraft/tags/item/trimmable_armor.json').read_text())
+          assert len(tag['values']) == 20
+          textures = list((root / 'assets/techquest_hybrid/textures/models/armor').glob('*.png'))
+          assert len(textures) == 20
+          for path in textures:
+              assert path.read_bytes().startswith(bytes.fromhex('89504e470d0a1a0a'))
+          print('Validated 20 recipes, 20 trimmable items and 20 textures')
+          PY
+      - name: Compile NeoForge mod (not an in-game smoke test)
+        working-directory: addons/hybrid-warfare-armor
+        run: gradle build --no-daemon --stacktrace
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: techquest-hybrid-prototype
+          path: |
+            addons/hybrid-warfare-armor/build/libs/*.jar
+            addons/hybrid-warfare-armor/skin-packs/*.zip
+          if-no-files-found: error
