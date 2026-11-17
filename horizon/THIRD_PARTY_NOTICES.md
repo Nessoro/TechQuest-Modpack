@@ -85,3 +85,20 @@ models reference installed vanilla textures; GeckoLib animations are not copied.
 Architectury, GeckoLib and NeoForge are run as binary reference dependencies;
 their Java sources are neither read nor decompiled. Fluidic Tanks is All Rights
 Reserved; its source has not been read or used.
+
+Oritech content 0.2 additionally stages the same pinned CC0 JAR's ten source
+recipes, ore loot/models/textures, material models/textures, labels and ore
+worldgen/biome-modifier JSON. Horizon's MIT `carry::upgrade_recipe`,
+`carry::upgrade_loot` and datapack upgrader perform the format changes. Source
+common item tags are resolved from public JSON in the pinned Oritech and
+NeoForge universal JARs; no dependency Java source is read.
+
+`first_party/biome_modifiers/merged-biomes.patch` adapts Horizon's MIT
+`mod_content.rs` at the existing pinned Horizon commit. It registers declared
+biome files before tag filtering and applies modifiers to the merged registry.
+The original and resulting source SHA-256 and the exact diff SHA-256 are pinned
+in `horizon-core-patch.json`; the complete MIT notice is retained in that folder.
+This is a separately declared core correction in a generated private build,
+not an SDK native source bundle. The public source and prepared resources stay
+unchanged. The developer probes use the same pinned Rust content/recipe/loot
+APIs and original binary oracles; no Java is added to the player runtime.

@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("server-dir", "work"): parser.add_argument("--" + name, type=Path, required=True)
     args = parser.parse_args()
-    game = GraphicalFixture(args.server_dir, args.work, "0.1.0", "techquest-oritech-gui", "TQEnergyGui", module="oritech", frozen=True)
+    game = GraphicalFixture(args.server_dir, args.work, ("0.1.0", "0.2.0"), "techquest-oritech-gui", "TQEnergyGui", module="oritech", frozen=True)
     call, cmd, settle = game.call, game.command, game.settle
     def number(x, key):
         value = cmd(f"data get block {x} 200 0 {key}")
@@ -88,7 +88,7 @@ def main():
         status = call("status"); assert status["server"]["joined"] and status["server"]["decode_errors"] == 0
         call("screenshot", game.work / "collected-output.png"); call("save")
     finally: game.stop()
-    report = {"schema": 1, "prototype_version": "0.1.0", "connected_local_graphical_client": True,
+    report = {"schema": 1, "prototype_version": game.version, "connected_local_graphical_client": True,
               "core_required_and_assembled_by_interaction": True, "first_assembly_click_consumed": True,
               "fuel_and_input_inserted_by_menu_packets": True, "output_rejects_player_insertion": True,
               "energy_progress_or_output_injected": False, "save_reopen_exact": True,

@@ -76,7 +76,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for key in ("server-dir", "work", "original"): parser.add_argument("--" + key, type=Path, required=True)
     args = parser.parse_args(); server = args.server_dir.resolve(); work = args.work.absolute(); lock = verify(server)
-    if lock["modules"].get("oritech", {}).get("version") != "0.1.0": raise ValueError("requires Oritech energy 0.1 installation")
+    if lock["modules"].get("oritech", {}).get("version") not in ("0.1.0", "0.2.0"): raise ValueError("requires reviewed Oritech energy installation")
     if work.exists() or work.is_symlink() or any(p.is_symlink() for p in work.parents) or server in work.parents or work in server.parents:
         raise ValueError("work must be new and separate")
     original = json.loads(args.original.read_text()); rows = original["rows"]
@@ -111,7 +111,7 @@ def main():
             else: actual["assembled"] = bool(extra["results"][-1][1])
             if actual != state["state"]: mismatches.append({"name": row["name"], "ticks": state["ticks"], "expected": state["state"], "actual": actual})
             checked += 1
-    report = {"schema": 1, "cases": len(rows), "states": checked, "mismatches": mismatches,
+    report = {"schema": 1, "prototype_version": lock["modules"]["oritech"]["version"], "cases": len(rows), "states": checked, "mismatches": mismatches,
               "actual_game_ticks_executed": True, "synthetic_initial_assembled_state": True,
               "synthetic_local_owner": True, "real_client_join_tested": False, "full_mod_ported": False, "published": False}
     (work / "checked-result.json").write_text(json.dumps(report, indent=2) + "\n")

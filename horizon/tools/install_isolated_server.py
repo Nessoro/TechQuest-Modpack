@@ -25,6 +25,8 @@ from prepare_terralith_worldgen import RECIPE_ADVANCEMENTS, normalize_recipe_unl
 LOCK = "techquest-local-install.json"
 WORLD = "techquest-horizon-test"
 PACK = f"{WORLD}/datapacks/techquest_terralith"
+ORITECH_NATIVE = {"0.1.0": "0.1.0", "0.2.0": "0.1.0"}
+CORE_PATCH = Path(__file__).resolve().parents[1] / "first_party/biome_modifiers/horizon-core-patch.json"
 
 
 def checked_path(path: Path) -> Path:
@@ -88,7 +90,7 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
             raise ValueError("SDK rejected module identity/API/checksum: " + mod)
         if mod == "prettypipes" and facts.get("version") not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0"):
             raise ValueError("expected the reviewed Pretty Pipes content prototype")
-        if mod == "oritech" and facts.get("version") != "0.1.0":
+        if mod == "oritech" and facts.get("version") not in ORITECH_NATIVE:
             raise ValueError("expected the reviewed Oritech energy prototype")
         with zipfile.ZipFile(path) as archive:
             names = archive.namelist()
@@ -141,11 +143,16 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
     return result
 
 
-def check_native_pairs(mods: dict, native: list[dict]):
+def check_native_pairs(mods: dict, native: list[dict], core: list[dict] | None = None):
+    if mods.get("oritech", {}).get("version") == "0.2.0":
+        expected_patch = json.loads(CORE_PATCH.read_text())
+        if core != [expected_patch]:
+            raise ValueError("Oritech 0.2 needs the reviewed merged-biome core correction")
     if "oritech" in mods:
         matching = [m for m in native if m.get("id") == "techquest_oritech"]
-        if (len(matching) != 1 or mods["oritech"].get("version") != "0.1.0"
-                or matching[0].get("version") != mods["oritech"].get("version")):
+        expected = ORITECH_NATIVE.get(mods["oritech"].get("version"))
+        if (len(matching) != 1 or expected is None
+                or matching[0].get("version") != expected):
             raise ValueError("Oritech content/native version mismatch or missing extension")
     if "prettypipes" not in mods:
         return
@@ -225,6 +232,21 @@ def check_native_modules(tools: Path, sdk: Path) -> list[dict]:
     return result
 
 
+def check_core_patches(tools: Path) -> list[dict]:
+    patches = json.loads((tools / "build-result.json").read_text()).get("core_patches", [])
+    if patches == []:
+        return []
+    expected = json.loads(CORE_PATCH.read_text())
+    if patches != [expected]:
+        raise ValueError("unreviewed native core correction")
+    root = tools / "core-patches" / expected["id"]
+    manifest = checked_path(root / "horizon-core-patch.json")
+    source = checked_path(root / "merged-biomes.patch")
+    if json.loads(manifest.read_text()) != expected or digest(source) != expected["patch_sha256"]:
+        raise ValueError("native core correction files differ")
+    return patches
+
+
 def install(*, resources: Path, tools: Path, work: Path, modules: Path,
             terralith: Path, datapack: Path, sdk: Path, upstream: Path,
             output: Path, port: int, accept_eula: bool,
@@ -258,7 +280,8 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
     payloads = validate_trial(datapack, work)
     mods = check_modules(modules, terralith, datapack, sdk, work, pretty_pipes, oritech)
     native = check_native_modules(tools, sdk)
-    check_native_pairs(mods, native)
+    core = check_core_patches(tools)
+    check_native_pairs(mods, native, core)
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".techquest-install-", dir=output.parent) as temporary:
         temporary = Path(temporary)
@@ -296,6 +319,10 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
         external[str((tools / "build-result.json").resolve())] = digest(tools / "build-result.json")
         for spec in native:
             external[str((tools / "native-mods" / f'{spec["id"]}.hnmod').resolve())] = spec["sha256"]
+        for spec in core:
+            for name in ("horizon-core-patch.json", "merged-biomes.patch"):
+                path = tools / "core-patches" / spec["id"] / name
+                external[str(path.resolve())] = digest(path)
         for name in ("horizon-resources.json", "horizon-prepare.json", "facts.json", "block-tags.json"):
             external[str((resources / name).resolve())] = digest(resources / name)
         report = {
@@ -306,6 +333,7 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
             "files": {name: digest(stage / name) for name in sorted(relative)}, "external_files": external,
             "server_binary": str((tools / "horizon-server").resolve()),
             "native_modules": native,
+            "core_patches": core,
             "sdk_validated_modules": len(mods), "resources_check_passed": True,
             "source_hashes_rechecked": len(json.loads(payloads["techquest-worldgen-trial.json"].read_text())["sources"]),
             "hmod_datapack_synchronized": True, "server_boot_tested": False,
@@ -325,7 +353,7 @@ def verify(server_dir: Path) -> dict:
             or report.get("minecraft") != "26.3" or report.get("world") != WORLD
             or not set(MODULES) <= set(report.get("modules", {})) <= set(MODULES) | {"prettypipes", "oritech"}):
         raise ValueError("unrecognized local installation lock")
-    check_native_pairs(report["modules"], report.get("native_modules", []))
+    check_native_pairs(report["modules"], report.get("native_modules", []), report.get("core_patches", []))
     hashes = report["files"]
     expected_mods = {f"{mod}.hmod" for mod in report["modules"]}
     if set(tree_files(server_dir / "horizon-mods")) != expected_mods:

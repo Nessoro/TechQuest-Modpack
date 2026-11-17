@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "id": "techquest_biome_modifiers",
+  "version": "0.1.0",
+  "horizon": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "source_file": "crates/horizon-client/src/mod_content.rs",
+  "source_sha256": "5f162d574ed363cd1e089acf1bafae3195032102733213a93f5c27e07d8267c7",
+  "patched_sha256": "3ef975c68866b2c28c915c1ef2b955bf3176fcae2d1de2cb06b5ee2db8441709",
+  "patch_sha256": "f824b82342dffbf99e9dc08bdf49fef73de815a7e4cac581506a5031efb71e5f"
+}

@@ -9,6 +9,12 @@ Core**, with physical inventories, energy, fuel, smelting progress, assembly,
 menus and saved state. It is not the complete Oritech mod or a survival-ready
 TechQuest industrial progression.
 
+Content 0.2 adds the first crafting route while retaining this native 0.1.0
+machine implementation. It additionally requires the separately compiled
+[merged-biome core correction](../biome_modifiers/README.md). The installer has
+an explicit content/native compatibility table and refuses 0.2 with an engine
+that does not declare the reviewed core correction.
+
 ## Source and license
 
 [Rearth/Oritech v1.2.13](https://github.com/Rearth/Oritech/tree/4069b6dd14b05dfe0c80126618739b64054630ea),
@@ -96,7 +102,7 @@ energy/output, saving and reopening its own physical world.
 
 ## Remaining work
 
-Original recipes/material progression, other machines, cables, fluids,
+Remaining original recipes/material progression, other machines, cables, fluids,
 upgrades, other core qualities, auto-placement of held cores, original shapes,
 orientation, lit-state/animation/particles, core inventory/fluid delegation and
 general energy API delegation through cores remain outside this prototype.
@@ -109,3 +115,42 @@ claimed equivalent. Component-sensitive/oversized-stack cases, allocation
 among multiple receivers, exact immediate break/drop semantics, unloaded
 chunks, general automation, normal crafting and licensed dedicated-server join
 still require work. Pretty Pipes 0.5 has not yet gained Oritech endpoints.
+
+## Content 0.2 starter subset
+
+`stage_oritech.py --progression` adds the original `core1`, `basicgen`,
+`electricfurnacealt`, `magnet`, steel/electrum hand-alloy recipes, and nickel/
+platinum raw smelting and blasting recipes. It registers four ore blocks and
+eight material items. `biosteel_ingot` preserves the original alternate member
+of `c:ingots/steel`; its production chain is not included. The furnace route
+uses platinum; the default silicon recipe still requires unported processing.
+
+The pinned JAR supplies original ore loot, models/textures, labels and the three
+biome modifiers/placed features. Horizon's pinned Rust upgraders convert the
+recipe/loot formats and worldgen, rather than replacing the source recipes.
+Pass the pinned NeoForge universal JAR as `--neoforge-jar`, the compiled
+`oritech_content_tool.rs` probe as `--content-tool` and the pinned
+`horizon-port-pack` binary as `--port-pack`. Exact local compiler commands and
+artifact hashes are included in the runtime report. Nothing generated belongs
+in the repository.
+
+The original binary oracle `OritechContentProbe.java` runs via
+`run_oritech_reference.py --oracle content --cases CASES.json` in a fresh work
+directory. `oritech_content_cases.py` generates 38 positive and 444 mutated
+grids, including mirror/offset/tag variants. Six mutations correctly craft a
+vanilla chest; the comparison preserves that result, normalizing the implicit
+`minecraft:` namespace only. All 482 grids and 60 whole-table ore rolls
+(four ores, ordinary/Silk Touch/Fortune III, five seeds) match the native engines.
+
+`live_oritech_crafting_gui.py` actually crafts three steel ingots, electrum,
+four coils and all three machine/core blocks through menu clicks. It checks
+every ingredient delta, places the crafted blocks and produces two collected
+iron ingots. Vanilla resources and nickel/platinum ingots are fixtures; the
+test does not claim a fully gathered survival run.
+`live_oritech_ores_gui.py` separately finds/mines natural nickel with Terralith
+enabled and natural End platinum, then verifies inventory/broken blocks after
+reopen. It gives only a pickaxe, carves access cells and never injects ores,
+features or raw items. End platinum is an existing source route; natural
+overworld deepslate platinum and full worldgen RNG remain unverified.
+
+[Content 0.2 results and limitations](../../ORITECH_STARTER_RESULT.json).

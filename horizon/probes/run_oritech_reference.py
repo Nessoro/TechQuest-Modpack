@@ -29,11 +29,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("runtime", "work"): parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--accept-eula", action="store_true"); parser.add_argument("--reopen", action="store_true")
+    parser.add_argument("--oracle", choices=("energy", "content"), default="energy")
+    parser.add_argument("--cases", type=Path)
     args = parser.parse_args(); runtime = args.runtime.resolve(); work = args.work.absolute()
+    if args.oracle == "content" and (args.cases is None or args.reopen):
+        raise ValueError("content oracle needs --cases and does not use --reopen")
     if (work.is_symlink() or any(p.is_symlink() for p in work.parents)
             or runtime == work or runtime in work.parents and work.parent != runtime):
         raise ValueError("reference must be a separate direct runtime child or separate workspace directory")
-    probe = Path(__file__).with_name("OritechEnergyProbe.java")
+    probe = Path(__file__).with_name("OritechEnergyProbe.java" if args.oracle == "energy" else "OritechContentProbe.java")
     sha = lambda p: hashlib.sha256(read_checked(p)).hexdigest()
     server = work / "server"; jar = work / "probe/techquest-reference-probe.jar"
     if not args.reopen:
@@ -60,7 +64,8 @@ def main():
         (server / "eula.txt").write_text("eula=true\n")
         for name in ("ops.json", "whitelist.json"): (server / name).write_text("[]\n")
         (server / "server.properties").write_text("server-ip=127.0.0.1\nserver-port=25638\nlevel-name=techquest-oritech-reference\nlevel-seed=263\nonline-mode=true\nwhite-list=true\nenable-rcon=false\nenable-query=false\nview-distance=4\nsimulation-distance=4\n")
-        metadata = {"probe_source_sha256": sha(probe), "probe_jar_sha256": sha(jar), "oritech": "1.2.13", "minecraft": "1.21.1", "neoforge": "21.1.264"}
+        metadata = {"oracle": args.oracle, "probe_source_sha256": sha(probe), "probe_jar_sha256": sha(jar), "oritech": "1.2.13", "minecraft": "1.21.1", "neoforge": "21.1.264"}
+        if args.cases is not None: metadata["cases_sha256"] = sha(args.cases)
         (work / "inputs.json").write_text(json.dumps(metadata, indent=2) + "\n")
     else:
         metadata = json.loads(read_checked(work / "inputs.json"))
@@ -74,6 +79,7 @@ def main():
     env = fresh_environment(Path(tempfile.mkdtemp(prefix=phase + "-homes-", dir=work)))
     launch = [str(runtime / "jdk25/bin/java"), "-Xmx3G", "-Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts", "-Dtechquest.reference.result=" + str(work / (phase + "-result.json"))]
     if args.reopen: launch.append("-Dtechquest.reference.reopen=true")
+    if args.cases is not None: launch.append("-Dtechquest.reference.cases=" + str(args.cases.resolve()))
     proxy = urllib.parse.urlsplit(env.get("HTTPS_PROXY", ""))
     if proxy.hostname:
         for protocol in ("http", "https"): launch += [f"-D{protocol}.proxyHost={proxy.hostname}", f"-D{protocol}.proxyPort={proxy.port or 80}"]

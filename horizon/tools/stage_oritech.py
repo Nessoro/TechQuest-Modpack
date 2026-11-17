@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Stage three blocks for the isolated Oritech energy prototype, not a full port.
+"""Stage the isolated Oritech energy prototype and optional starter content.
 
-The original pinned CC0 JAR supplies only core texture and translated names.
+The default 0.1 subset uses the pinned CC0 core texture and translated names.
 The generator/furnace use simple cube models and vanilla textures. No Java,
-GeckoLib animations, original recipes or unimplemented items are packaged.
+GeckoLib animations are not packaged. --progression adds ten source recipes,
+ore generation/loot and the first route's materials; it is not a full mod port.
 """
 import argparse
 import hashlib
@@ -20,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BLOCKS = ("basic_generator_block", "powered_furnace_block", "machine_core_1")
 
 
-def stage(jar, sdk, output):
+def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=None, port_pack=None):
     if output.exists() or output.is_symlink() or any(p.is_symlink() for p in output.absolute().parents):
         raise ValueError("output must be a new directory without symlinks")
     for parent in output.absolute().parents:
@@ -30,7 +31,8 @@ def stage(jar, sdk, output):
     raw = read_checked(jar)
     if pin["version"] != "1.2.13" or hashlib.sha512(raw).hexdigest() != pin["sha512"]:
         raise ValueError("expected pinned Oritech 1.2.13")
-    payloads = {"horizon-mod.toml": b'id = "oritech"\nname = "TechQuest Oritech energy prototype"\nversion = "0.1.0"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n'}
+    version = "0.2.0" if progression else "0.1.0"
+    payloads = {"horizon-mod.toml": ('id = "oritech"\nname = "TechQuest Oritech energy prototype"\nversion = "' + version + '"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n').encode()}
     license_text = read_checked(ROOT / "first_party/oritech/LICENSE-ORITECH").decode()
     # SDK content packages keep assets/data/manifest; retain the dedication in
     # manifest comments, as for the existing Pretty Pipes notice.
@@ -62,6 +64,12 @@ def stage(jar, sdk, output):
                 menu["results"] = [1]
             data(f"data/oritech/horizon/menu/{block}.json", menu)
     data("data/minecraft/tags/block/mineable/pickaxe.json", {"values": ["oritech:" + b for b in BLOCKS]})
+    progression_report = None
+    if progression:
+        if any(p is None for p in (neoforge_jar, content_tool, port_pack)):
+            raise ValueError("--progression requires --neoforge-jar, --content-tool and --port-pack")
+        from stage_oritech_progression import add_progression
+        progression_report = add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, output.absolute().parent)
     with tempfile.TemporaryDirectory(prefix="oritech-stage-", dir=output.absolute().parent) as tmp:
         root = Path(tmp) / "module"
         for name, content in payloads.items():
@@ -73,10 +81,11 @@ def stage(jar, sdk, output):
         verdict = json.loads(subprocess.run([str(sdk.resolve()), "check", str(package), "--json"], cwd=root, check=True, capture_output=True, text=True).stdout)
         if not verdict.get("ok"):
             raise ValueError("SDK rejected energy prototype")
-        report = {"schema": 1, "prototype_version": "0.1.0", "source_version": "1.2.13", "source_jar_sha512": pin["sha512"],
+        report = {"schema": 1, "prototype_version": version, "source_version": "1.2.13", "source_jar_sha512": pin["sha512"],
                   "sha256": hashlib.sha256(package.read_bytes()).hexdigest(), "sdk_validated": True,
                   "requires_native_module": "techquest_oritech", "blocks": list(BLOCKS),
-                  "java_code_included": False, "original_recipes_ported": False, "full_mod_ported": False, "gameplay_tested": False}
+                  "java_code_included": False, "original_recipes_ported": bool(progression), "all_original_recipes_ported": False,
+                  "progression_subset": progression_report, "full_mod_ported": False, "gameplay_tested": False}
         (root / "techquest-oritech-trial.json").write_text(json.dumps(report, indent=2) + "\n")
         root.rename(output)
     return report
@@ -86,6 +95,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("jar", "sdk", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument("--progression", action="store_true")
+    for name in ("neoforge-jar", "content-tool", "port-pack"):
+        parser.add_argument("--" + name, type=Path)
     print(json.dumps(stage(**vars(parser.parse_args())), indent=2))
 
 
