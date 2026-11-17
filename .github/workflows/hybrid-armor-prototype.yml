@@ -45,6 +45,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: techquest-hybrid-original-armor
+          name: techquest-hybrid-rechargeable-original-armor
           path: addons/hybrid-warfare-armor/build/libs/*.jar
           if-no-files-found: error
