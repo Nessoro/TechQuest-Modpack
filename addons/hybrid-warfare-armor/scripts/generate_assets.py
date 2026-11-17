@@ -176,8 +176,6 @@ def main():
             for path in folder.rglob("*"):
                 if path.is_file():
                     archive.write(path, path.relative_to(folder))
-    from generate_3d_textures import generate as generate_pilot_3d
-    generate_pilot_3d()
     from tactical_v2 import generate as tactical_blue_v2
     upgraded = tactical_blue_v2()
     print("Generated", len(ids), "hybrid items with", len(upgraded),
