@@ -1,5 +1,7 @@
 package dev.techquest.hybrid;
 
+import dev.techquest.hybrid.client.MekMilitaryArmorClient;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -9,6 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -20,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -62,6 +66,9 @@ public final class HybridWarfareMod {
     public HybridWarfareMod(IEventBus modBus) {
         MATERIALS.register(modBus);
         ITEMS.register(modBus);
+        if (FMLEnvironment.dist.isClient()) {
+            modBus.addListener(MekMilitaryArmorClient::register);
+        }
         NeoForge.EVENT_BUS.addListener(HybridWarfareMod::onPlayerTick);
     }
 
@@ -90,6 +97,24 @@ public final class HybridWarfareMod {
             super(material, type, properties);
             this.bulletResistance = bulletResistance;
             this.technology = technology;
+        }
+
+        /**
+         * The original Superb Warfare armor has a Bedrock model and texture atlas.
+         * Our new 3D model uses its own 256x256 armor texture, selected only for the pilot kit.
+         */
+        @Override
+        public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                                 ArmorMaterial.Layer layer, boolean innerModel) {
+            if ("mek".equals(technology)) {
+                ResourceLocation key = BuiltInRegistries.ITEM.getKey(this);
+                String name = key.getPath();
+                if (name.equals("mek_ru_helmet_6b47") || name.equals("mek_ru_chest_6b43")) {
+                    return ResourceLocation.fromNamespaceAndPath(MODID,
+                        "textures/models/armor/" + name + "_3d.png");
+                }
+            }
+            return null;
         }
 
         @Override
