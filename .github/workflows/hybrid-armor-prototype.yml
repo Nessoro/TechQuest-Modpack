@@ -35,16 +35,16 @@ jobs:
           import json, pathlib, struct
           root = pathlib.Path('src/main/resources')
           recipes = list((root / 'data/techquest_hybrid/recipe').glob('*.json'))
-          assert len(recipes) == 20, len(recipes)
+          assert len(recipes) == 22, len(recipes)
           for path in root.rglob('*.json'):
               json.loads(path.read_text())
           tag = json.loads((root / 'data/minecraft/tags/item/trimmable_armor.json').read_text())
-          assert len(tag['values']) == 20
+          assert len(tag['values']) == 22
           textures = list((root / 'assets/techquest_hybrid/textures/models/armor').glob('*.png'))
-          assert len(textures) == 22 # 20 flat atlases plus two 3D 256x256 atlases
+          assert len(textures) == 24 # 20 flat atlases plus four 3D 256x256 atlases
           for path in textures:
               assert path.read_bytes().startswith(bytes.fromhex('89504e470d0a1a0a'))
-          print('Validated 20 recipes, 20 trimmable items and 22 armor textures')
+          print('Validated 22 recipes, 22 trimmable items and 24 armor textures')
           PY
       - name: Compile NeoForge mod (not an in-game smoke test)
         working-directory: addons/hybrid-warfare-armor
@@ -57,4 +57,5 @@ jobs:
             addons/hybrid-warfare-armor/build/libs/*.jar
             addons/hybrid-warfare-armor/skin-packs/*.zip
             addons/hybrid-warfare-armor/src/main/resources/assets/techquest_hybrid/textures/models/armor/mek_ru_*_3d.png
+            addons/hybrid-warfare-armor/src/main/resources/assets/techquest_hybrid/models/armor/mek_ru_*.cuboids
           if-no-files-found: error
