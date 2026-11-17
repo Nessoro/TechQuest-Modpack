@@ -1,4 +1,4 @@
-name: Build hybrid armor addon (prototype)
+name: Build hybrid armor addon (original Superb Warfare assets)
 on:
   pull_request:
     paths:
@@ -22,40 +22,29 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
-      - name: Verify pilot 6B47/6B43 armor atlas UV
-        working-directory: addons/hybrid-warfare-armor
-        run: python -m unittest discover -s scripts -p 'test_*.py' -v
-      - name: Generate armor recipes and textures
+      - name: Generate original-armor fusion recipes (no textures)
         working-directory: addons/hybrid-warfare-armor
         run: python scripts/generate_assets.py
-      - name: Validate generated JSON and PNG
+      - name: Test original-armor recipes, trim and asset policy
+        working-directory: addons/hybrid-warfare-armor
+        run: python -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Verify no new armor art or PNG packed
         working-directory: addons/hybrid-warfare-armor
         run: |
           python - <<'PY'
-          import json, pathlib, struct
-          root = pathlib.Path('src/main/resources')
-          recipes = list((root / 'data/techquest_hybrid/recipe').glob('*.json'))
-          assert len(recipes) == 22, len(recipes)
-          for path in root.rglob('*.json'):
-              json.loads(path.read_text())
-          tag = json.loads((root / 'data/minecraft/tags/item/trimmable_armor.json').read_text())
-          assert len(tag['values']) == 22
-          textures = list((root / 'assets/techquest_hybrid/textures/models/armor').glob('*.png'))
-          assert len(textures) == 24 # 20 flat atlases plus four 3D 256x256 atlases
-          for path in textures:
-              assert path.read_bytes().startswith(bytes.fromhex('89504e470d0a1a0a'))
-          print('Validated 22 recipes, 22 trimmable items and 24 armor textures')
+          from pathlib import Path
+          root = Path('src/main/resources')
+          assert not list(root.rglob('*.png')), "New PNG texture forbidden"
+          assert not list(root.rglob('*.geo.json')), "Custom 3D model forbidden"
+          assert not list(root.rglob('*.cuboids')), "Custom 3D geometry forbidden"
+          print('No new PNG or 3D armor assets')
           PY
-      - name: Compile NeoForge mod (not an in-game smoke test)
+      - name: Compile NeoForge addon (not a Minecraft gameplay test)
         working-directory: addons/hybrid-warfare-armor
         run: gradle build --no-daemon --stacktrace
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: techquest-hybrid-prototype
-          path: |
-            addons/hybrid-warfare-armor/build/libs/*.jar
-            addons/hybrid-warfare-armor/skin-packs/*.zip
-            addons/hybrid-warfare-armor/src/main/resources/assets/techquest_hybrid/textures/models/armor/mek_ru_*_3d.png
-            addons/hybrid-warfare-armor/src/main/resources/assets/techquest_hybrid/models/armor/mek_ru_*.cuboids
+          name: techquest-hybrid-original-armor
+          path: addons/hybrid-warfare-armor/build/libs/*.jar
           if-no-files-found: error
