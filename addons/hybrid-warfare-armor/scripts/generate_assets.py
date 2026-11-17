@@ -165,6 +165,10 @@ def main():
            {"replace": False, "values": [x for x in ids if "helmet" in x]})
     output(RES / "data/minecraft/tags/item/chest_armor.json",
            {"replace": False, "values": [x for x in ids if "chest" in x]})
+    output(RES / "data/minecraft/tags/item/leg_armor.json",
+           {"replace": False, "values": [x for x in ids if "leggings" in x]})
+    output(RES / "data/minecraft/tags/item/foot_armor.json",
+           {"replace": False, "values": [x for x in ids if "boots" in x]})
     for palette in PALETTES:
         if palette == "factory":
             continue
