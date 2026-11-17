@@ -60,8 +60,50 @@ def generate():
         "values": ["superbwarfare:" + name for name in BASES],
     })
 
-    # Explicitly no original assets or new texture files are shipped.
-    print(f"Generated {count} fusion recipes for 5 original Superb Warfare items; no textures")
+    # Localize tooltip only; no item icons or armor textures are generated.
+    ru = {
+        "tooltip.techquest_hybrid.tech": "Технологическое улучшение: %s",
+        "tooltip.techquest_hybrid.energy": "Энергия: %s / %s FE",
+        "tooltip.techquest_hybrid.recharge": "Заряди в устройстве, поддерживающем FE",
+        "tooltip.techquest_hybrid.tech.ic2": "IC2: Nostalgia",
+        "tooltip.techquest_hybrid.tech.mi": "Modern Industrialization",
+        "tooltip.techquest_hybrid.tech.mek": "Mekanism",
+        "tooltip.techquest_hybrid.tech.oritech": "Oritech",
+        "tooltip.techquest_hybrid.effect.ic2": "Шлем: ночное зрение, дыхание; жилет: защита; комплект: огнестойкость",
+        "tooltip.techquest_hybrid.effect.mi": "Шлем: ночное зрение; жилет: защита; комплект: усиленная защита",
+        "tooltip.techquest_hybrid.effect.mek": "Шлем: дыхание; жилет: защита; комплект: дыхание",
+        "tooltip.techquest_hybrid.effect.oritech": "Жилет: скорость; комплект: усиленная скорость",
+        "tooltip.techquest_hybrid.trim": "Отделка (цветовой фильтр): %s",
+    }
+    en = {
+        "tooltip.techquest_hybrid.tech": "Technology upgrade: %s",
+        "tooltip.techquest_hybrid.energy": "Energy: %s / %s FE",
+        "tooltip.techquest_hybrid.recharge": "Recharge with an FE-compatible charger",
+        "tooltip.techquest_hybrid.tech.ic2": "IC2: Nostalgia",
+        "tooltip.techquest_hybrid.tech.mi": "Modern Industrialization",
+        "tooltip.techquest_hybrid.tech.mek": "Mekanism",
+        "tooltip.techquest_hybrid.tech.oritech": "Oritech",
+        "tooltip.techquest_hybrid.effect.ic2": "Helmet: vision, breathing; vest: protection; pair: fire resistance",
+        "tooltip.techquest_hybrid.effect.mi": "Helmet: vision; vest: protection; pair: stronger protection",
+        "tooltip.techquest_hybrid.effect.mek": "Helmet: breathing; vest: protection; pair: breathing",
+        "tooltip.techquest_hybrid.effect.oritech": "Vest: speed; pair: increased speed",
+        "tooltip.techquest_hybrid.trim": "Trim material (color filter): %s",
+    }
+    materials = {
+        "quartz": ("Кварц", "Quartz"), "iron": ("Железо", "Iron"),
+        "copper": ("Медь", "Copper"), "gold": ("Золото", "Gold"),
+        "lapis": ("Лазурит", "Lapis"), "emerald": ("Изумруд", "Emerald"),
+        "diamond": ("Алмаз", "Diamond"), "redstone": ("Редстоун", "Redstone"),
+        "amethyst": ("Аметист", "Amethyst"), "netherite": ("Незерит", "Netherite"),
+        "unknown": ("Неизвестно", "Unknown"),
+    }
+    for key, (ru_label, en_label) in materials.items():
+        ru["tooltip.techquest_hybrid.material." + key] = ru_label
+        en["tooltip.techquest_hybrid.material." + key] = en_label
+    write_json(RES / "assets/techquest_hybrid/lang/ru_ru.json", ru)
+    write_json(RES / "assets/techquest_hybrid/lang/en_us.json", en)
+
+    print(f"Generated {count} fusion recipes + localized tooltips; no textures")
 
 if __name__ == "__main__":
     generate()
