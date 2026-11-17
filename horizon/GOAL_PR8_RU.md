@@ -211,6 +211,24 @@ medium/high. 126 случаев с оригинальным destination method �
 `/workspace/horizon-runtime/techquest-pipes-05b-server` остановлена, lock проверен.
 Схема хранения 3/67 slots сохранена; старые profiles/tools/locks не редактировались.
 
+17 ноября среда восстановлена: running/connected, файлы и результат сборки
+сохранились. Следующий промышленный этап Oritech 0.1 перенёс первую цепочку
+Basic Generator → Powered Furnace + один Machine Core в Rust. Проверены
+63 исходных случая и 414 состояний настоящих native ticks, совпадение полное.
+Отдельный графический тест собрал ядро взаимодействием, загрузил топливо и
+сырьё через меню, сохранил активную цепочку и после точного save/reopen получил
+два слитка. Баланс энергии сохранён, выход отказывает вставке, разрушение ядра
+отключает обработку. CPU Vulkan; аккаунт и licensed dedicated join не проверены.
+Dedicated-сервер исполнил цепочку, сохранил/открыл её с отключённым генератором;
+Pretty Pipes transport/save/reopen прошёл в той же установке. 113 Python-тестов,
+rustfmt, py_compile и SDK checks прошли. Новый профиль с 8 hmod/4 native bundles
+`/workspace/horizon-runtime/techquest-oritech-01a-server` остановлен, lock проверен.
+Рецепты/материалы, кабели, улучшения, прочие машины и полная геометрия Oritech
+ещё не перенесены. Исходник на точном commit и JAR — CC0, текущая project
+metadata Modrinth — CC BY 4.0; основание и границы отражены в notices.
+[Отчёт Oritech](ORITECH_ENERGY_RESULT.json), [код и воспроизведение](first_party/oritech/README.md).
+Вся цель остаётся активной; ничего не публиковалось.
+
 1. Продолжить Pretty Pipes: equality/filter-increase modules и их экраны,
    ветвления, приоритеты, insertion-limiting modules/сложные slot limits, переполнение и rerouting; проверить offhand, bulk edits,
    unloaded entities и точные drop semantics. Установка/снятие, основное GUI,
@@ -232,7 +250,10 @@ medium/high. 126 случаев с оригинальным destination method �
    tags базового движка обрезают custom biome IDs; wolf extension обходит это
    через кеш мира, остальные сущности ещё требуют аудита.
    Локальная установка — LOCAL_INSTALL_RU.md; native build — first_party/terralith_wolves/README.md.
-4. Продолжить нативные механики TechQuest и подготовить проверку официальным
+4. Продолжить Oritech: первая цепочка уже исполняется; нужны исходные рецепты
+   и материалы для survival, автоматизация/Pretty Pipes endpoints, кабели,
+   улучшения, другие машины и общая делегация через core. Текущие три блока
+   не заменяют полный промышленный мод. Продолжить остальные нативные механики TechQuest и подготовить проверку официальным
    лицензированным клиентом. Пользовательские данные не использовать.
 
 ## Критерии завершения всей цели

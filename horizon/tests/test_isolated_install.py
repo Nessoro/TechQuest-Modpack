@@ -13,6 +13,20 @@ import install_isolated_server as installer
 
 
 class IsolatedInstallTests(unittest.TestCase):
+    def test_oritech_mismatch_blocks_start_without_spawning(self):
+        for native in ([], [{"id": "techquest_oritech", "version": "0.2.0"}]):
+            with self.subTest(native=native), tempfile.TemporaryDirectory() as temp:
+                root = self.installation(Path(temp) / "server")
+                report = json.loads((root / installer.LOCK).read_text())
+                report["modules"]["oritech"] = {"version": "0.1.0"}
+                report["native_modules"] = native
+                (root / installer.LOCK).write_text(json.dumps(report))
+                with patch.object(installer.subprocess, "run") as run:
+                    with self.assertRaisesRegex(ValueError, "Oritech content/native"):
+                        installer.start(root)
+                    run.assert_not_called()
+                self.assertFalse((root / ".runs").exists())
+
     def test_mixed_pipe_versions_block_start_before_spawning(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self.installation(Path(temp) / "server")

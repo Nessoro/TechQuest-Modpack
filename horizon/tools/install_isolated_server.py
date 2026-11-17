@@ -70,11 +70,13 @@ def run(args, *, cwd: Path, env=None, timeout=180) -> str:
 
 
 def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, work: Path,
-                  pretty_pipes: Path | None = None) -> dict:
+                  pretty_pipes: Path | None = None, oritech: Path | None = None) -> dict:
     files = {mod: checked_path(terralith if mod == "terralith" else modules / f"{mod}.hmod")
              for mod in MODULES}
     if pretty_pipes is not None:
         files["prettypipes"] = checked_path(pretty_pipes)
+    if oritech is not None:
+        files["oritech"] = checked_path(oritech)
     owners, result = {}, {}
     for mod, path in files.items():
         check = json.loads(run([sdk, "check", path, "--json"], cwd=path.parent))
@@ -86,6 +88,8 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
             raise ValueError("SDK rejected module identity/API/checksum: " + mod)
         if mod == "prettypipes" and facts.get("version") not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0"):
             raise ValueError("expected the reviewed Pretty Pipes content prototype")
+        if mod == "oritech" and facts.get("version") != "0.1.0":
+            raise ValueError("expected the reviewed Oritech energy prototype")
         with zipfile.ZipFile(path) as archive:
             names = archive.namelist()
             if len(names) != len(set(names)):
@@ -102,6 +106,14 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
                 if (menu not in names or json.loads(archive.read(menu)) !=
                         {"slots": 67, "data_slots": 21}):
                     raise ValueError("Pretty Pipes 0.4/0.5 menu needs 67 slots and 21 data slots")
+            if mod == "oritech":
+                for block, slots in (("basic_generator_block", 1), ("powered_furnace_block", 2)):
+                    menu = f"data/oritech/horizon/menu/{block}.json"
+                    expected_menu = {"slots": slots, "data_slots": 5}
+                    if slots == 2:
+                        expected_menu["results"] = [1]
+                    if menu not in names or json.loads(archive.read(menu)) != expected_menu:
+                        raise ValueError("Oritech energy menu has incorrect slots/data slots")
             for namespace in meta.get("namespaces", [mod]):
                 if namespace in owners and owners[namespace] != mod:
                     raise ValueError("namespace has multiple owners: " + namespace)
@@ -129,7 +141,12 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
     return result
 
 
-def check_pipe_pair(mods: dict, native: list[dict]):
+def check_native_pairs(mods: dict, native: list[dict]):
+    if "oritech" in mods:
+        matching = [m for m in native if m.get("id") == "techquest_oritech"]
+        if (len(matching) != 1 or mods["oritech"].get("version") != "0.1.0"
+                or matching[0].get("version") != mods["oritech"].get("version")):
+            raise ValueError("Oritech content/native version mismatch or missing extension")
     if "prettypipes" not in mods:
         return
     matching = [m for m in native if m.get("id") == "techquest_pretty_pipes"]
@@ -211,7 +228,7 @@ def check_native_modules(tools: Path, sdk: Path) -> list[dict]:
 def install(*, resources: Path, tools: Path, work: Path, modules: Path,
             terralith: Path, datapack: Path, sdk: Path, upstream: Path,
             output: Path, port: int, accept_eula: bool,
-            pretty_pipes: Path | None = None) -> dict:
+            pretty_pipes: Path | None = None, oritech: Path | None = None) -> dict:
     output = checked_path(output)
     if output.exists():
         raise ValueError("installation directory must be new")
@@ -222,6 +239,9 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
     if pretty_pipes is not None:
         pretty_pipes = checked_path(pretty_pipes)
         inputs.append(pretty_pipes)
+    if oritech is not None:
+        oritech = checked_path(oritech)
+        inputs.append(oritech)
     for origin in inputs:
         origin = checked_path(origin)
         if output == origin or origin in output.parents or output in origin.parents:
@@ -236,9 +256,9 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
         raise ValueError("upstream checkout differs from the pinned commit")
     run([tools / "horizon-prepare", "--check", "--root", upstream, "--output", resources], cwd=upstream)
     payloads = validate_trial(datapack, work)
-    mods = check_modules(modules, terralith, datapack, sdk, work, pretty_pipes)
+    mods = check_modules(modules, terralith, datapack, sdk, work, pretty_pipes, oritech)
     native = check_native_modules(tools, sdk)
-    check_pipe_pair(mods, native)
+    check_native_pairs(mods, native)
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".techquest-install-", dir=output.parent) as temporary:
         temporary = Path(temporary)
@@ -303,9 +323,9 @@ def verify(server_dir: Path) -> dict:
     report = json.loads((server_dir / LOCK).read_text())
     if (report.get("schema") != 1 or report.get("upstream_commit") != UPSTREAM
             or report.get("minecraft") != "26.3" or report.get("world") != WORLD
-            or set(report.get("modules", {})) not in (set(MODULES), set(MODULES) | {"prettypipes"})):
+            or not set(MODULES) <= set(report.get("modules", {})) <= set(MODULES) | {"prettypipes", "oritech"}):
         raise ValueError("unrecognized local installation lock")
-    check_pipe_pair(report["modules"], report.get("native_modules", []))
+    check_native_pairs(report["modules"], report.get("native_modules", []))
     hashes = report["files"]
     expected_mods = {f"{mod}.hmod" for mod in report["modules"]}
     if set(tree_files(server_dir / "horizon-mods")) != expected_mods:
@@ -360,6 +380,8 @@ def main() -> int:
     add.add_argument("--accept-eula", action="store_true")
     add.add_argument("--pretty-pipes", type=Path,
                      help="Optional SDK-checked transport content prototype; needs its native extension")
+    add.add_argument("--oritech", type=Path,
+                     help="Optional SDK-checked energy content prototype; needs its native extension")
     for name in ("verify", "start"):
         sub = commands.add_parser(name)
         sub.add_argument("--server-dir", type=Path, required=True)

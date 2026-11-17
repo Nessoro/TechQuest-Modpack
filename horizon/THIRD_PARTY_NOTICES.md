@@ -55,3 +55,33 @@ from the same pinned Pretty Pipes source. The read-only insertion view adapts
 MIT Horizon `game/machines.rs` container rules; see the retained
 `LICENSE-HORIZON`. No Java source from NeoForge or LGPL/GPL dependencies was
 read or decompiled; the original reference runs binary dependencies only.
+
+## Oritech energy prototype
+
+The Oritech 1.2.13 reference is [Rearth/Oritech at
+4069b6dd14b05dfe0c80126618739b64054630ea](https://github.com/Rearth/Oritech/tree/4069b6dd14b05dfe0c80126618739b64054630ea).
+Its pinned `LICENSE.md` dedicates the work under CC0-1.0; that complete text is
+retained in `first_party/oritech/LICENSE-ORITECH`. The pinned NeoForge JAR also
+declares CC0-1.0. Current Modrinth project metadata instead says CC BY 4.0;
+this port relies on the verified dedication at the exact source commit,
+not on the current project's metadata. Headers of the consulted own Java files
+have no separate license override.
+
+`first_party/oritech/logic.rs` adapts the default Basic Generator, Powered Furnace
+and single Machine Core behavior from `BasicGeneratorEntity`,
+`UpgradableGeneratorBlockEntity`, `MachineBlockEntity`,
+`UpgradableMachineBlockEntity`, `PoweredFurnaceBlockEntity`,
+`MultiblockMachineEntity`, `MultiblockMachine`, `MultiblockMachineController`,
+`MachineCoreEntity`, `MachineCoreBlock`, `DynamicEnergyStorage` and `EnergyApi`.
+The same pin's `OritechConfig`, `BlockContent`, `BlockEntitiesContent` and
+`BasicGeneratorBlock`/`PoweredFurnaceBlock` were consulted. The integration and
+compact menu are first-party Rust; hand-use ordering and the native energy
+contract follow Horizon's pinned MIT implementation, with `LICENSE-HORIZON`
+retained. Java exists only in the developer oracle.
+
+Private content staging uses the pinned JAR's CC0 core texture and three block
+names from each of its English/Russian language JSON files. Simplified machine
+models reference installed vanilla textures; GeckoLib animations are not copied.
+Architectury, GeckoLib and NeoForge are run as binary reference dependencies;
+their Java sources are neither read nor decompiled. Fluidic Tanks is All Rights
+Reserved; its source has not been read or used.

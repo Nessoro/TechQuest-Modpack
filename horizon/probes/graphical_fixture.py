@@ -12,10 +12,10 @@ from install_isolated_server import fresh_environment, verify
 
 
 class GraphicalFixture:
-    def __init__(self, server, work, version, world, player):
+    def __init__(self, server, work, version, world, player, module="prettypipes", frozen=False):
         self.server, self.work = server.resolve(), work.absolute()
         lock = verify(self.server)
-        self.version = lock["modules"].get("prettypipes", {}).get("version")
+        self.version = lock["modules"].get(module, {}).get("version")
         if self.version not in ((version,) if isinstance(version, str) else version):
             raise ValueError("unexpected content version")
         if (self.work.exists() or self.work.is_symlink()
@@ -28,6 +28,7 @@ class GraphicalFixture:
         self.engine = Path(self.config["engine"]["path"])
         self.ctl = self.engine.with_name("horizon-ctl")
         self.world, self.player = world, player
+        self.frozen = frozen
         self.socket, self.rows = self.work / "control.sock", []
         self.game, self.log = None, None
         self.work.mkdir(mode=0o700, parents=True)
@@ -64,6 +65,8 @@ class GraphicalFixture:
         self.env.update(HORIZON_PLAYER_NAME=self.player, XDG_RUNTIME_DIR=str(runtime),
                         XDG_CACHE_HOME=str(self.work / "cache"), LP_NUM_THREADS="2",
                         MESA_SHADER_CACHE_DIR=str(self.work / "cache/mesa"), WINIT_UNIX_BACKEND="x11")
+        if self.frozen:
+            self.env["HORIZON_STILL"] = "1"
         path = self.work / (phase + "-console.log")
         self.log = path.open("x"); path.chmod(0o600)
         self.game = subprocess.Popen([str(self.engine), "--resources", self.config["engine"]["resources"],

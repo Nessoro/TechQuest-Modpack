@@ -41,6 +41,20 @@ native bundles; добавить к `install` параметр `--pretty-pipes /
 прошли; [отчёт 0.5](PRETTY_PIPES_CAPACITY_RESULT.json). Размер очереди и схема
 хранения 0.3/0.4 сохранены; новый hmod требует отдельной 0.5 native сборки.
 
+Вторая промышленная опция — [Oritech energy prototype 0.1](first_party/oritech/README.md):
+Basic Generator, Powered Furnace и один Machine Core. Новый контент собирается
+через `tools/stage_oritech.py`; `install --oritech /path/to/oritech.hmod` требует
+соответствующий native bundle `techquest_oritech` 0.1.0 и точные menu definitions.
+С Pretty Pipes это восемь hmod и четыре native bundles. Проверенная новая
+установка — `/workspace/horizon-runtime/techquest-oritech-01a-server`, порт 25639,
+loopback, online-mode и whitelist; после тестов остановлена, lock проверен.
+63 исходных случая/414 состояний совпали с настоящими Horizon ticks;
+графический клиент собрал цепочку, загрузил топливо и сырьё через меню, сохранил
+и открыл мир, получил два слитка. Dedicated chain и регрессия Pretty Pipes
+также проверены. Это пока не перенос рецептов, кабелей, улучшений и полного
+Oritech, и не проверка лицензированного join.
+[Отчёт и границы](ORITECH_ENERGY_RESULT.json). Старые установки не изменялись.
+
 Последний Better Dungeons stage также исправляет potion/enchantment loot в пяти
 таблицах; пересобирать только в новый каталог и устанавливать в новый профиль.
 [Графические и исходные проверки лута](YUNG_RUNTIME_RU.md) не подтверждают

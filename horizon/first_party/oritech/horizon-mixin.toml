@@ -1,0 +1,98 @@
+[mod]
+id = "techquest_oritech"
+version = "0.1.0"
+
+[compatibility]
+horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
+
+[[injection]]
+id = "create"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity"
+kind = "HEAD"
+helper = "create.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "entity", ty = "&mut Option<(String, horizon_world::nbt::Compound)>", value = "entity" },
+]
+
+[[injection]]
+id = "ticking"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_ticks"
+kind = "HEAD"
+helper = "ticking.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "ticks", ty = "&mut bool", value = "ticks" },
+]
+
+[[injection]]
+id = "container"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_container"
+kind = "HEAD"
+helper = "container.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "value", ty = "&mut Option<horizon_client_lib::containers::ModContainer>", value = "container" },
+]
+
+[[injection]]
+id = "energy"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_energy"
+kind = "HEAD"
+helper = "energy.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "value", ty = "&mut Option<horizon_client_lib::containers::ModEnergyBuffer>", value = "energy" },
+]
+
+[[injection]]
+id = "tick"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_tick"
+kind = "HEAD"
+helper = "tick.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "entity", ty = "&mut horizon_client_lib::containers::ModBlockEntity", value = "entity" },
+]
+
+[[injection]]
+id = "screen"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen"
+kind = "HEAD"
+helper = "screen.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "screen", ty = "&mut Option<crate::mod_api::NativeScreen>", value = "screen" },
+]
+
+[[injection]]
+id = "draw"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_draw"
+kind = "HEAD"
+helper = "draw.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "block", ty = "&str", value = "block" },
+  { name = "data", ty = "&[i32]", value = "data" },
+  { name = "batch", ty = "&mut crate::hud::HudBatch", value = "batch" },
+  { name = "origin", ty = "[f32; 2]", value = "origin" },
+]
+
+[[injection]]
+id = "interact"
+target = "horizon_client::game::Game<'_>::use_hand"
+kind = "HEAD"
+helper = "interact.rs"
+cancellable = true
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "hit", ty = "Option<&crate::game::Hit>", value = "block_hit" },
+]
+
+[[module]]
+id = "energy_processing"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_oritech"
+source = "logic.rs"
+visibility = "pub(crate)"
