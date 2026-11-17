@@ -1,151 +1,86 @@
 package dev.techquest.hybrid;
 
-import dev.techquest.hybrid.client.MekMilitaryArmorClient;
-
-import net.minecraft.core.Holder;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import java.util.*;
 
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Apply tech perks to ORIGINAL Superb Warfare armor via a data component.
+ * We do not register new armor/items/models/textures: vanilla smithing_transform
+ * recipes transmute the same Superb Warfare item and patch just this component.
+ * ArmorPlate, damage, enchants and original GeoArmorRenderer are preserved.
+ */
 @Mod(HybridWarfareMod.MODID)
 public final class HybridWarfareMod {
     public static final String MODID = "techquest_hybrid";
-    private static final DeferredRegister<ArmorMaterial> MATERIALS =
-        DeferredRegister.create(Registries.ARMOR_MATERIAL, MODID);
-    private static final DeferredRegister<Item> ITEMS =
-        DeferredRegister.create(Registries.ITEM, MODID);
-    private static final List<String> TECHNOLOGIES = List.of("ic2", "mi", "mek", "oritech");
-    private static final Map<String, Base> BASES = new LinkedHashMap<>();
-    private record Base(ArmorItem.Type type, double bulletResistance) {}
+
+    public static final DataComponentType<String> TECHNOLOGY = DataComponentType
+            .<String>builder()
+            .persistent(Codec.STRING)
+            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+            .build();
+
+    private static final DeferredRegister.DataComponents COMPONENTS =
+            DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID);
+
+    public static final Set<String> MILITARY_ARMOR = Set.of(
+            "ru_helmet_6b47", "ru_chest_6b43",
+            "us_helmet_pasgt", "us_chest_iotv", "ge_helmet_m_35"
+    );
+
+    private static final Set<String> TECHNOLOGIES = Set.of("ic2", "mi", "mek", "oritech");
 
     static {
-        BASES.put("ru_helmet_6b47", new Base(ArmorItem.Type.HELMET, 0.2));
-        BASES.put("ru_chest_6b43", new Base(ArmorItem.Type.CHESTPLATE, 0.5));
-        BASES.put("us_helmet_pasgt", new Base(ArmorItem.Type.HELMET, 0.2));
-        BASES.put("us_chest_iotv", new Base(ArmorItem.Type.CHESTPLATE, 0.5));
-        BASES.put("ge_helmet_m_35", new Base(ArmorItem.Type.HELMET, 0.1));
-        for (var technology : TECHNOLOGIES) {
-            for (var entry : BASES.entrySet()) {
-                String id = technology + "_" + entry.getKey();
-                Base base = entry.getValue();
-                Holder<ArmorMaterial> material = MATERIALS.register(id, () -> new ArmorMaterial(
-                    Map.of(ArmorItem.Type.HELMET, 3, ArmorItem.Type.CHESTPLATE, 8,
-                           ArmorItem.Type.LEGGINGS, 0, ArmorItem.Type.BOOTS, 0),
-                    15, SoundEvents.ARMOR_EQUIP_NETHERITE, () -> Ingredient.EMPTY,
-                    List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(MODID, id))),
-                    4.0F, 0.05F));
-                ITEMS.register(id, () -> new HybridItem(material, base.type, base.bulletResistance,
-                    technology, new Item.Properties().durability(base.type.getDurability(50))));
-            }
-        }
-        // Lower armor is new TechQuest equipment: Superb Warfare has no leg or boot items.
-        for (var type : List.of(ArmorItem.Type.LEGGINGS, ArmorItem.Type.BOOTS)) {
-            String id = type == ArmorItem.Type.LEGGINGS ? "mek_ru_leggings" : "mek_ru_boots";
-            Holder<ArmorMaterial> material = MATERIALS.register(id, () -> new ArmorMaterial(
-                Map.of(ArmorItem.Type.HELMET, 0, ArmorItem.Type.CHESTPLATE, 0,
-                       ArmorItem.Type.LEGGINGS, 6, ArmorItem.Type.BOOTS, 3),
-                15, SoundEvents.ARMOR_EQUIP_NETHERITE, () -> Ingredient.EMPTY,
-                List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(MODID, id))),
-                3.0F, 0.05F));
-            ITEMS.register(id, () -> new HybridItem(material, type, 0.0,
-                "mek", new Item.Properties().durability(type.getDurability(50))));
-        }
+        COMPONENTS.register("technology", () -> TECHNOLOGY);
     }
 
-    public HybridWarfareMod(IEventBus modBus) {
-        MATERIALS.register(modBus);
-        ITEMS.register(modBus);
-        if (FMLEnvironment.dist.isClient()) {
-            modBus.addListener(MekMilitaryArmorClient::register);
-        }
-        NeoForge.EVENT_BUS.addListener(HybridWarfareMod::onPlayerTick);
+    public HybridWarfareMod(IEventBus bus) {
+        COMPONENTS.register(bus);
+        NeoForge.EVENT_BUS.addListener(HybridWarfareMod::tickPlayer);
     }
 
-    private static void onPlayerTick(PlayerTickEvent.Post event) {
+    public static boolean isSuperbWarfareArmor(ItemStack stack) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        return "superbwarfare".equals(id.getNamespace()) && MILITARY_ARMOR.contains(id.getPath());
+    }
+
+    private static String technology(ItemStack armor) {
+        if (!isSuperbWarfareArmor(armor)) return null;
+        String value = armor.get(TECHNOLOGY);
+        return value != null && TECHNOLOGIES.contains(value) ? value : null;
+    }
+
+    private static void tickPlayer(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         if (player.level().isClientSide() || player.tickCount % 20 != 0) return;
-        ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
-        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        if (!(head.getItem() instanceof HybridItem h) || !(chest.getItem() instanceof HybridItem c)) return;
-        if (!h.technology.equals(c.technology)) return;
-        // Prototype bonuses: no transfer of EU/FE, native modules, or charged donor components.
-        switch (h.technology) {
+
+        String chestTech = technology(player.getItemBySlot(EquipmentSlot.CHEST));
+        String headTech = technology(player.getItemBySlot(EquipmentSlot.HEAD));
+        if (chestTech == null || !chestTech.equals(headTech)) return;
+
+        // Conservative prototype set bonuses; does not copy EU/FE or donor modules.
+        switch (chestTech) {
             case "ic2" -> player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 45, 0, true, false));
             case "mi" -> player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 45, 0, true, false));
             case "mek" -> player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 45, 0, true, false));
             case "oritech" -> player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 45, 0, true, false));
-            default -> {}
-        }
-    }
-
-    public static final class HybridItem extends ArmorItem {
-        private final double bulletResistance;
-        private final String technology;
-        public HybridItem(Holder<ArmorMaterial> material, Type type, double bulletResistance,
-                          String technology, Properties properties) {
-            super(material, type, properties);
-            this.bulletResistance = bulletResistance;
-            this.technology = technology;
-        }
-
-        /**
-         * The original Superb Warfare armor has a Bedrock model and texture atlas.
-         * Our new 3D model uses its own 256x256 armor texture, selected only for the pilot kit.
-         */
-        @Override
-        public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
-                                                 ArmorMaterial.Layer layer, boolean innerModel) {
-            if ("mek".equals(technology)) {
-                ResourceLocation key = BuiltInRegistries.ITEM.getKey(this);
-                String name = key.getPath();
-                if (name.equals("mek_ru_helmet_6b47") || name.equals("mek_ru_chest_6b43")
-                        || name.equals("mek_ru_leggings") || name.equals("mek_ru_boots")) {
-                    return ResourceLocation.fromNamespaceAndPath(MODID,
-                        "textures/models/armor/" + name + "_3d.png");
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
-            var original = super.getDefaultAttributeModifiers(stack);
-            var entries = new ArrayList<ItemAttributeModifiers.Entry>(original.modifiers());
-            ResourceKey<Attribute> key = ResourceKey.create(Registries.ATTRIBUTE,
-                ResourceLocation.fromNamespaceAndPath("superbwarfare", "bullet_resistance"));
-            BuiltInRegistries.ATTRIBUTE.getHolder(key).ifPresent(holder -> {
-                double condition = stack.isDamageableItem()
-                    ? Math.max(0.0, 1.0 - (double) stack.getDamageValue() / stack.getMaxDamage()) : 1.0;
-                entries.add(new ItemAttributeModifiers.Entry(holder,
-                    new AttributeModifier(ResourceLocation.fromNamespaceAndPath(
-                        MODID, "bullet_resistance_" + type.getName()),
-                        bulletResistance * condition, AttributeModifier.Operation.ADD_VALUE),
-                    EquipmentSlotGroup.bySlot(type.getSlot())));
-            });
-            return new ItemAttributeModifiers(entries, true);
+            default -> { }
         }
     }
 }
