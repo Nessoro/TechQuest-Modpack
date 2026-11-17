@@ -139,7 +139,9 @@ def main():
             for path in folder.rglob("*"):
                 if path.is_file():
                     archive.write(path, path.relative_to(folder))
-    print("Generated", len(ids), "hybrid items and four texture sets")
+    from generate_3d_textures import generate as generate_pilot_3d
+    generate_pilot_3d()
+    print("Generated", len(ids), "hybrid items and four texture sets, plus two wearable 3D atlases")
 
 if __name__ == "__main__":
     main()
