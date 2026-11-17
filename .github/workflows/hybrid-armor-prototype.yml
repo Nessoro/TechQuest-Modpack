@@ -41,10 +41,10 @@ jobs:
           tag = json.loads((root / 'data/minecraft/tags/item/trimmable_armor.json').read_text())
           assert len(tag['values']) == 20
           textures = list((root / 'assets/techquest_hybrid/textures/models/armor').glob('*.png'))
-          assert len(textures) == 20
+          assert len(textures) == 22 # 20 flat atlases plus two 3D 256x256 atlases
           for path in textures:
               assert path.read_bytes().startswith(bytes.fromhex('89504e470d0a1a0a'))
-          print('Validated 20 recipes, 20 trimmable items and 20 textures')
+          print('Validated 20 recipes, 20 trimmable items and 22 armor textures')
           PY
       - name: Compile NeoForge mod (not an in-game smoke test)
         working-directory: addons/hybrid-warfare-armor
@@ -56,5 +56,5 @@ jobs:
           path: |
             addons/hybrid-warfare-armor/build/libs/*.jar
             addons/hybrid-warfare-armor/skin-packs/*.zip
-            addons/hybrid-warfare-armor/src/main/resources/assets/techquest_hybrid/textures/models/armor/mek_ru_*.png
+            addons/hybrid-warfare-armor/src/main/resources/assets/techquest_hybrid/textures/models/armor/mek_ru_*_3d.png
           if-no-files-found: error
