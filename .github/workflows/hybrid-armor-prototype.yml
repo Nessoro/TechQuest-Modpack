@@ -22,6 +22,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
+      - name: Verify pilot 6B47/6B43 armor atlas UV
+        working-directory: addons/hybrid-warfare-armor
+        run: python -m unittest discover -s scripts -p 'test_*.py' -v
       - name: Generate armor recipes and textures
         working-directory: addons/hybrid-warfare-armor
         run: python scripts/generate_assets.py
@@ -53,4 +56,5 @@ jobs:
           path: |
             addons/hybrid-warfare-armor/build/libs/*.jar
             addons/hybrid-warfare-armor/skin-packs/*.zip
+            addons/hybrid-warfare-armor/src/main/resources/assets/techquest_hybrid/textures/models/armor/mek_ru_*.png
           if-no-files-found: error
