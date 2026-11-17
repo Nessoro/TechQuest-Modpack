@@ -34,6 +34,22 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertFalse(tag["replace"])
         self.assertEqual(set(tag["values"]), {"superbwarfare:" + x for x in BASES})
 
+    def test_localized_tooltip_and_energy_hints(self):
+        path = RES / "assets/techquest_hybrid/lang/ru_ru.json"
+        translations = json.loads(path.read_text(encoding="utf-8"))
+        for suffix in ("tech", "energy", "recharge", "effect.ic2", "trim"):
+            self.assertIn("tooltip.techquest_hybrid." + suffix, translations)
+        self.assertIn("FE", translations["tooltip.techquest_hybrid.energy"])
+
+    def test_energy_system_registered_without_replacing_original_items(self):
+        java = (pathlib.Path(__file__).resolve().parents[1] /
+                "src/main/java/dev/techquest/hybrid/HybridWarfareMod.java").read_text()
+        self.assertIn('COMPONENTS.register("energy", () -> ENERGY)', java)
+        self.assertIn("Capabilities.EnergyStorage.ITEM", java)
+        self.assertIn("new ArmorEnergyStorage(stack)", java)
+        self.assertIn("getToolTip().add", java)
+        self.assertNotIn("DeferredRegister.create(Registries.ITEM", java)
+
     def test_no_custom_art_generated_or_committed(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         resources = root / "src/main/resources"
