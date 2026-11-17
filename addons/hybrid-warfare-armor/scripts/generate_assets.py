@@ -117,6 +117,43 @@ def main():
                     armor_map)
                 png(textures / "item" / (item + ".png"), 16, 16,
                     icon_pixels(base_id, palette, accent))
+    # Complete the visual set with two new Mekanism-powered pieces.
+    # Superb Warfare itself supplies only the 6B47 helmet and 6B43 vest.
+    for part, donor in (("leggings", "mekanism:mekasuit_pants"),
+                        ("boots", "mekanism:mekasuit_boots")):
+        item = "mek_ru_" + part
+        ids.append("techquest_hybrid:" + item)
+        output(RES / "data/techquest_hybrid/recipe" / (item + ".json"), {
+            "type": "minecraft:smithing_transform",
+            "template": {"item": "minecraft:netherite_upgrade_smithing_template"},
+            "base": {"item": "minecraft:netherite_" + part},
+            "addition": {"item": donor},
+            "result": {"id": "techquest_hybrid:" + item},
+        })
+        output(RES / "assets/techquest_hybrid/models/item" / (item + ".json"), {
+            "parent": "minecraft:item/generated",
+            "textures": {"layer0": "techquest_hybrid:item/" + item},
+        })
+        names_ru["item.techquest_hybrid." + item] = (
+            "Гибридная броня Mekanism — " + ("поножи" if part == "leggings" else "ботинки"))
+        names_en["item.techquest_hybrid." + item] = "Mekanism Hybrid " + part.title()
+        img = [(0, 0, 0, 0)] * 256
+        for y in range(3, 14):
+            for x in range(2, 14):
+                leg = (part == "leggings" and
+                       ((4 <= x <= 11 and y <= 6) or
+                        (4 <= x <= 6 and y >= 7) or
+                        (9 <= x <= 11 and y >= 7)))
+                boot = (part == "boots" and
+                        (((3 <= x <= 6) or (9 <= x <= 12)) and y >= 6 and
+                         (y < 11 or x in (3,4,5,9,10,11,12))))
+                if leg or boot:
+                    base = (46, 59, 81) if (x+y) % 5 else (73, 86, 108)
+                    img[y*16+x] = (*base, 255)
+        for x in (5,10):
+            img[10*16+x] = (15, 117, 246, 255)
+        png(RES / "assets/techquest_hybrid/textures/item" / (item + ".png"),
+            16, 16, img)
     output(RES / "assets/techquest_hybrid/lang/ru_ru.json", names_ru)
     output(RES / "assets/techquest_hybrid/lang/en_us.json", names_en)
     output(RES / "data/minecraft/tags/item/trimmable_armor.json", {"replace": False, "values": ids})
@@ -141,7 +178,10 @@ def main():
                     archive.write(path, path.relative_to(folder))
     from generate_3d_textures import generate as generate_pilot_3d
     generate_pilot_3d()
-    print("Generated", len(ids), "hybrid items and four texture sets, plus two wearable 3D atlases")
+    from tactical_v2 import generate as tactical_blue_v2
+    upgraded = tactical_blue_v2()
+    print("Generated", len(ids), "hybrid items with", len(upgraded),
+          "new Tactical Blue V2 wearable 3D atlases")
 
 if __name__ == "__main__":
     main()
