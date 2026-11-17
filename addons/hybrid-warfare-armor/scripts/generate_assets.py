@@ -7,6 +7,7 @@ import random
 import struct
 import zlib
 import zipfile
+from pilot_texture import texture as mek_ru_pilot_texture
 
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "src/main/resources"
@@ -106,8 +107,14 @@ def main():
                     textures = RES / "assets/techquest_hybrid/textures"
                 else:
                     textures = ROOT / "skin-packs" / ("TechQuest_Hybrid_" + palette) / "assets/techquest_hybrid/textures"
+                # Pilot 6B47/6B43 hybrid uses hand-authored vanilla UV artwork.
+                # Other items retain the procedural prototype textures for now.
+                armor_map = (mek_ru_pilot_texture("helmet" if slot == "helmet" else "vest")
+                             if tech == "mek" and palette == "factory"
+                             and base_id in ("ru_helmet_6b47", "ru_chest_6b43")
+                             else armor_pixels(tech, base_id, palette, accent))
                 png(textures / "models/armor" / (item + "_layer_1.png"), 64, 32,
-                    armor_pixels(tech, base_id, palette, accent))
+                    armor_map)
                 png(textures / "item" / (item + ".png"), 16, 16,
                     icon_pixels(base_id, palette, accent))
     output(RES / "assets/techquest_hybrid/lang/ru_ru.json", names_ru)
