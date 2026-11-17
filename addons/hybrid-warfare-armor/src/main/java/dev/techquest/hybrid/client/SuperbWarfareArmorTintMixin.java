@@ -26,7 +26,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class SuperbWarfareArmorTintMixin {
     @Shadow(remap = false) @Nullable protected ItemStack itemStack;
 
-    @ModifyVariable(method = "renderToBuffer", at = @At("HEAD"), argsOnly = true, index = 5,
+    @ModifyVariable(method = "renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V",
+                    at = @At("HEAD"), argsOnly = true, index = 5,
                     remap = false)
     private int techquest$applyTrimTint(int original) {
         ItemStack stack = this.itemStack;
