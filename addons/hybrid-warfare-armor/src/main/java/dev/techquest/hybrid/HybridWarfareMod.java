@@ -61,6 +61,18 @@ public final class HybridWarfareMod {
                     technology, new Item.Properties().durability(base.type.getDurability(50))));
             }
         }
+        // Lower armor is new TechQuest equipment: Superb Warfare has no leg or boot items.
+        for (var type : List.of(ArmorItem.Type.LEGGINGS, ArmorItem.Type.BOOTS)) {
+            String id = type == ArmorItem.Type.LEGGINGS ? "mek_ru_leggings" : "mek_ru_boots";
+            Holder<ArmorMaterial> material = MATERIALS.register(id, () -> new ArmorMaterial(
+                Map.of(ArmorItem.Type.HELMET, 0, ArmorItem.Type.CHESTPLATE, 0,
+                       ArmorItem.Type.LEGGINGS, 6, ArmorItem.Type.BOOTS, 3),
+                15, SoundEvents.ARMOR_EQUIP_NETHERITE, () -> Ingredient.EMPTY,
+                List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(MODID, id))),
+                3.0F, 0.05F));
+            ITEMS.register(id, () -> new HybridItem(material, type, 0.0,
+                "mek", new Item.Properties().durability(type.getDurability(50))));
+        }
     }
 
     public HybridWarfareMod(IEventBus modBus) {
@@ -109,7 +121,8 @@ public final class HybridWarfareMod {
             if ("mek".equals(technology)) {
                 ResourceLocation key = BuiltInRegistries.ITEM.getKey(this);
                 String name = key.getPath();
-                if (name.equals("mek_ru_helmet_6b47") || name.equals("mek_ru_chest_6b43")) {
+                if (name.equals("mek_ru_helmet_6b47") || name.equals("mek_ru_chest_6b43")
+                        || name.equals("mek_ru_leggings") || name.equals("mek_ru_boots")) {
                     return ResourceLocation.fromNamespaceAndPath(MODID,
                         "textures/models/armor/" + name + "_3d.png");
                 }
