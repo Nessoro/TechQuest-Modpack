@@ -110,14 +110,14 @@ def atlas(parts):
 
 def png(path, image):
     pixels = b"".join(
-        b"\\0" + b"".join(bytes(image[y*ATLAS + x]) for x in range(ATLAS))
+        b"\0" + b"".join(bytes(image[y*ATLAS + x]) for x in range(ATLAS))
         for y in range(ATLAS)
     )
     def chunk(tag, body):
         return struct.pack(">I", len(body)) + tag + body + struct.pack(">I", zlib.crc32(tag+body) & 0xFFFFFFFF)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(
-        b"\\x89PNG\\r\\n\\x1a\\n" +
+        b"\x89PNG\r\n\x1a\n" +
         chunk(b"IHDR", struct.pack(">2I5B", ATLAS, ATLAS, 8, 6, 0, 0, 0)) +
         chunk(b"IDAT", zlib.compress(pixels, 9)) + chunk(b"IEND", b"")
     )
@@ -132,7 +132,7 @@ def generate():
             lines.append(f"{bone} {name} {u} {v} {x:g} {y:g} {z:g} {w:g} {h:g} {d:g}")
         model_path = ASSET / "models/armor" / (item + ".cuboids")
         model_path.parent.mkdir(parents=True, exist_ok=True)
-        model_path.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        model_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
         png(ASSET / "textures/models/armor" / (item + "_3d.png"), atlas(parts))
         counts[item] = len(parts)
     return counts
