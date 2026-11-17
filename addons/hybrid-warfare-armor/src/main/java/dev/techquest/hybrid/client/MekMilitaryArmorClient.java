@@ -12,40 +12,34 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 /**
- * Client-only 3D humanoid armor: the models animate with head turns and arm motion.
- * These original cubes are not derived from Superb Warfare's copyrighted Bedrock geometry.
+ * Native NeoForge 1.21.1 client 3D armor attachments, one mesh per equipment slot.
+ * No client code is registered on dedicated servers.
  */
 public final class MekMilitaryArmorClient {
     private MekMilitaryArmorClient() {}
 
-    private static final IClientItemExtensions HELMET = new IClientItemExtensions() {
-        private HumanoidModel<LivingEntity> model;
+    private static IClientItemExtensions modelFor(String id) {
+        return new IClientItemExtensions() {
+            private HumanoidModel<LivingEntity> model;
 
-        @Override
-        public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack,
-                                                       EquipmentSlot slot, HumanoidModel<?> original) {
-            if (model == null) model = new HumanoidModel<>(MekMilitaryArmorModel.create(true).bakeRoot());
-            return model;
-        }
-    };
-
-    private static final IClientItemExtensions CHEST = new IClientItemExtensions() {
-        private HumanoidModel<LivingEntity> model;
-
-        @Override
-        public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack,
-                                                       EquipmentSlot slot, HumanoidModel<?> original) {
-            if (model == null) model = new HumanoidModel<>(MekMilitaryArmorModel.create(false).bakeRoot());
-            return model;
-        }
-    };
+            @Override
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack,
+                    EquipmentSlot slot, HumanoidModel<?> original) {
+                if (model == null) {
+                    model = new HumanoidModel<>(MekMilitaryArmorModel.create(id).bakeRoot());
+                }
+                return model;
+            }
+        };
+    }
 
     public static void register(RegisterClientExtensionsEvent event) {
-        Item helmet = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(
-            HybridWarfareMod.MODID, "mek_ru_helmet_6b47"));
-        Item vest = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(
-            HybridWarfareMod.MODID, "mek_ru_chest_6b43"));
-        event.registerItem(HELMET, helmet);
-        event.registerItem(CHEST, vest);
+        for (String id : new String[] {
+                "mek_ru_helmet_6b47", "mek_ru_chest_6b43",
+                "mek_ru_leggings", "mek_ru_boots" }) {
+            Item item = BuiltInRegistries.ITEM.get(
+                ResourceLocation.fromNamespaceAndPath(HybridWarfareMod.MODID, id));
+            event.registerItem(modelFor(id), item);
+        }
     }
 }
