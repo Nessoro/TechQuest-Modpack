@@ -19,3 +19,6 @@ type="required"
 versionRange="[0.8.9.2,)"
 ordering="AFTER"
 side="BOTH"
+
+[[mixins]]
+config="techquest_hybrid.mixins.json"
