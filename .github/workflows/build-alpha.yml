@@ -1,6 +1,11 @@
 name: Build TechQuest alpha
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - modlist.json
+      - tests/test_interdimensional_wireless_transmitter.py
+      - .github/workflows/build-alpha.yml
   push:
     paths:
       - modlist.json
