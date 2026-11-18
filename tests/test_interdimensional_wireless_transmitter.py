@@ -18,6 +18,7 @@ PROJECT = "nQR8XALE"
 VERSION = "CcRkmcRp"
 SLUG = "interdimensional-wireless-transmitter"
 FILENAME = "interdimensionalwirelesstransmitter-neoforge-1.21.1-0.1.5.jar"
+SHA512 = "7cb1ccf0af474c6229610e3aab81ea671d46e5380577ea194c4a9da80fa9a7eb0b318624faabeb708d82cde6129a4b43fdb4ec9eecebda1839a5d46e6f60e57d"
 SIDES = {"client": "required", "server": "required"}
 
 
@@ -51,22 +52,17 @@ class InterdimensionalWirelessTransmitterTests(unittest.TestCase):
 
     def test_upstream_sha512_must_be_pinned_before_full_build(self):
         pin = self.cfg["modrinth_lock"].get(PROJECT)
-        if pin is None:
-            # A draft-only integration may be reviewed while a trusted SHA
-            # is being fetched. Existing builder must reject unlocked mods.
-            source = (ROOT / "build_pack.py").read_text(encoding="utf-8")
-            self.assertIn("Unlocked Modrinth project requires review", source)
-            self.skipTest("Awaiting verified SHA-512 from official Modrinth metadata")
+        self.assertIsNotNone(pin, 'Official Modrinth SHA-512 lock is required')
         self.assertEqual(VERSION, pin["version_id"])
         self.assertEqual("1.21.1-0.1.5", pin["version"])
         self.assertEqual(FILENAME, pin["filename"])
+        self.assertEqual(SHA512, pin["sha512"])
         self.assertIsNotNone(re.fullmatch(r"[0-9a-f]{128}", pin["sha512"]))
         self.assertEqual(SIDES, pin["environment"])
 
     def test_verified_pin_in_mrpack_when_available(self):
         pin = self.cfg["modrinth_lock"].get(PROJECT)
-        if pin is None:
-            self.skipTest("Awaiting verified SHA-512 before packaging")
+        self.assertIsNotNone(pin)
         record = {
             "filename": FILENAME, "environment": SIDES,
             "file": {
