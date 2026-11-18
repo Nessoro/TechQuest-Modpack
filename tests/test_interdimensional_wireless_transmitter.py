@@ -89,7 +89,11 @@ class InterdimensionalWirelessTransmitterTests(unittest.TestCase):
         self.assertIn('"interdimensional-wireless-transmitter"', source)
         html = (ROOT / "docs" / "index.html").read_text(encoding="utf-8")
         self.assertIn("https://modrinth.com/mod/" + SLUG, html)
-        self.assertFalse(list(ROOT.rglob(FILENAME)))
+        # Generated output/client and output/server legitimately contain the downloaded JAR.
+        # Only source-controlled binary locations must stay clean.
+        for root in (ROOT / "mods", ROOT / "manual-mods", ROOT / "overrides" / "mods"):
+            if root.exists():
+                self.assertFalse(list(root.rglob(FILENAME)), root)
 
 
 if __name__ == "__main__":
