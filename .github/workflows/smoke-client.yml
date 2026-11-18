@@ -1,6 +1,11 @@
 name: Real client menu smoke (no world or server)
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - modlist.json
+      - tests/test_interdimensional_wireless_transmitter.py
+      - .github/workflows/smoke-client.yml
   push:
     paths:
       - modlist.json
