@@ -1,6 +1,6 @@
 # TechQuest 0.3.3 — Interdimensional Wireless Transmitter (issue #52)
 
-## Текущий статус: черновик интеграции, не релиз
+## Текущий статус: точный JAR закреплён; игровой тест ещё впереди
 
 Предложение сообщества: [GitHub issue #52](https://github.com/Nessoro/TechQuest-Modpack/issues/52). Код внедрения: [draft PR #53](https://github.com/Nessoro/TechQuest-Modpack/pull/53). Не добавлять в `main` и не публиковать, пока не подтверждены хеши и работа в игре.
 
@@ -9,7 +9,7 @@
 - Проект Modrinth: `nQR8XALE`; версия: `CcRkmcRp`.
 - JAR NeoForge: `interdimensionalwirelesstransmitter-neoforge-1.21.1-0.1.5.jar`, **141 867 байт** по опубликованным метаданным. Лицензия **MIT**.
 - Требуется **Refined Storage**. В TechQuest уже есть закреплённый **Refined Storage 2.0.9**, JEI, RS-JEI Integration, AE2 и Open Parties and Claims.
-- Официальная SHA-512 и контроль скачанного JAR **ещё не подтверждены в GitHub Actions**. В `modrinth_lock` запись будет добавлена только после проверки. В строгом сборщике TechQuest незакреплённый Modrinth-проект блокирует полный билд, как и должен.
+- SHA-512: `7cb1ccf0af474c6229610e3aab81ea671d46e5380577ea194c4a9da80fa9a7eb0b318624faabeb708d82cde6129a4b43fdb4ec9eecebda1839a5d46e6f60e57d`; SHA-1: `a276ff4472856fc1cd5fca1b94abbe401fd2ed05`. **Подтверждены скачиванием и проверкой оригинального JAR в GitHub Actions run 44382090584 (18.11.2026)**. Обязательная зависимость в метаданных — только `KDvYkUg3` (Refined Storage), без требования изменить его версию.
 
 ## Что добавляет мод
 
