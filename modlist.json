@@ -104,7 +104,7 @@
         "client": "required",
         "server": "required"
       },
-      "note": "Issue #52. Official NeoForge 1.21.1 release 0.1.5, project nQR8XALE/version CcRkmcRp; requires existing Refined Storage v2 (2.0.9 pinned). Cross-dimensional infinite-range wireless transmitter, not chunk loading. SHA-512 verification still pending before full-pack build/merge; test client, dedicated server, JEI recipe, unloaded chunks and TPS."
+      "note": "Issue #52. Official NeoForge 1.21.1 release 0.1.5, project nQR8XALE/version CcRkmcRp; requires existing Refined Storage v2 (2.0.9 pinned). Cross-dimensional infinite-range wireless transmitter, not chunk loading. Exact SHA-512 verified against original Modrinth JAR in GitHub Actions run 44382090584, required dependency Refined Storage KDvYkUg3; full-pack and runtime tests still required before merge; test client, dedicated server, JEI recipe, unloaded chunks and TPS."
     },
     {
       "project": "refined-storage-jei-integration",
@@ -1808,6 +1808,17 @@
       "version_id": "exl6hgWJ",
       "filename": "EdivadLib-1.21-3.0.0.jar",
       "sha512": "3cb39fdc7ce4b68bf4681ef7395fb6b81961372b10a68784abedd33e2026d9c3841daa93d29a44f9872ef0287eac276f10ab8640a8543ae67e9ae294f28bd8b6",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "nQR8XALE": {
+      "title": "Interdimensional Wireless Transmitter",
+      "version": "1.21.1-0.1.5",
+      "version_id": "CcRkmcRp",
+      "filename": "interdimensionalwirelesstransmitter-neoforge-1.21.1-0.1.5.jar",
+      "sha512": "7cb1ccf0af474c6229610e3aab81ea671d46e5380577ea194c4a9da80fa9a7eb0b318624faabeb708d82cde6129a4b43fdb4ec9eecebda1839a5d46e6f60e57d",
       "environment": {
         "client": "required",
         "server": "required"
