@@ -42,7 +42,7 @@ jobs:
           import json
           from pathlib import Path
           cfg = json.loads(Path("modlist.json").read_text(encoding="utf-8"))
-          for project in ("KDvYkUg3", "u6dRKJwZ", "VzR5wiLo", "gF3BGWvG", "4sYI62kA", "b1ZV3DIJ", "yAyrQXJ6", "8lnmIJH7", "a8Jk9kpK"):
+          for project in ("KDvYkUg3", "u6dRKJwZ", "VzR5wiLo", "gF3BGWvG", "4sYI62kA", "b1ZV3DIJ", "yAyrQXJ6", "8lnmIJH7", "a8Jk9kpK", "nQR8XALE"):
               lock = cfg["modrinth_lock"][project]
               for side in ("client", "server"):
                   jar = Path("output") / side / "mods" / lock["filename"]
