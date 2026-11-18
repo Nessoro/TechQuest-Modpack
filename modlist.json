@@ -96,6 +96,17 @@
       "note": "Refined Storage v2.0.9 (MIT) for NeoForge 1.21.1, alongside AE2; install on both client and dedicated server. Pin release artifact and SHA-512; test worlds/servers before public release."
     },
     {
+      "project": "interdimensional-wireless-transmitter",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "CcRkmcRp",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Issue #52. Official NeoForge 1.21.1 release 0.1.5, project nQR8XALE/version CcRkmcRp; requires existing Refined Storage v2 (2.0.9 pinned). Cross-dimensional infinite-range wireless transmitter, not chunk loading. SHA-512 verification still pending before full-pack build/merge; test client, dedicated server, JEI recipe, unloaded chunks and TPS."
+    },
+    {
       "project": "refined-storage-jei-integration",
       "group": "Интерфейс",
       "required": true,
