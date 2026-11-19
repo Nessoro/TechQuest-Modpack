@@ -35,7 +35,7 @@ class DimStorageTests(unittest.TestCase):
     def test_platform_and_preserved_working_033(self):
         self.assertEqual(("1.21.1", "neoforge", "21.1.264"),
                          (self.cfg["minecraft"], self.cfg["loader"], self.cfg["loader_version"]))
-        self.assertEqual(80, len(self.mods))
+        self.assertEqual(81, len(self.mods))
         for slug in ("buildcraft-community-edition", "create", "mekanism",
                      "modern-industrialization", "ae2", "refined-storage",
                      "refined-storage-jei-integration", "open-parties-and-claims",
