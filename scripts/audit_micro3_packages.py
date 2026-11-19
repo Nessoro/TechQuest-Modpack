@@ -14,17 +14,19 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import build_pack
 
-PACK = "TechQuest_1.21.1_0.3.3_ALPHA.mrpack"
 
 
 def audit(output=Path("output")):
     output = Path(output)
-    pack_path = output / PACK
+    version = build_pack.load_cfg()["version"]
+    pack_path = output / ("TechQuest_" + version + ".mrpack")
     compat = build_pack.COMPAT_JAR_NAME
     expected_bytes = build_pack.compatibility_jar()
     with zipfile.ZipFile(pack_path) as archive:
         names = archive.namelist()
         index = json.loads(archive.read("modrinth.index.json"))
+        if index.get("versionId") != version:
+            raise ValueError("Wrong package patch version")
         if index.get("game") != "minecraft" or index.get("dependencies") != {
             "minecraft": "1.21.1", "neoforge": "21.1.264"}:
             raise ValueError("Wrong micro3 Minecraft/NeoForge dependencies")
