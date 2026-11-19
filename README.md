@@ -2,6 +2,8 @@
 
 ## 🌐 [Открыть сайт TechQuest →](https://nessoro.github.io/TechQuest-Modpack/)
 
+**[Журнал решений и изменений 0.3.3](docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md)** · **Технические задания для Codex (EN):** [micro3](docs/technical-specs/TZ_TechQuest_micro3.md) · [micro4](docs/technical-specs/TZ_TechQuest_micro4.md) · [micro5](docs/technical-specs/TZ_TechQuest_micro5.md) · [micro6 (архив эксперимента)](docs/technical-specs/TZ_TechQuest_micro6.md)
+
 **[Установка и скачивание](https://nessoro.github.io/TechQuest-Modpack/#download) · [Каталог модов](https://nessoro.github.io/TechQuest-Modpack/#mods) · [Ошибки и предложения](https://nessoro.github.io/TechQuest-Modpack/#feedback)**
 
 > **Minecraft Java 1.21.1 • NeoForge 21.1.x • Java 21 • сервер с друзьями**
@@ -18,11 +20,13 @@ TechQuest — большая комплексная сборка вокруг **
 
 **Камера Incoming:** по умолчанию **N** — камера своего снаряда / следующий; **Shift** — выход, **F5** — смена вида. При переназначении ищите «Камера снаряда» в управлении мода.
 
-**Micro3 (кандидат):** по уточнённому решению владельца из будущих клиентских и серверных сборок удаляется только `TechQuest RPG Core 0.1.0`. `TechQuest Compatibility 1.0.0` **остаётся**: рецепты Create ↔ IC2 и исправление раннего запуска Better Zoom сохраняются. Project MMO также не возвращается. Остальные моды и миры не затрагиваются. Предыдущие micro1/micro2 сохраняются как история. [Изменения micro3](docs/MICROPATCH_MICRO3_RU.md).
+**micro3 — PR #30 объединён 15.11.2026 в целевую ветку:** `TechQuest RPG Core 0.1.0` исключён, `TechQuest Compatibility 1.0.0` сохранён (Create ↔ IC2 и исправление Better Zoom); PMMO не возвращается. Актуальный `main` также не включает RPG Core. Это не доказательство полной игровой проверки. [Инструкция micro3](docs/MICROPATCH_MICRO3_RU.md).
 
-**Кандидат micro4 (черновик PR #31, не релиз):** Trash Cans (раздельное удаление предметов, жидкостей и энергии) и Pretty Pipes (транспорт только предметов без двигателей), с точными Modrinth ID, версиями и SHA-512. **Реакторное направление отменено:** Colossal Reactors, Iskandert’s Library, Fusion и FTB Industrial Contraptions не добавляются. IC2: Nostalgia и TechQuest Compatibility 1.0.0 сохранены; RPG Core и PMMO не возвращаются. Улучшенные солнечные панели IC2 относятся к micro6. Маршруты, фильтры, сервер и FPS/TPS ещё **не проверены запуском Minecraft**. [Протокол micro4](docs/MICROPATCH_MICRO4_RU.md) · [журнал разработки](docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md).
+**micro4 — PR #31 объединён 15.11.2026 в ветку micro3:** Trash Cans (предметы/жидкости/энергия) и Pretty Pipes (только транспорт предметов) присутствуют в текущем `modlist.json` ветки `main`. Colossal Reactors, Iskandert’s Library, Fusion и FTB Industrial Contraptions не добавлялись. Реальные маршруты труб, совместимость с машинами и нагрузка сервера не считаются подтверждёнными без игровых тестов. [Проверки micro4](docs/MICROPATCH_MICRO4_RU.md).
 
-**Кандидат micro5 (черновик PR #34, не релиз):** Iskander Rocket Mod 2.0.1 (NeoForge 1.21.1) добавлен поверх обновлённого micro4 с точной версией `M1b2lYax` и SHA-512 на клиенте и сервере. Это самостоятельная баллистическая ракета, **не** Iskandert's Library, не реактор и не мост к Incoming/Broken Arrow. Испытания пуска, сохранения мира, FPS/TPS и multiplayer остаются незавершёнными; проводить их только в отдельном мире с резервной копией. [Инструкция micro5](docs/MICROPATCH_MICRO5_ISKANDER_RU.md).
+**micro5 — PR #34 объединён 15.11.2026 в ветку micro4:** Iskander Rocket Mod 2.0.1 включён в актуальный `modlist.json` на обе стороны (ID версии `M1b2lYax`). Это не Iskandert's Library и не реактор. Избирательная проверка в игре не заменяет повторную проверку полного клиентского/серверного профиля, сохранения и производительности. [Проверки micro5](docs/MICROPATCH_MICRO5_ISKANDER_RU.md).
+
+**micro6 — экспериментальный PR #35 закрыт 19.11.2026 без слияния:** перенос Advanced Solar Panels на IC2 Nostalgia не включён в `main` и не является готовой функцией. [Историческое ТЗ](docs/technical-specs/TZ_TechQuest_micro6.md) сохранено для справки; [issue #32](https://github.com/Nessoro/TechQuest-Modpack/issues/32) всё ещё открыта и не означает одобренного релиза.
 
 **Авиация:** Superb Warfare и Incoming остаются в составе. MCHeli Modern Port, TaCZ и ParCool исключены по решению владельца («не нужен»). Геймпад для самолёта пока не реализован. [Состояние авиации](docs/AIRCRAFT_0.3.3_RU.md) · [Как работает SAM Incoming](docs/INCOMING_SAM_RU.md) · [Физика](docs/PHYSICS_TESTING_RU.md) · [NeoForge через GUI](docs/NEOFORGE_FALLBACK_RU.md) · [Клавиши и зум](docs/CONTROLS_RU.md).
 
