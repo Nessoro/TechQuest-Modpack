@@ -229,3 +229,9 @@
 - Языковое правило Codex (английские AI-facing prompts/ТЗ; русские ответы владельцу) оформлено в `AGENTS.md`. GitHub Actions после этой синхронизации следует оценивать на SHA итогового PR; это только документационная проверка, не игровой тест.
 
 - **Дополнительная проверка 19.11.2026:** PR #55 [Quartz Arsenal](https://github.com/Nessoro/TechQuest-Modpack/pull/55) действительно объединён с `main` (текущий родительский SHA до объединения документации `e4c6c26cba741cf278b6d6a072091ec836adc8c7`). Исходная запись о его создании в журнале сохранена как история. Патч #36 не меняет состав модов и не публикует релиз.
+
+### 2026-11-19 — BetterBlockZ (community issue #56)
+- Предложение [#56](https://github.com/Nessoro/TechQuest-Modpack/issues/56) — лампы, Cyber Lights и декор для промышленных баз. Создан [draft PR #57](https://github.com/Nessoro/TechQuest-Modpack/pull/57) от актуального `main` с Quartz Arsenal/IWT, без изменения релиза.
+- Зафиксирован BetterBlockZ `0.2.10-1.21.1-neoforge`: официальный Modrinth проект `oPU4euBQ`, версия `7E52UnH3`, файл `betterblockz-0.2.10-1.21.1-neoforge.jar`, 7388885 байт, SHA-512 `aa68aea80c5ab0c3d02ea41bb3eaafc3d29e23502dbfb24e7fd470a920ccf07f1fc91acc7c29268324a8ba9f4b09ce48b140ed053f9570982cbefbf55807b8f3`.
+- [Run 44538258165](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/44538258165) успешно скачал оригинальный JAR, сверил SHA-512 и SHA-1, проверил ZIP и NeoForge-манифест. Декларация Modrinth: без обязательных зависимостей; Athena 4.0.6 уже присутствует только на клиенте и не продублирована.
+- Добавлены 82-й обязательный мод в категории «Декор», сайт, тесты и CI-проверки JAR и .mrpack. Реальное поведение освещения, CTM, клавиш, серверного мира и производительности **пока не проверено**. Чек-лист: `docs/MICROPATCH_BETTERBLOCKZ_033_RU.md`.
