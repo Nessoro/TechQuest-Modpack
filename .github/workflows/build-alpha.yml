@@ -5,6 +5,7 @@ on:
     paths:
       - modlist.json
       - tests/test_interdimensional_wireless_transmitter.py
+      - tests/test_quartz_arsenal.py
       - .github/workflows/build-alpha.yml
   push:
     paths:
@@ -205,6 +206,45 @@ jobs:
               assert 'overrides/mods/' + name not in zf.namelist()
           print('IWT original JAR, SHA-512, client/server mods and mrpack verified')
           print('Gameplay, dimension transit, chunk loading and dedicated-server launch still need testing')
+          PY
+      - name: Verify Quartz Arsenal 1.0.8 original JAR, both sides and Modrinth manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          cfg = json.loads(Path("modlist.json").read_text(encoding="utf-8"))
+          project, version = "gnwGOmBf", "toDdIhGu"
+          filename = "refinedstorage-quartz-arsenal-neoforge-1.0.8.jar"
+          sides = {"client": "required", "server": "required"}
+          rows = [m for m in cfg["mods"] if m["project"] == "refined-storage-quartz-arsenal"]
+          assert len(rows) == 1 and rows[0]["required"]
+          assert rows[0]["version_id"] == version and rows[0]["environment"] == sides
+          lock = cfg["modrinth_lock"][project]
+          assert lock["version_id"] == version and lock["filename"] == filename
+          assert lock["environment"] == sides
+          assert cfg["modrinth_lock"]["KDvYkUg3"]["version"] == "2.0.9"
+          assert cfg["modrinth_lock"]["nQR8XALE"]["version_id"] == "CcRkmcRp"
+          sha = lock["sha512"]
+          assert len(sha) == 128
+          for side in ("client", "server"):
+              jar = Path("output") / side / "mods" / filename
+              assert jar.is_file(), (side, "Quartz Arsenal missing")
+              assert len(jar.read_bytes()) == 67115, jar
+              assert hashlib.sha512(jar.read_bytes()).hexdigest() == sha, jar
+              with zipfile.ZipFile(jar) as zf:
+                  assert zf.testzip() is None, jar
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as zf:
+              assert zf.testzip() is None
+              records = json.loads(zf.read("modrinth.index.json"))["files"]
+              matches = [r for r in records if r["path"] == "mods/" + filename]
+              assert len(matches) == 1
+              assert matches[0]["hashes"]["sha512"] == sha
+              assert matches[0]["env"] == sides
+              assert "overrides/mods/" + filename not in zf.namelist()
+          print("Quartz Arsenal 1.0.8 pinned original JAR and mrpack verified on client/server")
           PY
       - name: Audit micro3 client/server/Modrinth manifests and both Compatibility payloads
         run: python scripts/audit_micro3_packages.py
