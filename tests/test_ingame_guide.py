@@ -44,6 +44,17 @@ class GuideTests(unittest.TestCase):
             comps=loot["pools"][0]["entries"][0]["functions"][0]["components"]
             self.assertEqual(comps["patchouli:book"],"patchouli:techquest_guide")
 
+    def test_russian_bundled_guide_notes(self):
+        assets = guides.guide_overrides()
+        notes = assets["TECHQUEST_INGAME_GUIDE.txt"].decode("utf-8")
+        self.assertIn("В режиме выживания", notes)
+        self.assertIn("Карта и метки", notes)
+        self.assertNotIn("In survival", notes)
+        with zipfile.ZipFile(__import__("io").BytesIO(
+                 assets["config/openloader/packs/techquest_starter_guide.zip"])) as z:
+            pack = json.loads(z.read("pack.mcmeta"))
+            self.assertIn("руководство Patchouli", pack["pack"]["description"])
+
     def test_mrpack_embeds_complete_guide(self):
         cfg=json.loads((ROOT/"modlist.json").read_text(encoding="utf-8"))
         with tempfile.TemporaryDirectory() as tmp:
@@ -55,6 +66,8 @@ class GuideTests(unittest.TestCase):
                               zip.namelist())
                 self.assertIn("overrides/config/openloader/packs/techquest_starter_guide.zip",
                               zip.namelist())
+                self.assertIn("Единый оптимизированный профиль TechQuest",
+                              zip.read("overrides/TECHQUEST_OPTIMIZED.txt").decode("utf-8"))
 
     def test_map_and_health_are_explicitly_client_only(self):
         cfg=json.loads((ROOT/"modlist.json").read_text(encoding="utf-8"))
