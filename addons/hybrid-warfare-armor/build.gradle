@@ -3,7 +3,7 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.147'
 }
 group = 'dev.techquest'
-version = '0.2.1-SNAPSHOT'
+version = '0.2.2-SNAPSHOT'
 base.archivesName = 'techquest-hybrid-warfare'
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 neoForge {
@@ -14,3 +14,9 @@ tasks.register('generateAssets', Exec) {
     commandLine 'python', 'scripts/generate_assets.py'
 }
 tasks.named('processResources') { dependsOn tasks.named('generateAssets') }
+
+// Use the repository-pinned IC2: Nostalgia API only at compile time.
+// Nothing from its copyrighted JAR is embedded into the distributed addon.
+dependencies {
+    compileOnly files('../../manual-mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar')
+}
