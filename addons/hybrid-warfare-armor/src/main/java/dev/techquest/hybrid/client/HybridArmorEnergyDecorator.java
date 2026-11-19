@@ -41,10 +41,9 @@ public final class HybridArmorEnergyDecorator {
         if (HybridWarfareMod.technology(stack) == null) return false;
 
         int capacity = HybridWarfareMod.energyCapacity(stack);
-        if (capacity <= 0) return false;
-
-        int charge = Math.max(0, Math.min(capacity, HybridWarfareMod.charge(stack)));
-        int width = Math.round(13.0F * charge / capacity);
+        int charge = capacity <= 0 ? 0 :
+                Math.max(0, Math.min(capacity, HybridWarfareMod.charge(stack)));
+        int width = capacity <= 0 ? 0 : Math.round(13.0F * charge / capacity);
         int barY = stack.isBarVisible() ? y + 10 : y + 13;
 
         // Same dimensions as a vanilla/IC2 item energy bar, with a cyan fill.
