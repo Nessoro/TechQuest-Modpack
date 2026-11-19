@@ -39,6 +39,29 @@ jobs:
           assert not list(root.rglob('*.cuboids')), "Custom 3D geometry forbidden"
           print('No new PNG or 3D armor assets')
           PY
+      - name: Validate IC2 Nostalgia local.26 native jetpack API
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          archive = Path('manual-mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar')
+          if not archive.is_file():
+              print('IC2 pinned JAR absent from checkout: cannot verify native jetpack API')
+              raise SystemExit(1)
+          with ZipFile(archive) as z:
+              members = set(z.namelist())
+              expected = [
+                  'ic2/api/item/ElectricItem.class',
+                  'ic2/api/item/IElectricItemManager.class',
+                  'ic2/core/item/armor/jetpack/JetpackHandler.class',
+              ]
+              for key in expected:
+                  assert key in members, f'Native IC2 adapter incompatible: {key} missing'
+              handler = z.read(expected[-1])
+              assert b'hasIC2Jetpack' in handler, 'Native IC2 marker differs from 1.21.1 IC2R'
+              print('Pinned IC2 JAR contains JetpackHandler, ElectricItem manager, native attachment marker')
+          PY
+          javap -classpath manual-mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar ic2.api.item.IElectricItemManager ic2.core.item.armor.jetpack.JetpackHandler | grep -E 'charge\(|discharge\(|getCharge\(|getMaxCharge\(|setJetpackAttached\('
       - name: Compile NeoForge addon (not a Minecraft gameplay test)
         working-directory: addons/hybrid-warfare-armor
         run: gradle build --no-daemon --stacktrace
