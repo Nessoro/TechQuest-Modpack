@@ -102,3 +102,9 @@ This is a separately declared core correction in a generated private build,
 not an SDK native source bundle. The public source and prepared resources stay
 unchanged. The developer probes use the same pinned Rust content/recipe/loot
 APIs and original binary oracles; no Java is added to the player runtime.
+
+`first_party/biome_world_packs/world-packs.patch` additionally adapts the same
+MIT Horizon pin's `mod_content.rs` and `game/world_loading.rs` so feature
+modifiers run after enabled world packs. `world_features.rs` uses that pin's
+biome modifier/tag APIs. The folder retains the full MIT notice and pins both
+source results, the diff and the helper. No dependency Java source is used.

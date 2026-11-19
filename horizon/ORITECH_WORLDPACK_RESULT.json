@@ -1,0 +1,297 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-19T04:58:10.478941+00:00",
+  "runtime_test_date_utc": "2026-11-17",
+  "minecraft": "26.3",
+  "scope": "Replay ore feature modifiers after enabled world datapacks; preserve historical installations",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "source_license": "MIT",
+  "core_patches": [
+    {
+      "schema": 1,
+      "id": "techquest_biome_modifiers",
+      "version": "0.1.0",
+      "horizon": "c78187dffffb60f31517eadcb87413386e8ce729",
+      "source_file": "crates/horizon-client/src/mod_content.rs",
+      "source_sha256": "5f162d574ed363cd1e089acf1bafae3195032102733213a93f5c27e07d8267c7",
+      "patched_sha256": "3ef975c68866b2c28c915c1ef2b955bf3176fcae2d1de2cb06b5ee2db8441709",
+      "patch_sha256": "f824b82342dffbf99e9dc08bdf49fef73de815a7e4cac581506a5031efb71e5f"
+    },
+    {
+      "schema": 1,
+      "id": "techquest_biome_world_packs",
+      "version": "0.1.0",
+      "horizon": "c78187dffffb60f31517eadcb87413386e8ce729",
+      "requires_core_patch": "techquest_biome_modifiers:0.1.0",
+      "patch_file": "world-packs.patch",
+      "patch_sha256": "e7f12feab126e69980b43be4aff4b53bc5e20b56f96da437e3a6812a66f0af9b",
+      "sources": [
+        {
+          "path": "crates/horizon-client/src/mod_content.rs",
+          "source_sha256": "3ef975c68866b2c28c915c1ef2b955bf3176fcae2d1de2cb06b5ee2db8441709",
+          "patched_sha256": "7d6ae79417d50cb82a2e04c266eac7270a74c05276681c430e0f9ce3fb62c458"
+        },
+        {
+          "path": "crates/horizon-client/src/game/world_loading.rs",
+          "source_sha256": "dd00d259b4b8115ffd7c07c7c2f0ac6923ca6a6cbc882fe72e53f8ae33c9fee9",
+          "patched_sha256": "50d92581a2e6b1d197707d872157a9adb21a36e364f0d35826e574f6e713743e"
+        }
+      ],
+      "module_file": "world_features.rs",
+      "module_target": "crates/horizon-client/src/techquest_worldpack_features.rs",
+      "module_sha256": "096e214004ad3b384dd874b5ff3d9a033af7239f3bdfd1d77a44ae57ef4af9b7"
+    }
+  ],
+  "content_version": "0.2.0",
+  "native_machine_version": "0.1.0",
+  "generator_audit": {
+    "enabled_world_packs": [
+      "file/techquest_terralith"
+    ],
+    "registered_biomes": 162,
+    "overworld_targets": 146,
+    "without_runtime_replay": 21,
+    "with_runtime_replay": 146,
+    "targets_missing_before": 125,
+    "targets_missing_after": 0,
+    "missing_before_by_namespace": {
+      "minecraft": 35,
+      "terralith": 90
+    },
+    "end_targets_unchanged": 5,
+    "ore_features_per_target": 1,
+    "warnings": [
+      "file/techquest_terralith: tags/worldgen/structure: 6 files the generator does not read",
+      "file/techquest_terralith: worldgen: 2 files the generator does not read",
+      "file/techquest_terralith: worldgen/multi_noise_biome_source_parameter_list: 1 files the generator does not read"
+    ]
+  },
+  "controls": {
+    "add_remove_order_preserved": true,
+    "no_modifiers_read_only": true,
+    "non_feature_attributes_preserved": true,
+    "repeat_replay_byte_identical": true,
+    "schema": 1,
+    "world_biome_features_restored": true,
+    "world_only_biome_targeted": true,
+    "world_tag_replace_removes_old_targets": true
+  },
+  "vanilla_content_without_mods_bundles_byte_identical": true,
+  "graphical_ore_mining": {
+    "schema": 1,
+    "prototype_version": "0.2.0",
+    "terralith_datapack_enabled": true,
+    "found": [
+      {
+        "dimension": "minecraft:overworld",
+        "block": "oritech:deepslate_nickel_ore",
+        "pos": [
+          -2274,
+          -37,
+          2265
+        ],
+        "natural_blocks_found": 2589,
+        "raw": "oritech:raw_nickel",
+        "mining_reply": {
+          "block": "minecraft:air",
+          "block_before": "oritech:deepslate_nickel_ore",
+          "drops": {
+            "oritech:raw_nickel": 1
+          },
+          "items_left_on_ground": 0,
+          "ok": true,
+          "on_ground": [],
+          "picked_up": {
+            "oritech:raw_nickel": 1
+          },
+          "pos": [
+            -2274,
+            -37,
+            2265
+          ],
+          "ticks": 23
+        }
+      },
+      {
+        "dimension": "minecraft:overworld",
+        "block": "oritech:deepslate_platinum_ore",
+        "pos": [
+          -2273,
+          -33,
+          2277
+        ],
+        "natural_blocks_found": 669,
+        "raw": "oritech:raw_platinum",
+        "mining_reply": {
+          "block": "minecraft:air",
+          "block_before": "oritech:deepslate_platinum_ore",
+          "drops": {
+            "oritech:raw_platinum": 1
+          },
+          "items_left_on_ground": 1,
+          "ok": true,
+          "on_ground": [
+            {
+              "count": 1,
+              "id": 173,
+              "item": "oritech:raw_platinum",
+              "pos": [
+                -2272.125,
+                -33.0,
+                2277.6190604293574
+              ]
+            }
+          ],
+          "picked_up": {},
+          "pos": [
+            -2273,
+            -33,
+            2277
+          ],
+          "ticks": 28
+        }
+      }
+    ],
+    "natural_nickel_in_terralith_biome": true,
+    "natural_end_platinum": false,
+    "survival_mining_produced_raw_materials": true,
+    "ore_blocks_or_features_injected": false,
+    "raw_items_given": false,
+    "raw_inventory_and_broken_blocks_survive_reopen": true,
+    "overworld_deepslate_platinum_generation_verified": true,
+    "full_worldgen_rng_parity_tested": false,
+    "licensed_dedicated_join_tested": false,
+    "published": false
+  },
+  "regressions": {
+    "oritech_original_cases": 63,
+    "oritech_original_states": 414,
+    "oritech_state_mismatches": 0,
+    "graphical_pair_assembly_menu_and_exact_reopen": true,
+    "dedicated_pair_201_ticks_and_exact_reopen": true,
+    "pretty_pipes_delivery_disconnection_and_inflight_reopen": true,
+    "python_tests": 121
+  },
+  "installation": {
+    "directory": "/workspace/horizon-runtime/techquest-oritech-02b-server",
+    "port": 25641,
+    "bind": "127.0.0.1",
+    "online_mode": true,
+    "whitelist": true,
+    "hmod_count": 8,
+    "native_source_bundles": 4,
+    "separate_core_corrections": 2,
+    "eula_consent_previously_provided": true,
+    "stopped_after_checks": true,
+    "lock_verified": true,
+    "historical_profiles_and_tools_unchanged": true,
+    "new_install_requires_both_core_corrections": true
+  },
+  "proofs": {
+    "engine_build": {
+      "path": "/workspace/horizon-runtime/oritech-worldpack-native-build-v2.log",
+      "sha256": "95834c65a2b1cc24d9d48cf16ca73e52a5906abce575b514c286e6e37ff321f7"
+    },
+    "tools_build": {
+      "path": "/workspace/horizon-runtime/native-tools-oritech-02b/build-result.json",
+      "sha256": "c43b7028d9b024b520492546395760a5825bf37579fa158250f6cdd86e3263a8"
+    },
+    "patch_application": {
+      "path": "/workspace/horizon-runtime/oritech-worldpack-core-apply-v2.json",
+      "sha256": "32a9ca6daf5c9c640844852a3d7a6c136af411270511396a01b58f87849e434d"
+    },
+    "content_builder_compiler": {
+      "path": "/workspace/horizon-runtime/oritech-content-tool-v4-command.json",
+      "sha256": "0ba21a5f5ae2797b18b032ef4ff24131b04f6523e0be2279f761637fec96b572"
+    },
+    "content_build": {
+      "path": "/workspace/horizon-runtime/oritech-content-effective-v4-build.log",
+      "sha256": "b68e13ce79d3c01023d8a776f6f6784b5ea424fb8961912d77eee3b38a9158d3"
+    },
+    "generator_audit_compiler": {
+      "path": "/workspace/horizon-runtime/oritech-worldgen-biomes-v2-command.json",
+      "sha256": "9f937ff104256314f0ad1dff01a75605f81811bb3721d669b9eb502c84997653"
+    },
+    "generator_without_replay": {
+      "path": "/workspace/horizon-runtime/oritech-worldgen-biomes-v2-raw.json",
+      "sha256": "203110951b82965ab78aadc0e0683cc01fb81d5ceb299ddd4de24422165c722e"
+    },
+    "generator_with_replay": {
+      "path": "/workspace/horizon-runtime/oritech-worldgen-biomes-v2-replay.json",
+      "sha256": "70fa776896e01de76a72feb9ea5ebe8262e6f5504272fb7a75172ef357934f97"
+    },
+    "runtime_controls_compiler": {
+      "path": "/workspace/horizon-runtime/worldpack-feature-controls-v1-command.json",
+      "sha256": "ec4de4fe5c25a898343ab597465eb9d0093aed0620721cb100f57752086e78f7"
+    },
+    "runtime_controls": {
+      "path": "/workspace/horizon-runtime/worldpack-feature-controls-v1-result/checked-result.json",
+      "sha256": "59c00436ee967d6f68d7b70661497e43e639603e2fcacb1631a750dc45162c19"
+    },
+    "content_builder_controls": {
+      "path": "/workspace/horizon-runtime/oritech-biome-controls-v3/checked-result.json",
+      "sha256": "24e6840e5bd2b6805e32cf965de4b220a85a1d9086b974aaee3254dd513becd7"
+    },
+    "graphical_deep_ores": {
+      "path": "/workspace/horizon-runtime/oritech-02b-deep-ores-gui-v2/checked-result.json",
+      "sha256": "4e85b6f51caebe87f01e1b89938a148f146dab1e5de5af9a60c9ef68e9ae8f17"
+    },
+    "graphical_deep_ore_actions": {
+      "path": "/workspace/horizon-runtime/oritech-02b-deep-ores-gui-v2/actions.json",
+      "sha256": "495a438bf3575721a31691126091c193874d4a8f404c25b7ce2d1561c4bc88c0"
+    },
+    "energy_parity_regression": {
+      "path": "/workspace/horizon-runtime/oritech-02b-energy-native-v1/checked-result.json",
+      "sha256": "a2d5b9eaf7ca6e3de3073cdf51c55316e720841de233fee4dd6139e7a92a076d"
+    },
+    "graphical_energy_regression": {
+      "path": "/workspace/horizon-runtime/oritech-02b-energy-gui-v1/checked-result.json",
+      "sha256": "5d7ec677a6fbf971e4eb7394aa96c2fae166f431719860be5e28b9b7247079dc"
+    },
+    "dedicated_energy_prepare": {
+      "path": "/workspace/horizon-runtime/oritech-02b-dedicated-energy-prepare.json",
+      "sha256": "4b6559ef1504872cda561e4ee6992bda09ac3b5520ceb71722c86fbc979008b1"
+    },
+    "dedicated_energy_reopen": {
+      "path": "/workspace/horizon-runtime/oritech-02b-dedicated-energy-verify.json",
+      "sha256": "39f491a259316011aec7843c3650973c8cbb56a56a27255ff416cb185be5e236"
+    },
+    "dedicated_developer_driver": {
+      "path": "/workspace/horizon-runtime/oritech-dedicated-check-02b.py",
+      "sha256": "d90b22c9d43f430499a857d874469b42cf0e85fc55dfaec309ad5e75cbed6d77"
+    },
+    "pretty_pipes_prepare": {
+      "path": "/workspace/horizon-runtime/oritech-02b-pipes-prepare.json",
+      "sha256": "4add436d18a92608a117c9c2a0b4fdd0bc1a57a26c28598e05c21bd04b5b233d"
+    },
+    "pretty_pipes_reopen": {
+      "path": "/workspace/horizon-runtime/oritech-02b-pipes-verify.json",
+      "sha256": "f1340eaa2d585e6706538ab6fa74156e3e64787cdadbe4e7b55401fb5931765d"
+    },
+    "python_tests": {
+      "path": "/workspace/horizon-runtime/oritech-02b-python-tests-v1.log",
+      "sha256": "c51d948d650454cdb40383511fe5896afe701a4fc9918f1de2189371b2841647"
+    },
+    "installation": {
+      "path": "/workspace/horizon-runtime/oritech-02b-install.json",
+      "sha256": "172e0a9c2526b9eec831b5432ba6331a6e764c9eed2b99038b57a399a3c2cbc4"
+    },
+    "final_verification": {
+      "path": "/workspace/horizon-runtime/oritech-02b-final-verification.json",
+      "sha256": "50ff9c1ee37771ebb1ef0267d5a1d5691d7ec1eeea5f6e3d8e82e70ab129c44d"
+    }
+  },
+  "limitations": [
+    "Replays only root add_features/remove_features modifiers; world-pack modifier JSON overrides and feature tags are not supported by this correction.",
+    "Spawn modifiers are not replayed after world packs. Known unsupported Terralith worldgen entries remain listed by the generator audit.",
+    "Natural ores and crafted machines remain separate test worlds; a complete gathered survival chain is not yet verified.",
+    "Silicon processing, remaining machines, cables, fluids, upgrades, exact geometry and Oritech/Pretty Pipes endpoint automation remain incomplete.",
+    "No whole-world RNG parity, terrain/performance parity, hardware GPU or licensed dedicated client join is claimed."
+  ],
+  "historical_starter_report_replaced": false,
+  "full_mod_ported": false,
+  "full_modpack_ported": false,
+  "goal_complete": false,
+  "main_modified": false,
+  "published": false
+}

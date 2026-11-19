@@ -15,6 +15,7 @@ from graphical_fixture import GraphicalFixture
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ("server-dir","work"):parser.add_argument("--"+name,type=Path,required=True)
+    parser.add_argument("--deepslate", action="store_true", help="mine both deep Overworld ores after world-pack feature replay")
     args=parser.parse_args();g=GraphicalFixture(args.server_dir,args.work,"0.2.0","techquest-oritech-ores","TQOreMine",module="oritech",frozen=True)
     shutil.copytree(g.server/"techquest-horizon-test/datapacks",g.work/"saves"/g.world/"datapacks")
     cmd,call,settle=g.command,g.call,g.settle;found=[]
@@ -23,7 +24,11 @@ def main():
         call("wait-ready",timeout=180);call("wait",20)
     def mine(dimension,block,raw):
         search=call("find-block",block,64);assert search["count"]>0,(block,search)
-        pos=search["nearest"][0]["pos"];x,y,z=pos
+        candidates=search["nearest"]
+        if dimension=="minecraft:overworld":
+            candidates=[entry for entry in candidates if "Test passed" in cmd("execute if biome "+" ".join(map(str,entry["pos"]))+" #terralith:all_terralith_biomes")]
+            assert candidates, ("no nearby ore lies in a Terralith biome",block)
+        pos=candidates[0]["pos"];x,y,z=pos
         before=call("block",*pos);assert before["block"]==block,before
         if dimension=="minecraft:overworld":
             assert "Test passed" in cmd(f"execute if biome {x} {y} {z} #terralith:all_terralith_biomes")
@@ -43,9 +48,14 @@ def main():
         assert "techquest_terralith" in cmd("datapack list enabled")
         travel("minecraft:overworld",(-2272,-24,2272))
         assert "Test passed" in cmd("execute if biome -2272 71 2272 terralith:arid_highlands")
-        mine("minecraft:overworld","oritech:nickel_ore","oritech:raw_nickel")
-        travel("minecraft:the_end",(0,64,0))
-        mine("minecraft:the_end","oritech:endstone_platinum_ore","oritech:raw_platinum")
+        if args.deepslate:
+            mine("minecraft:overworld","oritech:deepslate_nickel_ore","oritech:raw_nickel")
+            travel("minecraft:overworld",(-2272,-24,2272))
+            mine("minecraft:overworld","oritech:deepslate_platinum_ore","oritech:raw_platinum")
+        else:
+            mine("minecraft:overworld","oritech:nickel_ore","oritech:raw_nickel")
+            travel("minecraft:the_end",(0,64,0))
+            mine("minecraft:the_end","oritech:endstone_platinum_ore","oritech:raw_platinum")
         saved=call("inventory")["counts"];call("save")
     finally:g.stop()
     try:
@@ -58,9 +68,9 @@ def main():
         call("save")
     finally:g.stop()
     report={"schema":1,"prototype_version":"0.2.0","terralith_datapack_enabled":True,"found":found,
-            "natural_nickel_in_terralith_biome":True,"natural_end_platinum":True,"survival_mining_produced_raw_materials":True,
+            "natural_nickel_in_terralith_biome":True,"natural_end_platinum":not args.deepslate,"survival_mining_produced_raw_materials":True,
             "ore_blocks_or_features_injected":False,"raw_items_given":False,"raw_inventory_and_broken_blocks_survive_reopen":True,
-            "overworld_deepslate_platinum_generation_verified":False,"full_worldgen_rng_parity_tested":False,
+            "overworld_deepslate_platinum_generation_verified":args.deepslate,"full_worldgen_rng_parity_tested":False,
             "licensed_dedicated_join_tested":False,"published":False}
     (g.work/"checked-result.json").write_text(json.dumps(report,indent=2)+"\n");print("Natural ore mining and save/reopen passed")
 

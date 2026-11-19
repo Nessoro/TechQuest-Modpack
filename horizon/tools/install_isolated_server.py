@@ -27,6 +27,7 @@ WORLD = "techquest-horizon-test"
 PACK = f"{WORLD}/datapacks/techquest_terralith"
 ORITECH_NATIVE = {"0.1.0": "0.1.0", "0.2.0": "0.1.0"}
 CORE_PATCH = Path(__file__).resolve().parents[1] / "first_party/biome_modifiers/horizon-core-patch.json"
+WORLD_CORE_PATCH = Path(__file__).resolve().parents[1] / "first_party/biome_world_packs/horizon-core-patch.json"
 
 
 def checked_path(path: Path) -> Path:
@@ -143,11 +144,17 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
     return result
 
 
-def check_native_pairs(mods: dict, native: list[dict], core: list[dict] | None = None):
+def check_native_pairs(mods: dict, native: list[dict], core: list[dict] | None = None,
+                       *, new_installation: bool = False):
     if mods.get("oritech", {}).get("version") == "0.2.0":
         expected_patch = json.loads(CORE_PATCH.read_text())
-        if core != [expected_patch]:
+        runtime_patch = json.loads(WORLD_CORE_PATCH.read_text())
+        if core not in ([expected_patch], [expected_patch, runtime_patch]):
             raise ValueError("Oritech 0.2 needs the reviewed merged-biome core correction")
+        # Historical 02a locks stay verifiable. New installs must also correct
+        # the feature lists replaced by an enabled world datapack.
+        if new_installation and core != [expected_patch, runtime_patch]:
+            raise ValueError("new Oritech 0.2 installations need the world-pack feature correction")
     if "oritech" in mods:
         matching = [m for m in native if m.get("id") == "techquest_oritech"]
         expected = ORITECH_NATIVE.get(mods["oritech"].get("version"))
@@ -237,13 +244,19 @@ def check_core_patches(tools: Path) -> list[dict]:
     if patches == []:
         return []
     expected = json.loads(CORE_PATCH.read_text())
-    if patches != [expected]:
+    runtime = json.loads(WORLD_CORE_PATCH.read_text())
+    if patches not in ([expected], [expected, runtime]):
         raise ValueError("unreviewed native core correction")
-    root = tools / "core-patches" / expected["id"]
-    manifest = checked_path(root / "horizon-core-patch.json")
-    source = checked_path(root / "merged-biomes.patch")
-    if json.loads(manifest.read_text()) != expected or digest(source) != expected["patch_sha256"]:
-        raise ValueError("native core correction files differ")
+    for spec in patches:
+        root = tools / "core-patches" / spec["id"]
+        manifest = checked_path(root / "horizon-core-patch.json")
+        source = checked_path(root / spec.get("patch_file", "merged-biomes.patch"))
+        if json.loads(manifest.read_text()) != spec or digest(source) != spec["patch_sha256"]:
+            raise ValueError("native core correction files differ")
+        if "module_file" in spec:
+            module = checked_path(root / spec["module_file"])
+            if digest(module) != spec["module_sha256"]:
+                raise ValueError("native core correction module differs")
     return patches
 
 
@@ -281,7 +294,7 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
     mods = check_modules(modules, terralith, datapack, sdk, work, pretty_pipes, oritech)
     native = check_native_modules(tools, sdk)
     core = check_core_patches(tools)
-    check_native_pairs(mods, native, core)
+    check_native_pairs(mods, native, core, new_installation=True)
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".techquest-install-", dir=output.parent) as temporary:
         temporary = Path(temporary)
@@ -320,7 +333,10 @@ def install(*, resources: Path, tools: Path, work: Path, modules: Path,
         for spec in native:
             external[str((tools / "native-mods" / f'{spec["id"]}.hnmod').resolve())] = spec["sha256"]
         for spec in core:
-            for name in ("horizon-core-patch.json", "merged-biomes.patch"):
+            names = ["horizon-core-patch.json", spec.get("patch_file", "merged-biomes.patch")]
+            if "module_file" in spec:
+                names.append(spec["module_file"])
+            for name in names:
                 path = tools / "core-patches" / spec["id"] / name
                 external[str(path.resolve())] = digest(path)
         for name in ("horizon-resources.json", "horizon-prepare.json", "facts.json", "block-tags.json"):

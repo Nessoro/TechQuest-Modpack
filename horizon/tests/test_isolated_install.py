@@ -13,6 +13,32 @@ import install_isolated_server as installer
 
 
 class IsolatedInstallTests(unittest.TestCase):
+    def test_new_progression_install_requires_runtime_fix_but_old_lock_remains_valid(self):
+        mods = {"oritech": {"version": "0.2.0"}}
+        native = [{"id": "techquest_oritech", "version": "0.1.0"}]
+        base = json.loads(installer.CORE_PATCH.read_text())
+        runtime = json.loads(installer.WORLD_CORE_PATCH.read_text())
+        installer.check_native_pairs(mods, native, [base])
+        with self.assertRaisesRegex(ValueError, "world-pack feature correction"):
+            installer.check_native_pairs(mods, native, [base], new_installation=True)
+        installer.check_native_pairs(mods, native, [base, runtime], new_installation=True)
+
+    def test_changed_runtime_module_is_rejected_before_installation(self):
+        base = json.loads(installer.CORE_PATCH.read_text())
+        runtime = json.loads(installer.WORLD_CORE_PATCH.read_text())
+        with tempfile.TemporaryDirectory() as temp:
+            tools = Path(temp)
+            (tools / "build-result.json").write_text(json.dumps({"core_patches": [base, runtime]}))
+            for spec, origin in ((base, installer.CORE_PATCH.parent), (runtime, installer.WORLD_CORE_PATCH.parent)):
+                root = tools / "core-patches" / spec["id"]
+                root.mkdir(parents=True)
+                for name in ("horizon-core-patch.json", spec.get("patch_file", "merged-biomes.patch")):
+                    (root / name).write_bytes((origin / name).read_bytes())
+                if "module_file" in spec:
+                    (root / spec["module_file"]).write_bytes(b"unreviewed runtime source")
+            with self.assertRaisesRegex(ValueError, "core correction module differs"):
+                installer.check_core_patches(tools)
+
     def test_oritech_progression_needs_reviewed_core_before_start(self):
         with tempfile.TemporaryDirectory() as temp:
             root = self.installation(Path(temp) / "server")

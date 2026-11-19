@@ -259,6 +259,19 @@ generated stage с точными SHA-256. Базовый источник/ре�
 Старые profiles/tools/locks не редактировались.
 [Отчёт стартового пути 0.2](ORITECH_STARTER_RESULT.json).
 
+Следующая проверка выявила второй слой проблемы: после загрузки world datapack
+Terralith итоговые features теряли руды в 125 целевых биомах (35 vanilla и
+90 Terralith), хотя merged content root содержал их. Отдельный runtime core
+patch применяет feature modifiers после world packs, сохраняет прочие атрибуты
+и учитывает замену biome tags. Аудит GeneratorData теперь подтверждает
+146/146 overworld targets без дублей и прежние 5 End targets. В новом мире
+графический клиент добыл естественные deepslate nickel и platinum внутри
+биомов Terralith; сырьё и разрушенные блоки пережили физическое save/reopen.
+Новый профиль `techquest-oritech-02b-server`, порт 25641, содержит прежние
+8 hmod и 4 native bundles, но два объявленных core corrections. Новые установки
+0.2 требуют оба патча; исторические locks проверяются без изменения.
+[Исправление и проверки world packs](ORITECH_WORLDPACK_RESULT.json).
+
 1. Продолжить Pretty Pipes: equality/filter-increase modules и их экраны,
    ветвления, приоритеты, insertion-limiting modules/сложные slot limits, переполнение и rerouting; проверить offhand, bulk edits,
    unloaded entities и точные drop semantics. Установка/снятие, основное GUI,
@@ -281,8 +294,8 @@ generated stage с точными SHA-256. Базовый источник/ре�
    через кеш мира, остальные сущности ещё требуют аудита.
    Локальная установка — LOCAL_INSTALL_RU.md; native build — first_party/terralith_wolves/README.md.
 4. Продолжить Oritech: первая цепочка уже исполняется; нужны исходные рецепты
-   и переработка для кремниевого пути печи, аудит deepslate ore generation
-   в обычном мире, автоматизация/Pretty Pipes endpoints, кабели,
+   и переработка для кремниевого пути печи, единый survival-путь от добытой руды
+   до собранных машин, автоматизация/Pretty Pipes endpoints, кабели,
    улучшения, другие машины и общая делегация через core. Текущие три блока
    не заменяют полный промышленный мод. Продолжить остальные нативные механики TechQuest и подготовить проверку официальным
    лицензированным клиентом. Пользовательские данные не использовать.

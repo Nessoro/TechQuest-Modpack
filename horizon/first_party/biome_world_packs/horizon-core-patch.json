@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "id": "techquest_biome_world_packs",
+  "version": "0.1.0",
+  "horizon": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "requires_core_patch": "techquest_biome_modifiers:0.1.0",
+  "patch_file": "world-packs.patch",
+  "patch_sha256": "e7f12feab126e69980b43be4aff4b53bc5e20b56f96da437e3a6812a66f0af9b",
+  "sources": [
+    {
+      "path": "crates/horizon-client/src/mod_content.rs",
+      "source_sha256": "3ef975c68866b2c28c915c1ef2b955bf3176fcae2d1de2cb06b5ee2db8441709",
+      "patched_sha256": "7d6ae79417d50cb82a2e04c266eac7270a74c05276681c430e0f9ce3fb62c458"
+    },
+    {
+      "path": "crates/horizon-client/src/game/world_loading.rs",
+      "source_sha256": "dd00d259b4b8115ffd7c07c7c2f0ac6923ca6a6cbc882fe72e53f8ae33c9fee9",
+      "patched_sha256": "50d92581a2e6b1d197707d872157a9adb21a36e364f0d35826e574f6e713743e"
+    }
+  ],
+  "module_file": "world_features.rs",
+  "module_target": "crates/horizon-client/src/techquest_worldpack_features.rs",
+  "module_sha256": "096e214004ad3b384dd874b5ff3d9a033af7239f3bdfd1d77a44ae57ef4af9b7"
+}

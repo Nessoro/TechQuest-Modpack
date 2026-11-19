@@ -72,6 +72,17 @@ Oritech, и не проверка лицензированного join.
 рецепт; стандартный путь через кремний и естественная платина в обычном мире
 ещё требуют работы. [Результаты 0.2](ORITECH_STARTER_RESULT.json).
 
+Для новых установок 0.2 нужен также [runtime-патч world packs](first_party/biome_world_packs/README.md):
+datapack Terralith перезаписывал уже изменённые списки features в 125 биомах.
+Патч переносит применение feature modifiers после загрузки world packs;
+descriptor, diff и Rust helper проверяются и фиксируются в lock. Исторический
+профиль 02a сохраняется без изменений, но для нового `install` его сборки
+недостаточно. Новый профиль `techquest-oritech-02b-server`, порт 25641, использует
+те же 8 hmod и 4 native bundles с двумя core corrections. На нём подтверждена
+естественная добыча deepslate nickel и platinum в Terralith обычного мира
+и сохранение после повторного открытия; кремниевый путь и полный сбор
+стартовых ресурсов ещё не завершены. [Новый отчёт](ORITECH_WORLDPACK_RESULT.json).
+
 Последний Better Dungeons stage также исправляет potion/enchantment loot в пяти
 таблицах; пересобирать только в новый каталог и устанавливать в новый профиль.
 [Графические и исходные проверки лута](YUNG_RUNTIME_RU.md) не подтверждают
