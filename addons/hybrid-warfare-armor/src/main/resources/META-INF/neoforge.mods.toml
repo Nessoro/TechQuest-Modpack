@@ -3,7 +3,7 @@ loaderVersion="[4,)"
 license="MIT"
 [[mods]]
 modId="techquest_hybrid"
-version="0.2.0-SNAPSHOT"
+version="0.2.1-SNAPSHOT"
 displayName="TechQuest Hybrid Warfare Armor"
 authors="TechQuest Project"
 description="Original Superb Warfare armor with rechargeable FE-backed tech upgrades and smithing trim recolors."
