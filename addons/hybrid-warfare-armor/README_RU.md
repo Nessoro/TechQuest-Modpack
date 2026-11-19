@@ -22,9 +22,9 @@
 
 | Технология | Пример нового названия |
 | --- | --- |
-| IC2 | `Квантовая IC2 — Russian 6B43 Chest` |
-| Modern Industrialization | `Квантовая MI — Russian 6B43 Chest` |
-| Mekanism | `Механизированная Mekanism — Russian 6B43 Chest` |
+| IC2 | `Квантовая броня IC2 — Russian 6B43 Chest` |
+| Modern Industrialization | `Квантовая броня MI — Russian 6B43 Chest` |
+| Mekanism | `Механизированная броня Mekanism — Russian 6B43 Chest` |
 | Oritech | `Экзоброня Oritech — Russian 6B43 Chest` |
 
 Вторая часть берётся **из исходного названия брони**, включая уже имевшееся имя с аффиксами Apotheosis или ручное имя с наковальни. После объединения можно снова переименовать вещь на наковальне. Сохраняются исходный Item ID, текстура и характеристики, меняется только пользовательское отображаемое имя.
