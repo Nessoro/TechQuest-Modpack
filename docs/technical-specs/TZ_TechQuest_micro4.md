@@ -2,9 +2,15 @@
 
 ## Trash Cans and Pretty Pipes: disposal and engine-free item logistics
 
-**Revision:** November 14, 2026  
+### Current project status (verified November 19, 2026)
+
+Merged into its micro3 parent branch on November 15, 2026. `main/modlist.json` currently pins Trash Cans `lSKYKJdm` and Pretty Pipes `lrhbGGSe` for the unified pack. Real route testing, server compatibility and pipe-network TPS are not established merely by merged code or CI.
+
+The original November 14 specification, checklists, branch references and CI snapshots below are **historical design and validation notes**, not the current open-PR state. For exact installed mod versions, client/server sides and hashes, consult the current `main/modlist.json`. A successful build or PR merge is not proof of an in-game client/server test or a public release.
+
+**Original revision:** November 14, 2026  
 **Repository:** https://github.com/Nessoro/TechQuest-Modpack  
-**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/31 (draft)  
+**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/31 (merged on November 15, 2026 into `fix/micro3-remove-first-party-mods-033`)  
 **Implementation branch:** `feat/techquest-trash-pipes-reactor-micro4`  
 **Base:** micro3 — `fix/micro3-remove-first-party-mods-033`  
 **Target platform:** Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
@@ -57,4 +63,4 @@ The authoritative download URLs, JAR filenames, side metadata and SHA-512 checks
 - [ ] Client, server and `.mrpack` do not contain Colossal Reactors, Iskandert's Library, Fusion or FTB Industrial.
 
 ### Deliverables and Codex handoff
-Update the existing draft PR #31 with real route-testing evidence, known compatibility limitations, logs and pipe/trash configuration guidance. Record the result in `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. A public release requires explicit owner approval.
+PR #31 is already merged. Record any new route-testing evidence, compatibility limitations, logs and configuration guidance in a dedicated follow-up issue or PR against the current code; do not reopen PR #31 simply to repeat the original integration. Record the result in `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. A public release requires explicit owner approval.

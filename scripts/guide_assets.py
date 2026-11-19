@@ -62,9 +62,26 @@ ENTRIES = {
         ("Цифровой склад", "AE2 позволяет создавать сетевое хранение и автокрафт. Начните с накопителей, контроллера, терминала и источника питания. Затем изучите каналы и автоматический заказ предметов."),
         ("Встроенное руководство", "У AE2 есть собственная система GuideME. Откройте встроенное руководство мода, если оно доступно в установленной версии, а для точных рецептов используйте JEI.")
     ]),
+    "trash_cans": ("industry", "minecraft:lava_bucket", "Trash Cans: безопасное удаление", [
+        ("Три вида мусорок", "Trash Cans 1.1.0 добавляет отдельные мусорки для предметов, жидкостей и энергии. Item Trash Can принимает предметы; для Fluid и Energy Trash Can нужны соответствующие трубопроводы или источники. Pretty Pipes не передаёт жидкости и энергию."),
+        ("Безопасный маршрут", "Постройте отдельную сеть отходов: сундук → Pretty Pipes → Item Trash Can. Испытайте её сначала на 16 булыжниках и одном алмазе. В модуле извлечения разрешите только булыжник; алмаз должен остаться в сундуке. Если фильтр работает иначе, отсоедините мусорку."),
+        ("Защита от ошибок", "Не подключайте мусорку напрямую к основной сети хранения. Проверьте фильтр, направление соединения и отсутствие обходных маршрутов. Без явного соединения с мусоркой предметы не должны удаляться. Сохраняйте резервную копию мира."),
+        ("Последние удаления", "В версии 1.1.0 заявлен возврат до шести последних удалённых предметов через вкладку GUI; настройка сервера может запретить возврат. Это не гарантия восстановления ценностей, особенно после перезапуска. Испытайте функцию на булыжнике.")
+    ]),
+    "pretty_pipes": ("industry", "minecraft:hopper", "Pretty Pipes: предметные трубы", [
+        ("Без двигателей", "Pretty Pipes 1.22.0 перемещает предметы, включая блоки в форме предметов, между инвентарями без обязательной сети энергии или двигателя. Установленные в мире блоки мод не перемещает; жидкость и энергию эти трубы не передают."),
+        ("Прямой маршрут", "Соберите сундук A → прямые трубы → сундук B. У примыкающей к A трубы откройте интерфейс и вставьте Extraction Module для автоматической выдачи. Положите 16 булыжников: они должны прибыть в B. Проверьте также два поворота и полный сундук B."),
+        ("Фильтр отходов", "Для отдельной ветки к мусорке настройте Extraction Module: режим Allow/Whitelist и только булыжник. Не путайте белый и чёрный списки. Если есть несколько входов и выходов, дополнительно проверьте фильтры на стороне приёмника и выбранную грань."),
+        ("Сохранность", "Отсоедините мусорку и убедитесь, что без неё ничего не уничтожается. Не объединяйте испытательную сеть с хранилищем ценностей. Совместимость с Sophisticated Storage, Iron Chests, Create и BuildCraft должна проверяться на конкретных блоках в игре.")
+    ]),
     "superb": ("adventure", "minecraft:crossbow", "Superb Warfare", [
         ("Военная техника", "Superb Warfare содержит вооружение и боевые машины. Изучайте доступные рецепты через JEI. Проверяйте настройку управления транспортом в меню клавиш, прежде чем взлетать или стрелять."),
         ("Разрушение мира", "Тяжёлые взрывы, огонь и множество снарядов могут резко нагружать сервер. Не испытывайте массовые взрывы рядом с основной базой. Администратору стоит ограничить разрушения мира и сделать бэкап.")
+    ]),
+    "iskander_rocket": ("adventure", "minecraft:fire_charge", "Iskander Rocket: баллистическая ракета", [
+        ("Пусковая установка", "Iskander Rocket 2.0.1 добавляет отдельную баллистическую ракету с пультом управления. Для установки требуется площадка 3×3 и свободное пространство сверху. Откройте JEI для доступных рецептов. Не путайте мод с Incoming и Iskandert's Library."),
+        ("Координаты цели", "Откройте пульт, введите координаты X/Z цели, проверьте направление и дальность, затем дайте команду пуска. По описанию автора диапазон составляет от 64 до 10 000 блоков. Пуск без защиты может разрушить окружающие постройки."),
+        ("Безопасность сервера", "Удар создаёт большой кратер и ударную волну; в одном мире с Incoming это особенно опасно для FPS, TPS и сохранений. Проверяйте на новом мире вдали от базы, ограничьте доступ к ракетам и перед испытанием сделайте резервную копию. Совместимость с Incoming и защитой регионов отдельно не подтверждена.")
     ]),
     "incoming": ("adventure", "minecraft:fire_charge", "Incoming: авиаудары и ядерное оружие", [
         ("Камера снаряда", "По умолчанию N включает камеру твоего снаряда в полёте; повторное N выбирает следующий, Shift выходит, F5 меняет вид. При переназначении ищи «Камера снаряда» в управлении Incoming. Без снарядов в полёте камера не включится. ЛКМ в камере может задавать новую цель, а не просто менять вид."),
@@ -174,6 +191,9 @@ def guide_overrides():
         "The guide is pack-authored and untested in a running Minecraft client.\n"
     ).encode("utf-8")
     files["config/openloader/packs/techquest_starter_guide.zip"] = starter_datapack()
+    # A separate named pack is additive, so upgrades preserve an existing
+    # original starter_guide.zip and user-created world/config files.
+    files["config/openloader/packs/techquest_micropatch_033.zip"] = micro_patch_datapack()
     return files
 
 def starter_datapack():
@@ -214,6 +234,48 @@ def starter_datapack():
         "data/techquest/loot_table/starter_guide.json": _json(loot),
         "data/techquest/recipe/guide_book.json": _json(recipe),
     }
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as z:
+        for path, content in data.items():
+            z.writestr(path, content)
+    return output.getvalue()
+
+def micro_patch_datapack():
+    """Additive Open Loader datapack: sync Apotheosis tiers without PMMO.
+    Separate from the starter guide so upgrading older TechQuest installs does
+    not require overwriting any existing starter guide or player config.
+    """
+    data = {"pack.mcmeta": _json({
+        "pack": {"pack_format": 48, "description": "TechQuest micro2: shared Apotheosis tiers"}
+    })}
+    # PMMO removed in micro2: World Tier remains, no PMMO server configuration.
+    # Server-global World Tier: scoreboard persists across world restarts.
+    data['data/minecraft/tags/function/load.json'] = _json({'values': ['techquest:worldtier/load']})
+    data['data/minecraft/tags/function/tick.json'] = _json({'values': ['techquest:worldtier/tick']})
+    data['data/techquest/function/worldtier/load.mcfunction'] = (
+        'scoreboard objectives add tq_worldtier dummy\n'
+        'execute unless score #global tq_worldtier matches 0.. run scoreboard players set #global tq_worldtier 0\n'
+        'scoreboard players set #clock tq_worldtier 0\n'
+    ).encode('utf-8')
+    data['data/techquest/function/worldtier/tick.mcfunction'] = (
+        'scoreboard players add #clock tq_worldtier 1\n'
+        'execute if score #clock tq_worldtier matches 20.. run function techquest:worldtier/sync\n'
+    ).encode('utf-8')
+    tiers = ('frontier', 'ascent', 'summit', 'pinnacle')
+    cmds = ['scoreboard players set #clock tq_worldtier 0']
+    for i, tier in enumerate(tiers, 1):
+        nbt = json.dumps({'neoforge:attachments': {'apotheosis:world_tier': tier}}, separators=(',', ':'))
+        data['data/techquest/predicate/worldtier/' + tier + '.json'] = _json({
+            'condition': 'minecraft:entity_properties', 'entity': 'this',
+            'predicate': {'nbt': nbt}})
+        cmds.append('execute as @a if predicate techquest:worldtier/' + tier +
+                    ' if score #global tq_worldtier matches ..' + str(i - 1) +
+                    ' run scoreboard players set #global tq_worldtier ' + str(i))
+    for i, tier in enumerate(tiers, 1):
+        cmds.append('execute as @a if score #global tq_worldtier matches ' + str(i) +
+                    ' unless predicate techquest:worldtier/' + tier +
+                    ' run apoth set_world_tier @s ' + tier)
+    data['data/techquest/function/worldtier/sync.mcfunction'] = ('\n'.join(cmds) + '\n').encode('utf-8')
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as z:
         for path, content in data.items():

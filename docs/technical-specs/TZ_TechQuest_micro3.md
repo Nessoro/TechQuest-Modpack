@@ -2,9 +2,15 @@
 
 ## Remove RPG Core while preserving TechQuest Compatibility
 
-**Revision:** November 14, 2026  
+### Current project status (verified November 19, 2026)
+
+Merged into its micro2 parent branch on November 15, 2026. The current `main/modlist.json` does not include RPG Core or PMMO; TechQuest Compatibility is retained by the build pipeline. This does not, by itself, validate every runtime behavior. Mining regression issue [#37](https://github.com/Nessoro/TechQuest-Modpack/issues/37) remains open.
+
+The original November 14 specification, checklists, branch references and CI snapshots below are **historical design and validation notes**, not the current open-PR state. For exact installed mod versions, client/server sides and hashes, consult the current `main/modlist.json`. A successful build or PR merge is not proof of an in-game client/server test or a public release.
+
+**Original revision:** November 14, 2026  
 **Repository:** https://github.com/Nessoro/TechQuest-Modpack  
-**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/30 (draft)  
+**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/30 (merged on November 15, 2026 into `feat/micro2-rpg-core-033`)  
 **Implementation branch:** `fix/micro3-remove-first-party-mods-033`  
 **Base branch:** `feat/micro2-rpg-core-033`  
 **Target platform:** Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
@@ -45,10 +51,10 @@ Completely exclude the in-house TechQuest RPG Core 0.1.0 from future client, ded
 - [ ] Compatibility exists in client, server, `.mrpack` and the Windows installer; its two functions are verified in the actual game.
 - [ ] Client, dedicated server, Windows GUI and repeat installation work correctly.
 - [ ] Existing worlds and user settings are preserved; rollback has been tested.
-- [ ] Unit tests, full build, installer self-test and auditing are green for the relevant commit SHA, and a real-game test report is attached to PR #30.
+- [ ] Unit tests, full build, installer self-test and auditing are green for the relevant commit SHA, and real-game test evidence is recorded in a current follow-up report.
 
 ### Out of scope
 Redesigning FTB Ultimine or Physics Mod, replacing IC2, introducing industrial mods, and publishing a public release. Track the upward-mining defect separately if necessary.
 
 ### Deliverables and Codex handoff
-Commit only to the existing implementation branch and update PR #30. Provide changed-file inventory, client/server package manifest, reproducible test logs, remaining risks and the next action. Update `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md` with dated evidence. Do not claim stability until runtime validation is complete.
+PR #30 is already merged. For unresolved tests or regressions, open a new focused follow-up PR against the current branch instead of updating or re-merging PR #30. Provide changed-file inventory, client/server package manifest, reproducible test logs, remaining risks and the next action. Update `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md` with dated evidence. Do not claim stability until runtime validation is complete.

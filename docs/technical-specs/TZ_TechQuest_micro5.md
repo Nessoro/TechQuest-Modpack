@@ -2,14 +2,20 @@
 
 ## Integrate Iskander Rocket Mod 2.0.1
 
-**Revision:** November 14, 2026  
+### Current project status (verified November 19, 2026)
+
+Merged into its micro4 parent branch on November 15, 2026. The current `main/modlist.json` pins Iskander Rocket `M1b2lYax`. The historical November 14 dependency-drift analysis and instructions to reconcile PR #34 are superseded: do not redo or re-merge the closed PR. Issues [#37](https://github.com/Nessoro/TechQuest-Modpack/issues/37), [#38](https://github.com/Nessoro/TechQuest-Modpack/issues/38) and [#39](https://github.com/Nessoro/TechQuest-Modpack/issues/39) remain open. This is not a published micro5 release.
+
+The original November 14 specification, checklists, branch references and CI snapshots below are **historical design and validation notes**, not the current open-PR state. For exact installed mod versions, client/server sides and hashes, consult the current `main/modlist.json`. A successful build or PR merge is not proof of an in-game client/server test or a public release.
+
+**Original revision:** November 14, 2026  
 **Repository:** https://github.com/Nessoro/TechQuest-Modpack  
-**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/34 (draft)  
+**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/34 (merged on November 15, 2026 into `feat/techquest-trash-pipes-reactor-micro4`)  
 **Implementation branch:** `feat/micro5-iskander-rocket-033`  
 **Base:** micro4 — `feat/techquest-trash-pipes-reactor-micro4`  
 **Target platform:** Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
 
-### Verified implementation status and change since the original specification (November 14, 2026)
+### Historical implementation audit (November 14, 2026; superseded by the merge)
 
 **This is a completion and synchronization task, not a request to rebuild micro5 from scratch.** The existing PR #34 already implements the initial Iskander integration. Check the actual GitHub state again immediately before editing; the SHA values below are a dated snapshot, not permanent version pins.
 
@@ -25,7 +31,7 @@
 
 **Important integration trap:** new micro4 work overlaps micro5 in `modlist.json`, `.github/workflows/build-alpha.yml`, `README.md`, `docs/index.html`, `scripts/guide_assets.py`, `scripts/sync_site_mods.py` and `tests/test_adventure_rebalance.py`. Do **not** resolve conflicts by taking an entire older micro5 file over the latest micro4 version. Preserve the new installer backup/rollback safeguards and package audits from micro3/micro4.
 
-#### Required implementation sequence for Codex
+#### Historical implementation sequence for Codex (completed or superseded; do not repeat)
 
 1. Inspect `AGENTS.md`, the latest PR #30/#31/#34 branch heads and diffs, current package manifests, the journal, and successful CI logs. Check repository status before applying changes.
 2. Synchronize the existing micro5 branch with its **current parent micro4 branch** using a reviewable integration approach. Never force-push, silently drop parent commits, or rewrite published history. Reconcile conflicts by keeping the new micro3/micro4 protections and replaying only the Iskander-specific additions.
@@ -107,7 +113,7 @@ Before releasing:
 5. Publish installable artifacts via a link **accessible without a GitHub account**; do not rely solely on expiring GitHub Actions artifacts. Document limitations honestly and avoid labeling unverified features stable.
 6. Record the release artifact version, commit, test evidence, download links and residual risks in the journal. **Do not automatically merge implementation PRs**; release authorization and merge authorization are separate.
 
-**Current status:** These UX issues remain open; no new micro5 release has been published under this approval.
+**Status check (November 19, 2026):** UX issues #38 and #39 remain open, and no newer public micro5 release is listed. The conditional release approval recorded here does not authorize automatic publication.
 
 ### Deliverables and Codex handoff
-Update the existing PR #34 with the exact file changes, verified manifests, real client/server/missile-test logs, performance results and outstanding risks. Append a dated status entry to `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. Do not merge or publish automatically.
+PR #34 is already merged. For new fixes or validation, create a focused follow-up PR, recording the exact changed files, verified manifests, actual client/server/missile-test logs, performance evidence and remaining risks. Append a dated status entry to `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. Do not merge or publish automatically.

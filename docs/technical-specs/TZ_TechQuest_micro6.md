@@ -2,9 +2,15 @@
 
 ## Port Advanced Solar Panels to Industrial Craft 2: Nostalgia
 
-**Revision:** November 14, 2026  
+### Current project status (verified November 19, 2026)
+
+**Closed without merge on November 19, 2026.** The Advanced Solar Panels port was not added to `main` and no playable port is demonstrated. [Issue #32](https://github.com/Nessoro/TechQuest-Modpack/issues/32) remains open as research; it is not approval to resume development or publish a port. This specification is an archived research plan unless the owner authorizes a new implementation.
+
+The original November 14 specification, checklists, branch references and CI snapshots below are **historical design and validation notes**, not the current open-PR state. For exact installed mod versions, client/server sides and hashes, consult the current `main/modlist.json`. A successful build or PR merge is not proof of an in-game client/server test or a public release.
+
+**Original revision:** November 14, 2026  
 **Repository:** https://github.com/Nessoro/TechQuest-Modpack  
-**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/35 (draft; initial audit phase only)  
+**Implementation PR:** https://github.com/Nessoro/TechQuest-Modpack/pull/35 (closed without merge on November 19, 2026)  
 **Implementation branch:** `experiment/solar-panels-nostalgia-micro6`  
 **Base:** micro5 — `feat/micro5-iskander-rocket-033`  
 **Target platform:** Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
@@ -65,7 +71,7 @@ The following figures are **historical reference targets** from Advanced Solar P
 - Do not distribute source, modified JARs, textures or other assets without checking licenses, authorship and attribution.
 - Do not modify existing player worlds, `main` or the published micro2 preview without explicit owner approval.
 
-### Research-phase acceptance (current PR #35)
+### Historical research-phase acceptance (closed PR #35; not approved for release)
 - [ ] A concrete API matrix including class, method and field signatures has been documented; legal rights and remaining blockers are identified.
 - [ ] The static audit and offline unit tests are reproducible against pinned binaries and verified hashes.
 - [ ] If no functioning port exists yet, the report explicitly states **"not tested by launching Minecraft"**.
@@ -78,4 +84,4 @@ The following figures are **historical reference targets** from Advanced Solar P
 - [ ] Source/license reviews are complete; the binary can be audited; GUI, `.mrpack` and CI all use the same validated commit SHA.
 
 ### Deliverables and Codex handoff
-Provide the add-on source project or a legally compliant port, the **Refactored → Nostalgia API compatibility matrix**, tested solar-panel implementation, documentation, logs and updated PR #35 (or a follow-up implementation PR if needed). Append dated evidence to `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. Until a real, tested in-game port exists, **micro6 remains an experiment, not a player-facing update**.
+Only if the owner explicitly authorizes renewed research, create a new scoped implementation PR with the add-on source or legally compliant port, the **Refactored → Nostalgia API compatibility matrix**, tests, documentation and logs. Do not revive or treat closed PR #35 as merged. Append dated evidence to `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. Until a real, tested in-game port exists, **micro6 remains an experiment, not a player-facing update**.

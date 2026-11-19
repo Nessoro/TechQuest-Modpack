@@ -39,7 +39,7 @@ function renderMods() {
   grid.replaceChildren();
   const filtered = filteredMods();
   const limited = !expanded && !query && selectedCategory === 'all';
-  for (const mod of limited ? filtered.slice(0, 12) : filtered) {
+  for (const mod of limited ? filtered.slice(0, 6) : filtered) {
     const card = create('article','mod-card');
     const top = create('div','mod-card-top');
     top.append(create('span','category',mod.group));
@@ -51,7 +51,7 @@ function renderMods() {
   if(!filtered.length) grid.append(create('p','empty','Ничего не найдено. Попробуй другой запрос.'));
   document.querySelector('#mod-counter').textContent = String(filtered.length);
   const more = document.querySelector('#show-all-mods');
-  more.classList.toggle('hide', !limited || filtered.length <= 12);
+  more.classList.toggle('hide', !limited || filtered.length <= 6);
   more.textContent = `Показать все ${mods.length} позиций ↓`;
 }
 function setupSearch() {
@@ -110,7 +110,7 @@ async function renderIssues(){
     try{response=await fetch(`https://api.github.com/repos/${REPO}/issues?state=open&per_page=15`,{signal:controller.signal,headers:{Accept:'application/vnd.github+json'}})}
     finally{clearTimeout(timeout)}
     if(!response.ok)throw new Error(`GitHub API: ${response.status}`);
-    const issues=(await response.json()).filter(issue=>!issue.pull_request).slice(0,7);
+    const issues=(await response.json()).filter(issue=>!issue.pull_request).slice(0,5);
     feed.replaceChildren();
     if(!issues.length){feed.append(create('div','issue-placeholder','Пока нет открытых обращений. Можешь создать первое!'));return}
     for(const issue of issues){
@@ -152,7 +152,17 @@ async function latestBuild() {
     status.textContent = 'Не удалось получить актуальный EXE. Открой список сборок и проверь зелёный статус и срок хранения Artifacts.';
   }
 }
-initLinks();renderMods();setupSearch();setupForms();renderIssues();latestBuild();
+function revealHashPanel() {
+  if (!window.location.hash) return;
+  let id;
+  try { id = decodeURIComponent(window.location.hash.slice(1)); }
+  catch { return; }
+  const target = document.getElementById(id);
+  const panel = target && target.closest('details.fold');
+  if (panel) panel.open = true;
+}
+window.addEventListener('hashchange', revealHashPanel);
+initLinks();renderMods();setupSearch();setupForms();renderIssues();latestBuild();revealHashPanel();
 
 
 });
