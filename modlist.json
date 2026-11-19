@@ -4,11 +4,24 @@
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
-  "description": "TechQuest 0.3.3: приключения и исследование, драконы Wyrmroost, большие монстры Legendary Monsters и Twisted Mobs, схемы Forgematica",
+  "description": "TechQuest 0.3.3 micro4 candidate: Trash Cans и Pretty Pipes без двигателей, только предметные трубы; IC2: Nostalgia и TechQuest Compatibility сохранены. Colossal Reactors, Iskandert's Library, Fusion, FTB Industrial, RPG Core и PMMO исключены. Advanced Solar Panels — только micro6. Micro5 (draft): Iskander Rocket 2.0.1 (XUogRnhj/M1b2lYax) for both client and server; only authorized test worlds, no public release.",
   "removed_mods": [
-    {"project": "mcheli-modern-port", "reason": "не нужен"},
-    {"project": "timeless-and-classics-zero", "reason": "не нужен"},
-    {"project": "parcool", "reason": "не нужен"}
+    {
+      "project": "mcheli-modern-port",
+      "reason": "не нужен"
+    },
+    {
+      "project": "timeless-and-classics-zero",
+      "reason": "не нужен"
+    },
+    {
+      "project": "parcool",
+      "reason": "не нужен"
+    },
+    {
+      "project": "project-mmo",
+      "reason": "PMMO удалён из-за ошибки массовой добычи; собственный RPG Core также удалён в micro3 и не возвращается в micro4."
+    }
   ],
   "mods": [
     {
@@ -34,9 +47,86 @@
       "required": true
     },
     {
+      "project": "oritech",
+      "group": "Технологии",
+      "required": true,
+      "version_id": "BR0KKypH",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Official Oritech v1.2.13 for NeoForge MC 1.21.1; requires existing Architectury API and Geckolib plus Athena 4.0.6. Test tech compatibility with Create, IC2, Mekanism and MI on disposable worlds."
+    },
+    {
+      "project": "fluidic-tanks",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "991No08g",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Fluidic Tanks 1.1.1 provides multiblock fluid reservoirs compatible with Create, Mekanism and Modern Industrialization. Chosen instead of XyCraft: World (which does not contain XyCraft Machines fluid tanks). Modrinth ARR; distribute by official downloads only. Test fluid loss when breaking/splitting tanks."
+    },
+    {
+      "project": "dimstorage",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "R7rQFgQh",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Official DimStorage 9.1.1 for NeoForge 1.21.1. Dimensional Chest/Tank/Tablet with owner, frequency and access control; requires EdivadLib 3.0.0. Test frequency isolation, tank integration and multiplayer before merging."
+    },
+    {
       "project": "ae2",
       "group": "Технологии",
       "required": true
+    },
+    {
+      "project": "refined-storage",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "lHHiI26k",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Refined Storage v2.0.9 (MIT) for NeoForge 1.21.1, alongside AE2; install on both client and dedicated server. Pin release artifact and SHA-512; test worlds/servers before public release."
+    },
+    {
+      "project": "interdimensional-wireless-transmitter",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "CcRkmcRp",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Issue #52. Official NeoForge 1.21.1 release 0.1.5, project nQR8XALE/version CcRkmcRp; requires existing Refined Storage v2 (2.0.9 pinned). Cross-dimensional infinite-range wireless transmitter, not chunk loading. Exact SHA-512 verified against original Modrinth JAR in GitHub Actions run 44382090584, required dependency Refined Storage KDvYkUg3; full-pack and runtime tests still required before merge; test client, dedicated server, JEI recipe, unloaded chunks and TPS."
+    },
+    {
+      "project": "refined-storage-quartz-arsenal",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "toDdIhGu",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Issue #54. Quartz Arsenal 1.0.8 (MIT), NeoForge 1.21.1, original project gnwGOmBf / version toDdIhGu; requires existing Refined Storage 2.0.9 (KDvYkUg3). Adds chargeable Wireless Crafting Grid for RS networks; works with IWT subject to in-game tests. Pin SHA-512 and install on client/server; no bundled third-party JAR."
+    },
+    {
+      "project": "refined-storage-jei-integration",
+      "group": "Интерфейс",
+      "required": true,
+      "version_id": "BYZmHubv",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Refined Storage – JEI Integration 1.0.0 (MIT), NeoForge 1.21.1. Official Modrinth dependencies: existing JEI u6dRKJwZ and Refined Storage KDvYkUg3; retain pinned JEI 19.64.0.455 and RS 2.0.9. Test JEI crafting/pattern transfer and automation in a disposable world."
     },
     {
       "project": "immersiveengineering",
@@ -76,11 +166,6 @@
     },
     {
       "project": "skill-tree",
-      "group": "RPG",
-      "required": false
-    },
-    {
-      "project": "project-mmo",
       "group": "RPG",
       "required": false
     },
@@ -296,6 +381,18 @@
       "required": true
     },
     {
+      "project": "b1ZV3DIJ",
+      "group": "Библиотеки",
+      "required": true,
+      "client_only": true,
+      "version_id": "dJgL278E",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      },
+      "note": "Official Athena 4.0.6, Modrinth canonical project ID b1ZV3DIJ (avoid ambiguous athena slug), required client-side visual library for Oritech; marked server unsupported in Modrinth. Game-server launch still needs testing."
+    },
+    {
       "project": "superb-warfare",
       "group": "Военная техника",
       "required": true,
@@ -373,6 +470,17 @@
       "client_only": true
     },
     {
+      "project": "open-parties-and-claims",
+      "group": "Карта и интерфейс",
+      "required": true,
+      "version_id": "yWmXD7GW",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Open Parties and Claims 0.33.0 beta for NeoForge 1.21.1. Claim and selectively force-load chunks via Xaero's map; install on client and dedicated server. Conservative defaultconfigs for new worlds (64 claims / 4 forceloads); test protection with explosions, friends and machinery before release."
+    },
+    {
       "project": "health-indicator-txf",
       "group": "Карта и интерфейс",
       "required": true,
@@ -424,6 +532,62 @@
         "client": "required",
         "server": "required"
       }
+    },
+    {
+      "project": "sophisticated-storage",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "hC4LaBhJ"
+    },
+    {
+      "project": "architectury-api",
+      "group": "Библиотеки",
+      "required": true,
+      "version_id": "1IiqEQGl"
+    },
+    {
+      "project": "edivadlib",
+      "group": "Библиотеки",
+      "required": true,
+      "version_id": "exl6hgWJ",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Required official EdivadLib 3.0.0 for DimStorage 9.1.1, version ID exl6hgWJ, NeoForge 1.21.1. Shared library must be present on client and server."
+    },
+    {
+      "project": "trash-cans",
+      "group": "Комфорт",
+      "required": true,
+      "version_id": "lSKYKJdm",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Item/Fluid/Energy Trash Cans для удаления ресурсов; требуется SuperMartijn642's Config Lib и Core Lib; скачивается по закреплённому SHA-512; NeoForge 1.21.1."
+    },
+    {
+      "project": "pretty-pipes",
+      "group": "Технологии",
+      "required": true,
+      "version_id": "lrhbGGSe",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Трубы без двигателей для автоматической транспортировки предметов (в том числе блоков как вещей) между контейнерами; не перемещают установленные блоки в мире."
+    },
+    {
+      "project": "iskander-rocket-mod",
+      "group": "Военная техника",
+      "required": true,
+      "version_id": "M1b2lYax",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Iskander Rocket Mod 2.0.1 (rcatlab, MIT) для NeoForge 1.21.1: баллистическая ракета дальностью до 10 000 блоков; огромный кратер и ударная волна, сначала проверять только в отдельном тестовом мире; мод нужен и клиенту, и серверу. Не зависит от Iskandert's Library."
     }
   ],
   "manual_mods": [
@@ -479,6 +643,30 @@
       "file_size": 23250455,
       "required": true,
       "note": "Официальный GitHub-релиз автора ZentixUA (GPLv3). Клиент и сервер, NeoForge >=21.1.264. Большие ядерные взрывы очень требовательны к CPU/GPU и создают разрушения."
+    },
+    {
+      "name": "FTB Library",
+      "version": "2101.1.39",
+      "file_name": "ftb-library-neoforge-2101.1.39.jar",
+      "source": "https://maven.ftb.dev/releases/",
+      "download_url": "https://maven.ftb.dev/releases/dev/ftb/mods/ftb-library-neoforge/2101.1.39/ftb-library-neoforge-2101.1.39.jar",
+      "sha256": "ca64bd1b5f335406900f74eeafacea5a3580a3933d61de6b6600a64eb12a9a95",
+      "file_size": 1477833,
+      "required": true,
+      "group": "Комфорт",
+      "note": "Official FTB Maven: pinned NeoForge 1.21.1 JAR, client and server."
+    },
+    {
+      "name": "FTB Ultimine",
+      "version": "2101.1.15",
+      "file_name": "ftb-ultimine-neoforge-2101.1.15.jar",
+      "source": "https://maven.ftb.dev/releases/",
+      "download_url": "https://maven.ftb.dev/releases/dev/ftb/mods/ftb-ultimine-neoforge/2101.1.15/ftb-ultimine-neoforge-2101.1.15.jar",
+      "sha256": "1393a85ceb6e4794450d5f06043e3a033278e31b86de8e03950d8b87604b2213",
+      "file_size": 177109,
+      "required": true,
+      "group": "Комфорт",
+      "note": "Official FTB Maven: pinned NeoForge 1.21.1 JAR, client and server."
     }
   ],
   "optional_local_mods": [
@@ -806,17 +994,6 @@
       "version_id": "Go3nbneL",
       "filename": "YungsBetterMineshafts-1.21.1-NeoForge-5.1.1.jar",
       "sha512": "8b01b386f53feeaa55f0c62697578b82e00501e45e428b2a68df6bda34efb6a4b3b4e3582abf13fe767ebcb61aef9368186f53c03999958bef38f31c41a7f8b2",
-      "environment": {
-        "client": "required",
-        "server": "required"
-      }
-    },
-    "KFQYC1Uy": {
-      "title": "Project MMO",
-      "version": "2.10.47",
-      "version_id": "9lu4zNd1",
-      "filename": "pmmo-1.21.1-2.10.47.jar",
-      "sha512": "c5f4c0000bcdb847b36dfe11fc48bfb17bff3696f2be7f44f03a8ed09490c3dd06864eb914321251f65a79059bac4be47a800c427e8bab5e92a949399693c067",
       "environment": {
         "client": "required",
         "server": "required"
@@ -1477,6 +1654,193 @@
       "version_id": "BetMBINi",
       "filename": "BuildCraft-Community-Edition-8.0.23+1.21.1+neoforge.jar",
       "sha512": "445cfc5b02a478d381e038819d3cff216aa9f6e882c3db66eb65588b09006e79d209d7c1071c92f02f151dfec2cf1180b31ce8ff218527874738e55db240db8f",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "hMlaZH8f": {
+      "title": "Sophisticated Storage",
+      "version": "1.21.1-1.6.16.2222",
+      "version_id": "hC4LaBhJ",
+      "filename": "sophisticatedstorage-1.21.1-1.6.16.2222.jar",
+      "sha512": "a3bf3141fd0853b45014a273db67f164af00f96d96a84acc84e34455286f5a7f539ae1408029eec06650d38e1c2f800d839830d4bd6d198250ec102da8feb01b",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "lhGA9TYQ": {
+      "title": "Architectury API",
+      "version": "13.0.11+neoforge",
+      "version_id": "1IiqEQGl",
+      "filename": "architectury-13.0.11-neoforge.jar",
+      "sha512": "d9f7c3bb8162577dfb461ffdf04bd6a3563c7586934a0e2a744c14421beffb8286f0d88d4c758317003f20f99fe8072a39b9d675af061e036970d36db36027f0",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "4QrnfueM": {
+      "title": "Trash Cans",
+      "version": "1.1.0-neoforge-mc1.21",
+      "version_id": "lSKYKJdm",
+      "filename": "trashcans-1.1.0-neoforge-mc1.21.jar",
+      "sha512": "0350245afb135ad611694393fd4e94ad00fdf16dcabbf7167c90f54649c2738f4eba3376888b6f37247694510bf7f60607d0fdeaec1ce1ff7b678daa03b0a723",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "LN9BxssP": {
+      "title": "SuperMartijn642's Config Lib",
+      "version": "1.1.8-neoforge-mc1.21",
+      "version_id": "qKL9jM75",
+      "filename": "supermartijn642configlib-1.1.8-neoforge-mc1.21.jar",
+      "sha512": "768d8ca178c5e653986f5131b7aeb7fa57ce7d32c16ed399ced01b273565a2b640130c55c7092747efeff40dbb0348876b18b415f59b0d16dd2c7f32f1798ce2",
+      "environment": {
+        "client": "optional",
+        "server": "optional"
+      }
+    },
+    "rOUBggPv": {
+      "title": "SuperMartijn642's Core Lib",
+      "version": "1.1.26a-neoforge-mc1.21",
+      "version_id": "sLRKmslC",
+      "filename": "supermartijn642corelib-1.1.26a-neoforge-mc1.21.jar",
+      "sha512": "e90a1f1a2a4b1b095b6692e82b3f1bbf3aafa5653fa80759ac4243385ac1d10605b8713107847a9d0f5e8e4da161009aa3380ae20ca8f70784abfaa85e868492",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "XExdLWCQ": {
+      "title": "Pretty Pipes",
+      "version": "1.22.0",
+      "version_id": "lrhbGGSe",
+      "filename": "PrettyPipes-1.22.0-all.jar",
+      "sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "XUogRnhj": {
+      "title": "Iskander Rocket Mod",
+      "version": "2.0.1+mc1.21-1.21.1-neoforge",
+      "version_id": "M1b2lYax",
+      "filename": "iskander-2.0.1+mc1.21-1.21.1-neoforge.jar",
+      "sha512": "539ea44461455b3af6e799e17c59d8284300c06b81f6012f687fe8031452c5e60fa0a93d8e59229d4717d0032e53408f80ad7670a681a932acf736a574a7a07c",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "KDvYkUg3": {
+      "title": "Refined Storage",
+      "version": "2.0.9",
+      "version_id": "lHHiI26k",
+      "filename": "refinedstorage-neoforge-2.0.9.jar",
+      "sha512": "b98a938b8af859f1952bfb35fb6db712835a7dead88fa15258ac0f4f06b26b08ebfa49fd9a35b2c81f7a745b3cd4370ced98c242d0fe7473ba019d92da8f6c57",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "gF3BGWvG": {
+      "title": "Open Parties and Claims",
+      "version": "neoforge-1.21.1-0.33.0",
+      "version_id": "yWmXD7GW",
+      "filename": "open-parties-and-claims-neoforge-1.21.1-0.33.0.jar",
+      "sha512": "646fd9796ef2dfd1132e22aacf1a417639233d90fb7eb862a718badfed955d54714c88327b7ddc651f98cd5b7d2a80e8c91233d2232680d4998fdd10ef392ffb",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "VzR5wiLo": {
+      "title": "Refined Storage - JEI Integration",
+      "version": "1.0.0",
+      "version_id": "BYZmHubv",
+      "filename": "refinedstorage-jei-integration-neoforge-1.0.0.jar",
+      "sha512": "95f91c5d634dd144c6acb8dcf946df47a1c09d348e987b00469acc8b5977c09a02f9810cc2d0636d07053c46f029cc3403c52c0759968a6a4673d643fd1543c2",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "4sYI62kA": {
+      "title": "Oritech",
+      "version": "1.2.13",
+      "version_id": "BR0KKypH",
+      "filename": "oritech-neoforge-1.21.1-1.2.13.jar",
+      "sha512": "9a688409643075051d759da1b7dc732dd97f5f3ae584a12c5908689858af145373a69046d9c1881e6e0f41916c742e2850512296e05dbcd39fc0f214ecfc3cdf",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "b1ZV3DIJ": {
+      "title": "Athena",
+      "version": "4.0.6",
+      "version_id": "dJgL278E",
+      "filename": "athena-neoforge-1.21.1-4.0.6.jar",
+      "sha512": "ab40a306a26ce834daae921a1e87768cd2538a4bfe27a4480f97af854084cc334e7416b1bd0b7583834a32a86951283f29fd4b1df7b98a967a6b26a3ec05e2cf",
+      "environment": {
+        "client": "required",
+        "server": "unsupported"
+      }
+    },
+    "yAyrQXJ6": {
+      "title": "Fluidic Tanks",
+      "version": "1.1.1",
+      "version_id": "991No08g",
+      "filename": "fluidic_tanks-1.1.1.jar",
+      "sha512": "aced593ef1c018d1cb6807b8f2e6b1b6acb8cc4358e388fbed49bed7be798abeb2a5348a5382454e1b5d9595d7ba364b079ceab29f5b3b3b2d668f4a764c6161",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "8lnmIJH7": {
+      "title": "DimStorage",
+      "version": "9.1.1",
+      "version_id": "R7rQFgQh",
+      "filename": "DimStorage-1.21.1-9.1.1.jar",
+      "sha512": "b15b3e7ef7f0d5814d899ee7b9e87b4abf5add8039ad623ae97d77ad29de31dfe6407637c95b5c50b75c9a5698bbd193da45ece34bfabed7a7fa1c9069dae78f",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "a8Jk9kpK": {
+      "title": "EdivadLib",
+      "version": "3.0.0",
+      "version_id": "exl6hgWJ",
+      "filename": "EdivadLib-1.21-3.0.0.jar",
+      "sha512": "3cb39fdc7ce4b68bf4681ef7395fb6b81961372b10a68784abedd33e2026d9c3841daa93d29a44f9872ef0287eac276f10ab8640a8543ae67e9ae294f28bd8b6",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "nQR8XALE": {
+      "title": "Interdimensional Wireless Transmitter",
+      "version": "1.21.1-0.1.5",
+      "version_id": "CcRkmcRp",
+      "filename": "interdimensionalwirelesstransmitter-neoforge-1.21.1-0.1.5.jar",
+      "sha512": "7cb1ccf0af474c6229610e3aab81ea671d46e5380577ea194c4a9da80fa9a7eb0b318624faabeb708d82cde6129a4b43fdb4ec9eecebda1839a5d46e6f60e57d",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "gnwGOmBf": {
+      "title": "Refined Storage - Quartz Arsenal",
+      "version": "1.0.8",
+      "version_id": "toDdIhGu",
+      "filename": "refinedstorage-quartz-arsenal-neoforge-1.0.8.jar",
+      "sha512": "faa6530135978a86b25301dd5a5ec673d9908edde01780e4f7ba72e3ead18a0c142a578c428fe49df650c8cca03ec69cdf7a97012b5852f3514fddd23052c8d9",
       "environment": {
         "client": "required",
         "server": "required"

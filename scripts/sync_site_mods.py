@@ -14,6 +14,16 @@ NAMES = {
     "physicsmod": "Physics Mod Lite",
     "buildcraft-community-edition": "BuildCraft Community Edition",
     "ae2": "Applied Energistics 2",
+    "oritech": "Oritech",
+    "fluidic-tanks": "Fluidic Tanks",
+    "dimstorage": "DimStorage",
+    "edivadlib": "EdivadLib",
+    "b1ZV3DIJ": "Athena",
+    "refined-storage": "Refined Storage",
+    "interdimensional-wireless-transmitter": "Interdimensional Wireless Transmitter",
+    "refined-storage-quartz-arsenal": "Refined Storage — Quartz Arsenal",
+    "refined-storage-jei-integration": "Refined Storage — JEI Integration",
+    "open-parties-and-claims": "Open Parties and Claims",
     "irons-spells-n-spellbooks": "Iron's Spells 'n Spellbooks",
     "l_enders-cataclysm": "L_Ender's Cataclysm",
     "bosses-of-mass-destruction-forge": "Bosses of Mass Destruction (NeoForge)",
@@ -60,9 +70,17 @@ NAMES = {
     "mafglib": "MaFgLib",
     "forgematica": "Forgematica",
     "explorers-compass": "Explorer's Compass",
+    "sophisticated-storage": "Sophisticated Storage",
+    "architectury-api": "Architectury API",
     "lithium": "Lithium",
+    "trash-cans": "Trash Cans",
+    "pretty-pipes": "Pretty Pipes",
+    "iskander-rocket-mod": "Iskander Rocket Mod",
 }
 DESCRIPTIONS = {
+    "trash-cans": "Раздельные предметные, жидкостные и энергетические мусорки. Только в изолированной сети отходов и с проверенными фильтрами.",
+    "pretty-pipes": "Только предметы (включая блоки как вещи), без двигателей. Не передаёт жидкости, энергию или установленные блоки.",
+    "iskander-rocket-mod": "Баллистическая ракета с пультом координат и дальностью до 10 000 блоков. Большие взрывы разрушают мир — тестируйте вне основной базы.",
     "aquamirae": "Океанские структуры, существа и босс в общей тестовой 0.3.3; игровые механики ещё требуют проверки.",
     "fragmentum": "Обязательная библиотека Aquamirae, версия 5.4.0.",
     "better-zoom": "Клиентский зум Z + колесо с плавным возвратом FOV.",
@@ -73,7 +91,17 @@ DESCRIPTIONS = {
     "create": "Шестерни, вращение и автоматизированные производства.",
     "mekanism": "Техническая энергетика и многоуровневая переработка руд.",
     "modern-industrialization": "Промышленные цепочки и заводы.",
+    "oritech": "Многоэтапные технологические производства и машины; новая техническая ветка для NeoForge 1.21.1.",
+    "fluidic-tanks": "Сборные многоблочные резервуары для жидкостей с поддержкой Create, Mekanism и Modern Industrialization.",
+    "dimstorage": "Межпространственные сундуки и жидкостные резервуары с частотами, правами доступа и планшетом; требует EdivadLib.",
+    "edivadlib": "Обязательная библиотека DimStorage 9.1.1; требуется на клиенте и сервере.",
+    "b1ZV3DIJ": "Клиентская библиотека текстур, необходимая для Oritech; для сервера по официальным метаданным не устанавливается.",
     "ae2": "Цифровые склады и промышленная логистика.",
+    "refined-storage": "Альтернативная цифровая сеть хранения и автокрафта; AE2 остаётся. Проверка совместимости и производительности ожидается.",
+    "interdimensional-wireless-transmitter": "Межпространственный беспроводной передатчик для Refined Storage v2: доступ издалека и из других измерений, но не загрузка чанков.",
+    "refined-storage-quartz-arsenal": "Беспроводная сетка крафта Refined Storage: привязка к сети, питание и Wireless Transmitter; взаимодействие с IWT ещё требует игрового теста.",
+    "refined-storage-jei-integration": "Перенос рецептов JEI в Crafting Grid/Pattern Grid, поиск и призрачные ингредиенты; совместимость с RS 2.0.9 и JEI 19.64.0.455 проходит тестирование.",
+    "open-parties-and-claims": "Выделение территории и выборочная загрузка чанков через Xaero. Новые миры: 64 закреплённых / 4 загруженных чанка на игрока; beta.",
     "l_enders-cataclysm": "Боссы, структуры и сложные сражения.",
     "bosses-of-mass-destruction-forge": "Четыре босса в редких структурах мира, Незера и Энда; новые сражения.",
     "terralith": "Новые биомы и ландшафты.",
@@ -105,6 +133,8 @@ DESCRIPTIONS = {
     "mafglib": "Клиентская библиотека Forgematica.",
     "forgematica": "Голограммы чертежей, .litematic и списки материалов; только клиент.",
     "explorers-compass": "Поиск обычных и модовых структур через удобный компас.",
+    "sophisticated-storage": "Улучшаемые сундуки и фильтры; Iron Chests сохранён.",
+    "architectury-api": "Библиотека NeoForge для FTB Library и Ultimine.",
     "lithium": "Оптимизация логики и тиков Minecraft; требуется проверка совместимости.",
 }
 mods = []
@@ -132,7 +162,9 @@ for row in reversed(cfg.get("external_mods", [])):
     mods.insert(1, {
         "name": row["name"], "group": row.get("group", "Военная техника"),
         "required": row.get("required", False),
-        "description": "Авиаудары, ПВО, ракеты и ядерные взрывы. Может сильно нагружать сервер.",
+        "description": ("Авиаудары, ПВО, ракеты и ядерные взрывы. Может сильно нагружать сервер."
+                        if row["name"].startswith("Incoming") else
+                        "Библиотека или инструмент FTB Ultimine для NeoForge 1.21.1."),
         "url": row["source"],
     })
 index = ROOT / "docs" / "index.html"

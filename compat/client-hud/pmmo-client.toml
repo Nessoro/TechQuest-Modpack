@@ -8,3 +8,6 @@
 "Skill List Xoffset" = 0.70
 "Skill List Yoffset" = 0.05
 "Display Gain List" = true
+
+# PMMO bulk-mining is disabled server-side; avoid a redundant mining gauge.
+"Display Vein Gauge" = false

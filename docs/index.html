@@ -29,6 +29,20 @@ window.TQ_MODS = [
     "url": "https://github.com/zentixua/incoming/releases/tag/v3.10.4"
   },
   {
+    "name": "FTB Library",
+    "group": "Комфорт",
+    "required": true,
+    "description": "Библиотека или инструмент FTB Ultimine для NeoForge 1.21.1.",
+    "url": "https://maven.ftb.dev/releases/"
+  },
+  {
+    "name": "FTB Ultimine",
+    "group": "Комфорт",
+    "required": true,
+    "description": "Библиотека или инструмент FTB Ultimine для NeoForge 1.21.1.",
+    "url": "https://maven.ftb.dev/releases/"
+  },
+  {
     "name": "Industrial Craft 2: Nostalgia",
     "group": "Технологии",
     "required": true,
@@ -64,11 +78,60 @@ window.TQ_MODS = [
     "url": "https://modrinth.com/mod/modern-industrialization"
   },
   {
+    "name": "Oritech",
+    "group": "Технологии",
+    "required": true,
+    "description": "Многоэтапные технологические производства и машины; новая техническая ветка для NeoForge 1.21.1.",
+    "url": "https://modrinth.com/mod/oritech"
+  },
+  {
+    "name": "Fluidic Tanks",
+    "group": "Хранение",
+    "required": true,
+    "description": "Сборные многоблочные резервуары для жидкостей с поддержкой Create, Mekanism и Modern Industrialization.",
+    "url": "https://modrinth.com/mod/fluidic-tanks"
+  },
+  {
+    "name": "DimStorage",
+    "group": "Хранение",
+    "required": true,
+    "description": "Межпространственные сундуки и жидкостные резервуары с частотами, правами доступа и планшетом; требует EdivadLib.",
+    "url": "https://modrinth.com/mod/dimstorage"
+  },
+  {
     "name": "Applied Energistics 2",
     "group": "Технологии",
     "required": true,
     "description": "Цифровые склады и промышленная логистика.",
     "url": "https://modrinth.com/mod/ae2"
+  },
+  {
+    "name": "Refined Storage",
+    "group": "Хранение",
+    "required": true,
+    "description": "Альтернативная цифровая сеть хранения и автокрафта; AE2 остаётся. Проверка совместимости и производительности ожидается.",
+    "url": "https://modrinth.com/mod/refined-storage"
+  },
+  {
+    "name": "Interdimensional Wireless Transmitter",
+    "group": "Хранение",
+    "required": true,
+    "description": "Межпространственный беспроводной передатчик для Refined Storage v2: доступ издалека и из других измерений, но не загрузка чанков.",
+    "url": "https://modrinth.com/mod/interdimensional-wireless-transmitter"
+  },
+  {
+    "name": "Refined Storage — Quartz Arsenal",
+    "group": "Хранение",
+    "required": true,
+    "description": "Беспроводная сетка крафта Refined Storage: привязка к сети, питание и Wireless Transmitter; взаимодействие с IWT ещё требует игрового теста.",
+    "url": "https://modrinth.com/mod/refined-storage-quartz-arsenal"
+  },
+  {
+    "name": "Refined Storage — JEI Integration",
+    "group": "Интерфейс",
+    "required": true,
+    "description": "Перенос рецептов JEI в Crafting Grid/Pattern Grid, поиск и призрачные ингредиенты; совместимость с RS 2.0.9 и JEI 19.64.0.455 проходит тестирование.",
+    "url": "https://modrinth.com/mod/refined-storage-jei-integration"
   },
   {
     "name": "Immersiveengineering",
@@ -125,13 +188,6 @@ window.TQ_MODS = [
     "required": false,
     "description": "Кандидат; совместимость требует отдельной проверки.",
     "url": "https://modrinth.com/mod/skill-tree"
-  },
-  {
-    "name": "Project Mmo",
-    "group": "RPG",
-    "required": false,
-    "description": "Кандидат; совместимость требует отдельной проверки.",
-    "url": "https://modrinth.com/mod/project-mmo"
   },
   {
     "name": "Naturalist",
@@ -365,6 +421,13 @@ window.TQ_MODS = [
     "url": "https://modrinth.com/mod/geckolib"
   },
   {
+    "name": "Athena",
+    "group": "Библиотеки",
+    "required": true,
+    "description": "Клиентская библиотека текстур, необходимая для Oritech; для сервера по официальным метаданным не устанавливается.",
+    "url": "https://modrinth.com/mod/b1ZV3DIJ"
+  },
+  {
     "name": "Superb Warfare",
     "group": "Военная техника",
     "required": true,
@@ -449,6 +512,13 @@ window.TQ_MODS = [
     "url": "https://modrinth.com/mod/xaeros-world-map"
   },
   {
+    "name": "Open Parties and Claims",
+    "group": "Карта и интерфейс",
+    "required": true,
+    "description": "Выделение территории и выборочная загрузка чанков через Xaero. Новые миры: 64 закреплённых / 4 загруженных чанка на игрока; beta.",
+    "url": "https://modrinth.com/mod/open-parties-and-claims"
+  },
+  {
     "name": "Health Indicator TXF (HP цифрами)",
     "group": "Карта и интерфейс",
     "required": true,
@@ -503,6 +573,48 @@ window.TQ_MODS = [
     "required": true,
     "description": "Обязательная библиотека Aquamirae, версия 5.4.0.",
     "url": "https://modrinth.com/mod/fragmentum"
+  },
+  {
+    "name": "Sophisticated Storage",
+    "group": "Хранение",
+    "required": true,
+    "description": "Улучшаемые сундуки и фильтры; Iron Chests сохранён.",
+    "url": "https://modrinth.com/mod/sophisticated-storage"
+  },
+  {
+    "name": "Architectury API",
+    "group": "Библиотеки",
+    "required": true,
+    "description": "Библиотека NeoForge для FTB Library и Ultimine.",
+    "url": "https://modrinth.com/mod/architectury-api"
+  },
+  {
+    "name": "EdivadLib",
+    "group": "Библиотеки",
+    "required": true,
+    "description": "Обязательная библиотека DimStorage 9.1.1; требуется на клиенте и сервере.",
+    "url": "https://modrinth.com/mod/edivadlib"
+  },
+  {
+    "name": "Trash Cans",
+    "group": "Комфорт",
+    "required": true,
+    "description": "Раздельные предметные, жидкостные и энергетические мусорки. Только в изолированной сети отходов и с проверенными фильтрами.",
+    "url": "https://modrinth.com/mod/trash-cans"
+  },
+  {
+    "name": "Pretty Pipes",
+    "group": "Технологии",
+    "required": true,
+    "description": "Только предметы (включая блоки как вещи), без двигателей. Не передаёт жидкости, энергию или установленные блоки.",
+    "url": "https://modrinth.com/mod/pretty-pipes"
+  },
+  {
+    "name": "Iskander Rocket Mod",
+    "group": "Военная техника",
+    "required": true,
+    "description": "Баллистическая ракета с пультом координат и дальностью до 10 000 блоков. Большие взрывы разрушают мир — тестируйте вне основной базы.",
+    "url": "https://modrinth.com/mod/iskander-rocket-mod"
   }
 ];
   </script>
@@ -513,74 +625,128 @@ window.TQ_MODS = [
 <header class="header">
   <div class="container nav-inner">
     <a class="brand" href="#home" aria-label="TechQuest — главная"><span class="brand-mark" aria-hidden="true">T</span><span>TECHQUEST<small>INDUSTRIAL FRONTIER</small></span></a>
-    <nav class="nav" aria-label="Основная навигация"><a href="#explore">О сборке</a><a href="#mods">Моды</a><a href="#download">Установка</a><a href="#feedback">Сообщество</a></nav>
-    <a class="nav-github" href="https://github.com/Nessoro/TechQuest-Modpack" data-repo-link>GitHub →</a>
+    <nav class="nav" aria-label="Основная навигация"><a href="#explore">О сборке</a><a href="#download">Скачать</a><a href="#mods">Моды</a><a href="#feedback">Помощь</a></nav>
+    <a class="nav-github" href="https://github.com/Nessoro/TechQuest-Modpack" data-repo-link>GitHub ↗</a>
   </div>
 </header>
 <main id="main">
-<div class="container" id="home">
-  <section class="hero" aria-labelledby="hero-title">
-    <div>
-      <div class="eyebrow"><span class="dot" aria-hidden="true"></span> Minecraft. Друзья. Новые горизонты.</div>
-      <h1 id="hero-title">За пределы<br><em>знакомого мира.</em></h1>
-      <p class="hero-lead">Драконы над неизведанными землями. Подземелья, из которых хочется вернуться. И своя база, где шестерни превращают находки в новые возможности.</p>
-      <div class="hero-actions"><a class="button" href="#download">Начать приключение <span aria-hidden="true">→</span></a><a class="button secondary" href="#mods">Что внутри <span aria-hidden="true">↓</span></a></div>
-      <p class="hero-note"><span data-pack-version>0.3.3-alpha</span> · единый Optimized · <a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/QA_0.3.3_RU.md">Статус испытаний →</a></p>
+  <section class="hero container" id="home" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Minecraft с новыми возможностями</p>
+      <h1 id="hero-title">Исследуй.<br><em>Строй.</em> Выживай.</h1>
+      <p class="hero-lead">Большой мир, сильные боссы и технологии — для одиночной игры и приключений с друзьями.</p>
+      <div class="hero-actions">
+        <a class="button" href="#download">Скачать для Windows <span aria-hidden="true">↓</span></a>
+        <a class="button secondary" href="#explore">Что внутри</a>
+      </div>
+      <p class="hero-note"><span data-pack-version>0.3.3-alpha</span> · тестовая сборка · единый Optimized</p>
     </div>
-    <div class="scene">
-      <img src="frontier.svg" width="600" height="570" alt="Карта экспедиции: древняя башня, горы и механизмы, соединённые маршрутом" style="width:100%;height:100%;object-fit:cover">
-      <div class="scene-label"><span>ПОЛЕВОЙ ДНЕВНИК / 003</span><span>TECHQUEST</span></div>
-      <div class="scene-caption"><strong>Твой следующий рубеж.</strong><span>Исследуй мир.<br>Оставь свой след.</span></div>
+    <div class="hero-art"><img src="frontier.svg" width="600" height="570" alt="Карта мира TechQuest с горами, башней и механизмами"></div>
+  </section>
+
+  <div class="container">
+    <dl class="specs">
+      <div><dt>Minecraft</dt><dd data-minecraft>Java 1.21.1</dd></div>
+      <div><dt>Загрузчик</dt><dd data-neoforge>NeoForge 21.1.264</dd></div>
+      <div><dt>Платформа</dt><dd>Windows 10/11</dd></div>
+      <div><dt>Запуск</dt><dd>Официальный Launcher</dd></div>
+    </dl>
+  </div>
+
+  <section class="section container" id="explore" aria-labelledby="explore-title">
+    <div class="section-head"><h2 id="explore-title">Что ждёт в TechQuest</h2></div>
+    <div class="features">
+      <article class="feature"><span class="feature-icon" aria-hidden="true">✦</span><h3>Приключения</h3><p>Новые миры, подземелья и сокровища.</p></article>
+      <article class="feature"><span class="feature-icon" aria-hidden="true">⚔</span><h3>Сражения</h3><p>Драконы, боссы и современное оружие.</p></article>
+      <article class="feature"><span class="feature-icon" aria-hidden="true">⚙</span><h3>Технологии</h3><p>Заводы, автоматизация и энергия.</p></article>
     </div>
   </section>
-  <dl class="specs"><div><dt>Мир</dt><dd data-minecraft>Java 1.21.1</dd></div><div><dt>Загрузчик</dt><dd data-neoforge>NeoForge 21.1.264</dd></div><div><dt>Установка</dt><dd>Официальный Launcher</dd></div><div><dt>Профиль</dt><dd>Один Optimized</dd></div></dl>
-</div>
-<section class="section container" id="explore" aria-labelledby="explore-title">
-  <div class="section-head"><div><p class="kicker">01 / ПУТЬ ВЫБИРАЕШЬ ТЫ</p><h2 id="explore-title">У мира есть <em>что скрывать.</em></h2><p>От первой экспедиции до собственной промышленной базы. Больше причин выходить за порог — и возвращаться с идеями.</p></div><a class="text-link" href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/docs/ADVENTURE_EXPLORATION_RU.md">О приключениях →</a></div>
-  <div class="features">
-    <article class="feature"><span class="number">01 / Исследуй</span><h3>Дальше привычных биомов</h3><p>Небесные острова, глубины Otherside и огромные подземелья. Редкая находка может стать началом следующего путешествия.</p><small>The Aether · Terralith · When Dungeons Arise</small></article>
-    <article class="feature"><span class="number">02 / Бросай вызов</span><h3>Не каждый след — твой</h3><p>Драконы, морские тайны и большие противники. Готовь снаряжение, собирай компанию и выбирай, с кем сегодня сражаться.</p><small>Wyrmroost · Aquamirae · Legendary Monsters</small></article>
-    <article class="feature"><span class="number">03 / Создавай</span><h3>Построй место, куда вернёшься</h3><p>Автоматизируй добычу, храни находки в цифровой сети и соединяй механизмы. Технологии помогают твоим приключениям расти.</p><small>BuildCraft · IC2 · Create · Mekanism · AE2</small></article>
-  </div>
-</section>
-<section class="download section" id="download" aria-labelledby="download-title">
- <div class="container download-grid">
-  <div><p class="kicker">02 / СОБИРАЕМСЯ В ПУТЬ</p><h2 id="download-title">Первый шаг —<br>установить сборку.</h2><p class="intro">Графический установщик для Windows 10/11 и привычный официальный Minecraft Launcher. Python и команды в консоли не нужны.</p>
-   <ol class="steps"><li><div><strong>Скачай установщик.</strong><br>Открой успешную сборку, в Artifacts выбери TechQuest-Windows-GUI-Installer. Распакуй ZIP и запусти EXE.</div></li><li><div><strong>Выбери новую папку.</strong><br>Установи моды и Java 21. NeoForge 21.1.264 устанавливается один раз для твоего Launcher.</div></li><li><div><strong>Укажи папку в Launcher.</strong><br>Установки → профиль NeoForge → Папка игры. Для первого теста создай новый мир, без необязательного AMW.</div></li></ol>
-  </div>
-  <div>
-   <article class="release"><div class="release-top"><span class="tag">ТЕСТОВАЯ АЛЬФА</span><span>WINDOWS 10 / 11 · x64</span></div><h3>TechQuest <span data-pack-version>0.3.3-alpha</span></h3><p>Единый Optimized. Приключения, технологии, авиация и ограниченная физика обломков.</p>
-    <a class="button light" id="download-link" href="https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml?query=branch%3Amain">Открыть скачивание EXE <span class="arrow" aria-hidden="true">→</span></a>
-    <p class="release-note">Скачивание пока через GitHub Actions: для Artifacts нужен вход в GitHub. Выбирай полностью успешный запуск; архивы хранятся ограниченное время.</p>
-    <p class="release-status" id="build-status" role="status">Проверь зелёный статус сборки и отчёт Security Audit на GitHub.</p>
-    <div class="release-footer"><span>Java 21 · NeoForge 21.1.264</span><a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/docs/INSTALL_0.3.3_PC_RU.md">Подробная инструкция →</a></div>
-   </article>
-   <div class="download-links"><a href="https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml">Прежние сборки</a><a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/QA_0.3.3_RU.md">Что проверено</a><a href="https://github.com/Nessoro/TechQuest-Modpack/issues/21">План обновления</a></div>
-   <p class="release-status">Это альфа: запуск до меню проверен. Полёт, выделенный сервер и производительность нового состава ещё требуют игровых испытаний. Сохраняй резервные копии миров.</p>
-  </div>
- </div>
-</section>
-<section class="section container catalog" id="mods" aria-labelledby="mods-title">
- <div class="section-head"><div><p class="kicker">03 / СНАРЯЖЕНИЕ ЭКСПЕДИЦИИ</p><h2 id="mods-title">Знакомься со <em>сборкой.</em></h2><p>Основные компоненты и кандидаты. Поддержка нужной версии Minecraft ещё не означает, что все механики проверены вместе.</p></div><div class="mini-counter"><span id="mod-counter">—</span><small>в каталоге</small></div></div>
- <div class="mod-tools"><label class="search"><span aria-hidden="true">⌕</span><input id="mod-search" type="search" placeholder="Найти мод или механику…" aria-label="Поиск модов"></label><div class="filters" role="group" aria-label="Категории модов"><button class="chip active" data-category="all" aria-pressed="true" type="button">Все</button><button class="chip" data-category="Мир" aria-pressed="false" type="button">Мир</button><button class="chip" data-category="Мобы" aria-pressed="false" type="button">Мобы</button><button class="chip" data-category="RPG" aria-pressed="false" type="button">RPG</button><button class="chip" data-category="Технологии" aria-pressed="false" type="button">Технологии</button><button class="chip" data-category="other" aria-pressed="false" type="button">Остальное</button></div></div>
- <div id="mods-grid" class="mods-grid" aria-live="polite"><p class="empty">Загружаем каталог…</p></div><p class="hint" id="mods-error" role="status"></p>
- <div class="catalog-more"><button class="button secondary" id="show-all-mods" type="button">Показать весь каталог <span aria-hidden="true">↓</span></button></div>
- <noscript><p class="noscript">Для поиска включи JavaScript. Полный состав доступен в <a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/modlist.json">списке модов на GitHub</a>.</p></noscript>
-</section>
-<section class="section container" id="feedback" aria-labelledby="feedback-title">
- <div class="section-head"><div><p class="kicker">04 / СТРОИМ ВМЕСТЕ</p><h2 id="feedback-title">У каждой экспедиции<br>есть <em>свои истории.</em></h2><p>Расскажи о проблеме или предложи следующую находку. Форма подготовит обращение, а опубликуешь его ты на GitHub.</p></div><a class="text-link" href="https://github.com/Nessoro/TechQuest-Modpack/issues" data-issues-link>Все задачи →</a></div>
- <div class="feedback-grid">
-  <article class="feedback-card"><p class="kicker">БАГ-РЕПОРТ</p><h3>Что-то пошло не по плану?</h3><p>Вылет, конфликт управления или странное поведение мира — разберёмся по шагам.</p><form class="feedback-form" id="bug-form"><label>Краткое описание *<input name="title" required maxlength="120" placeholder="Например, HP перекрывает миникарту"></label><label>Затронутый мод<input name="mod" maxlength="100" placeholder="Название или «неизвестно»"></label><label>Что случилось и как повторить? *<textarea name="details" required minlength="15" maxlength="7000" rows="4" placeholder="Шаги, ожидаемый и фактический результат"></textarea></label><label>Версия / ссылка на лог<input name="logs" maxlength="500" placeholder="0.3.3-alpha / ссылка на журнал"></label><button class="button" type="submit">Подготовить баг-репорт →</button></form></article>
-  <article class="feedback-card"><p class="kicker">ПРЕДЛОЖЕНИЕ</p><h3>Есть идея для сборки?</h3><p>Новый мир, необычный противник или удобная механика. Объясни, чем идея дополнит TechQuest.</p><form class="feedback-form" id="mod-form"><label>Название мода *<input name="title" required maxlength="120" placeholder="Что хочешь добавить?"></label><label>Официальная страница<input name="url" type="url" maxlength="400" placeholder="https://modrinth.com/mod/..."></label><label>Почему стоит добавить? *<textarea name="details" required minlength="15" maxlength="7000" rows="4" placeholder="Что изменится в приключении и игре с друзьями?"></textarea></label><label>Совместимость<input name="compat" maxlength="250" placeholder="NeoForge 1.21.1 / не проверял"></label><button class="button secondary" type="submit">Подготовить предложение →</button></form></article>
- </div><p class="privacy-note">Нужен аккаунт GitHub. Сайт не хранит текст формы: публикацию нужно подтвердить на GitHub. Удаляй из логов токены, IP и личные данные.</p>
-</section>
-<section class="section container issues-section" id="issues" aria-labelledby="issues-title"><div class="section-head"><div><p class="kicker">ЖУРНАЛ СООБЩЕСТВА</p><h2 id="issues-title">Сейчас <em>в работе.</em></h2></div><a class="text-link" href="https://github.com/Nessoro/TechQuest-Modpack/issues" data-issues-link>Открыть GitHub Issues →</a></div><div id="issues-feed" aria-live="polite"><p class="issue-placeholder">Загружаем открытые обращения…</p></div></section>
-<section class="section container faq" id="faq" aria-labelledby="faq-title">
- <div><p class="kicker">ПЕРЕД ОТПРАВЛЕНИЕМ</p><h2 id="faq-title">Пара полезных<br><em>ответов.</em></h2></div>
- <div><details><summary>Нужно ли каждый раз устанавливать NeoForge?</summary><p>Нет. Если NeoForge 21.1.264 уже установлен для этого Launcher, выбери его в отдельной установке и укажи новую папку игры. При смене версии загрузчика потребуется другая установка NeoForge.</p></details><details><summary>Что делать со старой сборкой и мирами?</summary><p>Оставь рабочую папку отдельно для отката. Мир переносится только копией: изменение состава может удалить блоки и предметы. Безопасный автоматический апдейтер пока в плане.</p></details><details><summary>Нужны ли дополнения TaCZ или AMW?</summary><p>TaCZ исключён из TechQuest («не нужен»). AMW остаётся необязательным экспериментальным дополнением: начинай без него и устанавливай только после проверки совместимости.</p></details><details><summary>Сборка подойдёт слабому ПК?</summary><p>Есть ограниченные стартовые настройки Fast, 6 чанков, симуляция 5, до 60 FPS. Это не гарантия скорости: генерация мира, техника и крупные взрывы требуют отдельных замеров на твоём компьютере.</p></details><details><summary>Как смотреть полёт ракеты Incoming?</summary><p>По умолчанию N — камера своего снаряда и переключение на следующий; Shift — выход, F5 — вид. Если N переназначена, найди «Камера снаряда» в управлении Incoming.</p></details></div>
-</section>
-<section class="section container" id="roadmap" aria-labelledby="roadmap-title"><div class="section-head"><div><p class="kicker">СЛЕДУЮЩИЙ РУБЕЖ</p><h2 id="roadmap-title">Сборка <em>продолжается.</em></h2></div><a class="text-link" href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/docs/PR_REVIEW_RU.md">План разработки →</a></div><div class="roadmap"><div><small>ПОДГОТОВЛЕНО</small><h3>Единая 0.3.3-alpha</h3><p>Общий состав, проверяемый установщик, автоматические проверки и реальный запуск до меню.</p></div><div><small>ИГРОВЫЕ ИСПЫТАНИЯ</small><h3>Мир, авиация и компания</h3><p>Полёт и посадка, механики модов, выделенный сервер, нагрузка и сохранения.</p></div><div><small>ДАЛЬШЕ</small><h3>Меньше хлопот с обновлениями</h3><p>Установщик с выбором версии и откатом. Управление с геймпада — после проверки самолётов.</p></div></div></section>
+
+  <section class="download section" id="download" aria-labelledby="download-title">
+    <div class="container download-grid">
+      <div>
+        <p class="eyebrow light-eyebrow">Установка</p>
+        <h2 id="download-title">Начни играть</h2>
+        <p class="intro">Установщик с графическим интерфейсом. Python и терминал игроку не нужны.</p>
+        <ol class="steps">
+          <li>Скачай ZIP с установщиком и запусти EXE.</li>
+          <li>Установи сборку в отдельную папку.</li>
+          <li>Выбери NeoForge 21.1.264 и папку игры в Minecraft Launcher.</li>
+        </ol>
+        <a class="text-link guide-link" href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/docs/INSTALL_0.3.3_PC_RU.md">Полная инструкция ↗</a>
+      </div>
+      <article class="release">
+        <div class="release-top"><span class="tag">ALPHA</span><span data-pack-version>0.3.3-alpha</span></div>
+        <h3>TechQuest для Windows</h3>
+        <p>Один оптимизированный профиль · Java 21</p>
+        <a class="button light" id="download-link" href="https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml?query=branch%3Amain">Скачать установщик <span aria-hidden="true">↗</span></a>
+        <p class="release-note">Пока через GitHub Actions: для скачивания ZIP нужен аккаунт GitHub.</p>
+        <p class="release-status" id="build-status" role="status">Проверь успешный запуск сборки в GitHub Actions.</p>
+        <div class="release-footer"><a href="https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml">Все сборки ↗</a><a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/QA_0.3.3_RU.md">Статус тестов ↗</a></div>
+      </article>
+    </div>
+    <p class="container alpha-warning">Это тестовая версия. Перед переносом миров сделай резервную копию. Игровая совместимость всех модов ещё не проверена.</p>
+  </section>
+
+  <section class="container more" aria-label="Дополнительно">
+    <details class="fold" id="mods">
+      <summary><span><strong>Каталог модов</strong><small>Поиск по компонентам и кандидатам</small></span><span class="fold-action">Открыть <span aria-hidden="true">＋</span></span></summary>
+      <div class="fold-content catalog">
+        <div class="section-head"><h2 id="mods-title">Моды <span class="counter" id="mod-counter">—</span></h2><p>Каталог включает кандидатов, не только установленные моды.</p></div>
+        <div class="mod-tools">
+          <label class="search"><span aria-hidden="true">⌕</span><input id="mod-search" type="search" placeholder="Название мода…" aria-label="Поиск модов"></label>
+          <div class="filters" role="group" aria-label="Категории модов"><button class="chip active" data-category="all" aria-pressed="true" type="button">Все</button><button class="chip" data-category="Мир" aria-pressed="false" type="button">Мир</button><button class="chip" data-category="Мобы" aria-pressed="false" type="button">Мобы</button><button class="chip" data-category="RPG" aria-pressed="false" type="button">RPG</button><button class="chip" data-category="Технологии" aria-pressed="false" type="button">Технологии</button><button class="chip" data-category="other" aria-pressed="false" type="button">Остальное</button></div>
+        </div>
+        <div id="mods-grid" class="mods-grid" aria-live="polite"><p class="empty">Загружаем каталог…</p></div>
+        <p class="hint" id="mods-error" role="status"></p>
+        <div class="catalog-more"><button class="button secondary" id="show-all-mods" type="button">Показать все моды ↓</button></div>
+      </div>
+    </details>
+    <noscript><p class="noscript">Для поиска модов нужен JavaScript. <a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/modlist.json">Полный список на GitHub ↗</a></p></noscript>
+
+    <details class="fold" id="feedback">
+      <summary><span><strong>Сообщить об ошибке или предложить мод</strong><small>Формы для GitHub Issues</small></span><span class="fold-action">Открыть <span aria-hidden="true">＋</span></span></summary>
+      <div class="fold-content">
+        <div class="feedback-grid">
+          <article class="feedback-card"><h3>Сообщить об ошибке</h3>
+            <form class="feedback-form" id="bug-form">
+              <label>Название ошибки *<input name="title" required maxlength="120" placeholder="Что не работает?"></label>
+              <label>Мод (необязательно)<input name="mod" maxlength="100" placeholder="Название мода"></label>
+              <label>Как повторить ошибку? *<textarea name="details" required minlength="15" maxlength="7000" rows="3" placeholder="Шаги и результат"></textarea></label>
+              <label>Версия или лог<input name="logs" maxlength="500" placeholder="0.3.3-alpha / ссылка"></label>
+              <button class="button" type="submit">Создать черновик ↗</button>
+            </form>
+          </article>
+          <article class="feedback-card"><h3>Предложить мод</h3>
+            <form class="feedback-form" id="mod-form">
+              <label>Название *<input name="title" required maxlength="120" placeholder="Название мода"></label>
+              <label>Ссылка на мод<input name="url" type="url" maxlength="400" placeholder="https://modrinth.com/mod/..."></label>
+              <label>Зачем добавить? *<textarea name="details" required minlength="15" maxlength="7000" rows="3" placeholder="Чем он полезен?"></textarea></label>
+              <label>Совместимость<input name="compat" maxlength="250" placeholder="NeoForge 1.21.1 / не знаю"></label>
+              <button class="button secondary" type="submit">Создать черновик ↗</button>
+            </form>
+          </article>
+        </div>
+        <p class="privacy-note">Формы ничего не отправляют автоматически. Для публикации нужен GitHub. Не прикладывай личные данные и секреты.</p>
+      </div>
+    </details>
+
+    <details class="fold" id="issues">
+      <summary><span><strong>Открытые задачи</strong><small>Текущие обращения сообщества</small></span><span class="fold-action">Открыть <span aria-hidden="true">＋</span></span></summary>
+      <div class="fold-content"><div id="issues-feed" aria-live="polite"><p class="issue-placeholder">Загружаем обращения…</p></div><a class="text-link" href="https://github.com/Nessoro/TechQuest-Modpack/issues" data-issues-link>Все задачи на GitHub ↗</a></div>
+    </details>
+
+    <details class="fold" id="faq">
+      <summary><span><strong>Частые вопросы</strong><small>Обновление, старые миры и поддержка</small></span><span class="fold-action">Открыть <span aria-hidden="true">＋</span></span></summary>
+      <div class="fold-content faq">
+        <details><summary>Можно ли сохранить старый мир?</summary><p>Сначала сделай копию мира. Изменения модов могут затронуть блоки и предметы.</p></details>
+        <details><summary>Нужно ли заново ставить NeoForge?</summary><p>Нет, если NeoForge 21.1.264 уже установлен. Используй отдельную папку игры.</p></details>
+        <details><summary>Подойдёт ли сборка слабому ПК?</summary><p>Профиль оптимизирован, но производительность зависит от компьютера, мира и модов; гарантий FPS пока нет.</p></details>
+        <p><a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/docs/CONTROLS_RU.md">Управление ↗</a> · <a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/docs/PR_REVIEW_RU.md">План разработки ↗</a></p>
+      </div>
+    </details>
+  </section>
 </main>
-<footer class="footer"><div class="container footer-inner"><div><a class="brand" href="#home"><span class="brand-mark" aria-hidden="true">T</span><span>TECHQUEST<small>INDUSTRIAL FRONTIER</small></span></a><p>Фанатский проект. Не связан с Mojang, Microsoft и авторами модов. Моды принадлежат их авторам.</p></div><div class="footer-links"><a href="https://github.com/Nessoro/TechQuest-Modpack" data-repo-link>Исходный код →</a><a href="https://github.com/Nessoro/TechQuest-Modpack/issues" data-issues-link>Обратная связь →</a><a href="#home">Наверх ↑</a></div></div></footer>
+<footer class="footer"><div class="container footer-inner"><a class="brand" href="#home"><span class="brand-mark" aria-hidden="true">T</span><span>TECHQUEST</span></a><p>Фанатский проект. Не связан с Mojang и Microsoft. Моды принадлежат авторам.</p><a href="https://github.com/Nessoro/TechQuest-Modpack" data-repo-link>Исходный код ↗</a></div></footer>
 </body>
 </html>

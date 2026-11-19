@@ -1,8 +1,10 @@
 # TechQuest: Industrial Frontier
 
-**Подписанные обновления (новый EXE):** при запуске проверяются GitHub Releases; только релизы с проверенной офлайн RSA-подписью могут обновлять управляемые моды (включая techquest-compat) и предлагать новый EXE. Повторно скачиваются только изменившиеся JAR; пользовательские сохранения, конфигурации и другие файлы не затрагиваются. Есть откат модов после обновления. Старые установки без .techquest/state.json требуют новой отдельной папки. Только официальный Minecraft Launcher с лицензионной Java Edition и Microsoft-входом; TechQuest не обрабатывает пароли и токены. Подробнее: [безопасность и обновления](docs/SECURE_UPDATES_RU.md).
+> **TechQuest Launcher (PR #46, Draft):** защищённые подписанные обновления, проверка существующей установки и откат разрабатываются в [отдельном PR](https://github.com/Nessoro/TechQuest-Modpack/pull/46). До завершения Windows/игровых тестов это **не опубликованный релиз**. [Модель безопасности](docs/SECURE_UPDATES_RU.md).
 
 ## 🌐 [Открыть сайт TechQuest →](https://nessoro.github.io/TechQuest-Modpack/)
+
+**[Журнал решений и изменений 0.3.3](docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md)** · **Технические задания для Codex (EN):** [micro3](docs/technical-specs/TZ_TechQuest_micro3.md) · [micro4](docs/technical-specs/TZ_TechQuest_micro4.md) · [micro5](docs/technical-specs/TZ_TechQuest_micro5.md) · [micro6 (архив эксперимента)](docs/technical-specs/TZ_TechQuest_micro6.md)
 
 **[Установка и скачивание](https://nessoro.github.io/TechQuest-Modpack/#download) · [Каталог модов](https://nessoro.github.io/TechQuest-Modpack/#mods) · [Ошибки и предложения](https://nessoro.github.io/TechQuest-Modpack/#feedback)**
 
@@ -20,7 +22,13 @@ TechQuest — большая комплексная сборка вокруг **
 
 **Камера Incoming:** по умолчанию **N** — камера своего снаряда / следующий; **Shift** — выход, **F5** — смена вида. При переназначении ищите «Камера снаряда» в управлении мода.
 
-**Project MMO:** в новых установках список навыков скрыт по умолчанию, `Left Alt` включает его по запросу. Сами навыки и опыт сохранены; при включении список использует иконки и правую часть экрана. Существующий `config/pmmo-client.toml` не перезаписывается. [Настройка Project MMO](docs/PROJECT_MMO_HUD_RU.md).
+**micro3 — PR #30 объединён 15.11.2026 в целевую ветку:** `TechQuest RPG Core 0.1.0` исключён, `TechQuest Compatibility 1.0.0` сохранён (Create ↔ IC2 и исправление Better Zoom); PMMO не возвращается. Актуальный `main` также не включает RPG Core. Это не доказательство полной игровой проверки. [Инструкция micro3](docs/MICROPATCH_MICRO3_RU.md).
+
+**micro4 — PR #31 объединён 15.11.2026 в ветку micro3:** Trash Cans (предметы/жидкости/энергия) и Pretty Pipes (только транспорт предметов) присутствуют в текущем `modlist.json` ветки `main`. Colossal Reactors, Iskandert’s Library, Fusion и FTB Industrial Contraptions не добавлялись. Реальные маршруты труб, совместимость с машинами и нагрузка сервера не считаются подтверждёнными без игровых тестов. [Проверки micro4](docs/MICROPATCH_MICRO4_RU.md).
+
+**micro5 — PR #34 объединён 15.11.2026 в ветку micro4:** Iskander Rocket Mod 2.0.1 включён в актуальный `modlist.json` на обе стороны (ID версии `M1b2lYax`). Это не Iskandert's Library и не реактор. Избирательная проверка в игре не заменяет повторную проверку полного клиентского/серверного профиля, сохранения и производительности. [Проверки micro5](docs/MICROPATCH_MICRO5_ISKANDER_RU.md).
+
+**micro6 — экспериментальный PR #35 закрыт 19.11.2026 без слияния:** перенос Advanced Solar Panels на IC2 Nostalgia не включён в `main` и не является готовой функцией. [Историческое ТЗ](docs/technical-specs/TZ_TechQuest_micro6.md) сохранено для справки; [issue #32](https://github.com/Nessoro/TechQuest-Modpack/issues/32) всё ещё открыта и не означает одобренного релиза.
 
 **Авиация:** Superb Warfare и Incoming остаются в составе. MCHeli Modern Port, TaCZ и ParCool исключены по решению владельца («не нужен»). Геймпад для самолёта пока не реализован. [Состояние авиации](docs/AIRCRAFT_0.3.3_RU.md) · [Как работает SAM Incoming](docs/INCOMING_SAM_RU.md) · [Физика](docs/PHYSICS_TESTING_RU.md) · [NeoForge через GUI](docs/NEOFORGE_FALLBACK_RU.md) · [Клавиши и зум](docs/CONTROLS_RU.md).
 
@@ -34,7 +42,7 @@ TechQuest — большая комплексная сборка вокруг **
 
 Альфа 0.3.3 собирается в [GitHub Actions — Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml) для актуальной ревизии исходников. Найдите **успешный запуск последнего коммита**, артефакт `TechQuest-Windows-GUI-Installer` → `TechQuestInstaller.exe`. Сверяйте версию и commit выбранного артефакта. Отчёт `TechQuest-Security-Audit` должен относиться к тому же commit SHA.
 
-GUI устанавливает единый Optimized-профиль без Python/консоли, включая первый собственный мод `TechQuest Compatibility` (рецепты Create–IC2). Выбирайте новую пустую папку, установите Java 21 и NeoForge 21.1.264, укажите Game Directory в официальном Launcher. Подробные шаги: [Установка тестовой 0.3.3](docs/INSTALL_0.3.3_PC_RU.md). На сервере Superb Warfare локально исправляется после проверки оригинального SHA. Прежние установки не обновляются автоматически.
+GUI устанавливает единый Optimized-профиль без Python/консоли. В кандидате micro3 `TechQuest Compatibility` по-прежнему входит в пакет для работы Create–IC2 и исправления запуска Better Zoom, а `TechQuest RPG Core` исключён; запуск обновлённой сборки всё ещё необходимо проверить. Для новой установки выбирайте отдельную пустую папку; существующий профиль **TechQuest** можно обновить через тот же GUI с подтверждением. Установщик предварительно проверяет JAR, заменяет только `mods` и хранит одну предыдущую версию в `.techquest-previous-mods` (при сбое — автоматический откат). До обновления сохраните копию ценного мира и закройте Minecraft; общую `.minecraft` использовать нельзя. Установите Java 21 и NeoForge 21.1.264 и укажите Game Directory в официальном Launcher. Подробности: [Установка тестовой 0.3.3](docs/INSTALL_0.3.3_PC_RU.md) и [micro3](docs/MICROPATCH_MICRO3_RU.md). На сервере Superb Warfare локально исправляется после проверки оригинального SHA. Самостоятельного фонового автообновления нет.
 
 Перед выдачей EXE CI проверяет обязательные библиотеки и диапазоны Minecraft/NeoForge внутри JAR,
 включая штатную матрицу совместимости FML 4.0.45. Исправлена установка Lithostitched на клиент
