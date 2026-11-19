@@ -6,6 +6,7 @@ on:
       - modlist.json
       - tests/test_interdimensional_wireless_transmitter.py
       - tests/test_quartz_arsenal.py
+      - tests/test_betterblockz.py
       - .github/workflows/build-alpha.yml
   push:
     paths:
@@ -245,6 +246,48 @@ jobs:
               assert matches[0]["env"] == sides
               assert "overrides/mods/" + filename not in zf.namelist()
           print("Quartz Arsenal 1.0.8 pinned original JAR and mrpack verified on client/server")
+          PY
+      - name: Validate BetterBlockZ original JAR, both sides and Modrinth manifest
+        run: |
+          python - <<'PY'
+          import hashlib, json, zipfile
+          from pathlib import Path
+          cfg=json.loads(Path("modlist.json").read_text(encoding="utf-8"))
+          project,version="oPU4euBQ","7E52UnH3"
+          name="betterblockz-0.2.10-1.21.1-neoforge.jar"
+          sides={"client":"required","server":"required"}
+          matched=[m for m in cfg["mods"] if m["project"]=="betterblockz"]
+          assert len(matched)==1 and matched[0]["required"]
+          assert matched[0]["environment"]==sides
+          assert matched[0]["version_id"]==version
+          pin=cfg["modrinth_lock"][project]
+          assert pin["version_id"]==version and pin["filename"]==name
+          assert pin["environment"]==sides
+          assert pin["version"]=="0.2.10-1.21.1-neoforge"
+          sha=pin["sha512"]
+          assert len(sha)==128
+          athena=cfg["modrinth_lock"]["b1ZV3DIJ"]
+          assert athena["version"]=="4.0.6"
+          assert athena["environment"]=={"client":"required","server":"unsupported"}
+          for side in ("client","server"):
+              jar=Path("output")/side/"mods"/name
+              assert jar.is_file(), (side,"BetterBlockZ missing")
+              data=jar.read_bytes()
+              assert len(data)==7388885, jar
+              assert hashlib.sha512(data).hexdigest()==sha, jar
+              with zipfile.ZipFile(jar) as zf:
+                  assert zf.testzip() is None
+                  assert "META-INF/neoforge.mods.toml" in zf.namelist()
+              print("BetterBlockZ verified:",side,len(data),sha)
+          with zipfile.ZipFile("output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack") as zf:
+              assert zf.testzip() is None
+              records=json.loads(zf.read("modrinth.index.json"))["files"]
+              rows=[r for r in records if r["path"]=="mods/"+name]
+              assert len(rows)==1
+              assert rows[0]["hashes"]["sha512"]==sha
+              assert rows[0]["env"]==sides
+              assert "overrides/mods/"+name not in zf.namelist()
+          print("BetterBlockZ original JAR, both sides, Modrinth index verified")
           PY
       - name: Audit micro3 client/server/Modrinth manifests and both Compatibility payloads
         run: python scripts/audit_micro3_packages.py
