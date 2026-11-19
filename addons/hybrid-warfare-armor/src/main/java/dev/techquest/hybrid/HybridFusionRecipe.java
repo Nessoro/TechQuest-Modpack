@@ -3,6 +3,8 @@ package dev.techquest.hybrid;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -72,6 +74,16 @@ public final class HybridFusionRecipe implements SmithingRecipe {
                 && sourceId.equals(ResourceLocation.fromNamespaceAndPath("ic2", "quantum_chestplate"))
                 && (baseId.getPath().equals("ru_chest_6b43") || baseId.getPath().equals("us_chest_iotv"))) {
             Ic2JetpackCompat.attachIfAbsent(combined);
+        }
+        // Automatic, localized result name. Preserve the player's current
+        // original armor name (including Apotheosis affixes or anvil renames)
+        // as part of the new hybrid name. Renaming via anvil still works later.
+        String technology = combined.get(HybridWarfareMod.TECHNOLOGY);
+        if (technology != null) {
+            combined.set(DataComponents.CUSTOM_NAME, Component.translatable(
+                    "item.techquest_hybrid.fused_name",
+                    Component.translatable("item.techquest_hybrid.prefix." + technology),
+                    input.base().getHoverName()));
         }
         return combined;
     }
