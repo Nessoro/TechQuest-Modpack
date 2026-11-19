@@ -7,10 +7,10 @@ import java.math.RoundingMode;
 public final class EnergyText {
     private EnergyText() {}
 
-    public static String compact(int amount) {
+    public static String compact(long amount) {
         if (amount < 0) amount = 0;
-        if (amount < 1_000) return Integer.toString(amount);
-        int divisor = amount >= 1_000_000 ? 1_000_000 : 1_000;
+        if (amount < 1_000) return Long.toString(amount);
+        long divisor = amount >= 1_000_000 ? 1_000_000 : 1_000;
         String suffix = divisor == 1_000_000 ? "m" : "k";
         return BigDecimal.valueOf(amount)
                 .divide(BigDecimal.valueOf(divisor), 2, RoundingMode.HALF_UP)
