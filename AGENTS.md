@@ -5,7 +5,9 @@ These are persistent instructions for Codex and other coding agents working in t
 ## 1. Project identity and source of truth
 
 - Repository: `Nessoro/TechQuest-Modpack`. **Continue the existing project; do not recreate or replace it.**
-- Current documented baseline (check the repository before every change): **TechQuest 0.3.3-alpha Optimized**, Minecraft Java **1.21.1**, NeoForge **21.1.264**, Java **21**.
+- Current candidate (verify against `modlist.json`): **TechQuest 0.3.3.1 Optimized**, Minecraft Java **1.21.1**, NeoForge **21.1.264**, Java **21**.
+- **Patch-version rule:** every change to the distributed modpack must use a unique four-part version `0.3.3.N`, where `N` increments and is never reused for a different build. Check existing release names/tags and the current manifest before choosing the next number. Keep `modlist.json.version`, `.mrpack` manifest `versionId`, the .NET executable file/product version, installer UI text and website in sync. Distributed filenames must be exactly `TechQuest_0.3.3.N.exe` and `TechQuest_0.3.3.N.mrpack`; a ZIP containing the installer must be `TechQuest_0.3.3.N.zip`. Never append mod names, platform/channel or TEST/PREVIEW labels to these filenames. `TechQuestInstaller.exe` is an internal .NET build intermediate only; the distributed file is renamed by CI.
+
 - There is **one unified Optimized client profile**, not separate Lite and Full releases. Preserve gameplay content while improving performance for weaker and stronger PCs.
 - `modrinth_lock` freezes the selected versions, filenames, SHA-512 and sides. Review coordinated lock changes before changing the selected dependency graph; never bypass a lock failure with an unreviewed upgrade.
 - Treat `modlist.json` as the configuration source of truth for the pack, its exact version pins, required/optional mods, client-only mods, and download records. The README may describe intentions or unverified functionality; do not treat descriptions as proof of a successful game launch.
