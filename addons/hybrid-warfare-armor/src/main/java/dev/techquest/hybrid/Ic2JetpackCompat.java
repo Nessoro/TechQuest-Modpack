@@ -87,7 +87,7 @@ public final class Ic2JetpackCompat {
     }
 
     public static boolean spend(ItemStack armor, int amount) {
-        return attached(armor) && amount >= 0 && prepare()
+        return attached(armor) && amount > 0 && current(armor) >= amount && prepare()
                 && call(dischargeMethod, armor, (double) amount, Integer.MAX_VALUE,
                         true, false, false) >= amount;
     }
