@@ -32,7 +32,10 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Set;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * Add tech upgrades and energy storage to ORIGINAL Superb Warfare armor.
@@ -44,6 +47,8 @@ public final class HybridWarfareMod {
     public static final String MODID = "techquest_hybrid";
     public static final int ENERGY_CAPACITY = 500_000; // NeoForge FE, not native IC2 EU
     public static final int MAX_RECEIVE = 8_000;
+    private static final Pattern IC2_RF_TOOLTIP =
+            Pattern.compile("^(\\d+)\\s*/\\s*(\\d+)\\s*(RF|EU)\\s*$", Pattern.CASE_INSENSITIVE);
 
     public static final DataComponentType<String> TECHNOLOGY = DataComponentType
             .<String>builder().persistent(Codec.STRING)
@@ -279,11 +284,32 @@ public final class HybridWarfareMod {
         }
     }
 
+    private static void compactNativeIc2EnergyLine(List<Component> lines) {
+        for (int i = 0; i < lines.size(); i++) {
+            Component original = lines.get(i);
+            Matcher match = IC2_RF_TOOLTIP.matcher(original.getString());
+            if (!match.matches()) continue;
+            try {
+                long current = Long.parseLong(match.group(1));
+                long maximum = Long.parseLong(match.group(2));
+                String compact = EnergyText.compact(current) + "/" + EnergyText.compact(maximum)
+                        + " " + match.group(3);
+                lines.set(i, Component.literal(compact).withStyle(original.getStyle()));
+            } catch (NumberFormatException ignored) {
+                // Keep unexpected third-party tooltip text unchanged.
+            }
+        }
+    }
+
     private static void tooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         if (!isSuperbWarfareArmor(stack)) return;
         String tech = technology(stack);
         if (tech != null) {
+            // IC2's JetpackHandler adds its own 5072896/10000000 RF line at
+            // HIGH priority. Only abbreviate that line on IC2 hybrid armor,
+            // leaving every other mod's tooltip untouched.
+            if ("ic2".equals(tech)) compactNativeIc2EnergyLine(event.getToolTip());
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.tech",
                     Component.translatable("tooltip.techquest_hybrid.tech." + tech)).withStyle(ChatFormatting.AQUA));
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.energy",
