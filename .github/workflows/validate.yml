@@ -17,39 +17,3 @@ jobs:
         run: |
           python -m unittest discover -s tests -v
           python build_pack.py --help
-
-      - name: Probe BetterBlockZ official Modrinth JAR and dependencies
-        run: |
-          python - <<'PY'
-          import hashlib, json, urllib.request, zipfile, io
-          def get(url):
-              request=urllib.request.Request(url,headers={'User-Agent':'TechQuest-Modpack-CI/0.3.3 (https://github.com/Nessoro/TechQuest-Modpack)'})
-              with urllib.request.urlopen(request,timeout=90) as r:
-                  return r.read()
-          j=json.loads(get('https://api.modrinth.com/v2/version/7E52UnH3'))
-          assert j['project_id']=='oPU4euBQ',j['project_id']
-          assert '1.21.1' in j['game_versions'],j['game_versions']
-          assert 'neoforge' in j['loaders'],j['loaders']
-          assert j['version_number']=='0.2.10-1.21.1-neoforge',j['version_number']
-          print('BBZ_VERSION='+j['version_number'])
-          print('BBZ_PROJECT='+j['project_id'])
-          print('BBZ_RELEASE_ID='+j['id'])
-          print('BBZ_DEPENDENCIES='+json.dumps(j['dependencies'],ensure_ascii=False))
-          for f in j['files']:
-              if not f.get('primary') and len(j['files'])>1:
-                  continue
-              b=get(f['url'])
-              sha512=hashlib.sha512(b).hexdigest()
-              sha1=hashlib.sha1(b).hexdigest()
-              print('BBZ_FILENAME='+f['filename'])
-              print('BBZ_SIZE='+str(len(b)))
-              print('BBZ_SHA512='+sha512)
-              print('BBZ_SHA1='+sha1)
-              print('BBZ_URL='+f['url'])
-              assert sha512==f['hashes']['sha512']
-              assert sha1==f['hashes']['sha1']
-              with zipfile.ZipFile(io.BytesIO(b)) as z:
-                  assert z.testzip() is None
-                  print('BBZ_NEOMOD_METADATA='+str([n for n in z.namelist() if n in ('META-INF/neoforge.mods.toml','META-INF/mods.toml')]))
-              print('BBZ_ORIGINAL_JAR_HASH_VERIFIED=YES')
-          PY
