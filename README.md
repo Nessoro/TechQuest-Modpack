@@ -6,6 +6,8 @@
 
 **[Установка и скачивание](https://nessoro.github.io/TechQuest-Modpack/#download) · [Каталог модов](https://nessoro.github.io/TechQuest-Modpack/#mods) · [Ошибки и предложения](https://nessoro.github.io/TechQuest-Modpack/#feedback)**
 
+**[Русификация TechQuest](docs/LOCALIZATION_RU.md):** начата локализация игровых файлов. В черновике PR #59 добавлены 302 русских ключа BuildCraft Community Edition (механизмы, интерфейс, трубы). Перевод подключается через наш TechQuest Compatibility; язык игрок выбирает вручную. Это не полная русификация и не опубликованная версия; работа в клиенте ещё не подтверждена.
+
 > **Minecraft Java 1.21.1 • NeoForge 21.1.x • Java 21 • сервер с друзьями**
 
 TechQuest — большая комплексная сборка вокруг **BuildCraft Community Edition** и **Industrial Craft 2: Nostalgia**. Дополнительно в план включены Create, Mekanism, Modern Industrialization, AE2, магия, развитие, новые мобы и миры.
