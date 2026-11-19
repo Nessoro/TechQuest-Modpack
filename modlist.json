@@ -107,6 +107,17 @@
       "note": "Issue #52. Official NeoForge 1.21.1 release 0.1.5, project nQR8XALE/version CcRkmcRp; requires existing Refined Storage v2 (2.0.9 pinned). Cross-dimensional infinite-range wireless transmitter, not chunk loading. Exact SHA-512 verified against original Modrinth JAR in GitHub Actions run 44382090584, required dependency Refined Storage KDvYkUg3; full-pack and runtime tests still required before merge; test client, dedicated server, JEI recipe, unloaded chunks and TPS."
     },
     {
+      "project": "refined-storage-quartz-arsenal",
+      "group": "Хранение",
+      "required": true,
+      "version_id": "toDdIhGu",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      },
+      "note": "Issue #54. Quartz Arsenal 1.0.8 (MIT), NeoForge 1.21.1, original project gnwGOmBf / version toDdIhGu; requires existing Refined Storage 2.0.9 (KDvYkUg3). Adds chargeable Wireless Crafting Grid for RS networks; works with IWT subject to in-game tests. Pin SHA-512 and install on client/server; no bundled third-party JAR."
+    },
+    {
       "project": "refined-storage-jei-integration",
       "group": "Интерфейс",
       "required": true,
@@ -1819,6 +1830,17 @@
       "version_id": "CcRkmcRp",
       "filename": "interdimensionalwirelesstransmitter-neoforge-1.21.1-0.1.5.jar",
       "sha512": "7cb1ccf0af474c6229610e3aab81ea671d46e5380577ea194c4a9da80fa9a7eb0b318624faabeb708d82cde6129a4b43fdb4ec9eecebda1839a5d46e6f60e57d",
+      "environment": {
+        "client": "required",
+        "server": "required"
+      }
+    },
+    "gnwGOmBf": {
+      "title": "Refined Storage - Quartz Arsenal",
+      "version": "1.0.8",
+      "version_id": "toDdIhGu",
+      "filename": "refinedstorage-quartz-arsenal-neoforge-1.0.8.jar",
+      "sha512": "faa6530135978a86b25301dd5a5ec673d9908edde01780e4f7ba72e3ead18a0c142a578c428fe49df650c8cca03ec69cdf7a97012b5852f3514fddd23052c8d9",
       "environment": {
         "client": "required",
         "server": "required"
