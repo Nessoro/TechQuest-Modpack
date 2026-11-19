@@ -20,6 +20,8 @@ import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -82,12 +84,20 @@ public final class HybridWarfareMod {
     public HybridWarfareMod(IEventBus bus) {
         COMPONENTS.register(bus);
         SERIALIZERS.register(bus);
+        bus.addListener(HybridWarfareMod::commonSetup);
         // NeoForge queries the first non-null capability provider. Register
         // at LOWEST priority so IC2 and other native jetpack energy handlers
         // are queried before our supplemental FE adapter.
         bus.addListener(EventPriority.LOWEST, HybridWarfareMod::registerCapabilities);
         NeoForge.EVENT_BUS.addListener(HybridWarfareMod::tickPlayer);
         NeoForge.EVENT_BUS.addListener(HybridWarfareMod::tooltip);
+    }
+
+    /** Registered after IC2 has initialized its own electric-item manager. */
+    private static void commonSetup(FMLCommonSetupEvent event) {
+        if (ModList.get().isLoaded("ic2")) {
+            event.enqueueWork(Ic2QuantumChargeManager::register);
+        }
     }
 
     public static boolean isSuperbWarfareArmor(ItemStack stack) {
@@ -102,6 +112,9 @@ public final class HybridWarfareMod {
     }
 
     public static int energyCapacity(ItemStack armor) {
+        if (Ic2QuantumChargeManager.isQuantumHybrid(armor)) {
+            return Ic2QuantumChargeManager.capacity(armor);
+        }
         if ("ic2".equals(technology(armor)) && Ic2JetpackCompat.attached(armor)) {
             return Ic2JetpackCompat.capacity(armor);
         }
@@ -110,6 +123,9 @@ public final class HybridWarfareMod {
 
     public static int charge(ItemStack armor) {
         if (technology(armor) == null) return 0;
+        if (Ic2QuantumChargeManager.isQuantumHybrid(armor)) {
+            return Ic2QuantumChargeManager.stored(armor);
+        }
         if ("ic2".equals(technology(armor)) && Ic2JetpackCompat.attached(armor)) {
             return Ic2JetpackCompat.current(armor);
         }
@@ -118,6 +134,9 @@ public final class HybridWarfareMod {
 
     private static boolean spend(ItemStack armor, int amount) {
         if (amount <= 0 || charge(armor) < amount) return false;
+        if (Ic2QuantumChargeManager.isQuantumHybrid(armor)) {
+            return Ic2QuantumChargeManager.spend(armor, amount);
+        }
         if ("ic2".equals(technology(armor)) && Ic2JetpackCompat.attached(armor)) {
             return Ic2JetpackCompat.spend(armor, amount);
         }
@@ -148,6 +167,11 @@ public final class HybridWarfareMod {
             int accepted = Math.min(Math.min(Math.max(0, requested), MAX_RECEIVE),
                                     Math.max(0, energyCapacity(stack) - charge(stack)));
             if (accepted <= 0) return 0;
+            // QuantumSuit hybrids use the original IC2 donor as the battery,
+            // including in MFSU and existing attached jetpack flight controls.
+            if (Ic2QuantumChargeManager.isQuantumHybrid(stack)) {
+                return Ic2QuantumChargeManager.receive(stack, accepted, simulate);
+            }
             // Preserve IC2's own energy tier, transfer-limit and charge backend.
             if ("ic2".equals(technology(stack)) && Ic2JetpackCompat.attached(stack)) {
                 return Ic2JetpackCompat.receive(stack, accepted, simulate);
