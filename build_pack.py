@@ -512,9 +512,9 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
         if settings:
             archive.writestr("overrides/options.txt", settings)
             archive.writestr("overrides/TECHQUEST_OPTIMIZED.txt",
-                "Unified optimized TechQuest client. Iris shaders are not included. "
-                "Gameplay mods are preserved. Set graphics Fast, view distance 4-6, "
-                "particles minimal. The settings are not a guarantee of FPS gains.\n")
+                "Единый оптимизированный профиль TechQuest. Шейдеры Iris не включены. "
+                "Игровые моды сохранены. Для повышения производительности выберите графику «Быстро», "
+                "дальность прорисовки 4–6 чанков и минимум частиц. Рост FPS не гарантируется.\n")
         for relative, data in guide_overrides().items():
             archive.writestr("overrides/" + relative, data)
         for relative, data in client_config_overrides(cfg).items():
@@ -646,9 +646,9 @@ def main():
         "white-list=true\nenforce-whitelist=true\nenable-rcon=false\n"
         "view-distance=6\nsimulation-distance=5\nallow-flight=true\n", encoding="utf-8")
     (out / "server" / "START_HERE.txt").write_text(
-        "Install official NeoForge %s for Minecraft %s with Java 21; then "
-        "review Mojang EULA and set eula=true only if you agree. Enable whitelist "
-        "and back up the world before mod updates.\n" %
+        "Установите официальный NeoForge %s для Minecraft %s с Java 21. Затем "
+        "ознакомьтесь с EULA Mojang и укажите eula=true, только если согласны. "
+        "Включите белый список игроков и делайте резервные копии мира перед обновлениями модов.\n" %
         (cfg["loader_version"], cfg["minecraft"]), encoding="utf-8")
     write_json(out / "BUILD_STATUS.json", {
         "status": "READY_FOR_GAME_TESTS",
