@@ -3,6 +3,8 @@ package dev.techquest.hybrid;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -59,6 +61,18 @@ public final class HybridFusionRecipe implements SmithingRecipe {
         // Set only the technology result patch; never replace base components.
         combined.applyComponents(result.getComponentsPatch());
         combined.set(HybridWarfareMod.DONOR, input.addition().copyWithCount(1));
+        // IC2 quantum chestplate includes a jetpack. IC2 already supports
+        // attaching an electric jetpack to arbitrary chest armor. Enable its
+        // ORIGINAL attachment mechanic on the 6B43/IOTV instead of inventing
+        // a new flying model or fake potion effect. Its MFSU charger handles
+        // the charge through ElectricItem.manager. Existing attachments stay.
+        ResourceLocation sourceId = BuiltInRegistries.ITEM.getKey(input.addition().getItem());
+        ResourceLocation baseId = BuiltInRegistries.ITEM.getKey(input.base().getItem());
+        if ("ic2".equals(combined.get(HybridWarfareMod.TECHNOLOGY))
+                && sourceId.equals(ResourceLocation.fromNamespaceAndPath("ic2", "quantum_chestplate"))
+                && (baseId.getPath().equals("ru_chest_6b43") || baseId.getPath().equals("us_chest_iotv"))) {
+            Ic2JetpackCompat.attachIfAbsent(combined);
+        }
         return combined;
     }
 
