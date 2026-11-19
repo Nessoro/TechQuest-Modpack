@@ -3,10 +3,10 @@ loaderVersion="[4,)"
 license="MIT"
 [[mods]]
 modId="techquest_hybrid"
-version="0.2.1-SNAPSHOT"
+version="0.2.2-SNAPSHOT"
 displayName="TechQuest Hybrid Warfare Armor"
 authors="TechQuest Project"
-description="Original Superb Warfare armor with rechargeable FE-backed tech upgrades and smithing trim recolors."
+description="Original Superb Warfare armor with native IC2 QuantumSuit charging, technology fusion and named smithing results."
 [[dependencies.techquest_hybrid]]
 modId="neoforge"
 type="required"
