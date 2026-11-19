@@ -123,6 +123,33 @@ class OriginalArmorFusionTests(unittest.TestCase):
             for tech in TECH:
                 self.assertIn("item.techquest_hybrid.prefix." + tech, localized)
 
+    def test_power_bar_does_not_replace_durability_or_plate_hud(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        decorator = (root / "src/main/java/dev/techquest/hybrid/client/HybridArmorEnergyDecorator.java").read_text()
+        main = (root / "src/main/java/dev/techquest/hybrid/HybridWarfareMod.java").read_text()
+        recipe = (root / "src/main/java/dev/techquest/hybrid/HybridFusionRecipe.java").read_text()
+        self.assertIn("RegisterItemDecorationsEvent", decorator)
+        self.assertIn("HybridWarfareMod.energyCapacity(stack)", decorator)
+        self.assertIn("HybridWarfareMod.charge(stack)", decorator)
+        self.assertIn("stack.isBarVisible() ? y + 10 : y + 13", decorator)
+        self.assertIn("int width = capacity <= 0 ? 0", decorator)
+        self.assertIn("graphics.fill", decorator)
+        self.assertIn('data.contains("ArmorPlate")', main)
+        self.assertIn('nbt.putDouble("ArmorPlate", 0.0D)', main)
+        self.assertIn('ensureArmorPlateBar(chest)', main)
+        self.assertIn('HybridWarfareMod.ensureArmorPlateBar(combined)', recipe)
+        self.assertNotIn('set(DataComponents.CUSTOM_DATA,', recipe)
+
+    def test_tooltip_uses_compact_energy_numbers(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        java = (root / "src/main/java/dev/techquest/hybrid/HybridWarfareMod.java").read_text()
+        self.assertIn("EnergyText.compact(charge(stack))", java)
+        self.assertIn("EnergyText.compact(energyCapacity(stack))", java)
+        text = (root / "src/main/java/dev/techquest/hybrid/EnergyText.java").read_text()
+        self.assertIn('1_000_000', text)
+        self.assertIn('"m"', text)
+        self.assertIn('"k"', text)
+
     def test_no_custom_art_generated_or_committed(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         resources = root / "src/main/resources"
