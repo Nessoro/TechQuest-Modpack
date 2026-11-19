@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.neoforged.bus.api.IEventBus;
@@ -109,6 +110,23 @@ public final class HybridWarfareMod {
         if (!isSuperbWarfareArmor(armor)) return null;
         String value = armor.get(TECHNOLOGY);
         return value != null && TECHNOLOGIES.contains(value) ? value : null;
+    }
+
+    /**
+     * Superb Warfare ArmorPlateOverlay reads the chest armor's CUSTOM_DATA
+     * and refuses to render if the "ArmorPlate" key is missing (even at 0).
+     * Create the field for hybrid chestpieces only, without touching an
+     * existing plate value or any other mod's custom NBT.
+     */
+    public static void ensureArmorPlateBar(ItemStack armor) {
+        if (technology(armor) == null) return;
+        String name = BuiltInRegistries.ITEM.getKey(armor.getItem()).getPath();
+        if (!"ru_chest_6b43".equals(name) && !"us_chest_iotv".equals(name)) return;
+        CustomData data = armor.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        if (!data.contains("ArmorPlate")) {
+            CustomData.update(DataComponents.CUSTOM_DATA, armor, nbt ->
+                    nbt.putDouble("ArmorPlate", 0.0D));
+        }
     }
 
     private static boolean isNativeQuantum(ItemStack armor) {
@@ -220,6 +238,8 @@ public final class HybridWarfareMod {
 
         ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        // Also migrate already-crafted 0.2.2 chestpieces with no plate NBT.
+        ensureArmorPlateBar(chest);
         String headTech = technology(helmet);
         String chestTech = technology(chest);
 
@@ -267,7 +287,8 @@ public final class HybridWarfareMod {
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.tech",
                     Component.translatable("tooltip.techquest_hybrid.tech." + tech)).withStyle(ChatFormatting.AQUA));
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.energy",
-                    charge(stack), energyCapacity(stack)).withStyle(ChatFormatting.YELLOW));
+                    EnergyText.compact(charge(stack)), EnergyText.compact(energyCapacity(stack)))
+                    .withStyle(ChatFormatting.YELLOW));
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.recharge").withStyle(ChatFormatting.GRAY));
             ItemStack donor = stack.get(DONOR);
             if (donor != null && !donor.isEmpty()) {
