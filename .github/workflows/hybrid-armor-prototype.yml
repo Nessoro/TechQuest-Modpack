@@ -28,6 +28,12 @@ jobs:
       - name: Test original-armor recipes, trim and asset policy
         working-directory: addons/hybrid-warfare-armor
         run: python -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Smoke-test compact battery text (actual Java)
+        working-directory: addons/hybrid-warfare-armor
+        run: |
+          mkdir -p build/energy-text-test
+          javac -d build/energy-text-test src/main/java/dev/techquest/hybrid/EnergyText.java scripts/EnergyTextSelfTest.java
+          java -cp build/energy-text-test EnergyTextSelfTest
       - name: Verify no new armor art or PNG packed
         working-directory: addons/hybrid-warfare-armor
         run: |
