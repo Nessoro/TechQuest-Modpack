@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - windows-installer/**
+      - tests/updater/**
+      - scripts/sign_release.py
       - tests/neoforge-bootstrap/**
       - scripts/check_neoforge_bootstrap.py
       - scripts/smoke_launcher_install.py
@@ -13,6 +15,17 @@ on:
 permissions:
   contents: read
 jobs:
+  updater:
+    name: Signed update and rollback regression tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Test signature verification, differential updates and rollback
+        run: dotnet run --project tests/updater/UpdaterTests.csproj --configuration Release
   bootstrap:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -32,6 +45,23 @@ jobs:
         run: dotnet run --project tests/neoforge-bootstrap/BootstrapTests.csproj --configuration Release --no-build -- --probe-primary
       - name: Verify real fallback with Maven deliberately unavailable
         run: dotnet run --project tests/neoforge-bootstrap/BootstrapTests.csproj --configuration Release --no-build -- --probe-maven-outage
+  windows-gui-compile:
+    name: Compile the TechQuest Launcher GUI
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Provide build-only placeholder for generated pack resource
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force windows-installer/assets | Out-Null
+          New-Item -ItemType File -Force windows-installer/assets/TechQuest_Optimized.mrpack | Out-Null
+      - name: Compile WinForms UI and updater
+        run: dotnet build windows-installer/TechQuestInstaller.csproj --configuration Release --runtime win-x64 --self-contained true
+
   windows-client-install:
     runs-on: windows-latest
     timeout-minutes: 20

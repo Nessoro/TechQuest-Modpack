@@ -22,19 +22,26 @@ internal static class Program
     }
 }
 
-internal sealed class InstallerForm : Form
+internal sealed partial class InstallerForm : Form
 {
     private const string NeoForgeVersion = "21.1.264";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
 
     private readonly TextBox location = new() { Width = 540 };
     private readonly Button browse = new() { Text = "Обзор…", Width = 110 };
-    private readonly Button install = new() { Text = "1. Установить / обновить", Width = 205, Height = 45 };
+    private readonly Button install = new() { Text = "1. Установить моды", Width = 205, Height = 45 };
     private readonly Button neoforge = new() { Text = "2. Установить NeoForge", Width = 205, Height = 45 };
     private readonly Button openFolder = new() { Text = "Открыть папку", Width = 150, Height = 37 };
     private readonly Button help = new() { Text = "Инструкция", Width = 130, Height = 37 };
     private readonly Button importAmw = new() { Text = "3. Добавить AMW", Width = 205, Height = 37 };
     private readonly Button cancel = new() { Text = "Отмена", Width = 100, Height = 37, Enabled = false };
+    private readonly Button checkUpdates = new() { Text = "Проверить GitHub", Width = 225, Height = 45 };
+    private readonly Button applyUpdate = new() { Text = "Обновить сборку", Width = 205, Height = 39, Enabled = false };
+    private readonly Button rollback = new() { Text = "Откатить обновление", Width = 205, Height = 39 };
+    private readonly Button downloadExe = new() { Text = "Новый EXE", Width = 205, Height = 39, Enabled = false };
+    private readonly CheckBox previewUpdates = new() { Text = "Включая тестовые релизы", Checked = true, AutoSize = true };
+    private TrustedRelease? availableRelease;
+    private bool updateAvailable;
     private readonly ProgressBar progress = new() { Width = 695, Height = 19 };
     private readonly Label status = new() { Text = "Готово к установке. Minecraft Launcher и Java 21 устанавливаются отдельно.", AutoSize = false, Width = 710, Height = 45 };
     private CancellationTokenSource? cancellation;
@@ -44,72 +51,27 @@ internal sealed class InstallerForm : Form
 
     internal InstallerForm()
     {
-        Text = "TechQuest — установщик Minecraft 1.21.1";
-        Width = 800;
-        Height = 680;
-        MinimumSize = new Size(760, 660);
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = Color.FromArgb(15, 22, 34);
-        ForeColor = Color.WhiteSmoke;
-        Font = new Font("Segoe UI", 10F);
-        FormBorderStyle = FormBorderStyle.FixedDialog;
-        MaximizeBox = false;
+        BuildLauncherLayout();
 
-        var title = new Label { Text = "TECHQUEST  ·  INSTALLER", Left = 30, Top = 26,
-            Width = 715, Height = 43, ForeColor = Color.FromArgb(172, 236, 125),
-            Font = new Font("Segoe UI", 21F, FontStyle.Bold) };
-        var subtitle = new Label { Text = "Minecraft Java 1.21.1  •  NeoForge " + NeoForgeVersion +
-            "  •  BuildCraft + IndustrialCraft", Left = 32, Top = 78, Width = 710, Height = 30,
-            ForeColor = Color.FromArgb(175, 194, 212) };
-        var heading = new Label { Text = "TechQuest 0.3.3 — приключения, физика и оптимизация", Left = 32, Top = 126,
-            Width = 700, Height = 30, Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
-        var liteDesc = new Label { Text = "Сохранены все игровые моды. Ускорение: Sodium, ImmediatelyFast, More Culling,",
-            Left = 36, Top = 168, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
-        var moreDesc = new Label { Text = "BadOptimizations, Dynamic FPS, FerriteCore и ModernFix. Без Iris и шейдеров.",
-            Left = 36, Top = 197, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
-        var pathHeading = new Label { Text = "Папка TechQuest (новая или существующая)", Left = 32, Top = 280,
-            Width = 690, Height = 26, Font = new Font("Segoe UI", 11F, FontStyle.Bold) };
-        location.Location = new Point(32, 311);
-        browse.Location = new Point(596, 309);
+        location.Text = Path.Combine(baseDir, "TechQuest_0.3.3_Alpha");
         browse.Click += (_, _) =>
         {
-            using var dialog = new FolderBrowserDialog {
-                Description = "Выберите папку существующего TechQuest или создайте одну новую",
+            using var dialog = new FolderBrowserDialog
+            {
+                Description = "Выберите папку TechQuest (новую или ранее установленную)",
                 SelectedPath = Directory.Exists(location.Text) ? location.Text : baseDir,
                 ShowNewFolderButton = true
             };
-            if (dialog.ShowDialog(this) == DialogResult.OK)
-                location.Text = dialog.SelectedPath;
+            if (dialog.ShowDialog(this) == DialogResult.OK) location.Text = dialog.SelectedPath;
         };
+        location.TextChanged += (_, _) => RefreshProfileStatus();
 
-        var safety = new Label {
-            Text = "Единый набор игровых модов для любого ПК и общего сервера.\n" +
-                   "Моды скачиваются по HTTPS с проверкой SHA-512 / SHA-1.",
-            Left = 32, Top = 354, Width = 710, Height = 54,
-            ForeColor = Color.FromArgb(175, 194, 212)
-        };
-
-        install.Location = new Point(32, 421);
-        neoforge.Location = new Point(246, 421);
-        openFolder.Location = new Point(32, 488);
-        help.Location = new Point(190, 488);
-        cancel.Location = new Point(330, 488);
-        importAmw.Location = new Point(462, 488);
-        progress.Location = new Point(32, 535);
-        status.Location = new Point(32, 557);
-        install.BackColor = Color.FromArgb(168, 227, 117);
-        install.ForeColor = Color.FromArgb(18, 33, 18);
-        neoforge.BackColor = Color.FromArgb(41, 56, 79);
-        neoforge.ForeColor = Color.White;
-        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importAmw })
-        {
-            button.FlatStyle = FlatStyle.Flat;
-            button.FlatAppearance.BorderSize = 0;
-        }
-
-        install.Click += async (_, _) => await InstallAsync();
+        install.Click += async (_, _) => await PrimaryActionAsync();
+        verifyIntegrity.Click += async (_, _) => await RepairMissingAsync();
+        playOfficial.Click += (_, _) => LaunchMinecraftOfficially();
         neoforge.Click += async (_, _) => await NeoForgeAsync();
-        openFolder.Click += (_, _) => {
+        openFolder.Click += (_, _) =>
+        {
             var path = installedGameDir ?? location.Text;
             if (Directory.Exists(path))
                 Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
@@ -117,11 +79,17 @@ internal sealed class InstallerForm : Form
         cancel.Click += (_, _) => cancellation?.Cancel();
         help.Click += (_, _) => ShowInstructions();
         importAmw.Click += (_, _) => ImportAcceleratedMcWarfare();
-        Controls.AddRange(new Control[] {
-            title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
-            browse, safety, install, neoforge, openFolder, help, cancel, importAmw, progress, status
-        });
-        location.Text = Path.Combine(baseDir, "TechQuest");
+        checkUpdates.Click += async (_, _) => await CheckForUpdatesAsync();
+        applyUpdate.Click += async (_, _) => await ApplyUpdateAsync();
+        rollback.Click += async (_, _) => await RollbackAsync();
+        downloadExe.Click += async (_, _) => await DownloadNewInstallerAsync();
+        previewUpdates.CheckedChanged += async (_, _) => await CheckForUpdatesAsync();
+        Shown += async (_, _) =>
+        {
+            RefreshProfileStatus();
+            await CheckForUpdatesAsync();
+        };
+        RefreshProfileStatus();
     }
 
     private void SetBusy(bool busy, bool cancellable)
@@ -129,32 +97,41 @@ internal sealed class InstallerForm : Form
         install.Enabled = !busy;
         neoforge.Enabled = !busy;
         importAmw.Enabled = !busy;
+        playOfficial.Enabled = !busy && currentProfile == ProfileMode.Managed;
+        verifyIntegrity.Enabled = !busy && currentProfile == ProfileMode.Managed;
         browse.Enabled = !busy;
+        checkUpdates.Enabled = !busy;
+        applyUpdate.Enabled = !busy && availableRelease != null && updateAvailable;
+        rollback.Enabled = !busy && currentProfile == ProfileMode.Managed &&
+            File.Exists(Path.Combine(location.Text, ".techquest", "rollback.json"));
+        downloadExe.Enabled = !busy && availableRelease != null;
+        previewUpdates.Enabled = !busy;
         location.ReadOnly = busy;
         cancel.Enabled = busy && cancellable;
         UseWaitCursor = busy;
+        if (!busy) RefreshProfileStatus();
     }
 
     private void ShowInstructions()
     {
         MessageBox.Show(this,
-            "1. Выберите одну папку TechQuest и нажмите «Установить / обновить»; Python не нужен.\n" +
-            "2. При обновлении существующего TechQuest сохранения и настройки остаются;\n" +
-            "   предыдущие JAR сохраняются в .techquest-previous-mods (одна копия).\n" +
-            "   Дополнительные сторонние JAR (например AMW) нужно импортировать повторно.\n" +
+            "1. Выберите новую или уже установленную папку TechQuest; Python и консоль не нужны.\n" +
+            "   Требуются лицензионная Minecraft Java Edition, вход в официальный Launcher Microsoft.\n" +
+            "   TechQuest никогда не запрашивает и не хранит пароль Microsoft, токены или cookies.\n" +
+            "2. Для уже установленной TechQuest нажмите «Проверить TechQuest».\n" +
             "3. Установите Java 21, если её нет на компьютере.\n" +
-            "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
-            "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
-            "5. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
-            "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
-            "7. AMW (необязательно): скачайте официальный JAR с CurseForge, затем нажмите «3. Добавить AMW».\n" +
+            "4. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
+            "5. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
+            "6. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
+            "7. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
+            "8. AMW (необязательно): скачайте официальный JAR с CurseForge, затем нажмите «Добавить AMW».\n" +
             "   Для сервера положите тот же JAR в mods и проверьте совместимость с Incoming.\n" +
             "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
             "В игре: Xaero Minimap/World Map, здоровье мобов Health Indicator TXF (HP цифрами),\n" +
             "книга «Путеводитель TechQuest» через Patchouli (в творческом режиме).\n" +
             "В режиме выживания руководство выдаётся при первом входе в мир.\n" +
-            "Project MMO: большой список навыков скрыт; Left Alt — показать/скрыть.\n\n" +
+            "Project MMO и TechQuest RPG Core исключены из текущего профиля.\n\n" +
             "Сервер общий; все игровые механики сохранены. Тестируйте новый мир.",
             "Как запустить TechQuest", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
@@ -212,14 +189,11 @@ internal sealed class InstallerForm : Form
                 const string miOriginal = "forgeEnergyPerEu = 17\nspawnWithGuideBook = true\nrespawnWithGuideBook = true\n[recipes]\ncompostableToPlantOil = false\n";
                 File.WriteAllText(miPath, miOriginal);
                 InstallGuideOverrides(probe);
-                string miAfter = File.ReadAllText(miPath);
-                if (!miAfter.Contains("spawnWithGuideBook = true") ||
-                    !miAfter.Contains("respawnWithGuideBook = false") ||
-                    !miAfter.Contains("forgeEnergyPerEu = 17") ||
-                    !miAfter.Contains("compostableToPlantOil = false")) return 28;
-                if (File.ReadAllText(miPath + ".techquest-original.bak") != miOriginal) return 29;
+                // Never change existing world data from the launcher.
+                if (File.ReadAllText(miPath) != miOriginal) return 28;
                 InstallGuideOverrides(probe);
-                if (File.ReadAllText(miPath + ".techquest-original.bak") != miOriginal) return 30;
+                if (File.ReadAllText(miPath) != miOriginal ||
+                    File.Exists(miPath + ".techquest-original.bak")) return 29;
                 string options = File.ReadAllText(Path.Combine(probe, "options.txt"));
                 if (!options.Split('\n').Contains("graphicsMode:0") ||
                     !options.Split('\n').Contains("maxFps:60")) return 8;
@@ -273,54 +247,8 @@ internal sealed class InstallerForm : Form
             {
                 if (Directory.Exists(probe)) Directory.Delete(probe, recursive: true);
             }
-            // In-place update self-test: only the mods folder swaps, with one
-            // recoverable backup and unchanged player-owned files.
-            string updateProbe = Path.Combine(probe, "update");
-            Directory.CreateDirectory(Path.Combine(updateProbe, "mods"));
-            File.WriteAllText(Path.Combine(updateProbe, "TechQuest_НАСТРОЙКА.txt"), "managed");
-            File.WriteAllText(Path.Combine(updateProbe, "mods", "old.jar"), "old");
-            File.WriteAllText(Path.Combine(updateProbe, "mods", "techquest-rpg-core-0.1.0.jar"), "old-rpg");
-            File.WriteAllText(Path.Combine(updateProbe, "mods", "pmmo-legacy.jar"), "old-pmmo");
-            Directory.CreateDirectory(Path.Combine(updateProbe, "saves", "world1"));
-            File.WriteAllText(Path.Combine(updateProbe, "saves", "world1", "level.dat"), "world");
-            File.WriteAllText(Path.Combine(updateProbe, "options.txt"), "controls");
-            string staged = Path.Combine(updateProbe, ".staged");
-            Directory.CreateDirectory(staged);
-            File.WriteAllText(Path.Combine(staged, "fresh.jar"), "fresh");
-            StageFirstPartyCompatibilityJar(staged);
-            ActivateStagedMods(updateProbe, staged, () => { });
-            if (!File.Exists(Path.Combine(updateProbe, "mods", "fresh.jar")) ||
-                File.Exists(Path.Combine(updateProbe, "mods", "old.jar")) ||
-                !File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "old.jar")) ||
-                !File.Exists(Path.Combine(updateProbe, "mods", "techquest-compat-1.0.0.jar")) ||
-                File.Exists(Path.Combine(updateProbe, "mods", "techquest-rpg-core-0.1.0.jar")) ||
-                File.Exists(Path.Combine(updateProbe, "mods", "pmmo-legacy.jar"))) return 20;
-            if (File.ReadAllText(Path.Combine(updateProbe, "options.txt")) != "controls" ||
-                File.ReadAllText(Path.Combine(updateProbe, "saves", "world1", "level.dat")) != "world")
-                return 21;
-            // Second successful update replaces (not multiplies) the backup.
-            Directory.CreateDirectory(staged);
-            File.WriteAllText(Path.Combine(staged, "newer.jar"), "newer");
-            StageFirstPartyCompatibilityJar(staged);
-            ActivateStagedMods(updateProbe, staged, () => { });
-            if (!File.Exists(Path.Combine(updateProbe, "mods", "newer.jar")) ||
-                !File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "fresh.jar")) ||
-                File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "old.jar")) ||
-                Directory.Exists(Path.Combine(updateProbe, ".techquest-backup-rotation"))) return 28;
-            // A failed update must restore BOTH the current mods and prior backup.
-            Directory.CreateDirectory(staged);
-            File.WriteAllText(Path.Combine(staged, "failed.jar"), "bad");
-            try
-            {
-                ActivateStagedMods(updateProbe, staged, () => throw new IOException("rollback-test"));
-                return 22;
-            }
-            catch (IOException) { }
-            if (!File.Exists(Path.Combine(updateProbe, "mods", "newer.jar")) ||
-                File.Exists(Path.Combine(updateProbe, "mods", "failed.jar")) ||
-                !File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "fresh.jar")) ||
-                Directory.Exists(Path.Combine(updateProbe, ".techquest-backup-rotation")) ||
-                File.ReadAllText(Path.Combine(updateProbe, "options.txt")) != "controls") return 23;
+            // Transactional upgrade/rollback tests reside in tests/updater.
+            Directory.CreateDirectory(probe);
             // Caching is only allowed after checking BOTH file size and SHA;
             // stale or tampered JARs are never reused.
             byte[] sample = Encoding.UTF8.GetBytes("verified-existing-jar");
@@ -340,7 +268,6 @@ internal sealed class InstallerForm : Form
             if (TryReuseVerifiedJar(sampleMod, probe, Path.Combine(probe, "missing-backup"), cacheStage)) return 27;
             Directory.Delete(cacheStage, recursive: true);
             File.Delete(cacheTest);
-            Directory.Delete(updateProbe, recursive: true);
             Directory.Delete(probe, recursive: true);
             return 0;
         }
@@ -532,71 +459,6 @@ internal sealed class InstallerForm : Form
             using var output = File.Create(destination);
             source.CopyTo(output);
         }
-        DisableMiRespawnGuideInExistingWorlds(gameDirectory);
-    }
-
-
-    private static void DisableMiRespawnGuideInExistingWorlds(string gameDirectory)
-    {
-        // Explicit one-key opt-out requested by pack owner. Preserve all world
-        // data, recipes and other config keys; back up the original once.
-        const string name = "modern_industrialization-server.toml";
-        var candidates = new List<string>
-        {
-            Path.Combine(gameDirectory, "config", name) // legacy MI config location
-        };
-        string savesRoot = Path.Combine(gameDirectory, "saves");
-        if (Directory.Exists(savesRoot))
-        {
-            foreach (string worldDir in Directory.EnumerateDirectories(savesRoot))
-            {
-                if ((File.GetAttributes(worldDir) & FileAttributes.ReparsePoint) != 0)
-                    continue;
-                candidates.Add(Path.Combine(worldDir, "serverconfig", name));
-            }
-        }
-        foreach (string configPath in candidates)
-        {
-            if (!File.Exists(configPath) ||
-                (File.GetAttributes(configPath) & FileAttributes.ReparsePoint) != 0)
-                continue;
-            byte[] bytes = File.ReadAllBytes(configPath);
-            bool hasBom = bytes.Length >= 3 && bytes[0] == 0xEF &&
-                          bytes[1] == 0xBB && bytes[2] == 0xBF;
-            int offset = hasBom ? 3 : 0;
-            string current = new UTF8Encoding(false, true)
-                .GetString(bytes, offset, bytes.Length - offset);
-            if (current.Contains('\0')) continue;
-            string updated = System.Text.RegularExpressions.Regex.Replace(
-                current, @"(?m)^([ \t]*respawnWithGuideBook[ \t]*=[ \t]*)true\b",
-                m => m.Groups[1].Value + "false",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            if (updated == current)
-            {
-                if (current.Contains("respawnWithGuideBook", StringComparison.Ordinal))
-                    continue; // already false or unknown syntax: do not alter it
-                updated = "respawnWithGuideBook = false\n" + current;
-            }
-            string backup = configPath + ".techquest-original.bak";
-            if (File.Exists(backup) &&
-                (File.GetAttributes(backup) & FileAttributes.ReparsePoint) != 0)
-                throw new IOException("Unsafe MI guide backup path: " + backup);
-            if (!File.Exists(backup))
-                File.Copy(configPath, backup, overwrite: false);
-            string temporary = configPath + ".techquest-" + Guid.NewGuid().ToString("N") + ".tmp";
-            byte[] payload = Encoding.UTF8.GetBytes(updated);
-            if (hasBom)
-                payload = new byte[] { 0xEF, 0xBB, 0xBF }.Concat(payload).ToArray();
-            try
-            {
-                File.WriteAllBytes(temporary, payload);
-                File.Move(temporary, configPath, overwrite: true);
-            }
-            finally
-            {
-                if (File.Exists(temporary)) File.Delete(temporary);
-            }
-        }
     }
 
     private void ImportAcceleratedMcWarfare()
@@ -667,63 +529,140 @@ internal sealed class InstallerForm : Form
         }
     }
 
-    private static bool IsManagedProfile(string target)
+    private async Task CheckForUpdatesAsync()
     {
-        return File.Exists(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt")) ||
-               File.Exists(Path.Combine(target, "TECHQUEST_LAUNCHER_README.txt")) ||
-               File.Exists(Path.Combine(target, "TECHQUEST_OPTIMIZED.txt"));
-    }
-
-    // Verified downloads are staged before swapping mods. Keep exactly one
-    // rolling backup, and park any older backup until activation succeeds.
-    private static void ActivateStagedMods(string target, string staging, Action finishInstall)
-    {
-        string current = Path.Combine(target, "mods");
-        string previous = Path.Combine(target, ".techquest-previous-mods");
-        string rotation = Path.Combine(target, ".techquest-backup-rotation");
-        if (Directory.Exists(rotation) || File.Exists(rotation))
-            throw new IOException("Незавершённая замена резервной копии: " + rotation +
-                ". Проверьте её вручную перед повторной установкой.");
-        if (File.Exists(current) || File.Exists(previous))
-            throw new IOException("Путь mods или резервной копии занят файлом.");
-        bool hadMods = Directory.Exists(current) &&
-                       Directory.EnumerateFileSystemEntries(current).Any();
-        if (Directory.Exists(current) && !hadMods)
-            Directory.Delete(current);
-        bool olderParked = false, oldMoved = false, newMoved = false;
+        if (cancellation != null) return;
+        checkUpdates.Enabled = false;
+        applyUpdate.Enabled = false;
+        downloadExe.Enabled = false;
+        availableRelease = null;
+        updateAvailable = false;
         try
         {
-            if (hadMods && Directory.Exists(previous))
+            releaseStatus.Text = "Проверяем подписанные публикации GitHub…";
+            var found = await ReleaseUpdates.CheckAsync(previewUpdates.Checked, CancellationToken.None);
+            if (found is null)
             {
-                Directory.Move(previous, rotation);
-                olderParked = true;
+                releaseStatus.Text = "Подписанных релизов пока нет. Существующие выпуски можно установить вручную.";
+                return;
             }
-            if (hadMods)
-            {
-                Directory.Move(current, previous);
-                oldMoved = true;
-            }
-            Directory.Move(staging, current);
-            newMoved = true;
-            finishInstall();
+            availableRelease = found;
+            var current = TransactionalMods.GetInstalled(location.Text);
+            if (current != null && current.ReleaseTag == found.Tag)
+                releaseStatus.Text = "Установлена последняя подписанная версия " + found.Tag;
+            else
+                releaseStatus.Text = "Доступно проверенное обновление " + found.Tag +
+                    ". Установка только по вашему подтверждению.";
+            updateAvailable = current != null && current.ReleaseTag != found.Tag;
+            applyUpdate.Enabled = updateAvailable;
+            downloadExe.Enabled = true;
         }
-        catch
+        catch (Exception ex)
         {
-            if (newMoved && Directory.Exists(current))
-                Directory.Move(current, staging);
-            if (oldMoved && Directory.Exists(previous))
-                Directory.Move(previous, current);
-            if (olderParked && Directory.Exists(rotation))
-                Directory.Move(rotation, previous);
-            throw;
+            // Do not log local paths, tokens, HTTP bodies or other private data.
+            releaseStatus.Text = "Нет соединения или подпись не прошла проверку: " +
+                          ex.GetType().Name;
         }
-        // A successful install must not be rolled back because Windows locks
-        // obsolete backup files during cleanup. Inspect rotation if retained.
-        if (olderParked)
+        finally { checkUpdates.Enabled = true; RefreshProfileStatus(); }
+    }
+
+    private async Task ApplyUpdateAsync()
+    {
+        var release = availableRelease;
+        if (release is null) return;
+        string root = Path.GetFullPath(location.Text);
+        if (MessageBox.Show(this,
+            "Установить подписанный " + release.Tag + "?\n" +
+            "Будут заменены только управляемые моды. Миры, настройки, скриншоты и сторонние JAR не удаляются.\n" +
+            "Закройте Minecraft перед продолжением. При обновлении сервера потребуется такая же версия.",
+            "Обновление TechQuest", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+        cancellation = new CancellationTokenSource();
+        SetBusy(true, true);
+        try
         {
-            try { Directory.Delete(rotation, recursive: true); }
-            catch (IOException) { }
-            catch (UnauthorizedAccessException) { }
+            if (Directory.Exists(root) &&
+                File.Exists(Path.Combine(root, ".techquest", "transaction.json")))
+                TransactionalMods.RecoverPending(root);
+            var pack = await ReleaseUpdates.DownloadPackAsync(release, cancellation.Token);
+            int count = await TransactionalMods.UpdateAsync(root, release, pack,
+                new Progress<string>(value => status.Text = value), cancellation.Token);
+            MessageBox.Show(this, $"Обновлено файлов: {count}.\nВерсия: {release.Tag}\n" +
+                "Запускайте игру через официальный Minecraft Launcher.",
+                "TechQuest обновлён", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            updateAvailable = false;
+            applyUpdate.Enabled = false;
+        }
+        catch (Exception ex)
+        {
+            status.Text = "Обновление не применено: " + ex.Message;
+            MessageBox.Show(this, "Обновление прервано. При необходимости восстановление будет " +
+                "выполнено следующим запуском.\n" + ex.Message,
+                "TechQuest: безопасная отмена", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        finally
+        {
+            SetBusy(false, false);
+            cancellation.Dispose();
+            cancellation = null;
+        }
+    }
+
+    private async Task RollbackAsync()
+    {
+        string root = Path.GetFullPath(location.Text);
+        if (MessageBox.Show(this,
+            "Вернуть предыдущий набор управляемых модов? Миры и пользовательские настройки не изменятся.",
+            "Откат TechQuest", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+        cancellation = new CancellationTokenSource();
+        SetBusy(true, true);
+        try
+        {
+            int count = await TransactionalMods.RollbackAsync(root,
+                new Progress<string>(value => status.Text = value), cancellation.Token);
+            status.Text = $"Откат завершён. Восстановлено модов: {count}.";
+            MessageBox.Show(this, "Предыдущая версия восстановлена. " +
+                "Если мир уже открывался в новой версии, его данные не откатывались.",
+                "Откат завершён", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            status.Text = "Откат не выполнен: " + ex.Message;
+            MessageBox.Show(this, ex.Message, "Ошибка отката",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        finally
+        {
+            SetBusy(false, false);
+            cancellation.Dispose();
+            cancellation = null;
+        }
+    }
+
+    private async Task DownloadNewInstallerAsync()
+    {
+        var release = availableRelease;
+        if (release is null) return;
+        cancellation = new CancellationTokenSource();
+        SetBusy(true, true);
+        try
+        {
+            string file = await ReleaseUpdates.DownloadInstallerAsync(release, baseDir, cancellation.Token);
+            status.Text = "Новый EXE скачан и проверен по подписанному SHA-256.";
+            MessageBox.Show(this, "Новый EXE проверен и сохранён:\n" + file + "\n\n" +
+                "Он не запускается автоматически. Закройте старый установщик и запустите новый вручную.",
+                "Подписанный установщик", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            status.Text = "Новый EXE не скачан: " + ex.GetType().Name;
+            MessageBox.Show(this, ex.Message, "Ошибка проверки EXE",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        finally
+        {
+            SetBusy(false, false);
+            cancellation.Dispose();
+            cancellation = null;
         }
     }
 
@@ -749,33 +688,20 @@ internal sealed class InstallerForm : Form
         string mods = Path.Combine(target, "mods");
         string vanillaRoot = Path.GetFullPath(Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft"));
-        if (string.Equals(target.TrimEnd('\\'), vanillaRoot.TrimEnd('\\'),
+        if (string.Equals(target.TrimEnd(Path.DirectorySeparatorChar),
+                vanillaRoot.TrimEnd(Path.DirectorySeparatorChar),
                 StringComparison.OrdinalIgnoreCase))
         {
             MessageBox.Show(this, "Выберите отдельный профиль TechQuest, а не общий .minecraft.",
-                "Безопасность обновления", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                "Безопасность установки", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
-        bool updating = Directory.Exists(mods) &&
-                        Directory.EnumerateFileSystemEntries(mods).Any();
-        if (updating && !IsManagedProfile(target))
+        if (Directory.Exists(mods) && Directory.EnumerateFiles(mods, "*.jar").Any())
         {
-            MessageBox.Show(this,
-                "Найдены сторонние моды, но нет маркера установки TechQuest.\n" +
-                "Для безопасности автоматическое обновление запрещено.",
-                "Неизвестный профиль", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(this, "В выбранной папке уже есть моды. Для безопасности выберите новую пустую папку.",
+                "Нельзя смешивать модпаки", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
-        if (updating && MessageBox.Show(this,
-                "Обновить существующий TechQuest в этой же папке?\n\n" +
-                "Миры, карты, конфиги и настройки управления останутся на месте.\n" +
-                "Предыдущие JAR перейдут в одну резервную папку .techquest-previous-mods.\n" +
-                "Предыдущая резервная папка (если есть) будет заменена.\n" +
-                "Неофициальные дополнительные JAR (например AMW) потребуется добавить снова.\n\n" +
-                "Перед обновлением закройте Minecraft и сделайте копию важного мира.",
-                "Обновление TechQuest", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                != DialogResult.Yes) return;
-
         cancellation = new CancellationTokenSource();
         SetBusy(true, true);
         string staging = Path.Combine(target, ".techquest-download-" + Guid.NewGuid().ToString("N"));
@@ -787,69 +713,53 @@ internal sealed class InstallerForm : Form
             progress.Minimum = 0;
             progress.Maximum = list.Count;
             progress.Value = 0;
-            int completed = 0, reused = 0, downloaded = 0;
-            // Progress<T> marshals events to WinForms' UI synchronization context.
-            IProgress<(int done, string name, bool reused)> updates =
-                new Progress<(int done, string name, bool reused)>(item =>
+            int completed = 0;
+            IProgress<(int done, string name)> updates = new Progress<(int done, string name)>(
+                item =>
                 {
                     progress.Value = Math.Min(item.done, list.Count);
-                    status.Text = $"Готово {item.done}/{list.Count}: {item.name}" +
-                                  (item.reused ? " (из локальных файлов)" : " (скачано)");
+                    status.Text = $"Загружено {item.done}/{list.Count}: {item.name}";
                 });
-            // A handful of concurrent downloads is faster for many small JARs
-            // without overwhelming the Modrinth CDN or saturating slow links.
+            // Preserve bounded parallel downloads and retries from main.
             await Parallel.ForEachAsync(list, new ParallelOptions
             {
                 MaxDegreeOfParallelism = 5,
                 CancellationToken = cancellation.Token
             }, async (mod, token) =>
             {
-                string destination = Path.Combine(staging, mod.Name);
-                bool fromCache = TryReuseVerifiedJar(mod, mods,
-                    Path.Combine(target, ".techquest-previous-mods"), staging);
-                if (fromCache)
-                    Interlocked.Increment(ref reused);
-                else
-                {
-                    await DownloadWithRetryAsync(mod, destination, token);
-                    Interlocked.Increment(ref downloaded);
-                }
-                updates.Report((Interlocked.Increment(ref completed), mod.Name, fromCache));
+                await DownloadWithRetryAsync(mod, Path.Combine(staging, mod.Name), token);
+                updates.Report((Interlocked.Increment(ref completed), mod.Name));
             });
-            // Retain TechQuest Compatibility only; do not stage RPG Core.
             StageFirstPartyCompatibilityJar(staging);
             cancellation.Token.ThrowIfCancellationRequested();
-            ActivateStagedMods(target, staging, () =>
-            {
-                InstallGuideOverrides(target); // existing saves/config/options are untouched
-                File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
-                    "TechQuest 0.3.3-micro3\n" +
-                    "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +
-                    "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +
-                    target + "\nJava 21. Не используйте ванильный профиль.\n",
-                    Encoding.UTF8);
-            });
+            if (Directory.Exists(mods)) Directory.Delete(mods, recursive: false);
+            Directory.Move(staging, mods);
+            InstallGuideOverrides(target);
+            using (var embedded = GetEmbeddedPack())
+                TransactionalMods.RecordInitialInstallation(target, embedded);
             installedGameDir = target;
-            status.Text = $"TechQuest: {list.Count} модов, из локальных файлов {reused}, скачано {downloaded}. Профиль Launcher не меняется.";
+            File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
+                "TechQuest 0.3.3 Alpha\n" +
+                "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +
+                "Установите официальный NeoForge (кнопка в установщике).\n" +
+                "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +
+                target + "\nJava 21. Не используйте ванильный профиль.\n", Encoding.UTF8);
+            status.Text = $"Установлено {list.Count} файлов. Далее установите NeoForge и настройте профиль Minecraft.";
             MessageBox.Show(this,
-                (updating ? "TechQuest обновлён в существующей папке!\n\n" :
-                             "TechQuest установлен!\n\n") +
-                target + "\n\n" +
-                (updating ? "Старые моды: .techquest-previous-mods.\n" +
-                            "Ваши миры, настройки и Game Directory сохранены.\n" +
-                            "При необходимости повторно импортируйте дополнительные JAR." :
-                            "Установите NeoForge 21.1.264 и укажите эту папку в Launcher."),
-                "TechQuest 0.3.3-micro3", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                $"Моды TechQuest Optimized установлены!\n\n" +
+                target + "\n\nТеперь нажмите «Установить NeoForge», затем выберите эту папку " +
+                "в официальном Minecraft Launcher (Установки → профиль NeoForge → Папка игры).",
+                "Установка завершена", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (OperationCanceledException)
         {
-            status.Text = "Установка отменена; прежние моды остались без изменений.";
+            status.Text = "Установка отменена.";
         }
         catch (Exception ex)
         {
             status.Text = "Ошибка: " + ex.Message;
             MessageBox.Show(this, ex.Message,
-                "Ошибка установки/обновления", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                "Ошибка установки", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         finally
         {
@@ -860,6 +770,7 @@ internal sealed class InstallerForm : Form
             SetBusy(false, false);
             cancellation?.Dispose();
             cancellation = null;
+            RefreshProfileStatus();
         }
     }
 

@@ -1,5 +1,7 @@
 # TechQuest: Industrial Frontier
 
+> **TechQuest Launcher (PR #46, Draft):** защищённые подписанные обновления, проверка существующей установки и откат разрабатываются в [отдельном PR](https://github.com/Nessoro/TechQuest-Modpack/pull/46). До завершения Windows/игровых тестов это **не опубликованный релиз**. [Модель безопасности](docs/SECURE_UPDATES_RU.md).
+
 ## 🌐 [Открыть сайт TechQuest →](https://nessoro.github.io/TechQuest-Modpack/)
 
 **[Журнал решений и изменений 0.3.3](docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md)** · **Технические задания для Codex (EN):** [micro3](docs/technical-specs/TZ_TechQuest_micro3.md) · [micro4](docs/technical-specs/TZ_TechQuest_micro4.md) · [micro5](docs/technical-specs/TZ_TechQuest_micro5.md) · [micro6 (архив эксперимента)](docs/technical-specs/TZ_TechQuest_micro6.md)
