@@ -1,9 +1,10 @@
 """Generate recipes and tags ONLY. No PNG, model, icon or skin-pack assets.
 
-The result of each smithing recipe is the ORIGINAL Superb Warfare item with
-a single custom component. Minecraft 1.21.1 SmithingTransformRecipe copies all
-base components and patches this component: base durability, enchants, ArmorPlate
-custom data and any pre-existing trim stay intact.
+The result is the ORIGINAL Superb Warfare item. The custom
+techquest_hybrid:armor_fusion recipe copies all base components AND snapshots
+the donor ItemStack (including its modules/charge/enchants) into a separate
+persistent component. This snapshot does not automatically execute donor
+item-class-specific skills.
 """
 import json
 from pathlib import Path
@@ -43,7 +44,7 @@ def generate():
             original = "superbwarfare:" + name
             donor = helmet_donor if slot == "helmet" else chest_donor
             write_json(RECIPES / (tech + "_" + name + ".json"), {
-                "type": "minecraft:smithing_transform",
+                "type": "techquest_hybrid:armor_fusion",
                 "template": {"item": "minecraft:netherite_upgrade_smithing_template"},
                 "base": {"item": original},
                 "addition": {"item": donor},
@@ -65,6 +66,8 @@ def generate():
         "tooltip.techquest_hybrid.tech": "Технологическое улучшение: %s",
         "tooltip.techquest_hybrid.energy": "Энергия: %s / %s FE",
         "tooltip.techquest_hybrid.recharge": "Заряди в устройстве, поддерживающем FE",
+        "tooltip.techquest_hybrid.donor": "Встроенный предмет: %s",
+        "tooltip.techquest_hybrid.donor.warning": "Данные донора сохранены; не все его функции подключены",
         "tooltip.techquest_hybrid.tech.ic2": "IC2: Nostalgia",
         "tooltip.techquest_hybrid.tech.mi": "Modern Industrialization",
         "tooltip.techquest_hybrid.tech.mek": "Mekanism",
@@ -79,6 +82,8 @@ def generate():
         "tooltip.techquest_hybrid.tech": "Technology upgrade: %s",
         "tooltip.techquest_hybrid.energy": "Energy: %s / %s FE",
         "tooltip.techquest_hybrid.recharge": "Recharge with an FE-compatible charger",
+        "tooltip.techquest_hybrid.donor": "Embedded donor: %s",
+        "tooltip.techquest_hybrid.donor.warning": "Donor data preserved; native abilities may need adapters",
         "tooltip.techquest_hybrid.tech.ic2": "IC2: Nostalgia",
         "tooltip.techquest_hybrid.tech.mi": "Modern Industrialization",
         "tooltip.techquest_hybrid.tech.mek": "Mekanism",
