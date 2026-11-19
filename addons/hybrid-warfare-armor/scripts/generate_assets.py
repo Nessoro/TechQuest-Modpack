@@ -63,6 +63,11 @@ def generate():
 
     # Localize tooltip only; no item icons or armor textures are generated.
     ru = {
+        "item.techquest_hybrid.fused_name": "%1$s — %2$s",
+        "item.techquest_hybrid.prefix.ic2": "Квантовая IC2",
+        "item.techquest_hybrid.prefix.mi": "Квантовая MI",
+        "item.techquest_hybrid.prefix.mek": "Механизированная Mekanism",
+        "item.techquest_hybrid.prefix.oritech": "Экзоброня Oritech",
         "tooltip.techquest_hybrid.tech": "Технологическое улучшение: %s",
         "tooltip.techquest_hybrid.energy": "Энергия: %s / %s FE",
         "tooltip.techquest_hybrid.recharge": "Заряди в устройстве, поддерживающем FE",
@@ -79,6 +84,11 @@ def generate():
         "tooltip.techquest_hybrid.trim": "Отделка (цветовой фильтр): %s",
     }
     en = {
+        "item.techquest_hybrid.fused_name": "%1$s — %2$s",
+        "item.techquest_hybrid.prefix.ic2": "IC2 Quantum",
+        "item.techquest_hybrid.prefix.mi": "MI Quantum",
+        "item.techquest_hybrid.prefix.mek": "Mekanism-Powered",
+        "item.techquest_hybrid.prefix.oritech": "Oritech Exo",
         "tooltip.techquest_hybrid.tech": "Technology upgrade: %s",
         "tooltip.techquest_hybrid.energy": "Energy: %s / %s FE",
         "tooltip.techquest_hybrid.recharge": "Recharge with an FE-compatible charger",
