@@ -1,6 +1,11 @@
 name: Build TechQuest alpha
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - modlist.json
+      - tests/test_interdimensional_wireless_transmitter.py
+      - .github/workflows/build-alpha.yml
   push:
     paths:
       - modlist.json
@@ -162,6 +167,44 @@ jobs:
                       with zipfile.ZipFile(jar) as z:
                           assert z.testzip() is None,("corrupted jar",jar)
                   print("Verified exact client/server DimStorage family JAR:",project,vid)
+          PY
+      - name: Check official IWT exact JAR, both sides and Modrinth manifest
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+
+          cfg = json.loads(Path('modlist.json').read_text(encoding='utf-8'))
+          project, version = 'nQR8XALE', 'CcRkmcRp'
+          rows = [m for m in cfg['mods'] if m['project'] == 'interdimensional-wireless-transmitter']
+          assert len(rows) == 1 and rows[0]['required']
+          assert rows[0]['version_id'] == version
+          sides = {'client': 'required', 'server': 'required'}
+          assert rows[0]['environment'] == sides
+          lock = cfg['modrinth_lock'][project]
+          assert lock['version_id'] == version
+          assert lock['filename'] == 'interdimensionalwirelesstransmitter-neoforge-1.21.1-0.1.5.jar'
+          assert lock['environment'] == sides
+          name, sha = lock['filename'], lock['sha512']
+          assert len(sha) == 128
+          for side in ('client', 'server'):
+              jar = Path('output') / side / 'mods' / name
+              assert jar.is_file(), (side, 'IWT missing')
+              assert hashlib.sha512(jar.read_bytes()).hexdigest() == sha, jar
+              with zipfile.ZipFile(jar) as zf:
+                  assert zf.testzip() is None, jar
+          with zipfile.ZipFile('output/TechQuest_1.21.1_0.3.3_ALPHA.mrpack') as zf:
+              assert zf.testzip() is None
+              rows = json.loads(zf.read('modrinth.index.json'))['files']
+              matches = [row for row in rows if row['path'] == 'mods/' + name]
+              assert len(matches) == 1
+              assert matches[0]['hashes']['sha512'] == sha
+              assert matches[0]['env'] == sides
+              assert 'overrides/mods/' + name not in zf.namelist()
+          print('IWT original JAR, SHA-512, client/server mods and mrpack verified')
+          print('Gameplay, dimension transit, chunk loading and dedicated-server launch still need testing')
           PY
       - name: Audit micro3 client/server/Modrinth manifests and both Compatibility payloads
         run: python scripts/audit_micro3_packages.py

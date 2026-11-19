@@ -60,8 +60,8 @@ class AdventureRebalanceTests(unittest.TestCase):
         self.assertEqual(self.mods["pretty-pipes"]["group"], "Технологии")
         self.assertNotIn("ftb-industrial-contraptions", self.mods)
         self.assertNotIn("colossal-reactors", self.mods)
-        # Micro5 includes Oritech, Fluidic Tanks and DimStorage; count one more storage mod.
-        # Preserve adventure/exploration counts while recording the actual technology share.
+        # Micro5 includes Oritech, Fluidic Tanks and DimStorage; IWT (issue #52)
+        # adds one more storage mod. Record the actual shift in genre proportions.
         counts = Counter(m["group"] for m in self.cfg["mods"])
         counts.update(m.get("group", "Технологии") for m in self.cfg.get("manual_mods", []))
         counts.update(m.get("group", "Военная техника") for m in self.cfg.get("external_mods", []))
@@ -71,10 +71,10 @@ class AdventureRebalanceTests(unittest.TestCase):
         exploration = sum(counts[g] for g in EXPLORATION)
         military = sum(counts[g] for g in MILITARY)
         total = tech + adventure + exploration + military
-        self.assertEqual((tech, adventure, exploration, military), (17, 20, 6, 7))
-        self.assertEqual(total, 50)
-        self.assertLess(tech / total, 0.35)
-        self.assertGreaterEqual((adventure + exploration) / total, 0.52)
+        self.assertEqual((tech, adventure, exploration, military), (18, 20, 6, 7))
+        self.assertEqual(total, 51)
+        self.assertLess(tech / total, 0.36)
+        self.assertGreaterEqual((adventure + exploration) / total, 0.50)
 
     def test_documentation_for_exploration(self):
         from scripts.guide_assets import ENTRIES

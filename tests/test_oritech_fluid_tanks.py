@@ -38,7 +38,7 @@ class OritechFluidTanksTests(unittest.TestCase):
     def test_platform_and_existing_mods_preserved(self):
         self.assertEqual(("1.21.1", "neoforge", "21.1.264"),
                          (self.cfg["minecraft"], self.cfg["loader"], self.cfg["loader_version"]))
-        self.assertEqual(79, len(self.mods))
+        self.assertEqual(80, len(self.mods))
         for slug in ("ae2", "refined-storage", "refined-storage-jei-integration",
                      "open-parties-and-claims", "mekanism", "modern-industrialization",
                      "create", "buildcraft-community-edition", "geckolib",
