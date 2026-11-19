@@ -95,6 +95,34 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertNotIn('ReforgeMenu', sources)
         self.assertNotIn('modifiyArmor', sources)
 
+    def test_native_ic2_charge_uses_preserved_quantum_suit(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        src = (root / "src/main/java/dev/techquest/hybrid/Ic2QuantumChargeManager.java").read_text()
+        mod = (root / "src/main/java/dev/techquest/hybrid/HybridWarfareMod.java").read_text()
+        gradle = (root / "build.gradle").read_text()
+        self.assertIn("implements IBackupElectricItemManager", src)
+        self.assertIn("ElectricItem.registerBackupManager(INSTANCE)", src)
+        self.assertIn("ElectricItem.manager.charge(donor", src)
+        self.assertIn("ElectricItem.manager.discharge(", src)
+        self.assertIn("HybridWarfareMod.DONOR", src)
+        self.assertIn("save(armor, donor)", src)
+        self.assertIn("Ic2QuantumChargeManager::register", mod)
+        self.assertIn("Ic2QuantumChargeManager.isQuantumHybrid(armor)", mod)
+        self.assertIn("Ic2QuantumChargeManager.receive(stack, accepted, simulate)", mod)
+        self.assertIn("compileOnly files('../../manual-mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar')", gradle)
+
+    def test_fused_names_are_localized_and_anvil_can_rename_later(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        fusion = (root / "src/main/java/dev/techquest/hybrid/HybridFusionRecipe.java").read_text()
+        self.assertIn("combined.set(DataComponents.CUSTOM_NAME, Component.translatable(", fusion)
+        self.assertIn("input.base().getHoverName()", fusion)
+        self.assertIn('"item.techquest_hybrid.fused_name"', fusion)
+        for lang in ("ru_ru", "en_us"):
+            localized = json.loads((RES / f"assets/techquest_hybrid/lang/{lang}.json").read_text())
+            self.assertIn("item.techquest_hybrid.fused_name", localized)
+            for tech in TECH:
+                self.assertIn("item.techquest_hybrid.prefix." + tech, localized)
+
     def test_no_custom_art_generated_or_committed(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         resources = root / "src/main/resources"
