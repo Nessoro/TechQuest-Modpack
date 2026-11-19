@@ -101,13 +101,26 @@ public final class HybridWarfareMod {
         return value != null && TECHNOLOGIES.contains(value) ? value : null;
     }
 
+    public static int energyCapacity(ItemStack armor) {
+        if ("ic2".equals(technology(armor)) && Ic2JetpackCompat.attached(armor)) {
+            return Ic2JetpackCompat.capacity(armor);
+        }
+        return ENERGY_CAPACITY;
+    }
+
     public static int charge(ItemStack armor) {
         if (technology(armor) == null) return 0;
+        if ("ic2".equals(technology(armor)) && Ic2JetpackCompat.attached(armor)) {
+            return Ic2JetpackCompat.current(armor);
+        }
         return Math.max(0, Math.min(ENERGY_CAPACITY, armor.getOrDefault(ENERGY, 0)));
     }
 
     private static boolean spend(ItemStack armor, int amount) {
         if (amount <= 0 || charge(armor) < amount) return false;
+        if ("ic2".equals(technology(armor)) && Ic2JetpackCompat.attached(armor)) {
+            return Ic2JetpackCompat.spend(armor, amount);
+        }
         armor.set(ENERGY, charge(armor) - amount);
         return true;
     }
@@ -133,8 +146,13 @@ public final class HybridWarfareMod {
         @Override
         public int receiveEnergy(int requested, boolean simulate) {
             int accepted = Math.min(Math.min(Math.max(0, requested), MAX_RECEIVE),
-                                    ENERGY_CAPACITY - charge(stack));
-            if (accepted > 0 && !simulate) stack.set(ENERGY, charge(stack) + accepted);
+                                    Math.max(0, energyCapacity(stack) - charge(stack)));
+            if (accepted <= 0) return 0;
+            // Preserve IC2's own energy tier, transfer-limit and charge backend.
+            if ("ic2".equals(technology(stack)) && Ic2JetpackCompat.attached(stack)) {
+                return Ic2JetpackCompat.receive(stack, accepted, simulate);
+            }
+            if (!simulate) stack.set(ENERGY, charge(stack) + accepted);
             return accepted;
         }
 
@@ -151,7 +169,7 @@ public final class HybridWarfareMod {
 
         @Override
         public int getMaxEnergyStored() {
-            return ENERGY_CAPACITY;
+            return energyCapacity(stack);
         }
 
         @Override
@@ -218,7 +236,7 @@ public final class HybridWarfareMod {
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.tech",
                     Component.translatable("tooltip.techquest_hybrid.tech." + tech)).withStyle(ChatFormatting.AQUA));
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.energy",
-                    charge(stack), ENERGY_CAPACITY).withStyle(ChatFormatting.YELLOW));
+                    charge(stack), energyCapacity(stack)).withStyle(ChatFormatting.YELLOW));
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.recharge").withStyle(ChatFormatting.GRAY));
             ItemStack donor = stack.get(DONOR);
             if (donor != null && !donor.isEmpty()) {
