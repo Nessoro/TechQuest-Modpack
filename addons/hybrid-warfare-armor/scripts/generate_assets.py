@@ -64,9 +64,9 @@ def generate():
     # Localize tooltip only; no item icons or armor textures are generated.
     ru = {
         "item.techquest_hybrid.fused_name": "%1$s — %2$s",
-        "item.techquest_hybrid.prefix.ic2": "Квантовая IC2",
-        "item.techquest_hybrid.prefix.mi": "Квантовая MI",
-        "item.techquest_hybrid.prefix.mek": "Механизированная Mekanism",
+        "item.techquest_hybrid.prefix.ic2": "Квантовая броня IC2",
+        "item.techquest_hybrid.prefix.mi": "Квантовая броня MI",
+        "item.techquest_hybrid.prefix.mek": "Механизированная броня Mekanism",
         "item.techquest_hybrid.prefix.oritech": "Экзоброня Oritech",
         "tooltip.techquest_hybrid.tech": "Технологическое улучшение: %s",
         "tooltip.techquest_hybrid.energy": "Энергия: %s / %s FE",
