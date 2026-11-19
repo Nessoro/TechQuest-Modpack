@@ -69,6 +69,32 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertIn("EventPriority.LOWEST", java)
         self.assertIn("tooltip.techquest_hybrid.donor", java)
 
+    def test_ic2_jetpack_keeps_native_attachment_and_mfsu_api(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        java = (root / "src/main/java/dev/techquest/hybrid/Ic2JetpackCompat.java").read_text()
+        fusion = (root / "src/main/java/dev/techquest/hybrid/HybridFusionRecipe.java").read_text()
+        mod = (root / "src/main/java/dev/techquest/hybrid/HybridWarfareMod.java").read_text()
+        self.assertIn('"hasIC2Jetpack"', java)
+        self.assertIn('CustomData.update(DataComponents.CUSTOM_DATA, chest', java)
+        self.assertIn('Class.forName("ic2.api.item.ElectricItem")', java)
+        self.assertIn('type.getMethod("charge", ItemStack.class', java)
+        self.assertIn('type.getMethod("discharge", ItemStack.class', java)
+        self.assertIn('"quantum_chestplate"', fusion)
+        self.assertIn('Ic2JetpackCompat.attachIfAbsent(combined)', fusion)
+        self.assertIn('Ic2JetpackCompat.current(armor)', mod)
+        self.assertIn('Ic2JetpackCompat.receive(stack, accepted, simulate)', mod)
+        self.assertIn('EventPriority.LOWEST', mod)
+        self.assertNotIn('new ArmorItem(', fusion)
+
+    def test_default_armor_stats_and_modifier_restrictions(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        sources = " ".join(p.read_text() for p in
+                           (root / "src/main/java").rglob("*.java"))
+        self.assertNotIn('ItemAttributeModifierEvent', sources)
+        self.assertNotIn('AnvilUpdateEvent', sources)
+        self.assertNotIn('ReforgeMenu', sources)
+        self.assertNotIn('modifiyArmor', sources)
+
     def test_no_custom_art_generated_or_committed(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         resources = root / "src/main/resources"
