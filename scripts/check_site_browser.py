@@ -42,7 +42,7 @@ def main():
                     data = [{"number": 21, "title": "<script>bad()</script> Обновление установщика",
                              "html_url": "https://github.com/Nessoro/TechQuest-Modpack/issues/21",
                              "created_at": "2026-11-08T12:00:00Z", "labels": []}]
-                route.fulfill(json=data)
+                route.fulfill(json=data, headers={"Access-Control-Allow-Origin": "*"})
 
             context.route("https://api.github.com/**", github)
             page = context.new_page()
@@ -95,7 +95,7 @@ def main():
                 assert page.locator('[id="%s"]' % target).count() == 1, target
             # API failure keeps a usable download link and a direct Issues link.
             context.unroute("https://api.github.com/**", github)
-            context.route("https://api.github.com/**", lambda route: route.fulfill(status=403, json={}))
+            context.route("https://api.github.com/**", lambda route: route.fulfill(status=403, json={}, headers={"Access-Control-Allow-Origin": "*"}))
             page.reload(wait_until="networkidle")
             assert "Не удалось" in page.locator("#build-status").inner_text()
             page.locator("#issues > summary").click()
