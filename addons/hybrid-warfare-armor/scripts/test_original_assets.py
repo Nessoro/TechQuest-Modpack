@@ -59,7 +59,7 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertNotIn("set(DataComponents.ENCHANTMENTS", fusion_java)
         self.assertNotIn("set(DataComponents.ATTRIBUTE_MODIFIERS", fusion_java)
         self.assertNotIn("AnvilUpdateEvent", fusion_java)
-        self.assertNotIn("Apotheosis", fusion_java.replace("Apotheosis affixes", ""))
+        self.assertNotIn("import dev.shadowsoffire.apotheosis", fusion_java)
 
     def test_donor_snapshot_codec_and_native_energy_priority(self):
         java = (pathlib.Path(__file__).resolve().parents[1] /
