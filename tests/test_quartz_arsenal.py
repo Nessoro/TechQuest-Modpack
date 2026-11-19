@@ -33,7 +33,7 @@ class QuartzArsenalTests(unittest.TestCase):
             ("1.21.1", "neoforge", "21.1.264"),
             (self.cfg["minecraft"], self.cfg["loader"], self.cfg["loader_version"]),
         )
-        self.assertEqual(81, len(self.cfg["mods"]))
+        self.assertEqual(82, len(self.cfg["mods"]))
         for slug in ("refined-storage", "refined-storage-jei-integration",
                      "interdimensional-wireless-transmitter", "ae2", "jei"):
             self.assertEqual(1, sum(m["project"] == slug for m in self.cfg["mods"]), slug)

@@ -6,6 +6,7 @@ on:
       - modlist.json
       - tests/test_interdimensional_wireless_transmitter.py
       - tests/test_quartz_arsenal.py
+      - tests/test_betterblockz.py
       - .github/workflows/smoke-client.yml
   push:
     paths:
@@ -48,7 +49,7 @@ jobs:
           import json
           from pathlib import Path
           cfg = json.loads(Path("modlist.json").read_text(encoding="utf-8"))
-          for project in ("KDvYkUg3", "u6dRKJwZ", "VzR5wiLo", "gF3BGWvG", "4sYI62kA", "b1ZV3DIJ", "yAyrQXJ6", "8lnmIJH7", "a8Jk9kpK", "nQR8XALE", "gnwGOmBf"):
+          for project in ("KDvYkUg3", "u6dRKJwZ", "VzR5wiLo", "gF3BGWvG", "4sYI62kA", "b1ZV3DIJ", "yAyrQXJ6", "8lnmIJH7", "a8Jk9kpK", "nQR8XALE", "gnwGOmBf", "oPU4euBQ"):
               lock = cfg["modrinth_lock"][project]
               for side in ("client", "server"):
                   jar = Path("output") / side / "mods" / lock["filename"]

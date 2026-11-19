@@ -128,7 +128,7 @@ def install(pack: Path, game_dir: Path, dry_run=False):
                 install_guide_overrides(archive, destination)
             patch_existing_mi_worlds(destination)
             (destination / "TECHQUEST_LAUNCHER_README.txt").write_text(
-                "TechQuest 0.3.3-micro3: client mods installed with SHA verification.\n"
+                "TechQuest " + index["versionId"] + ": client mods installed with SHA verification.\n"
                 "TechQuest Compatibility (Create-IC2 and Better Zoom Mixin) installed.\n"
                 "Use Minecraft Java 1.21.1, official NeoForge 21.1.264 and Java 21.\n"
                 "Official Launcher -> Installations -> NeoForge -> Game Directory: " +

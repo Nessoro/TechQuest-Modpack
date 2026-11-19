@@ -25,6 +25,7 @@ internal static class Program
 internal sealed class InstallerForm : Form
 {
     private const string NeoForgeVersion = "21.1.264";
+    private const string PackVersion = "0.3.3.1";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
 
     private readonly TextBox location = new() { Width = 540 };
@@ -44,7 +45,7 @@ internal sealed class InstallerForm : Form
 
     internal InstallerForm()
     {
-        Text = "TechQuest — установщик Minecraft 1.21.1";
+        Text = "TechQuest " + PackVersion + " — установщик Minecraft 1.21.1";
         Width = 800;
         Height = 680;
         MinimumSize = new Size(760, 660);
@@ -61,7 +62,7 @@ internal sealed class InstallerForm : Form
         var subtitle = new Label { Text = "Minecraft Java 1.21.1  •  NeoForge " + NeoForgeVersion +
             "  •  BuildCraft + IndustrialCraft", Left = 32, Top = 78, Width = 710, Height = 30,
             ForeColor = Color.FromArgb(175, 194, 212) };
-        var heading = new Label { Text = "TechQuest 0.3.3 — приключения, физика и оптимизация", Left = 32, Top = 126,
+        var heading = new Label { Text = "TechQuest " + PackVersion + " — приключения, физика и оптимизация", Left = 32, Top = 126,
             Width = 700, Height = 30, Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
         var liteDesc = new Label { Text = "Сохранены все игровые моды. Ускорение: Sodium, ImmediatelyFast, More Culling,",
             Left = 36, Top = 168, Width = 706, Height = 30, ForeColor = Color.FromArgb(153, 172, 193) };
@@ -170,6 +171,15 @@ internal sealed class InstallerForm : Form
     {
         try
         {
+            using var versionPack = GetEmbeddedPack();
+            using (var versionArchive = new ZipArchive(versionPack, ZipArchiveMode.Read))
+            {
+                var indexEntry = versionArchive.GetEntry("modrinth.index.json");
+                if (indexEntry is null) return 31;
+                using var versionStream = indexEntry.Open();
+                using var versionDocument = JsonDocument.Parse(versionStream);
+                if (versionDocument.RootElement.GetProperty("versionId").GetString() != PackVersion) return 32;
+            }
             using var resource = GetEmbeddedPack();
             var mods = LoadManifest(resource);
             var fileNames = mods.Select(x => x.Name.ToLowerInvariant()).ToArray();
@@ -823,7 +833,7 @@ internal sealed class InstallerForm : Form
             {
                 InstallGuideOverrides(target); // existing saves/config/options are untouched
                 File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
-                    "TechQuest 0.3.3-micro3\n" +
+                    "TechQuest " + PackVersion + "\n" +
                     "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +
                     "Minecraft Launcher -> Установки -> профиль NeoForge -> Папка игры:\n" +
                     target + "\nJava 21. Не используйте ванильный профиль.\n",
@@ -839,7 +849,7 @@ internal sealed class InstallerForm : Form
                             "Ваши миры, настройки и Game Directory сохранены.\n" +
                             "При необходимости повторно импортируйте дополнительные JAR." :
                             "Установите NeoForge 21.1.264 и укажите эту папку в Launcher."),
-                "TechQuest 0.3.3-micro3", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "TechQuest " + PackVersion, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (OperationCanceledException)
         {
