@@ -63,6 +63,9 @@ public final class HybridFusionRecipe implements SmithingRecipe {
         // Set only the technology result patch; never replace base components.
         combined.applyComponents(result.getComponentsPatch());
         combined.set(HybridWarfareMod.DONOR, input.addition().copyWithCount(1));
+        // Show the empty Superb Warfare ArmorPlate HUD immediately after
+        // crafting, even before the first ballistic plate is inserted.
+        HybridWarfareMod.ensureArmorPlateBar(combined);
         // IC2 quantum chestplate includes a jetpack. IC2 already supports
         // attaching an electric jetpack to arbitrary chest armor. Enable its
         // ORIGINAL attachment mechanic on the 6B43/IOTV instead of inventing
