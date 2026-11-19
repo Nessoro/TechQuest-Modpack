@@ -111,8 +111,15 @@ public final class HybridWarfareMod {
         return value != null && TECHNOLOGIES.contains(value) ? value : null;
     }
 
+    private static boolean isNativeQuantum(ItemStack armor) {
+        // Avoid loading the optional IC2 API-backed class if IC2 is absent.
+        return "ic2".equals(technology(armor))
+                && ModList.get().isLoaded("ic2")
+                && Ic2QuantumChargeManager.isQuantumHybrid(armor);
+    }
+
     public static int energyCapacity(ItemStack armor) {
-        if (Ic2QuantumChargeManager.isQuantumHybrid(armor)) {
+        if (isNativeQuantum(armor)) {
             return Ic2QuantumChargeManager.capacity(armor);
         }
         if ("ic2".equals(technology(armor)) && Ic2JetpackCompat.attached(armor)) {
@@ -123,7 +130,7 @@ public final class HybridWarfareMod {
 
     public static int charge(ItemStack armor) {
         if (technology(armor) == null) return 0;
-        if (Ic2QuantumChargeManager.isQuantumHybrid(armor)) {
+        if (isNativeQuantum(armor)) {
             return Ic2QuantumChargeManager.stored(armor);
         }
         if ("ic2".equals(technology(armor)) && Ic2JetpackCompat.attached(armor)) {
@@ -134,7 +141,7 @@ public final class HybridWarfareMod {
 
     private static boolean spend(ItemStack armor, int amount) {
         if (amount <= 0 || charge(armor) < amount) return false;
-        if (Ic2QuantumChargeManager.isQuantumHybrid(armor)) {
+        if (isNativeQuantum(armor)) {
             return Ic2QuantumChargeManager.spend(armor, amount);
         }
         if ("ic2".equals(technology(armor)) && Ic2JetpackCompat.attached(armor)) {
@@ -169,7 +176,7 @@ public final class HybridWarfareMod {
             if (accepted <= 0) return 0;
             // QuantumSuit hybrids use the original IC2 donor as the battery,
             // including in MFSU and existing attached jetpack flight controls.
-            if (Ic2QuantumChargeManager.isQuantumHybrid(stack)) {
+            if (isNativeQuantum(stack)) {
                 return Ic2QuantumChargeManager.receive(stack, accepted, simulate);
             }
             // Preserve IC2's own energy tier, transfer-limit and charge backend.
