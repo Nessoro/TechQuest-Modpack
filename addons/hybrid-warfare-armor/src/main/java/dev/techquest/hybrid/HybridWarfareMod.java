@@ -15,8 +15,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -27,6 +29,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Add tech upgrades and energy storage to ORIGINAL Superb Warfare armor.
@@ -47,8 +50,22 @@ public final class HybridWarfareMod {
             .<Integer>builder().persistent(Codec.INT)
             .networkSynchronized(ByteBufCodecs.VAR_INT).build();
 
+    /**
+     * Snapshot of consumed tech donor with all its data components (modular
+     * upgrades, enchantments and stored charge). It remains embedded and is
+     * NOT a wearable entity: tech-specific actions require explicit bridges.
+     */
+    public static final DataComponentType<ItemStack> DONOR = DataComponentType
+            .<ItemStack>builder().persistent(ItemStack.STRICT_CODEC)
+            .networkSynchronized(ItemStack.STREAM_CODEC).build();
+
     private static final DeferredRegister.DataComponents COMPONENTS =
             DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID);
+
+    private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
+            DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
+    public static final Supplier<RecipeSerializer<HybridFusionRecipe>> FUSION_SERIALIZER =
+            SERIALIZERS.register("armor_fusion", HybridFusionRecipe.Serializer::new);
 
     private static final Set<String> MILITARY_ARMOR = Set.of(
             "ru_helmet_6b47", "ru_chest_6b43",
@@ -59,11 +76,16 @@ public final class HybridWarfareMod {
     static {
         COMPONENTS.register("technology", () -> TECHNOLOGY);
         COMPONENTS.register("energy", () -> ENERGY);
+        COMPONENTS.register("donor", () -> DONOR);
     }
 
     public HybridWarfareMod(IEventBus bus) {
         COMPONENTS.register(bus);
-        bus.addListener(HybridWarfareMod::registerCapabilities);
+        SERIALIZERS.register(bus);
+        // NeoForge queries the first non-null capability provider. Register
+        // at LOWEST priority so IC2 and other native jetpack energy handlers
+        // are queried before our supplemental FE adapter.
+        bus.addListener(EventPriority.LOWEST, HybridWarfareMod::registerCapabilities);
         NeoForge.EVENT_BUS.addListener(HybridWarfareMod::tickPlayer);
         NeoForge.EVENT_BUS.addListener(HybridWarfareMod::tooltip);
     }
@@ -198,6 +220,13 @@ public final class HybridWarfareMod {
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.energy",
                     charge(stack), ENERGY_CAPACITY).withStyle(ChatFormatting.YELLOW));
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.recharge").withStyle(ChatFormatting.GRAY));
+            ItemStack donor = stack.get(DONOR);
+            if (donor != null && !donor.isEmpty()) {
+                event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.donor",
+                        donor.getHoverName()).withStyle(ChatFormatting.DARK_GRAY));
+                event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.donor.warning")
+                        .withStyle(ChatFormatting.GRAY));
+            }
             event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.effect." + tech)
                     .withStyle(ChatFormatting.DARK_AQUA));
         }
