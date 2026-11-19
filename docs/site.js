@@ -137,21 +137,61 @@ async function githubJSON(url) {
     return await response.json();
   } finally { clearTimeout(timeout); }
 }
-async function latestBuild() {
-  const status = document.querySelector('#build-status');
+
+// Release assets can be downloaded directly by anonymous visitors. Workflow
+// artifacts, even successful ones, still require GitHub authentication.
+const PUBLIC_FALLBACK_TAG = 'v0.3.3-micro2-preview';
+const INSTALLER_ASSET = /^TechQuest(?:Installer|_\d+\.\d+\.\d+(?:[-_][A-Za-z0-9.]+)?)\.exe$/i;
+
+function directReleaseAssetUrl(tag, filename) {
+  if (!/^v\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.-]+)?$/.test(tag) ||
+      !/^[A-Za-z0-9._-]+$/.test(filename)) return null;
+  return GH + '/releases/download/' + tag + '/' + filename;
+}
+
+function updatePublicInstaller(release) {
+  if (!release || release.draft || !Array.isArray(release.assets)) return false;
+  const installer = release.assets.find(asset => INSTALLER_ASSET.test(asset.name) &&
+    asset.size > 10000000 && asset.state === 'uploaded' &&
+    asset.browser_download_url === directReleaseAssetUrl(release.tag_name,asset.name));
+  const checksum = release.assets.find(asset => asset.name === 'SHA256SUMS.txt' &&
+    asset.state === 'uploaded' &&
+    asset.browser_download_url === directReleaseAssetUrl(release.tag_name,asset.name));
+  if (!installer || !checksum) return false;
+  document.querySelectorAll('[data-direct-installer]').forEach(link => {
+    link.href = installer.browser_download_url;
+    link.setAttribute('aria-label', 'Скачать ' + installer.name + ' (' + release.tag_name + ') напрямую');
+  });
+  document.querySelector('#checksum-link').href = checksum.browser_download_url;
+  document.querySelector('#download-version').textContent = release.tag_name;
+  const fallback = release.tag_name === PUBLIC_FALLBACK_TAG;
+  document.querySelector('#download-note').textContent = fallback
+    ? 'Прямая загрузка без аккаунта GitHub. Это предыдущий публичный выпуск ' +
+      release.tag_name + '; новый Launcher из PR #46 пока не опубликован.'
+    : 'Прямая загрузка ' + installer.name +
+      ' без аккаунта GitHub и без перехода на страницу GitHub. Версия: ' + release.tag_name + '.';
+  document.querySelector('#build-status').textContent = fallback
+    ? 'Публичный предрелиз ' + release.tag_name + ' от ' + relativeDate(release.published_at) +
+      '. Это не новый Launcher PR #46.'
+    : 'Публичный выпуск ' + release.tag_name + ' от ' + relativeDate(release.published_at) +
+      '. Перед обновлением сохрани резервную копию важных миров.';
+  return true;
+}
+
+async function latestPublicInstaller() {
   try {
-    const result = await githubJSON(`https://api.github.com/repos/${REPO}/actions/workflows/build-alpha.yml/runs?branch=main&status=success&per_page=1`);
-    const run = result.workflow_runs?.[0];
-    if(!run || run.conclusion !== 'success' || !run.html_url.startsWith(`${GH}/actions/runs/`)) throw new Error('No successful main build');
-    const resultArtifacts = await githubJSON(`https://api.github.com/repos/${REPO}/actions/runs/${run.id}/artifacts`);
-    const artifact = resultArtifacts.artifacts?.find(item=>item.name === 'TechQuest-Windows-GUI-Installer' && !item.expired);
-    if(!artifact) throw new Error('Installer artifact unavailable');
-    document.querySelector('#download-link').href = `${run.html_url}/artifacts/${artifact.id}`;
-    status.textContent = `Последняя успешная сборка main: ${relativeDate(run.created_at)} · ${run.head_sha.slice(0,7)}. Отчёт Security Audit — в том же запуске.`;
+    const releases = await githubJSON('https://api.github.com/repos/' + REPO + '/releases?per_page=30');
+    if (!Array.isArray(releases)) return;
+    releases.sort((a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0));
+    for (const release of releases) {
+      if (updatePublicInstaller(release)) return;
+    }
+    // The HTML contains a working anonymous fallback URL even with no API access.
   } catch {
-    status.textContent = 'Не удалось получить актуальный EXE. Открой список сборок и проверь зелёный статус и срок хранения Artifacts.';
+    // Avoid replacing an actual public direct link with an Actions login page.
   }
 }
+
 function revealHashPanel() {
   if (!window.location.hash) return;
   let id;
@@ -162,7 +202,7 @@ function revealHashPanel() {
   if (panel) panel.open = true;
 }
 window.addEventListener('hashchange', revealHashPanel);
-initLinks();renderMods();setupSearch();setupForms();renderIssues();latestBuild();revealHashPanel();
+initLinks();renderMods();setupSearch();setupForms();renderIssues();latestPublicInstaller();revealHashPanel();
 
 
 });

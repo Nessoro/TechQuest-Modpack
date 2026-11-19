@@ -636,7 +636,7 @@ window.TQ_MODS = [
       <h1 id="hero-title">Исследуй.<br><em>Строй.</em> Выживай.</h1>
       <p class="hero-lead">Большой мир, сильные боссы и технологии — для одиночной игры и приключений с друзьями.</p>
       <div class="hero-actions">
-        <a class="button" href="#download">Скачать для Windows <span aria-hidden="true">↓</span></a>
+        <a class="button" data-direct-installer href="https://github.com/Nessoro/TechQuest-Modpack/releases/download/v0.3.3-micro2-preview/TechQuestInstaller.exe" aria-label="Скачать TechQuestInstaller.exe напрямую">Скачать для Windows <span aria-hidden="true">↓</span></a>
         <a class="button secondary" href="#explore">Что внутри</a>
       </div>
       <p class="hero-note"><span data-pack-version>0.3.3-alpha</span> · тестовая сборка · единый Optimized</p>
@@ -669,7 +669,7 @@ window.TQ_MODS = [
         <h2 id="download-title">Начни играть</h2>
         <p class="intro">Установщик с графическим интерфейсом. Python и терминал игроку не нужны.</p>
         <ol class="steps">
-          <li>Скачай ZIP с установщиком и запусти EXE.</li>
+          <li>Скачай EXE прямо с сайта и запусти его в Windows.</li>
           <li>Установи сборку в отдельную папку.</li>
           <li>Выбери NeoForge 21.1.264 и папку игры в Minecraft Launcher.</li>
         </ol>
@@ -679,9 +679,10 @@ window.TQ_MODS = [
         <div class="release-top"><span class="tag">ALPHA</span><span data-pack-version>0.3.3-alpha</span></div>
         <h3>TechQuest для Windows</h3>
         <p>Один оптимизированный профиль · Java 21</p>
-        <a class="button light" id="download-link" href="https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml?query=branch%3Amain">Скачать установщик <span aria-hidden="true">↗</span></a>
-        <p class="release-note">Пока через GitHub Actions: для скачивания ZIP нужен аккаунт GitHub.</p>
-        <p class="release-status" id="build-status" role="status">Проверь успешный запуск сборки в GitHub Actions.</p>
+        <a class="button light" id="download-link" data-direct-installer href="https://github.com/Nessoro/TechQuest-Modpack/releases/download/v0.3.3-micro2-preview/TechQuestInstaller.exe" aria-label="Скачать TechQuestInstaller.exe напрямую">Скачать установщик EXE <span aria-hidden="true">↓</span></a>
+        <p class="release-note" id="download-note">Прямая загрузка без аккаунта GitHub и без перехода на страницу GitHub. Доступен предыдущий публичный выпуск <strong id="download-version">v0.3.3-micro2-preview</strong>. Новый Launcher из PR #46 пока не опубликован.</p>
+        <p class="release-status" id="build-status" role="status">Тестовый выпуск от 13.11.2026; актуальный лаунчер PR #46 пока доступен только для внутреннего тестирования.</p>
+        <p class="release-note"><a class="text-link" id="checksum-link" href="https://github.com/Nessoro/TechQuest-Modpack/releases/download/v0.3.3-micro2-preview/SHA256SUMS.txt">Скачать SHA256SUMS.txt для проверки EXE ↓</a></p>
         <div class="release-footer"><a href="https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml">Все сборки ↗</a><a href="https://github.com/Nessoro/TechQuest-Modpack/blob/main/QA_0.3.3_RU.md">Статус тестов ↗</a></div>
       </article>
     </div>
