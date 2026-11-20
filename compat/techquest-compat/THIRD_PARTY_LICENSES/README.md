@@ -34,3 +34,17 @@ TechQuest added translations for the eight new bookmark-preview settings that we
 absent from the upstream Russian file examined on 2026-11-20.
 This language resource is an overlay: the original version-pinned JEI binary is
 not modified, and no JEI source or binary code is redistributed as part of this change.
+
+## Mekanism and Mekanism: Generators
+
+The Russian JSON files at `assets/mekanism/lang/ru_ru.json` and
+`assets/mekanismgenerators/lang/ru_ru.json` are drawn from the official
+[`mekanism/Mekanism`](https://github.com/mekanism/Mekanism) repository's
+`1.21.x` source branch, accessed on 2026-11-20.
+
+The original translators and Mekanism project retain attribution.
+License: **MIT**, included as `THIRD_PARTY_LICENSES/MEKANISM_MIT.txt`.
+These text resources are bundled as locale overlays in TechQuest Compatibility;
+neither Mekanism's original binaries nor gameplay logic are modified.
+The source branch may include more recent texts than pinned Mekanism 10.7.19.85;
+the exact keys and placeholders must be checked by the pack CI auditor.
