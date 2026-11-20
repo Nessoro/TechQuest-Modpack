@@ -63,6 +63,7 @@ def audit(mods_dir):
             "russian_keys": len(ru),
             "missing_count": len(missing),
             "missing_keys": missing,
+            "missing_english": {key: en[key] for key in missing},
             "unchanged_count": len(unchanged),
             "unchanged_keys": unchanged,
             "source_jars": sorted(origins[namespace]),
