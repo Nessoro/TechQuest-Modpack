@@ -19,6 +19,8 @@ LOCALE_COUNTS = {
     "create": 20,
     "critical_strike": 18,
     "ftbultimine": 20,
+    "ic2": 418,
+    "jei": 625,
     "guideme": 36,
     "oritech": 1,
 }
@@ -47,6 +49,12 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("%s", betterzoom["betterzoom.hint.settings"])
         self.assertIn("FTB Ultimine", ftb["ftbultimine.modifier.cooldown"])
         self.assertIn("%s", guideme["guideme.guidebook.HoldToShow"])
+        ic2 = json.loads((COMPAT / "assets/ic2/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(ic2["block.ic2.advanced_machine"], "Корпус усовершенствованного механизма")
+        self.assertEqual(ic2["block.ic2.generator"], "Генератор")
+        self.assertIn("EU/t", ic2["ic2.NuclearReactor.gui.info.EUoutput"])
+        jei = json.loads((COMPAT / "assets/jei/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("JEI", jei["jei.tooltip.config"])
 
     def test_compatibility_jar_contains_every_localization(self):
         with zipfile.ZipFile(io.BytesIO(builder.compatibility_jar())) as jar:
