@@ -18,6 +18,7 @@ LOCALE_COUNTS = {
     "appleskin": 10,
     "balm": 36,
     "betterzoom": 49,
+    "betterblockz": 1748,
     "create": 20,
     "critical_strike": 18,
     "ftbultimine": 20,
@@ -63,6 +64,10 @@ class AdditionalTranslationTests(unittest.TestCase):
         jei = json.loads((COMPAT / "assets/jei/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("JEI", jei["jei.tooltip.config"])
         self.assertEqual(jei["jei.config.client.bookmarkList.bookmarkPreviewMode.value.DISABLED"], "Выключено")
+        blockz = json.loads((COMPAT / "assets/betterblockz/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(blockz["block.betterblockz.agon_blockz_0"], "Agon — цвет: белый")
+        self.assertIn("§e[Shift]§7", blockz["item.betterblockz.auto_placer.tooltip"])
+        self.assertIn("%s", blockz["item.betterblockz.omni_spade.shift.line4"])
         mekanism = json.loads((COMPAT / "assets/mekanism/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(mekanism["constants.mekanism.mod_name"], "Mekanism")
 
