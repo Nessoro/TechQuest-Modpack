@@ -15,14 +15,19 @@ SPEC.loader.exec_module(builder)
 
 LOCALE_COUNTS = {
     "ae2": 1,
+    "appleskin": 10,
+    "balm": 36,
     "betterzoom": 49,
     "create": 20,
     "critical_strike": 18,
     "ftbultimine": 20,
+    "fluidic_tanks": 24,
     "ic2": 418,
     "jei": 625,
+    "modern_industrialization": 49,
     "guideme": 36,
     "oritech": 1,
+    "refinedstorage": 10,
 }
 
 
@@ -55,6 +60,7 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("EU/t", ic2["ic2.NuclearReactor.gui.info.EUoutput"])
         jei = json.loads((COMPAT / "assets/jei/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("JEI", jei["jei.tooltip.config"])
+        self.assertEqual(jei["jei.config.client.bookmarkList.bookmarkPreviewMode.value.DISABLED"], "Выключено")
 
     def test_compatibility_jar_contains_every_localization(self):
         with zipfile.ZipFile(io.BytesIO(builder.compatibility_jar())) as jar:
