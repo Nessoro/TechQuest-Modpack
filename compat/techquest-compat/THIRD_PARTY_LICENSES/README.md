@@ -23,3 +23,14 @@ Changes made for TechQuest:
 
 The resulting files remain available in source form in this repository.
 No authorship of the original BCCE translations is claimed by TechQuest.
+
+## Just Enough Items (JEI)
+
+The file `assets/jei/lang/ru_ru.json` in TechQuest Compatibility is based on
+[`mezz/JustEnoughItems` / Minecraft 1.21.1 Russian translation](https://github.com/mezz/JustEnoughItems/blob/1.21.1/Common/src/main/resources/assets/jei/lang/ru_ru.json).
+The original translations, their authors and the JEI project retain attribution.
+License: **MIT**, reproduced in `THIRD_PARTY_LICENSES/JEI_MIT.txt`.
+TechQuest added translations for the eight new bookmark-preview settings that were
+absent from the upstream Russian file examined on 2026-11-20.
+This language resource is an overlay: the original version-pinned JEI binary is
+not modified, and no JEI source or binary code is redistributed as part of this change.
