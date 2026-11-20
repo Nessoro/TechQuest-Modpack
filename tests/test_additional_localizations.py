@@ -24,6 +24,8 @@ LOCALE_COUNTS = {
     "fluidic_tanks": 24,
     "ic2": 418,
     "jei": 625,
+    "mekanism": 1892,
+    "mekanismgenerators": 221,
     "modern_industrialization": 49,
     "guideme": 36,
     "oritech": 1,
@@ -61,6 +63,8 @@ class AdditionalTranslationTests(unittest.TestCase):
         jei = json.loads((COMPAT / "assets/jei/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("JEI", jei["jei.tooltip.config"])
         self.assertEqual(jei["jei.config.client.bookmarkList.bookmarkPreviewMode.value.DISABLED"], "Выключено")
+        mekanism = json.loads((COMPAT / "assets/mekanism/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(mekanism["constants.mekanism.mod_name"], "Mekanism")
 
     def test_compatibility_jar_contains_every_localization(self):
         with zipfile.ZipFile(io.BytesIO(builder.compatibility_jar())) as jar:
