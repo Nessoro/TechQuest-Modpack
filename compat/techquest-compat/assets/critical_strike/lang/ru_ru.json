@@ -1,0 +1,20 @@
+{
+  "attribute.name.critical_strike.chance": "Шанс критического удара",
+  "attribute.name.critical_strike.damage": "Урон критического удара",
+  "effect.critical_strike.chance": "Критический удар",
+  "effect.critical_strike.chance.description": "Повышает вероятность нанесения критического удара.",
+  "effect.critical_strike.damage": "Критический урон",
+  "effect.critical_strike.damage.description": "Увеличивает урон от критических ударов.",
+  "enchantment.critical_strike.chance": "Критический удар",
+  "enchantment.critical_strike.chance.description": "Повышает шанс нанесения критического удара.",
+  "enchantment.critical_strike.damage": "Критический урон",
+  "enchantment.critical_strike.damage.description": "Повышает урон от критических ударов.",
+  "item.minecraft.lingering_potion.effect.critical_strike_chance": "Туманное зелье критического удара",
+  "item.minecraft.lingering_potion.effect.critical_strike_damage": "Туманное зелье критического урона",
+  "item.minecraft.potion.effect.critical_strike_chance": "Зелье критического удара",
+  "item.minecraft.potion.effect.critical_strike_damage": "Зелье критического урона",
+  "item.minecraft.splash_potion.effect.critical_strike_chance": "Взрывное зелье критического удара",
+  "item.minecraft.splash_potion.effect.critical_strike_damage": "Взрывное зелье критического урона",
+  "item.minecraft.tipped_arrow.effect.critical_strike_chance": "Стрела критического удара",
+  "item.minecraft.tipped_arrow.effect.critical_strike_damage": "Стрела критического урона"
+}
