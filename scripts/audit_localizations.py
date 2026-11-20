@@ -44,6 +44,9 @@ def audit(mods_dir):
                             for k, v in data.items()):
                         warnings.append(f"{jar_path.name}: invalid key/value pairs in {info.filename}")
                         continue
+                    # Build tools may add metadata such as _comment; this is not player text.
+                    data = {key: value for key, value in data.items()
+                            if not key.startswith("_")}
                     target = english if locale == "en_us" else russian
                     target[namespace].update(data)
                     origins[namespace].add(jar_path.name)
