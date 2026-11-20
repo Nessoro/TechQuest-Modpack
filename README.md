@@ -6,7 +6,7 @@
 
 **[Установка и скачивание](https://nessoro.github.io/TechQuest-Modpack/#download) · [Каталог модов](https://nessoro.github.io/TechQuest-Modpack/#mods) · [Ошибки и предложения](https://nessoro.github.io/TechQuest-Modpack/#feedback)**
 
-**[Русификация TechQuest](docs/LOCALIZATION_RU.md):** начата локализация игровых файлов. В черновике PR #59 добавлены 302 русских ключа BuildCraft Community Edition (механизмы, интерфейс, трубы). Перевод подключается через наш TechQuest Compatibility; язык игрок выбирает вручную. Это не полная русификация и не опубликованная версия; работа в клиенте ещё не подтверждена.
+**[Русификация TechQuest](docs/LOCALIZATION_RU.md):** в черновике PR #59 заполнены все 2002 игровых ключа BuildCraft 8.0.23 и переведены 218 страниц его справочника. Переводы устанавливаются через TechQuest Compatibility; русский язык выбирается вручную. Добавлен аудит локализаций для других модов. **Весь модпак ещё не переведён, PR не опубликован, работа в Minecraft не проверена.**
 
 > **Minecraft Java 1.21.1 • NeoForge 21.1.x • Java 21 • сервер с друзьями**
 
