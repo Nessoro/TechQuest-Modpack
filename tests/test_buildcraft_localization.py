@@ -21,12 +21,13 @@ class BuildCraftLocalizationTests(unittest.TestCase):
 
     def test_techquest_has_russian_technical_terms(self):
         lang = self.translations
-        self.assertGreaterEqual(len(lang), 300)
+        self.assertEqual(len(lang), 2002)
         self.assertEqual(lang["tile.quarryBlock.name"], "Карьер")
         self.assertEqual(lang["tile.engineFe.name"], "FE-двигатель")
         self.assertEqual(lang["tile.mjDynamo.name"], "MJ-динамо")
         self.assertEqual(lang["pipe.buildcrafttransport.wood_item"], "Деревянная транспортная труба")
         self.assertEqual(lang["itemGroup.buildcraft.main"], "BuildCraft")
+        self.assertEqual(lang["buildcraft.guide.chapter.submod.factory"], "Производство")
         self.assertTrue(all(isinstance(key, str) and isinstance(value, str)
                             for key, value in lang.items()))
 
@@ -45,6 +46,13 @@ class BuildCraftLocalizationTests(unittest.TestCase):
             packaged = json.loads(jar.read(LANG_PATH))
             self.assertEqual(packaged, self.translations)
             self.assertIn("META-INF/neoforge.mods.toml", jar.namelist())
+            guide = json.loads(jar.read("assets/buildcraft/guide/text/ru_ru.json"))
+            self.assertEqual(guide["format"], 1)
+            self.assertEqual(guide["language"], "ru_ru")
+            self.assertEqual(len(guide["pages"]), 218)
+            self.assertIn("buildcraftbuilders/block/quarry", guide["pages"])
+            self.assertIn("THIRD_PARTY_LICENSES/BCCE_LOCALIZATIONS_MPL-2.0.txt", jar.namelist())
+            self.assertIn("THIRD_PARTY_LICENSES/README.md", jar.namelist())
 
 
 if __name__ == "__main__":
