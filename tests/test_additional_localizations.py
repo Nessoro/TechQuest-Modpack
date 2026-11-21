@@ -19,6 +19,7 @@ LOCALE_COUNTS = {
     "balm": 36,
     "betterzoom": 49,
     "betterblockz": 1748,
+    "bookshelf": 200,
     "create": 20,
     "critical_strike": 18,
     "ftbultimine": 20,
@@ -28,9 +29,12 @@ LOCALE_COUNTS = {
     "mekanism": 1892,
     "mekanismgenerators": 221,
     "modern_industrialization": 49,
+    "mowziesmobs": 440,
     "guideme": 36,
     "oritech": 1,
+    "openpartiesandclaims": 309,
     "refinedstorage": 10,
+    "xaeroworldmap": 303,
 }
 
 
@@ -70,6 +74,15 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("%s", blockz["item.betterblockz.omni_spade.shift.line4"])
         mekanism = json.loads((COMPAT / "assets/mekanism/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(mekanism["constants.mekanism.mod_name"], "Mekanism")
+        open_claims = json.loads((COMPAT / "assets/openpartiesandclaims/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("%3$s", open_claims["gui.xaero_claims_claimed_at"])
+        bookshelf = json.loads((COMPAT / "assets/bookshelf/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(bookshelf["day.bookshelf.monday"], "Понедельник")
+        xaero = json.loads((COMPAT / "assets/xaeroworldmap/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("карты", xaero["effect.xaeroworldmap.no_cave_maps"])
+        mowzie = json.loads((COMPAT / "assets/mowziesmobs/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(mowzie["itemGroup.mowziesmobs.creativeTab"], "Mowzie's Mobs")
+
 
     def test_compatibility_jar_contains_every_localization(self):
         with zipfile.ZipFile(io.BytesIO(builder.compatibility_jar())) as jar:
