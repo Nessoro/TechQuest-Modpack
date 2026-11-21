@@ -250,3 +250,39 @@ start before each, passing `--prior` for the latter two phases.
 Only the quartz Pulverizer recipe is staged. Addons, secondary small-dust
 compaction, other Pulverizer recipes and full source geometry/animation remain
 outside this subset.
+
+## Guided silicon route with all ingredients gathered
+
+`live_oritech_gathered_silicon_gui.py` runs the content 0.3 route in a single
+continued Terralith world without the base-material gifts used by the smaller
+silicon GUI probe. Only an iron pickaxe is given. The player mines nickel,
+iron, gold, redstone, copper, coal, stone, wood, sand and Nether quartz, then
+uses real crafting/smelting menus for workstations, alloys, coils, motors,
+Pulverizer, generator, silicon, furnace and core. Four physical reopens check
+the raw inventory, active Pulverizer, active furnace and final inventory/state.
+
+```sh
+python3 horizon/probes/live_oritech_gathered_silicon_gui.py \
+  --server-dir "$TASK_SERVER" --work "$TASK_RUNTIME/oritech-gathered-silicon-new"
+# Only an own prior gather-phase save/checkpoint can be resumed:
+python3 horizon/probes/live_oritech_gathered_silicon_gui.py \
+  --server-dir "$TASK_SERVER" --work "$TASK_RUNTIME/oritech-gathered-silicon-resumed" \
+  --resume-from "$TASK_RUNTIME/oritech-gathered-silicon-new/raw-checkpoint"
+```
+
+Resume checks module hashes, preserves all earlier actions and refuses a save
+that has entered crafting. Nearby block searches use radius 16 first and the
+original radius 64 as fallback. Nickel eligibility still requires a Terralith
+biome; exhausted or ineligible search results cause scouting of nearby natural
+areas. A failed initial aim can widen the air/glass approach and retry from
+one block away without replacing the ore; mining/drop/menu assertions remain
+fatal. Teleports,
+spectator travel, carved access, glass supports/platform, peaceful difficulty,
+platform forceload and tick control are explicit fixtures. This is a guided
+material-progression check, not unassisted survival from spawn or multiplayer.
+
+[Checked gathered silicon route](../../ORITECH_GATHERED_SILICON_RESULT.json):
+138 mining actions, 34 crafts, 71 smelted ingots, two collected processing-output
+iron ingots and four verified physical reopens. Inventory comparisons cover
+item IDs/counts; native machine comparisons cover energy, progress and Items
+NBT. General item-component round trips are not established by this probe.

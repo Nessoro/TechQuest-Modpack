@@ -114,6 +114,15 @@ Oritech content 0.3 требует native `techquest_oritech` 0.2.0 и оба co
 нужны. [Новый отчёт](ORITECH_SILICON_RESULT.json),
 [сборка и воспроизведение](first_party/oritech/README.md#content-03-quartz-and-silicon-route--native-02).
 
+Тот же профиль 03b дополнительно прошёл кремниевую цепочку с добычей всех
+ингредиентов: 138 операций добычи, 34 крафта, 71 выплавленный слиток и четыре
+переоткрытия мира. Выдана только кирка; доступ/перемещения/площадка остаются
+тестовыми условиями. Новый engine/hmod для этого сценария не нужен.
+Запуск: `horizon/probes/live_oritech_gathered_silicon_gui.py --server-dir SERVER --work NEW_WORK`
+в том же X11/Vulkan окружении. Возобновлять можно только собственный gather-only
+save/checkpoint через `--resume-from`; модули и прежние действия проверяются.
+[Результаты](ORITECH_GATHERED_SILICON_RESULT.json).
+
 Последний Better Dungeons stage также исправляет potion/enchantment loot в пяти
 таблицах; пересобирать только в новый каталог и устанавливать в новый профиль.
 [Графические и исходные проверки лута](YUNG_RUNTIME_RU.md) не подтверждают

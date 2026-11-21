@@ -1,0 +1,518 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-21T16:24:23.840122+00:00",
+  "minecraft": "26.3",
+  "scope": "One continued Terralith world: all raw ingredients mined, workstations/metals/alloys/motors/machines crafted and operated through actual graphical survival interaction",
+  "base_local_commit": "31af79e",
+  "oritech_content_version": "0.3.0",
+  "native_machine_version": "0.2.0",
+  "new_engine_or_content_build_required": false,
+  "same_world_for_all_phases": true,
+  "only_given_item": "minecraft:iron_pickaxe",
+  "mining_actions": 138,
+  "inventory_comparison_scope": [
+    "item IDs",
+    "counts"
+  ],
+  "native_machine_comparison_scope": [
+    "energy",
+    "progress",
+    "Items NBT"
+  ],
+  "raw_targets": {
+    "oritech:raw_nickel": 20,
+    "minecraft:raw_iron": 35,
+    "minecraft:raw_gold": 2,
+    "minecraft:redstone": 2,
+    "minecraft:raw_copper": 13,
+    "minecraft:coal": 44,
+    "minecraft:cobblestone": 24,
+    "minecraft:acacia_log": 4,
+    "minecraft:sand": 2,
+    "minecraft:quartz": 2
+  },
+  "raw_inventory_physically_reopened": {
+    "minecraft:acacia_log": 4,
+    "minecraft:coal": 44,
+    "minecraft:cobblestone": 24,
+    "minecraft:iron_pickaxe": 1,
+    "minecraft:quartz": 2,
+    "minecraft:raw_copper": 14,
+    "minecraft:raw_gold": 2,
+    "minecraft:raw_iron": 35,
+    "minecraft:redstone": 4,
+    "minecraft:sand": 2,
+    "minecraft:stick": 2,
+    "oritech:raw_nickel": 20
+  },
+  "terralith_nickel_mining_actions": 20,
+  "natural_nether_quartz_mining_actions": 2,
+  "crafts": [
+    {
+      "output": "minecraft:acacia_planks",
+      "count": 4,
+      "consumed": {
+        "minecraft:acacia_log": 1
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:acacia_planks",
+      "count": 4,
+      "consumed": {
+        "minecraft:acacia_log": 1
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:acacia_planks",
+      "count": 4,
+      "consumed": {
+        "minecraft:acacia_log": 1
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:acacia_planks",
+      "count": 4,
+      "consumed": {
+        "minecraft:acacia_log": 1
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:crafting_table",
+      "count": 1,
+      "consumed": {
+        "minecraft:acacia_planks": 4
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:crafting_table",
+      "count": 1,
+      "consumed": {
+        "minecraft:acacia_planks": 4
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:furnace",
+      "count": 1,
+      "consumed": {
+        "minecraft:cobblestone": 8
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "minecraft:furnace",
+      "count": 1,
+      "consumed": {
+        "minecraft:cobblestone": 8
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "minecraft:furnace",
+      "count": 1,
+      "consumed": {
+        "minecraft:cobblestone": 8
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:electrum_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:gold_ingot": 2,
+        "minecraft:redstone": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:magnetic_coil",
+      "count": 4,
+      "consumed": {
+        "oritech:nickel_ingot": 6,
+        "oritech:steel_ingot": 3
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:magnetic_coil",
+      "count": 4,
+      "consumed": {
+        "oritech:nickel_ingot": 6,
+        "oritech:steel_ingot": 3
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "minecraft:copper_block",
+      "count": 1,
+      "consumed": {
+        "minecraft:copper_ingot": 9
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:motor",
+      "count": 1,
+      "consumed": {
+        "oritech:nickel_ingot": 1,
+        "oritech:steel_ingot": 4,
+        "oritech:magnetic_coil": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:motor",
+      "count": 1,
+      "consumed": {
+        "oritech:nickel_ingot": 1,
+        "oritech:steel_ingot": 4,
+        "oritech:magnetic_coil": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:pulverizer_block",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 5,
+        "oritech:nickel_ingot": 1,
+        "oritech:motor": 2,
+        "minecraft:copper_block": 1
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:basic_generator_block",
+      "count": 1,
+      "consumed": {
+        "oritech:nickel_ingot": 5,
+        "minecraft:copper_ingot": 1,
+        "oritech:magnetic_coil": 2,
+        "minecraft:furnace": 1
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:raw_silicon",
+      "count": 3,
+      "consumed": {
+        "oritech:quartz_dust": 2,
+        "minecraft:sand": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:powered_furnace_block",
+      "count": 1,
+      "consumed": {
+        "minecraft:copper_ingot": 3,
+        "oritech:silicon": 2,
+        "oritech:electrum_ingot": 1,
+        "oritech:magnetic_coil": 2,
+        "minecraft:furnace": 1
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:machine_core_1",
+      "count": 1,
+      "consumed": {
+        "minecraft:acacia_planks": 8,
+        "minecraft:crafting_table": 1
+      },
+      "inventory_grid": false
+    }
+  ],
+  "smelts": [
+    {
+      "input": "oritech:raw_nickel",
+      "count": 20,
+      "output": "oritech:nickel_ingot",
+      "coal_inserted": 3
+    },
+    {
+      "input": "minecraft:raw_iron",
+      "count": 33,
+      "output": "minecraft:iron_ingot",
+      "coal_inserted": 5
+    },
+    {
+      "input": "minecraft:raw_gold",
+      "count": 2,
+      "output": "minecraft:gold_ingot",
+      "coal_inserted": 1
+    },
+    {
+      "input": "minecraft:raw_copper",
+      "count": 13,
+      "output": "minecraft:copper_ingot",
+      "coal_inserted": 2
+    },
+    {
+      "input": "oritech:raw_silicon",
+      "count": 3,
+      "output": "oritech:silicon",
+      "coal_inserted": 1
+    }
+  ],
+  "crafting_operations": 34,
+  "ingots_smelted": 71,
+  "all_recipe_inputs_mined_and_consumed_exactly": true,
+  "motors_workstations_machines_and_core_not_given": true,
+  "pulverizer_without_core_observed": true,
+  "source_pulverizer_recipe_reset_after_load_observed": true,
+  "four_physical_reopens": [
+    "raw inventory",
+    "active pulverizer",
+    "active silicon furnace",
+    "final inventory and machines"
+  ],
+  "collected_processed_iron_ingots": 2,
+  "final_inventory": {
+    "minecraft:coal": 2,
+    "minecraft:iron_ingot": 2,
+    "minecraft:iron_pickaxe": 1,
+    "minecraft:raw_copper": 1,
+    "minecraft:redstone": 2,
+    "minecraft:stick": 2,
+    "oritech:silicon": 1
+  },
+  "final_machine_state": {
+    "generator:energy": "0",
+    "generator:\"oritech.machine_progress\"": "508",
+    "generator:Items": "[{count: 1, Slot: 0b, id: \"minecraft:coal\"}]",
+    "pulverizer:energy": "20704",
+    "pulverizer:\"oritech.machine_progress\"": "0",
+    "pulverizer:Items": "Found no elements matching Items",
+    "furnace:energy": "32",
+    "furnace:\"oritech.machine_progress\"": "0",
+    "furnace:Items": "Found no elements matching Items"
+  },
+  "protocol_decode_errors": 0,
+  "all_recorded_status_snapshots_checked": true,
+  "prior_gather_actions_preserved": true,
+  "resume_module_hashes_and_inventory_checked": true,
+  "first_gather_stopped_after_confirmed_pickup_for_bounded_search_optimization": true,
+  "scouting_resumes_last_mined_area_and_nearby_natural_areas": true,
+  "radius_16_search_keeps_radius_64_fallback_and_biome_eligibility": true,
+  "fixtures": [
+    "iron pickaxe",
+    "teleports",
+    "spectator travel",
+    "carved access/glass supports and platform",
+    "peaceful difficulty",
+    "tick control",
+    "work platform forceload"
+  ],
+  "ores_raw_materials_metals_machines_energy_or_outputs_injected": false,
+  "installation": {
+    "profile": "/workspace/horizon-runtime/techquest-oritech-03b-server",
+    "port": 25645,
+    "lock_verified": true,
+    "engine_and_hmods_unchanged": true,
+    "online_mode": true,
+    "whitelist": true,
+    "bind": "127.0.0.1"
+  },
+  "proofs": {
+    "checked_result": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/checked-result.json",
+      "sha256": "eab28355af352a281fb48b008b265428157060cb0cf56bcc80485455c300ae0c"
+    },
+    "actions": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/actions.json",
+      "sha256": "e3490ca798d74ae43a045492d12a2565b11664be221d581481a642c88e3963fe"
+    },
+    "installation_lock": {
+      "path": "/workspace/horizon-runtime/techquest-oritech-03b-server/techquest-local-install.json",
+      "sha256": "5ffb4b7daca34d3ffc89b30e905bcbd246a5dd310b30b0ff25ed723788aec0e7"
+    },
+    "tools_build": {
+      "path": "/workspace/horizon-runtime/native-tools-oritech-03b/build-result.json",
+      "sha256": "98a66c8bc01064c3e96980762b637324318f968a7a2dd4be3ccbb76cf16812d2"
+    },
+    "raw_checkpoint_actions": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/raw-checkpoint/actions.json",
+      "sha256": "b58b9307a1689157b6b4f211e36743e07d75316ec2d32bf6ec416aad62ef7920"
+    },
+    "active_pulverizer": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/gathered-active-pulverizer.png",
+      "sha256": "d3ce7f3a8ad2487a544239c4ee42a20dcb13ce1f30a3027577eb045e07726044"
+    },
+    "active_furnace": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/gathered-active-silicon-furnace.png",
+      "sha256": "00d5184d973a99249c160d8aa6b7264dc06390167410e7f8ac2d3bc92d3dae4a"
+    },
+    "output": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/gathered-silicon-output.png",
+      "sha256": "26f286b08ac0aeadf83f0ee6ebb02382dcb60f112626fd40d5813fc57c2a0d16"
+    },
+    "previous_processing_and_recipe_evidence": {
+      "path": "/workspace/TechQuest-Modpack/horizon/ORITECH_SILICON_RESULT.json",
+      "sha256": "2c4c3ceb93488328b6ea1ba232dadc8e6b63b280f825acc1c96fd1f33f513438"
+    },
+    "controlled_first_gather_stop": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-controlled-stop-v1.json",
+      "sha256": "cfbe92621ddd48ea4d667e64a2f5b18f8815c3ef198b208383f6d062134d9d1f"
+    },
+    "python_tests": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-silicon-python-tests-final.log",
+      "sha256": "b53e47efcd27b6ba336f4d77098fa9427422fc8a39189a13b27b6bf6f89809a0"
+    },
+    "gather_console": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/gather-console.log",
+      "sha256": "0f82a60433239983f78ec74d759393d150b3e3db635219ed79e812398ab0a62e"
+    },
+    "craft_console": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/craft-console.log",
+      "sha256": "fca564cd5bcd3a878b13e5232126ed0451c975ecf3e6ff20057d2558eb3e396d"
+    },
+    "silicon_console": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/silicon-console.log",
+      "sha256": "a8313c1a7f2ba584aea1bedfa61ad48ecff914a453372f069a6dae4b5187e652"
+    },
+    "output_console": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/output-console.log",
+      "sha256": "63f402b9dfb19b303cc02763151264a9d1f9ffb7a3e58e962641207e932e520c"
+    },
+    "final-reopen_console": {
+      "path": "/workspace/horizon-runtime/oritech-03b-gathered-silicon-gui-v5/final-reopen-console.log",
+      "sha256": "196dcc0c780415ea2fd846636116d79226bc163f271138de18810b74d677cdd0"
+    }
+  },
+  "unassisted_from_spawn_tested": false,
+  "licensed_join_or_multiplayer_tested": false,
+  "full_modpack_ported": false,
+  "published": false
+}
