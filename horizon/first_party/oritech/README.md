@@ -150,7 +150,38 @@ test does not claim a fully gathered survival run.
 `live_oritech_ores_gui.py` separately finds/mines natural nickel with Terralith
 enabled and natural End platinum, then verifies inventory/broken blocks after
 reopen. It gives only a pickaxe, carves access cells and never injects ores,
-features or raw items. End platinum is an existing source route; natural
-overworld deepslate platinum and full worldgen RNG remain unverified.
+features or raw items. End platinum is an existing source route. The later
+[`--deepslate` check and world-pack correction](../../ORITECH_WORLDPACK_RESULT.json)
+also establish natural Overworld nickel/platinum inside Terralith biomes with
+physical save/reopen. The correction restores feature modifiers after enabled
+world packs; new installations require both reviewed core corrections.
+Full worldgen RNG parity remains unverified.
 
 [Content 0.2 results and limitations](../../ORITECH_STARTER_RESULT.json).
+
+## Guided starter chain from mined materials
+
+`live_oritech_gathered_gui.py` connects gathering, vanilla smelting, crafting,
+placement and machine operation in one continued Terralith world save. Only an
+iron pickaxe is given. Teleports, spectator travel, peaceful difficulty, carved
+access, glass access floors/roofs and a work platform, and tick control are
+explicit fixtures. All recipe inputs come from survival mining; workstations,
+alloys and machines are crafted through real menu packets.
+
+```sh
+python3 horizon/probes/live_oritech_gathered_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-gathered-new"
+```
+
+The probe checks ingredient deltas, collected drops, raw inventory after reopening,
+an active machine pair after reopening, and final items/state after another
+reopen. It handles redstone's first-hit lighting and naturally falling gravel;
+a changed block state alone does not count as collected ore. A stopped
+`raw-checkpoint` retains the gathered save and cumulative mining actions.
+`--resume-from OWN_GATHER_WORK` accepts only a gather-phase action history,
+checks content hashes against the sealed profile, and continues that saved
+world in a new scratch directory with its action provenance retained.
+
+[Guided run evidence](../../ORITECH_GATHERED_RESULT.json). This does not establish
+unassisted progression from spawn, the silicon processing route, automation or
+licensed multiplayer. The engine and content versions are unchanged.
