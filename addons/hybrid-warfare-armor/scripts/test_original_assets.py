@@ -125,9 +125,19 @@ class OriginalArmorFusionTests(unittest.TestCase):
 
     def test_power_bar_does_not_replace_durability_or_plate_hud(self):
         root = pathlib.Path(__file__).resolve().parents[1]
-        decorator = (root / "src/main/java/dev/techquest/hybrid/client/HybridArmorEnergyDecorator.java").read_text()
+        decorator = (root / "src/main/java/dev/techquest/hybrid/gui/HybridArmorEnergyDecorator.java").read_text()
         main = (root / "src/main/java/dev/techquest/hybrid/HybridWarfareMod.java").read_text()
         recipe = (root / "src/main/java/dev/techquest/hybrid/HybridFusionRecipe.java").read_text()
+        # 0.2.3 boot regression: ordinary event subscriber in the same
+        # package as an owned Mixin is rejected by Mixin's classloader.
+        config = json.loads((root / "src/main/resources/techquest_hybrid.mixins.json").read_text())
+        decorator_package = next(
+            line.split(";", 1)[0].removeprefix("package ")
+            for line in decorator.splitlines() if line.startswith("package ")
+        )
+        self.assertFalse(decorator_package.startswith(config["package"]),
+                         "HUD decorator must not be in the reserved Mixin package")
+        self.assertFalse((root / "src/main/java/dev/techquest/hybrid/client/HybridArmorEnergyDecorator.java").exists())
         self.assertIn("RegisterItemDecorationsEvent", decorator)
         self.assertIn("HybridWarfareMod.energyCapacity(stack)", decorator)
         self.assertIn("HybridWarfareMod.charge(stack)", decorator)
