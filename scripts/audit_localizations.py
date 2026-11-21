@@ -64,7 +64,7 @@ def audit(mods_dir):
         # require correction. Only supported format specifiers are counted.
         def placeholders(value):
             return sorted(re.findall(
-                r"%(?:[1-9]\\d*\\$)?[-#+ 0,(]*\\d*(?:\\.\\d+)?[a-zA-Z]",
+                r"%(?:[1-9]\d*\$)?[-#+ 0,(]*\d*(?:\.\d+)?[a-zA-Z]",
                 value.replace("%%", ""),
             ))
         mismatches = {
