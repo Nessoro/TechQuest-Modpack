@@ -10,6 +10,8 @@ import io
 import json
 import zipfile
 
+from scripts.boss_checklist import boss_checklist_datapack
+
 BOOK = "techquest_guide"
 BOOK_ID = "patchouli:" + BOOK
 
@@ -194,6 +196,7 @@ def guide_overrides():
     # A separate named pack is additive, so upgrades preserve an existing
     # original starter_guide.zip and user-created world/config files.
     files["config/openloader/packs/techquest_micropatch_033.zip"] = micro_patch_datapack()
+    files["config/openloader/packs/techquest_boss_checklist.zip"] = boss_checklist_datapack()
     return files
 
 def starter_datapack():
