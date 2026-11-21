@@ -80,6 +80,7 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertEqual(bookshelf["day.bookshelf.monday"], "Понедельник")
         xaero = json.loads((COMPAT / "assets/xaeroworldmap/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("карты", xaero["effect.xaeroworldmap.no_cave_maps"])
+        self.assertIn("%1$s", xaero["gui.xaero_wm_ceiling"])
         mowzie = json.loads((COMPAT / "assets/mowziesmobs/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(mowzie["itemGroup.mowziesmobs.creativeTab"], "Mowzie's Mobs")
 
