@@ -1,6 +1,36 @@
 # TechQuest Hybrid Warfare — original Superb Warfare + energy tech upgrade
 
-**Версия аддона:** 0.2.3-SNAPSHOT (экспериментальная). Minecraft **1.21.1**, NeoForge **21.1.264**, Java **21**. Изменения в **draft PR #51**, в `main` и установщик TechQuest не добавлены. **Не проверено запуском Minecraft.**
+**Версия аддона:** 0.2.4-SNAPSHOT (экспериментальная). Minecraft **1.21.1**, NeoForge **21.1.264**, Java **21**. Изменения в **draft PR #51**, в `main` и установщик TechQuest не добавлены. **Не проверено запуском Minecraft.**
+
+## Исправление 0.2.4 — устранён вылет при загрузке Mixin
+
+На реальном клиенте TechQuest с `0.2.3-SNAPSHOT` NeoForge 21.1.264 выдавал:
+
+```text
+IllegalClassLoadError:
+dev.techquest.hybrid.client.HybridArmorEnergyDecorator is in a defined
+mixin package dev.techquest.hybrid.client.* owned by techquest_hybrid.mixins.json
+and cannot be referenced directly
+```
+
+Это **ошибка аддона TechQuest**, а не Sodium: поздний вылет `Rendering overlay`/
+`Sodium's config could not be found` был её вторичным следствием.
+
+Причина: обычный `@EventBusSubscriber` для полоски энергии разместили в
+пакете `dev.techquest.hybrid.client`, которым управляет конфигурация Mixin
+(для `SuperbWarfareArmorTintMixin`). Mixin запрещает напрямую загружать
+классы из собственного пакета, если они не являются применяемыми Mixin.
+
+Исправлено: `HybridArmorEnergyDecorator` перенесён в
+**`dev.techquest.hybrid.gui`**, вне пространства Mixin. Существующий
+`SuperbWarfareArmorTintMixin` остаётся в исходном пакете; его функциональность
+не меняется. В `scripts/test_original_assets.py` добавлена проверка, что
+обычный декоратор не возвращается внутрь Mixin-пакета.
+
+**Проверка:** заменить `techquest-hybrid-warfare-0.2.3-SNAPSHOT.jar`
+на `techquest-hybrid-warfare-0.2.4-SNAPSHOT.jar`, оставить только один
+JAR аддона в `mods`. Запустить тестовый клиент и проверить заряд, пластины
+и исходные текстуры. Компиляция/CI не заменяет реальный клиентский smoke-test.
 
 ## Новое в 0.2.3 — удобный заряд и пустой HUD бронепластин
 
