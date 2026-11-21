@@ -3,7 +3,6 @@ package dev.techquest.hybrid;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -24,7 +23,7 @@ public final class PoweredElytraEnergy {
     private PoweredElytraEnergy() {}
 
     public static boolean isPoweredChest(ItemStack stack) {
-        if (stack.isEmpty() || LivingEntity.getEquipmentSlotForItem(stack) != EquipmentSlot.CHEST) {
+        if (stack.isEmpty() || stack.getEquipmentSlot() != EquipmentSlot.CHEST) {
             return false;
         }
         if (HybridWarfareMod.technology(stack) != null) {
