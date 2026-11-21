@@ -24,7 +24,7 @@ LOCALE_COUNTS = {
     "critical_strike": 18,
     "ftbultimine": 20,
     "fluidic_tanks": 24,
-    "ic2": 418,
+    "ic2": 767,
     "jei": 625,
     "mekanism": 1892,
     "mekanismgenerators": 221,
