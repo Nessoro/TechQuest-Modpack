@@ -56,7 +56,7 @@ MIT Horizon `game/machines.rs` container rules; see the retained
 `LICENSE-HORIZON`. No Java source from NeoForge or LGPL/GPL dependencies was
 read or decompiled; the original reference runs binary dependencies only.
 
-## Oritech energy prototype
+## Oritech energy and quartz-processing subset
 
 The Oritech 1.2.13 reference is [Rearth/Oritech at
 4069b6dd14b05dfe0c80126618739b64054630ea](https://github.com/Rearth/Oritech/tree/4069b6dd14b05dfe0c80126618739b64054630ea).
@@ -70,7 +70,7 @@ have no separate license override.
 `first_party/oritech/logic.rs` adapts the default Basic Generator, Powered Furnace
 and single Machine Core behavior from `BasicGeneratorEntity`,
 `UpgradableGeneratorBlockEntity`, `MachineBlockEntity`,
-`UpgradableMachineBlockEntity`, `PoweredFurnaceBlockEntity`,
+`UpgradableMachineBlockEntity`, `PoweredFurnaceBlockEntity`, `PulverizerBlockEntity`,
 `MultiblockMachineEntity`, `MultiblockMachine`, `MultiblockMachineController`,
 `MachineCoreEntity`, `MachineCoreBlock`, `DynamicEnergyStorage` and `EnergyApi`.
 The same pin's `OritechConfig`, `BlockContent`, `BlockEntitiesContent` and
@@ -92,6 +92,12 @@ worldgen/biome-modifier JSON. Horizon's MIT `carry::upgrade_recipe`,
 `carry::upgrade_loot` and datapack upgrader perform the format changes. Source
 common item tags are resolved from public JSON in the pinned Oritech and
 NeoForge universal JARs; no dependency Java source is read.
+
+Content 0.3 adds five ordinary recipes, the original quartz Pulverizer recipe,
+four material assets and labels from that same CC0 JAR. Native 0.2 adapts the
+no-addon quartz processing path and transient recipe-cache behavior. The own
+`PulverizerBlockEntity.java` at the same pin has no separate license header;
+its SHA-256 is `3d240c40254a4b05805e7ca7212592e8e5843808553c47e19700eab11e43fa4a`.
 
 `first_party/biome_modifiers/merged-biomes.patch` adapts Horizon's MIT
 `mod_content.rs` at the existing pinned Horizon commit. It registers declared

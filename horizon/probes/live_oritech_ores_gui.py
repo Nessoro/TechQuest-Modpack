@@ -16,7 +16,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ("server-dir","work"):parser.add_argument("--"+name,type=Path,required=True)
     parser.add_argument("--deepslate", action="store_true", help="mine both deep Overworld ores after world-pack feature replay")
-    args=parser.parse_args();g=GraphicalFixture(args.server_dir,args.work,"0.2.0","techquest-oritech-ores","TQOreMine",module="oritech",frozen=True)
+    args=parser.parse_args();g=GraphicalFixture(args.server_dir,args.work,("0.2.0","0.3.0"),"techquest-oritech-ores","TQOreMine",module="oritech",frozen=True)
     shutil.copytree(g.server/"techquest-horizon-test/datapacks",g.work/"saves"/g.world/"datapacks")
     cmd,call,settle=g.command,g.call,g.settle;found=[]
     def travel(dimension,pos):

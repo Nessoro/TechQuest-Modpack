@@ -15,7 +15,7 @@ from graphical_fixture import GraphicalFixture
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('server-dir','work'):parser.add_argument('--'+name,type=Path,required=True)
-    args=parser.parse_args();game=GraphicalFixture(args.server_dir,args.work,('0.5.0','0.6.0'),'techquest-capacity-gui','TQCapacityGui')
+    args=parser.parse_args();game=GraphicalFixture(args.server_dir,args.work,('0.5.0','0.6.0','0.7.0'),'techquest-capacity-gui','TQCapacityGui')
     call,cmd,settle=game.call,game.command,game.settle
     def count(pos):
         text=cmd('data get block '+' '.join(map(str,pos))+' Items')

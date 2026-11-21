@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 import zipfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from stage_oritech_progression import RECIPES, ORES
+from stage_oritech_progression import ORES
 from stage_terralith_content import read_checked
 
 
@@ -19,7 +19,7 @@ def main():
     assert hashlib.sha512(raw).hexdigest() == stage["source_jar_sha512"]
     tags = stage["progression_subset"]["resolved_common_tags"]; cases = []
     with zipfile.ZipFile(args.jar) as z:
-        for name in RECIPES:
+        for name in stage["progression_subset"]["recipes"]:
             recipe = json.loads(z.read(f"data/oritech/recipe/{name}.json"))
             if recipe["type"] != "minecraft:crafting_shaped": continue
             symbols = sorted(recipe["key"]); choices = []
@@ -28,6 +28,7 @@ def main():
                 if "item" in ingredient: choices.append([ingredient["item"]])
                 elif ingredient["tag"] == "minecraft:planks": choices.append(["minecraft:oak_planks", "minecraft:spruce_planks", "minecraft:birch_planks"])
                 elif ingredient["tag"] == "minecraft:coals": choices.append(["minecraft:coal", "minecraft:charcoal"])
+                elif ingredient["tag"] == "minecraft:sand": choices.append(["minecraft:sand", "minecraft:red_sand"])
                 else: choices.append(tags[ingredient["tag"]])
             pattern = recipe["pattern"]; width = max(len(r.rstrip()) for r in pattern); height = len(pattern)
             for picked in itertools.product(*choices):

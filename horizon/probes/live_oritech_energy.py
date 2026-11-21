@@ -76,7 +76,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for key in ("server-dir", "work", "original"): parser.add_argument("--" + key, type=Path, required=True)
     args = parser.parse_args(); server = args.server_dir.resolve(); work = args.work.absolute(); lock = verify(server)
-    if lock["modules"].get("oritech", {}).get("version") not in ("0.1.0", "0.2.0"): raise ValueError("requires reviewed Oritech energy installation")
+    if lock["modules"].get("oritech", {}).get("version") not in ("0.1.0", "0.2.0", "0.3.0"): raise ValueError("requires reviewed Oritech energy installation")
     if work.exists() or work.is_symlink() or any(p.is_symlink() for p in work.parents) or server in work.parents or work in server.parents:
         raise ValueError("work must be new and separate")
     original = json.loads(args.original.read_text()); rows = original["rows"]

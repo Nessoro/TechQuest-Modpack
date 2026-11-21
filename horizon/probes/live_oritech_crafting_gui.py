@@ -15,7 +15,7 @@ from graphical_fixture import GraphicalFixture
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for key in ("server-dir","work"):parser.add_argument("--"+key,type=Path,required=True)
-    args=parser.parse_args();g=GraphicalFixture(args.server_dir,args.work,"0.2.0","techquest-oritech-crafting","TQCraftGui",module="oritech",frozen=True)
+    args=parser.parse_args();g=GraphicalFixture(args.server_dir,args.work,("0.2.0","0.3.0"),"techquest-oritech-crafting","TQCraftGui",module="oritech",frozen=True)
     cmd,call,settle=g.command,g.call,g.settle;crafts=[]
     def counts():return call("inventory")["counts"]
     def slots():

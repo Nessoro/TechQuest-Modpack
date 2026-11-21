@@ -101,6 +101,19 @@ descriptor, diff и Rust helper проверяются и фиксируются
 для этой проверки не требуется; путь с нуля от спавна и лицензированный join
 по-прежнему не подтверждены.
 
+Oritech content 0.3 требует native `techquest_oritech` 0.2.0 и оба core corrections.
+Для автоматизации Pulverizer нужен Pretty Pipes content/native 0.7.0. Новый
+`/workspace/horizon-runtime/techquest-oritech-03b-server`, порт 25645, содержит
+8 hmod и 4 native bundles; профиль остановлен, lock проверен. Ключ
+`stage_oritech.py --pulverizer` включает прежний `--progression` и добавляет
+ручные моторы, Pulverizer, quartz processing, raw silicon/smelting и стандартный
+рецепт печи. Старые установки на месте не обновляются.
+Графический путь с натуральным кварцем, скрафченными машинами, кремнием,
+двумя готовыми слитками и переоткрытиями прошёл. Металлы/песок/топливо и
+площадка здесь fixtures; прохождение от спавна и лицензированный join ещё
+нужны. [Новый отчёт](ORITECH_SILICON_RESULT.json),
+[сборка и воспроизведение](first_party/oritech/README.md#content-03-quartz-and-silicon-route--native-02).
+
 Последний Better Dungeons stage также исправляет potion/enchantment loot в пяти
 таблицах; пересобирать только в новый каталог и устанавливать в новый профиль.
 [Графические и исходные проверки лута](YUNG_RUNTIME_RU.md) не подтверждают

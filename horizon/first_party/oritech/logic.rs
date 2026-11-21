@@ -9,12 +9,13 @@ use horizon_world::nbt::{Compound, Tag};
 
 pub(super) const GENERATOR: &str = "oritech:basic_generator_block";
 pub(super) const FURNACE: &str = "oritech:powered_furnace_block";
+pub(super) const PULVERIZER: &str = "oritech:pulverizer_block";
 pub(super) const CORE: &str = "oritech:machine_core_1";
 const PROGRESS: &str = "oritech.machine_progress";
 const ASSEMBLED: &str = "techquest_assembled";
 
 pub(super) fn machine(id: &str) -> bool {
-    matches!(id, GENERATOR | FURNACE)
+    matches!(id, GENERATOR | FURNACE | PULVERIZER)
 }
 fn int(nbt: &Compound, key: &str) -> i32 {
     match nbt.get(&key.into()) {
@@ -103,15 +104,26 @@ fn max_stack(game: &Game<'_>, stack: &ItemStack) -> u32 {
 }
 pub(super) fn update(entity: &mut ModBlockEntity) {
     let energy = int(&entity.nbt, "energy").max(0);
+    // data slots are not saved by Horizon. The pulverizer uses the last
+    // otherwise-unused field to identify a freshly loaded recipe cache.
+    let state = if entity.id == PULVERIZER {
+        entity.data.get(4).copied().unwrap_or(0)
+    } else {
+        i32::from(flag(&entity.nbt, ASSEMBLED))
+    };
     entity.data = vec![
         energy & 0xffff,
         (energy >> 16) & 0xffff,
         int(&entity.nbt, PROGRESS),
         int(&entity.nbt, "storedBurn"),
-        i32::from(flag(&entity.nbt, ASSEMBLED)),
+        state,
     ];
 }
 pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEntity) {
+    if entity.id == PULVERIZER {
+        tick_pulverizer(game, entity);
+        return;
+    }
     let count = if entity.id == GENERATOR { 1 } else { 2 };
     if entity.items.len() < count {
         entity.items.resize(count, None);
@@ -192,6 +204,123 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
                 progress = 0;
             }
         }
+    }
+    put(&mut entity.nbt, "energy", energy);
+    put(&mut entity.nbt, PROGRESS, progress);
+    update(entity);
+}
+
+const PULVERIZER_CACHE: &str = "techquest_pulverizer_recipe";
+
+fn pulverizer_matches(
+    game: &Game<'_>,
+    recipe: &serde_json::Value,
+    input: Option<&ItemStack>,
+) -> bool {
+    let Some(input) = input.filter(|stack| stack.count > 0) else {
+        return false;
+    };
+    let Some(ingredients) = recipe["ingredients"].as_array().filter(|v| v.len() == 1) else {
+        return false;
+    };
+    game.native_recipe_ingredient(&ingredients[0])
+        .is_some_and(|ingredient| ingredient.test(input))
+}
+
+fn tick_pulverizer(game: &Game<'_>, entity: &mut ModBlockEntity) {
+    entity.items.resize(3, None);
+    if entity.data.get(4) != Some(&1) {
+        // The original currentRecipe is transient: a loaded machine forgets
+        // it, even though progress itself was saved. Keep that observed reset
+        // behavior without global entity maps or native pointer identities.
+        entity.nbt.remove(&PULVERIZER_CACHE.into());
+        entity.data.resize(5, 0);
+        entity.data[4] = 1;
+    }
+    if flag(&entity.nbt, "oritech.redstone") {
+        update(entity);
+        return;
+    }
+    let mut progress = int(&entity.nbt, PROGRESS);
+    let mut energy = int(&entity.nbt, "energy").max(0);
+    let cached = entity.nbt.get(&PULVERIZER_CACHE.into()).and_then(|value| {
+        if let Tag::String(text) = value {
+            text.to_string()
+                .ok()
+                .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
+        } else {
+            None
+        }
+    });
+    let is_cached = cached
+        .as_ref()
+        .is_some_and(|value| pulverizer_matches(game, value, entity.items[0].as_ref()));
+    let recipe = if is_cached {
+        cached
+    } else {
+        game.native_recipes_of_type("oritech:pulverizer")
+            .iter()
+            .find(|recipe| pulverizer_matches(game, &recipe.json, entity.items[0].as_ref()))
+            .map(|recipe| (*recipe.json).clone())
+    };
+    if let Some(recipe) = recipe {
+        let results = recipe["results"].as_array().and_then(|values| {
+            if !(1..=2).contains(&values.len()) {
+                return None;
+            }
+            values
+                .iter()
+                .map(|value| game.native_recipe_result(value))
+                .collect::<Option<Vec<_>>>()
+        });
+        let duration = recipe["time"]
+            .as_i64()
+            .filter(|n| *n > 0 && *n <= i32::MAX as i64);
+        let results = results.filter(|results| {
+            results.iter().enumerate().all(|(i, result)| {
+                entity.items[i + 1].as_ref().is_none_or(|current| {
+                    current.item == result.item
+                        && current.count.saturating_add(result.count) <= max_stack(game, current)
+                })
+            })
+        });
+        if let (Some(results), Some(duration)) = (results, duration) {
+            if !is_cached {
+                progress = 0;
+            }
+            if energy >= 32 {
+                energy -= 32;
+                progress += 1;
+                if !is_cached {
+                    // The source keeps a matching cached recipe over /reload.
+                    // Persisted bytes are ignored on the first load tick above;
+                    // no client-visible pointer or unbounded global cache is used.
+                    if let Ok(text) = serde_json::to_string(&recipe) {
+                        entity
+                            .nbt
+                            .insert(PULVERIZER_CACHE.into(), Tag::String(text.as_str().into()));
+                    }
+                }
+                if i64::from(progress) >= duration {
+                    shrink(&mut entity.items[0]);
+                    for (i, result) in results.into_iter().enumerate() {
+                        if let Some(current) = &mut entity.items[i + 1] {
+                            current.count += result.count;
+                        } else {
+                            entity.items[i + 1] = Some(result);
+                        }
+                    }
+                    // Only the original quartz recipe is staged in this subset;
+                    // it has no secondary small dust to combine or random result.
+                    progress = 0;
+                }
+            }
+        } else {
+            progress = 0;
+        }
+    } else {
+        entity.nbt.remove(&PULVERIZER_CACHE.into());
+        progress = 0;
     }
     put(&mut entity.nbt, "energy", energy);
     put(&mut entity.nbt, PROGRESS, progress);

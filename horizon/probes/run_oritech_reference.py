@@ -29,7 +29,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("runtime", "work"): parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--accept-eula", action="store_true"); parser.add_argument("--reopen", action="store_true")
-    parser.add_argument("--oracle", choices=("energy", "content"), default="energy")
+    parser.add_argument("--oracle", choices=("energy", "content", "pulverizer"), default="energy")
     parser.add_argument("--cases", type=Path)
     args = parser.parse_args(); runtime = args.runtime.resolve(); work = args.work.absolute()
     if args.oracle == "content" and (args.cases is None or args.reopen):
@@ -37,7 +37,7 @@ def main():
     if (work.is_symlink() or any(p.is_symlink() for p in work.parents)
             or runtime == work or runtime in work.parents and work.parent != runtime):
         raise ValueError("reference must be a separate direct runtime child or separate workspace directory")
-    probe = Path(__file__).with_name("OritechEnergyProbe.java" if args.oracle == "energy" else "OritechContentProbe.java")
+    probe = Path(__file__).with_name({"energy": "OritechEnergyProbe.java", "content": "OritechContentProbe.java", "pulverizer": "OritechPulverizerProbe.java"}[args.oracle])
     sha = lambda p: hashlib.sha256(read_checked(p)).hexdigest()
     server = work / "server"; jar = work / "probe/techquest-reference-probe.jar"
     if not args.reopen:
@@ -88,11 +88,14 @@ def main():
         (work / (phase + "-console.log")).chmod(0o600)
         subprocess.run(launch, cwd=server, env=env, stdout=log, stderr=subprocess.STDOUT, check=True, timeout=300)
     result = json.loads((work / (phase + "-result.json")).read_text())
-    if args.reopen:
+    if args.reopen and args.oracle == "energy":
         initial = json.loads((work / "initial-result.json").read_text())
         assert result["before_generator"] == initial["saved_generator"] and result["before_furnace"] == initial["saved_furnace"]
         assert result["after_furnace"]["items"] == [{"slot": 1, "item": "minecraft:iron_ingot", "count": 2}]
-    print("Original Oritech", phase, "passed")
+    if args.reopen and args.oracle == "pulverizer":
+        initial = json.loads((work / "initial-result.json").read_text())
+        assert result["before"] == initial["saved"]
+    print("Original Oritech", args.oracle, phase, "passed")
 
 
 if __name__ == "__main__": main()

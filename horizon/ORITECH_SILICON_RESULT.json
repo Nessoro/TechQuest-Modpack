@@ -1,0 +1,412 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-21T15:47:23.177298+00:00",
+  "minecraft": "26.3",
+  "scope": "Selected no-addon quartz Pulverizer and silicon furnace route, real graphical crafting/processing/reopens, dedicated Pretty Pipes automation",
+  "versions": {
+    "oritech_content": "0.3.0",
+    "oritech_native": "0.2.0",
+    "pretty_pipes_content_and_native": "0.7.0"
+  },
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "source": {
+    "oritech_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "license_basis": "Pinned source LICENSE.md and pinned JAR declare CC0-1.0; current project metadata differs; own consulted headers have no override",
+    "dependency_java_source_read_or_decompiled": false
+  },
+  "content": {
+    "ordinary_recipes": 15,
+    "custom_pulverizer_recipes": 1,
+    "materials": 12,
+    "machine_and_core_blocks": 4,
+    "ore_blocks": 4,
+    "all_original_recipes_ported": false
+  },
+  "native_pulverizer": {
+    "energy_capacity": 25000,
+    "max_insertion_per_call": 256,
+    "energy_per_processing_tick": 32,
+    "quartz_duration_ticks": 100,
+    "requires_core": false,
+    "input_slots": [
+      0
+    ],
+    "result_slots": [
+      1,
+      2
+    ],
+    "original_cases": 67,
+    "matched_states": 536,
+    "mismatches": 0,
+    "physical_reopen_matches_original": true,
+    "saved_progress": 45,
+    "transient_recipe_reset_after_reopen_matched": true,
+    "runtime_cache_primed_by_actual_tick": true,
+    "runtime_cache_fields_injected": false,
+    "native_entity_creation_registered": true
+  },
+  "graphical": {
+    "natural_quartz_mined": 2,
+    "crafts": [
+      {
+        "output": "minecraft:furnace",
+        "count": 1,
+        "consumed": {
+          "minecraft:cobblestone": 8
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "minecraft:furnace",
+        "count": 1,
+        "consumed": {
+          "minecraft:cobblestone": 8
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "minecraft:furnace",
+        "count": 1,
+        "consumed": {
+          "minecraft:cobblestone": 8
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:motor",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 1,
+          "oritech:steel_ingot": 4,
+          "oritech:magnetic_coil": 2
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:motor",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 1,
+          "oritech:steel_ingot": 4,
+          "oritech:magnetic_coil": 2
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:pulverizer_block",
+        "count": 1,
+        "consumed": {
+          "minecraft:iron_ingot": 5,
+          "oritech:nickel_ingot": 1,
+          "oritech:motor": 2,
+          "minecraft:copper_block": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:basic_generator_block",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 5,
+          "minecraft:copper_ingot": 1,
+          "oritech:magnetic_coil": 2,
+          "minecraft:furnace": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:raw_silicon",
+        "count": 3,
+        "consumed": {
+          "oritech:quartz_dust": 2,
+          "minecraft:sand": 2
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:powered_furnace_block",
+        "count": 1,
+        "consumed": {
+          "minecraft:copper_ingot": 3,
+          "oritech:silicon": 2,
+          "oritech:electrum_ingot": 1,
+          "oritech:magnetic_coil": 2,
+          "minecraft:furnace": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:machine_core_1",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 8,
+          "minecraft:crafting_table": 1
+        },
+        "inventory_grid": false
+      }
+    ],
+    "smelts": [
+      {
+        "input": "oritech:raw_silicon",
+        "count": 3,
+        "output": "oritech:silicon",
+        "coal_inserted": 1
+      }
+    ],
+    "both_output_slots_refuse_quartz": true,
+    "recipe_inputs_consumed_exactly": true,
+    "all_processing_machines_and_core_crafted_and_placed": true,
+    "processing_intermediates_and_machines_not_given": true,
+    "pulverizer_without_core": true,
+    "working_furnace_assembled": true,
+    "collected_processed_iron_ingots": 2,
+    "physical_reopens": 2,
+    "final_inventory": {
+      "minecraft:iron_ingot": 2,
+      "minecraft:iron_pickaxe": 1,
+      "oritech:silicon": 1
+    },
+    "final_state_reopened_exactly": true,
+    "protocol_decode_errors": 0,
+    "guided_access_teleports_and_glass_platform_fixtures": true,
+    "base_material_fixtures": {
+      "minecraft:iron_ingot": 5,
+      "oritech:nickel_ingot": 8,
+      "oritech:steel_ingot": 8,
+      "oritech:magnetic_coil": 8,
+      "minecraft:copper_block": 1,
+      "minecraft:copper_ingot": 4,
+      "oritech:electrum_ingot": 1,
+      "minecraft:coal": 2,
+      "minecraft:sand": 2,
+      "minecraft:cobblestone": 24,
+      "minecraft:oak_planks": 8,
+      "minecraft:crafting_table": 1,
+      "minecraft:raw_iron": 2
+    },
+    "synthetic_local_player": true,
+    "unassisted_survival_tested": false,
+    "licensed_client_join_tested": false
+  },
+  "dedicated_pretty_pipes": {
+    "source_quartz_and_coal_and_machine_pipe_chest_module_fixtures": true,
+    "machine_inventory_energy_progress_output_or_cargo_injected": false,
+    "no_processing_without_modules": true,
+    "processed": {
+      "quartz_source": 0,
+      "coal_source": 0,
+      "generator_coal": 0,
+      "pulverizer_quartz": 0,
+      "pulverizer_dust": 2,
+      "output_chest": 0,
+      "output_in_flight": 0,
+      "generator_energy": 19800,
+      "pulverizer_energy": 25000,
+      "generator_progress": 0,
+      "pulverizer_progress": 0
+    },
+    "saved_in_flight": {
+      "quartz_source": 0,
+      "coal_source": 0,
+      "generator_coal": 0,
+      "pulverizer_quartz": 0,
+      "pulverizer_dust": 0,
+      "output_chest": 0,
+      "output_in_flight": 2,
+      "generator_energy": 19800,
+      "pulverizer_energy": 25000,
+      "generator_progress": 0,
+      "pulverizer_progress": 0
+    },
+    "delivery_after_reopen": {
+      "quartz_source": 0,
+      "coal_source": 0,
+      "generator_coal": 0,
+      "pulverizer_quartz": 0,
+      "pulverizer_dust": 0,
+      "output_chest": 2,
+      "output_in_flight": 0,
+      "generator_energy": 19800,
+      "pulverizer_energy": 25000,
+      "generator_progress": 0,
+      "pulverizer_progress": 0
+    },
+    "final_exact_reopen": {
+      "quartz_source": 0,
+      "coal_source": 0,
+      "generator_coal": 0,
+      "pulverizer_quartz": 0,
+      "pulverizer_dust": 0,
+      "output_chest": 2,
+      "output_in_flight": 0,
+      "generator_energy": 19800,
+      "pulverizer_energy": 25000,
+      "generator_progress": 0,
+      "pulverizer_progress": 0
+    },
+    "physical_reopens": 2,
+    "licensed_multiplayer_tested": false
+  },
+  "regressions": {
+    "original_energy_cases": 63,
+    "energy_states_matched": 414,
+    "original_vanilla_capacity_cases_matched": 126,
+    "ordinary_crafting_grids_matched": 762,
+    "ore_loot_rolls_matched": 60,
+    "mismatches": 0,
+    "content_parity_uses_preexisting_helper_with_same_pinned_recipe_loot_code": true,
+    "new_processing_is_tested_separately_in_new_native_engine": true,
+    "python_tests": 122
+  },
+  "installation": {
+    "profile": "/workspace/horizon-runtime/techquest-oritech-03b-server",
+    "port": 25645,
+    "bind": "127.0.0.1",
+    "online_mode": true,
+    "whitelist": true,
+    "eula_consent_previously_provided": true,
+    "hmod_count": 8,
+    "native_bundles": 4,
+    "core_corrections": 2,
+    "lock_verified": true,
+    "server_stopped": true,
+    "previous_stable_profiles_tools_and_locks_unchanged": true,
+    "source_bundles_match_current_public_rust": true
+  },
+  "proofs": {
+    "original_pulverizer": {
+      "path": "/workspace/horizon-runtime/oritech-pulverizer-reference-v1/initial-result.json",
+      "sha256": "361a88324c1f116d96e2dc7f2eecb598366f5468cf7ed627fac7c4b0b8895e9d"
+    },
+    "original_pulverizer_reopen": {
+      "path": "/workspace/horizon-runtime/oritech-pulverizer-reference-v1/reopen-result.json",
+      "sha256": "529864907d228000a36e380219ad0d5e211e74758b712534202acb1280c5c2b4"
+    },
+    "native_pulverizer": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pulverizer-parity-v1/checked-result.json",
+      "sha256": "bc9b265836d2f161e022133365077d85830420b91c064a7b42e35cfcdf12d2b0"
+    },
+    "native_pulverizer_initial_commands": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pulverizer-parity-v1/initial-result.jsonl",
+      "sha256": "d3a2b79a439855314bb12fcbd7caa21a0e500ea89c7d876b12537ef09703354c"
+    },
+    "native_pulverizer_reopen_commands": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pulverizer-parity-v1/reopen-result.jsonl",
+      "sha256": "345a63c6bcc4c2165400082f6be5c1ba8c82ee5aded9ad810ee44e137d772000"
+    },
+    "original_content": {
+      "path": "/workspace/horizon-runtime/oritech-03-content-reference-v1/initial-result.json",
+      "sha256": "3e9aa56710de176f2ce9aa5909d7eacbdc645cff65f971a7afa632f5b2f7e36e"
+    },
+    "content_parity": {
+      "path": "/workspace/horizon-runtime/oritech-content-03-parity-v1.json",
+      "sha256": "3a7f91760caebf1da98639cc62e7d6885e769d772016bdecb1455eed5b060e6a"
+    },
+    "oritech_content": {
+      "path": "/workspace/horizon-runtime/oritech-content-03-v1/techquest-oritech-trial.json",
+      "sha256": "09036ec0fd798c6178e1ca422da79d12b8259db8a4cca9bca5edf414039cf0a9"
+    },
+    "native_bundle_sdk": {
+      "path": "/workspace/horizon-runtime/oritech-03-native-sdk-v3.json",
+      "sha256": "4278b07fb6e2eb48731dc3ecf97ab7231493e392e1662cd891727a3d9fbcc364"
+    },
+    "pipes_bundle_sdk": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-07-native-sdk-v2.json",
+      "sha256": "f57f4d3a529f1dd23a3cc2144a39c361c1c33646c2d76e26a09385759adb7b96"
+    },
+    "mixins_generation": {
+      "path": "/workspace/horizon-runtime/oritech-03-mixins-v3.json",
+      "sha256": "edaaabc8db8df2b7c6ddf1bc44db65a9187135219275772255120b9bcaf3d053"
+    },
+    "core_corrections": {
+      "path": "/workspace/horizon-runtime/oritech-03-core-patches-v3.json",
+      "sha256": "32a9ca6daf5c9c640844852a3d7a6c136af411270511396a01b58f87849e434d"
+    },
+    "generation_sync": {
+      "path": "/workspace/horizon-runtime/oritech-03-stage-generation-v3-sync.json",
+      "sha256": "9aea393633d84eeab7c40bcebfc9659050f1ee34bf73197aaa291cdcc4d254e9"
+    },
+    "engine_build": {
+      "path": "/workspace/horizon-runtime/oritech-03-native-build-v3.log",
+      "sha256": "402cef4700739a32fdd75b59ede0a358ecd47753c9e01356ddd2b6178d6adde1"
+    },
+    "tools_build": {
+      "path": "/workspace/horizon-runtime/native-tools-oritech-03b/build-result.json",
+      "sha256": "98a66c8bc01064c3e96980762b637324318f968a7a2dd4be3ccbb76cf16812d2"
+    },
+    "installation": {
+      "path": "/workspace/horizon-runtime/oritech-03b-install-v1.json",
+      "sha256": "ee0ae454201d966b9d3b257f64d3074d3481054b21c79980e246e52def77bfef"
+    },
+    "graphical": {
+      "path": "/workspace/horizon-runtime/oritech-03b-silicon-gui-v2/checked-result.json",
+      "sha256": "bee466041e4c6a328c792304d85a87c595dc05394d4aa3dc48a36bd480ef426f"
+    },
+    "graphical_actions": {
+      "path": "/workspace/horizon-runtime/oritech-03b-silicon-gui-v2/actions.json",
+      "sha256": "31a70019aa3cb8efd6c6e4b1a2337d6ee43da1beaec057bb90b09f46a50c163e"
+    },
+    "pulverizer_menu": {
+      "path": "/workspace/horizon-runtime/oritech-03b-silicon-gui-v2/pulverizer-input-menu.png",
+      "sha256": "9efe87d23f64b38b3871ebf97f9a239549491462ab40932383fd163b2df15c31"
+    },
+    "dust_output": {
+      "path": "/workspace/horizon-runtime/oritech-03b-silicon-gui-v2/quartz-dust-output.png",
+      "sha256": "46a79193d0d839b945ea884b74ee28d890f80b4dbc246da47b132da03a5e76b8"
+    },
+    "working_silicon_route": {
+      "path": "/workspace/horizon-runtime/oritech-03b-silicon-gui-v2/silicon-route-working.png",
+      "sha256": "3ef29d812d5e718ecb6f4b4fdade0aee568c8059b97e4a88eac7315b3ff01b07"
+    },
+    "energy_regression": {
+      "path": "/workspace/horizon-runtime/oritech-03b-energy-parity-v1/checked-result.json",
+      "sha256": "f045adf7579373eaf870462bf97a5abe4a8c8c5d9dec62cfe10d16a66e7a156f"
+    },
+    "capacity_regression": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pipes-capacity-parity-v1/checked-result.json",
+      "sha256": "028dae3daf45ffd78d6b40cd2965d80f2d9da7120f98c7ec3d2d2da932840773"
+    },
+    "python_tests": {
+      "path": "/workspace/horizon-runtime/oritech-03-python-tests-final.log",
+      "sha256": "1ea7b803771d23b9d5b89534fb01347a8c47aedb896a8cf0d1c1f28fe43b11d1"
+    },
+    "consulted_own_source": {
+      "path": "/workspace/horizon-runtime/oritech-source/common/src/main/java/rearth/oritech/block/entity/processing/PulverizerBlockEntity.java",
+      "sha256": "3d240c40254a4b05805e7ca7212592e8e5843808553c47e19700eab11e43fa4a"
+    },
+    "dedicated_prepare": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pulverizer-pipes-prepare-v1.json",
+      "sha256": "e8168475e27477cc07af9877a0350e89ca71ede979d9dcec326ea458a9aa1610"
+    },
+    "dedicated_prepare_commands": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pulverizer-pipes-prepare-v1.commands.json",
+      "sha256": "1736e0937fa8246c3a926c6df415c064c7025a675424a7005385f7c7a9177180"
+    },
+    "dedicated_verify": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pulverizer-pipes-verify-v1.json",
+      "sha256": "97a448720c332788f24c270088b9c62d192c8ef04f8c80958ae05503878c823e"
+    },
+    "dedicated_verify_commands": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pulverizer-pipes-verify-v1.commands.json",
+      "sha256": "b051556a8ccb980ef4d3169e2f4ad89080088856b3cc7b340e3012adaa18a9ba"
+    },
+    "dedicated_final": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pulverizer-pipes-final-v1.json",
+      "sha256": "85aa2071b6c8bf41417c2785ec49c49c804ce05e206c47fabb8f286801f260f3"
+    },
+    "dedicated_final_commands": {
+      "path": "/workspace/horizon-runtime/oritech-03b-pulverizer-pipes-final-v1.commands.json",
+      "sha256": "c7c1c9e6b4a9d1b90eddc93fef6a593f116b189a08017613f29b114c19537ea0"
+    }
+  },
+  "limitations": [
+    "Only the original quartz Pulverizer recipe is staged; other recipes, secondary small-dust compaction and addons are not ported.",
+    "Metal/alloy/coil/sand/fuel and other base inputs are explicit graphical fixtures; this is separate from the earlier gathered platinum route.",
+    "Synthetic local client and console probes do not establish licensed-client join or multiplayer.",
+    "Compact first-party menus/models do not reproduce full source geometry/animations.",
+    "Full TechQuest modpack, from-spawn survival and all GOAL_PR8_RU.md criteria remain incomplete."
+  ],
+  "full_modpack_ported": false,
+  "published": false
+}

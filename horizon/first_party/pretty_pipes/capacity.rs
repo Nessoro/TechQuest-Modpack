@@ -4,7 +4,7 @@ use super::{Game, Kind};
 use horizon_client::items::ItemStack;
 use horizon_core::geometry::Direction;
 
-/// Support the reviewed vanilla inventories and the two ported Oritech machines.
+/// Support the reviewed vanilla inventories and ported Oritech machines.
 /// Never simulate by inserting/removing real items: that would fire machine
 /// side effects and make failed routes mutate the destination.
 pub(in crate::game) fn capacity(
@@ -27,7 +27,9 @@ pub(in crate::game) fn capacity(
     ) && matches!(view.kind, Kind::Generic | Kind::Hopper | Kind::Furnace);
     let oritech = matches!(
         game.native_block(pos).as_str(),
-        "oritech:basic_generator_block" | "oritech:powered_furnace_block"
+        "oritech:basic_generator_block"
+            | "oritech:powered_furnace_block"
+            | "oritech:pulverizer_block"
     ) && view.kind == Kind::Mod;
     if !vanilla && !oritech {
         return None;

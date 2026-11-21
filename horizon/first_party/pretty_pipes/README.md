@@ -1,4 +1,4 @@
-# Native Pretty Pipes prototype 0.6.0
+# Native Pretty Pipes prototype 0.7.0
 
 Прототип Horizon 26.3 поддерживает default extraction tiers, пять рецептов,
 установку/снятие модуля, главное меню и базовые фильтры экстрактора. Источник —
@@ -309,3 +309,13 @@ python horizon/probes/live_pretty_pipes_capacity.py \
 xvfb-run -a python horizon/probes/live_pretty_pipes_capacity_gui.py \
   --server-dir /path/to/verified-05-server --work /path/to/new-capacity-gui-world
 ```
+
+## Oritech Pulverizer endpoint 0.7
+
+Версия 0.7 добавляет третий проверенный Mod-контейнер: `oritech:pulverizer_block`.
+Вместимость использует существующие правила сторон, input/output slots и
+приёма предметов. Дополнительная connection-tag entry остаётся optional.
+Пары content/native должны иметь одну версию 0.7; прежние 0.6 артефакты
+для генератора и печи сохраняются отдельно.
+`live_oritech_pulverizer_pipes.py` проверяет подачу кварца/топлива, настоящий
+результат обработки, сохранённый груз, доставку и окончательное переоткрытие.

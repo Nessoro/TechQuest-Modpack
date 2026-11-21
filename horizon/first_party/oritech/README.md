@@ -1,11 +1,11 @@
-# Oritech energy prototype 0.1
+# Oritech native subset 0.2 / content 0.3
 
 First-party Rust implementation for Horizon 26.3 at
 `c78187dffffb60f31517eadcb87413386e8ce729`, Mixins
 `5a64af938ec86b00d53d16a408aabc0038fb3e57`.
 
-This is a limited port of **Basic Generator → Powered Furnace + one Machine
-Core**, with physical inventories, energy, fuel, smelting progress, assembly,
+This is a limited port of **Basic Generator → quartz Pulverizer / Powered
+Furnace + one Machine Core**, with physical inventories, energy, fuel, processing progress, assembly,
 menus and saved state. It is not the complete Oritech mod or a survival-ready
 TechQuest industrial progression.
 
@@ -13,7 +13,9 @@ Content 0.2 adds the first crafting route while retaining this native 0.1.0
 machine implementation. It additionally requires the separately compiled
 [merged-biome core correction](../biome_modifiers/README.md). The installer has
 an explicit content/native compatibility table and refuses 0.2 with an engine
-that does not declare the reviewed core correction.
+that does not declare the reviewed core correction. Content 0.3 requires native
+0.2 and both biome core corrections. Earlier sealed content 0.1/0.2 profiles
+continue to use native 0.1; their artifacts remain unchanged.
 
 ## Source and license
 
@@ -57,7 +59,7 @@ reimplemented as expected-value arithmetic. No Java runs in the Horizon port.
 
 All generated resources, bundles, worlds and logs stay outside the repository.
 The existing isolated installer accepts optional `--oritech PATH`, validates
-the fixed menus and requires a matching `techquest_oritech` 0.1.0 native bundle.
+the fixed menus and requires the explicitly paired `techquest_oritech` version.
 Older installations and locks remain readable and unchanged.
 
 With existing pinned binaries in `$TASK_RUNTIME/oritech-reference-input`, a
@@ -113,8 +115,9 @@ The current vanilla 26.3 fuel/recipe resources are used. The tested 1.21.1 fuels
 and recipes must match the oracle; the entire cross-version registry is not
 claimed equivalent. Component-sensitive/oversized-stack cases, allocation
 among multiple receivers, exact immediate break/drop semantics, unloaded
-chunks, general automation, normal crafting and licensed dedicated-server join
-still require work. Pretty Pipes 0.5 has not yet gained Oritech endpoints.
+chunks and licensed dedicated-server join still require work. The selected
+crafting routes and Pretty Pipes endpoints have separate gameplay probes;
+general automation beyond the supported machines is not established.
 
 ## Content 0.2 starter subset
 
@@ -198,3 +201,52 @@ with zero residual machine energy. Machine/assembly/source-material fixtures
 are explicit; this automation world is separate from the gathered starter run.
 Other machine handlers, general NeoForge capability parity and licensed
 dedicated join remain unverified.
+
+## Content 0.3 quartz and silicon route / native 0.2
+
+`stage_oritech.py --pulverizer` implies `--progression` and adds the original
+manual motor recipe, Pulverizer recipe, quartz processing recipe, raw-silicon
+hand alloy, raw-silicon smelting, and default silicon furnace recipe. There are
+15 ordinary recipes plus one `oritech:pulverizer` recipe, four machine/core
+blocks, four ore blocks and twelve material items. Existing platinum crafting
+remains available. Original files are taken from the same pinned CC0 JAR.
+
+Without addons the Pulverizer has a 25,000 energy buffer, accepts 256 per call,
+uses 32/tick and turns one quartz into one quartz dust in 100 ticks. It works
+without a machine core and has one input and two output slots. The source
+redstone flag pauses processing; invalid input or blocked output resets progress.
+The original cached recipe is transient: progress is saved, but after loading
+an active quartz recipe starts from zero on its next processing tick. The port
+matches this behavior using Horizon's unsaved entity data to invalidate the
+private cached recipe, without a global pointer map.
+
+`OritechPulverizerProbe.java` invokes the original server tick for 67 cases and
+536 states, including energy boundaries, primed/fresh recipes, redstone,
+invalid input, blocked outputs and a secondary-slot obstacle. A separate
+physical save/reopen compares the cache reset and subsequent production.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-pulverizer-reference-new" --oracle pulverizer --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-pulverizer-reference-new" --oracle pulverizer --reopen
+python3 horizon/probes/live_oritech_pulverizer.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-pulverizer-new" \
+  --original "$TASK_RUNTIME/oritech-pulverizer-reference-new/initial-result.json" \
+  --original-reopen "$TASK_RUNTIME/oritech-pulverizer-reference-new/reopen-result.json"
+python3 horizon/probes/live_oritech_silicon_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-silicon-gui-new"
+```
+
+The graphical probe mines natural Nether quartz and crafts both motors, the
+Pulverizer, generator, silicon and default furnace through real menus. Other
+base materials are explicit fixtures, alongside teleports, access cells and
+a work platform. It is not an unassisted survival run. The separate dedicated
+`live_oritech_pulverizer_pipes.py` uses Pretty Pipes 0.7 input/output endpoints,
+saves two genuine dust items in flight, then verifies delivery and another
+physical reopen. Run its `prepare`, `verify` and `final` phases with a server
+start before each, passing `--prior` for the latter two phases.
+
+Only the quartz Pulverizer recipe is staged. Addons, secondary small-dust
+compaction, other Pulverizer recipes and full source geometry/animation remain
+outside this subset.

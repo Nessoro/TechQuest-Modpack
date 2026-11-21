@@ -22,9 +22,14 @@ RECIPES = ("crafting/core1", "crafting/basicgen", "crafting/electricfurnacealt",
            "crafting/magnet", "crafting/alloy/steel", "crafting/alloy/electrum",
            "nickel_ingot_from_smelting_raw_nickel", "nickel_ingot_from_blasting_raw_nickel",
            "platinum_ingot_from_smelting_raw_platinum", "platinum_ingot_from_blasting_raw_platinum")
+PROCESSING_MATERIALS = ("motor", "quartz_dust", "raw_silicon", "silicon")
+PROCESSING_RECIPES = ("motor/motorcraft", "crafting/pulverizer", "crafting/electricfurnace",
+                      "crafting/alloy/rawsilicon", "silicon_from_smelting_raw_silicon")
 
 
-def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent):
+def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent, pulverizer=False):
+    materials = (*MATERIALS, *PROCESSING_MATERIALS) if pulverizer else MATERIALS
+    recipe_names = (*RECIPES, *PROCESSING_RECIPES) if pulverizer else RECIPES
     neo = read_checked(neoforge_jar)
     if hashlib.sha256(neo).hexdigest() != NEOFORGE_SHA256:
         raise ValueError("expected pinned NeoForge 21.1.264 universal JAR")
@@ -58,17 +63,19 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
                             missing.add(child); continue
                         values.update(resolve(child, (*active, tag)))
                     else:
-                        if not ident.startswith("minecraft:") and ident not in {"oritech:"+m for m in MATERIALS}:
+                        if not ident.startswith("minecraft:") and ident not in {"oritech:"+m for m in materials}:
                             raise ValueError("source tag needs an unported material: " + ident)
                         values.add(ident)
             if not found: raise ValueError("unresolved required source tag: " + tag)
             tags[tag] = sorted(values); return tags[tag]
 
-        recipes = {f"data/oritech/recipe/{r}.json": json.loads(take(f"data/oritech/recipe/{r}.json")) for r in RECIPES}
+        recipes = {f"data/oritech/recipe/{r}.json": json.loads(take(f"data/oritech/recipe/{r}.json")) for r in recipe_names}
         for recipe in recipes.values():
             ingredients = list(recipe.get("key", {}).values()) + ([recipe["ingredient"]] if "ingredient" in recipe else [])
             for ingredient in ingredients:
                 if "tag" in ingredient and ingredient["tag"].startswith("c:"): resolve(ingredient["tag"])
+        if pulverizer:
+            resolve("c:gems/quartz")
         for tag, values in tags.items():
             ns, path = tag.split(":", 1); data(f"data/{ns}/tags/item/{path}.json", {"values": values})
         loot = {f"data/oritech/loot_table/blocks/{o}.json": json.loads(take(f"data/oritech/loot_table/blocks/{o}.json")) for o in ORES}
@@ -78,7 +85,23 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
         for section in ("recipes", "loot"):
             for name, value in normalized[section].items(): data(name, value)
 
-        for material in MATERIALS:
+        if pulverizer:
+            name = "data/oritech/recipe/pulverizer/quartz.json"
+            recipe = json.loads(take(name))
+            if recipe.get("type") != "oritech:pulverizer" or len(recipe.get("ingredients", [])) != 1 or len(recipe.get("results", [])) != 1:
+                raise ValueError("expected the selected original quartz pulverizer recipe")
+            converted = []
+            for ingredient in recipe["ingredients"]:
+                if set(ingredient) == {"tag"}:
+                    converted.append("#" + ingredient["tag"])
+                elif set(ingredient) == {"item"}:
+                    converted.append(ingredient["item"])
+                else:
+                    raise ValueError("unsupported original processing ingredient")
+            recipe["ingredients"] = converted
+            data(name, recipe)
+
+        for material in materials:
             data(f"data/oritech/horizon/item/{material}.json", {"template": "minecraft:iron_ingot", "max_stack_size": 64})
             model = f"assets/oritech/models/item/{material}.json"; payloads[model] = take(model, True)
             texture = json.loads(payloads[model])["textures"]["layer0"].split(":", 1)[1]
@@ -91,7 +114,7 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
             data(f"assets/oritech/items/{ore}.json", {"model": {"type": "minecraft:model", "model": f"oritech:item/{ore}"}})
         for language in ("en_us", "ru_ru"):
             name = f"assets/oritech/lang/{language}.json"; labels = json.loads(payloads[name]); source = json.loads(original.read(name))
-            for key in [*("item.oritech."+m for m in MATERIALS), *("block.oritech."+o for o in ORES)]: labels[key] = source[key]
+            for key in [*("item.oritech."+m for m in materials), *("block.oritech."+o for o in ORES)]: labels[key] = source[key]
             data(name, labels)
         name = "data/minecraft/tags/block/mineable/pickaxe.json"
         data(name, {"values": json.loads(payloads[name])["values"] + ["oritech:"+o for o in ORES]})
@@ -109,9 +132,10 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
             subprocess.run([str(port_pack.resolve()), "upgrade-datapack", str(raw_pack), str(root / "out")], check=True, capture_output=True, text=True)
             for f in (root / "out/data").rglob("*"):
                 if f.is_file(): payloads[str(f.relative_to(root / "out"))] = f.read_bytes()
-    return {"recipes": list(RECIPES), "materials": list(MATERIALS), "ores": list(ORES),
+    return {"recipes": list(recipe_names), "materials": list(materials), "ores": list(ORES),
             "source_data": source_data, "source_assets": source_assets, "resolved_common_tags": tags,
             "missing_optional_legacy_tags": sorted(missing), "worldgen_features": ["ore_nickel", "ore_platinum", "ore_platinum_end"],
             "content_tool_sha256": hashlib.sha256(read_checked(content_tool)).hexdigest(),
-            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.1.0",
+            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.2.0" if pulverizer else "0.1.0",
+            "processing_recipes": ["pulverizer/quartz"] if pulverizer else [],
             "required_core_patch": "techquest_biome_modifiers:0.1.0"}
