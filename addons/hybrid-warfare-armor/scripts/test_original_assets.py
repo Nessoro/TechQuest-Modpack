@@ -200,6 +200,70 @@ class OriginalArmorFusionTests(unittest.TestCase):
                 self.assertEqual(recipe["result"]["id"], "superbwarfare:" + helm)
                 self.assertEqual(recipe["addition"]["item"], TECH[tech][0])
 
+    def test_powered_elytra_special_recipe_and_anti_duplication(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        recipe = json.loads((RECIPES / "special/powered_elytra.json").read_text())
+        self.assertEqual(recipe["type"], "techquest_hybrid:powered_elytra_attach")
+        source = (root / "src/main/java/dev/techquest/hybrid/PoweredElytraRecipe.java").read_text()
+        self.assertIn("PoweredElytraEnergy.isPoweredChest(stack)", source)
+        self.assertIn("PoweredElytra.canAttach(found[0], found[1])", source)
+        self.assertIn("ItemStack.EMPTY", source)
+        self.assertIn("input.base()", (root / "src/main/java/dev/techquest/hybrid/HybridFusionRecipe.java").read_text())
+        self.assertIn("found[0].copyWithCount(1)", source)
+        self.assertIn("found[1].copyWithCount(1)", source)
+        self.assertIn("result.set(HybridWarfareMod.ELYTRA_ATTACHMENT", source)
+        self.assertIn("width * height >= 2", source)
+        self.assertIn("stack.is(Items.ELYTRA)", source)
+        main = (root / "src/main/java/dev/techquest/hybrid/HybridWarfareMod.java").read_text()
+        self.assertIn('COMPONENTS.register("elytra_attachment"', main)
+        self.assertIn('SERIALIZERS.register("powered_elytra_attach"', main)
+        self.assertIn("ItemStack.STRICT_CODEC", main)
+        self.assertIn("ItemStack.STREAM_CODEC", main)
+
+    def test_elytra_never_uses_durability_and_rejects_unpowered_chests(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        energy = (root / "src/main/java/dev/techquest/hybrid/PoweredElytraEnergy.java").read_text()
+        flight = (root / "src/main/java/dev/techquest/hybrid/PoweredElytra.java").read_text()
+        ic2 = (root / "src/main/java/dev/techquest/hybrid/Ic2ElytraEnergy.java").read_text()
+        self.assertIn("getEquipmentSlotForItem(stack) != EquipmentSlot.CHEST", energy)
+        self.assertIn("HybridWarfareMod.energyCapacity(stack) > 0", energy)
+        self.assertIn("power.getMaxEnergyStored() >= COST_PER_TICK", energy)
+        self.assertIn("power.canExtract()", energy)
+        self.assertIn("power.extractEnergy(COST_PER_TICK, true)", energy)
+        self.assertIn("power.extractEnergy(COST_PER_TICK, false)", energy)
+        self.assertIn("Ic2ElytraEnergy.spend(stack, COST_PER_TICK)", energy)
+        self.assertIn("ElectricItem.manager.discharge(stack", ic2)
+        self.assertIn("PoweredElytraEnergy.spend(chest)", flight)
+        self.assertIn("if (!canFly(chest, wearer)) return false", flight)
+        self.assertNotIn("hurtAndBreak(", flight)
+        self.assertNotIn("setDamageValue(", flight)
+        self.assertIn("GameEvent.ELYTRA_GLIDE", flight)
+        self.assertIn("ElytraItem.isFlyEnabled(wings)", flight)
+
+    def test_elytra_flight_mixin_and_client_renderer_are_isolated(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        resources = root / "src/main/resources"
+        flightmix = json.loads((resources / "techquest_hybrid_flight.mixins.json").read_text())
+        self.assertEqual(flightmix["package"], "dev.techquest.hybrid.flightmixin")
+        self.assertEqual(set(flightmix["mixins"]),
+                         {"PoweredElytraPlayerMixin", "PoweredElytraLivingMixin"})
+        toml = (resources / "META-INF/neoforge.mods.toml").read_text()
+        self.assertIn('config="techquest_hybrid_flight.mixins.json"', toml)
+        mix = root / "src/main/java/dev/techquest/hybrid/flightmixin"
+        self.assertIn("tryToStartFallFlying", (mix / "PoweredElytraPlayerMixin.java").read_text())
+        living = (mix / "PoweredElytraLivingMixin.java").read_text()
+        self.assertIn("updateFallFlying", living)
+        self.assertIn("elytraFlightTick", living)
+        self.assertIn("original.call(stack, owner", living)
+        renderer = (root / "src/main/java/dev/techquest/hybrid/gui/PoweredElytraLayer.java").read_text()
+        self.assertIn("ElytraLayer<", renderer)
+        self.assertIn("PoweredElytra.hasElytra(stack)", renderer)
+        self.assertIn('textures/entity/elytra.png', renderer)
+        event = (root / "src/main/java/dev/techquest/hybrid/gui/PoweredElytraRenderEvents.java").read_text()
+        self.assertIn("EntityRenderersEvent.AddLayers", event)
+        self.assertIn("renderer.addLayer(new PoweredElytraLayer", event)
+        self.assertNotIn("dev.techquest.hybrid.client;", event)
+
     def test_no_custom_art_generated_or_committed(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         resources = root / "src/main/resources"
