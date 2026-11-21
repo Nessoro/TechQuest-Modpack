@@ -1,0 +1,274 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-21T14:39:06.489126+00:00",
+  "minecraft": "26.3",
+  "scope": "Pretty Pipes insertion capacity and visible connections for the two existing Oritech native machines; automated input/output and backpressure with real ticks",
+  "pretty_pipes_content_and_native_version": "0.6.0",
+  "oritech_content_version": "0.2.0",
+  "oritech_native_version": "0.1.0",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "implementation": {
+    "reviewed_mod_inventory_ids": [
+      "oritech:basic_generator_block",
+      "oritech:powered_furnace_block"
+    ],
+    "requires_kind_mod": true,
+    "read_only_capacity_uses_existing_slot_face_stack_and_acceptance_rules": true,
+    "unsupported_mod_handlers_remain_excluded": true,
+    "connection_tags_are_optional": true,
+    "queue_schema_slots_and_menu_data_unchanged": true,
+    "native_content_version_pairing_required": true
+  },
+  "baseline_05": {
+    "source_raw_iron_8_and_coal_1_remain_unchanged": true,
+    "machine_energy_and_processing_output_remain_zero": true,
+    "cause": "read-only destination capacity rejected both mod inventory IDs"
+  },
+  "dedicated_checks": {
+    "no_extraction_without_modules": true,
+    "automatic_source_to_generator_and_furnace_insertion": true,
+    "first_batch": {
+      "raw_source": 0,
+      "fuel_source": 0,
+      "generator_coal": 0,
+      "furnace_raw": 0,
+      "furnace_iron": 8,
+      "output_chest": 0,
+      "output_in_flight": 0,
+      "generator_energy": 15600,
+      "furnace_energy": 10000,
+      "generator_progress": 0,
+      "furnace_progress": 0
+    },
+    "saved_in_flight": {
+      "raw_source": 0,
+      "fuel_source": 0,
+      "generator_coal": 0,
+      "furnace_raw": 0,
+      "furnace_iron": 0,
+      "output_chest": 0,
+      "output_in_flight": 8,
+      "generator_energy": 15600,
+      "furnace_energy": 10000,
+      "generator_progress": 0,
+      "furnace_progress": 0
+    },
+    "immediately_after_reopen": {
+      "raw_source": 0,
+      "fuel_source": 0,
+      "generator_coal": 0,
+      "furnace_raw": 0,
+      "furnace_iron": 0,
+      "output_chest": 0,
+      "output_in_flight": 8,
+      "generator_energy": 15600,
+      "furnace_energy": 10000,
+      "generator_progress": 0,
+      "furnace_progress": 0
+    },
+    "machine_input_not_extracted_without_core": true,
+    "full_destination_pauses_extraction": true,
+    "freeing_one_stone_filler_slot_resumes_delivery": true,
+    "final": {
+      "final": {
+        "raw_source": 0,
+        "fuel_source": 0,
+        "generator_coal": 0,
+        "furnace_raw": 0,
+        "furnace_iron": 0,
+        "output_chest": 8,
+        "output_in_flight": 0,
+        "generator_energy": 0,
+        "furnace_energy": 0,
+        "generator_progress": 0,
+        "furnace_progress": 0
+      },
+      "barrel": {
+        "minecraft:iron_ingot": 8,
+        "minecraft:stone": 1664
+      }
+    },
+    "sixteen_ingots_from_sixteen_raw_iron_and_one_coal": true,
+    "residual_machine_energy_zero": true,
+    "final_state_physically_reopened_exactly": true
+  },
+  "graphical_checks": {
+    "three_modules_installed_by_real_player_interaction": true,
+    "module_menus_opened": true,
+    "same_automated_pipeline_and_backpressure_checks_pass": true,
+    "inflight_and_final_state_physically_reopened": true,
+    "terralith_world_datapack_enabled": true,
+    "connections": {
+      "136 200 175": {
+        "block": "prettypipes:pipe",
+        "loaded": true,
+        "pos": [
+          136,
+          200,
+          175
+        ],
+        "state": "prettypipes:pipe[down=false,east=false,north=true,south=true,up=false,west=false]"
+      },
+      "137 200 177": {
+        "block": "prettypipes:pipe",
+        "loaded": true,
+        "pos": [
+          137,
+          200,
+          177
+        ],
+        "state": "prettypipes:pipe[down=false,east=false,north=true,south=true,up=false,west=false]"
+      },
+      "138 200 176": {
+        "block": "prettypipes:pipe",
+        "loaded": true,
+        "pos": [
+          138,
+          200,
+          176
+        ],
+        "state": "prettypipes:pipe[down=false,east=true,north=false,south=false,up=false,west=true]"
+      }
+    },
+    "protocol_decode_errors": 0,
+    "device_type": "cpu"
+  },
+  "source_vanilla_capacity_regression": {
+    "cases": 126,
+    "mismatches": 0,
+    "actual_extraction_ticks_executed": true,
+    "source_delta_equals_new_queue": true,
+    "destination_unchanged_before_arrival": true
+  },
+  "fixtures": {
+    "machines_core_pipes_chests_and_initial_assembly": true,
+    "source_raw_iron_and_coal_in_chests": true,
+    "destination_stone_filler": true,
+    "modules_injected_in_dedicated_case_installed_by_player_in_gui": true,
+    "machine_fuel_or_input_directly_seeded": false,
+    "energy_progress_processing_output_or_cargo_seeded": false
+  },
+  "installation": {
+    "directory": "/workspace/horizon-runtime/techquest-pipes-06a-server",
+    "tools": "/workspace/horizon-runtime/native-tools-pipes-06a",
+    "port": 25643,
+    "bind": "127.0.0.1",
+    "online_mode": true,
+    "whitelist": true,
+    "eula_consent_previously_provided": true,
+    "hmod_count": 8,
+    "native_bundles": 4,
+    "core_corrections": 2,
+    "lock_verified": true,
+    "stopped": true,
+    "old_profiles_tools_and_locks_unchanged": true
+  },
+  "python_tests": 121,
+  "proofs": {
+    "baseline_05_failure": {
+      "path": "/workspace/horizon-runtime/oritech-02c-pipes-prepare-v1.log",
+      "sha256": "5da8005136611ea9b9fd65deb1da52183b226e48ed43ec9c8db9a70b8755510b"
+    },
+    "baseline_05_commands": {
+      "path": "/workspace/horizon-runtime/oritech-02c-pipes-prepare-v1.commands.json",
+      "sha256": "8a2d49e5cfe60b6c5803d754890125442be6cb922e5efc27423f89d656bd6c5e"
+    },
+    "new_content": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-content-06-v1.json",
+      "sha256": "5454ea84c969625c3ff162c9f1d8f37162a286e9734cc993fedc5636de7fdafa"
+    },
+    "native_bundle_sdk": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06-native-sdk-v1.json",
+      "sha256": "17ae928fe7789533abd25af0d475bb13cf061957912988047dcbcea1c9e264a3"
+    },
+    "mixins_plan": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06-mixins-v2.json",
+      "sha256": "e62c410e292039506d89478c18c598a9a1df61ea2597c7234fa40f828f65d17f"
+    },
+    "core_corrections": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06-core-patches-v2.json",
+      "sha256": "32a9ca6daf5c9c640844852a3d7a6c136af411270511396a01b58f87849e434d"
+    },
+    "engine_build": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06-native-build-v1.log",
+      "sha256": "61e9e1d97a74f8158f44d077bb56b9dc323526c0189ed5ebe855fda0cb9fd874"
+    },
+    "tools_build": {
+      "path": "/workspace/horizon-runtime/native-tools-pipes-06a/build-result.json",
+      "sha256": "9f326378a976a57dbb546c7cf4eb80abf9b86297cbf1eb007c746d0cd6357c2e"
+    },
+    "installation": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-install.json",
+      "sha256": "36ad83febf885d59471b401c2c70ace38961770310c3f6ce4c6f2708a7d35064"
+    },
+    "optional_content_controls": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06-content-controls-result.json",
+      "sha256": "36d29c171feea2d43cc7174958ee8ca9992afd082e09c7d146b32246faaf493d"
+    },
+    "version_pairing_control": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06-version-controls-result.json",
+      "sha256": "07e76aef462251cbed6ccefdd7909796dc081fddaeffcdc63f64adf2cd0eb3d8"
+    },
+    "original_vanilla_capacity": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-capacity-reference-v2/capacity-result.json",
+      "sha256": "123105b4869a608f40c9968655d9f85e91f5d9ad8b2e395701e6e17aa3b09580"
+    },
+    "native_vanilla_capacity": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-capacity-regression-v1/checked-result.json",
+      "sha256": "4a93b5f4457634d9563f859c374b9c81cc147af13663515284a916013b3509b4"
+    },
+    "dedicated_prepare": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-automation-prepare.json",
+      "sha256": "7ef11907b1b92fd7a21640c82e74ef59e94033824b3f7d9af0469da6267d1969"
+    },
+    "dedicated_verify": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-automation-verify.json",
+      "sha256": "12d37fc563d8308a46ed9512084548f71027060998c0d37e02f5fe4f90c5d9e8"
+    },
+    "dedicated_final_reopen": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-automation-final.json",
+      "sha256": "b6d90c0365bdc4136d6d3ddb83eec856dff7fe2dda18340b3ac279f57f26a6e9"
+    },
+    "dedicated_prepare_commands": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-automation-prepare.commands.json",
+      "sha256": "8ddaaa1a544f91b706aeadc91398602a46d5df608c68420d65c90c81d2d8a156"
+    },
+    "dedicated_verify_commands": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-automation-verify.commands.json",
+      "sha256": "7bed210090d86d2d198e22bd66d8bb7203fae5146518020aab22d2914fa1ba8e"
+    },
+    "graphical_automation": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-oritech-gui-v1/checked-result.json",
+      "sha256": "48c8df8916a00fd99d127a53f8fcf1cecf1e62e3306842bd840ef5848e062997"
+    },
+    "graphical_actions": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-oritech-gui-v1/actions.json",
+      "sha256": "757e1d6b94bde32b31534c1ec3699da68e46b49b00393f0909d631d8fd54d8fe"
+    },
+    "graphical_commands": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-oritech-gui-v1/commands.json",
+      "sha256": "345d023b25b6a1ba19c928ea1435509233a01df3614270d7e32884f87a3cea18"
+    },
+    "python_tests": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06-python-tests-final.log",
+      "sha256": "27a48ebf712623b66f7aae56fb8db9e30de42de350ffd8593d680080ee470f69"
+    },
+    "final_verification": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-06a-final-verification.json",
+      "sha256": "5f5763e60e58b03eb0f9df3235027057c7961c05825420dbff81455b8ff3a999"
+    }
+  },
+  "limitations": [
+    "Two reviewed native Oritech inventories only; not a generic port of every NeoForge item handler or full original cross-mod capability parity.",
+    "Automation uses machine/source-inventory/core/module fixtures; the gathered survival chain remains a separate test.",
+    "Optional Oritech references were checked by content builders with/without Oritech; the new gameplay tests use both mods.",
+    "Other Pretty Pipes modules, advanced per-slot limits, equality, priorities, rerouting and unloaded endpoints remain incomplete.",
+    "Licensed dedicated client join, full multiplayer, hardware GPU, whole-world RNG and full-modpack performance remain untested."
+  ],
+  "full_mod_ported": false,
+  "full_modpack_ported": false,
+  "goal_complete": false,
+  "main_modified": false,
+  "published": false
+}

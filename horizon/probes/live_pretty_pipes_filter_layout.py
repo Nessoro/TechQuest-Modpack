@@ -12,7 +12,7 @@ def main():
     parser.add_argument('--server-dir',type=Path,required=True)
     parser.add_argument('--work',type=Path,required=True)
     args=parser.parse_args()
-    game=GraphicalFixture(args.server_dir,args.work,('0.4.0','0.5.0'),'techquest-filter-layout','TQFilterLayout')
+    game=GraphicalFixture(args.server_dir,args.work,('0.4.0','0.5.0','0.6.0'),'techquest-filter-layout','TQFilterLayout')
     call,cmd,settle=game.call,game.command,game.settle
     checked=[]
     try:

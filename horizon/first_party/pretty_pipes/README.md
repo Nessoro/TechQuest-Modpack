@@ -1,4 +1,4 @@
-# Native Pretty Pipes prototype 0.5.0
+# Native Pretty Pipes prototype 0.6.0
 
 Прототип Horizon 26.3 поддерживает default extraction tiers, пять рецептов,
 установку/снятие модуля, главное меню и базовые фильтры экстрактора. Источник —
@@ -7,7 +7,8 @@ Pretty Pipes 1.22.0, MIT commit `1f8ac61`.
 [проверки 0.2](../../PRETTY_PIPES_MODULES_RESULT.json),
 [проверки меню 0.3](../../PRETTY_PIPES_MENU_RESULT.json),
 [фильтры и стороны 0.4](../../PRETTY_PIPES_FILTER_RESULT.json),
-[вместимость и очереди 0.5](../../PRETTY_PIPES_CAPACITY_RESULT.json).
+[вместимость и очереди 0.5](../../PRETTY_PIPES_CAPACITY_RESULT.json),
+[автоматизация Oritech 0.6](../../ORITECH_PIPES_RESULT.json).
 Полный Pretty Pipes и промышленный модпак ещё не перенесены.
 
 ## Главное меню и хранение
@@ -128,6 +129,45 @@ oversized stack components, aliases double chest при резервирован
 полная семантика ветвлений/приоритетов и перерасчёт пути при изменении цели.
 Для обычных поддержанных инвентарей повторно проверены базовые оба режима
 фильтра и directional single-pipe routing. Старые установки не изменялись.
+
+## Генератор и печь Oritech (0.6)
+
+Версия 0.5 отклоняла эти цели в read-only расчёте вместимости, поэтому наличие
+их native container само по себе не давало автоматической подачи. В 0.6
+`capacity.rs` дополнительно принимает `oritech:basic_generator_block` и
+`oritech:powered_furnace_block`, только с настоящим `Kind::Mod`. Слоты, стороны,
+входные ограничения, stack components и acceptance hooks проверяются прежним
+путём движка. Выходной слот печи не становится входным. Прочие mod handlers
+не объявляются поддержанными.
+
+Оба ID добавлены в connection tag как optional: без Oritech контент сохраняет
+семь ванильных связей, с ним получает девять. Модель теперь рисует соединения
+с машинами. Новые content/native bundles имеют одинаковую версию 0.6.0;
+установщик отказывает паре 0.6 content / 0.5 native. Формат очереди, 67 slots,
+21 data slot и рецепты не изменены; старые tools/profiles/locks сохраняются.
+
+Новый dedicated сценарий и графический клиент проверили три раздельные линии:
+подачу угля, подачу сырья и вывоз слитков. Из 16 raw iron и одного coal
+получены 16 ingots, остаток энергии — ноль. Груз из восьми настоящих слитков
+сохранён в пути и доставлен после физического перезапуска. При снятом core
+экстрактор не забирает сырьё из input slot. Полная бочка останавливает новую
+партию в печи; освобождение одного filler-slot возобновляет доставку. Финальные
+предметы и состояние проверены ещё одним физическим перезапуском.
+
+Графический клиент установил все три extractor обычным взаимодействием,
+открыл меню и подтвердил connection states и ноль protocol decode errors.
+Машины, initial assembly, трубы, исходные chest inventories и stone filler
+были fixtures; energy, processing output и transport cargo не подставлялись.
+Это отдельная проверка от добытого starter-пути, не unassisted survival.
+126 исходных vanilla capacity cases совпали без расхождений; 121 Python-тест
+прошёл. [Доказательства и границы](../../ORITECH_PIPES_RESULT.json).
+
+`live_oritech_pipes.py` имеет фазы `prepare`, `verify`, `final`: перед каждой
+запустить новый изолированный профиль, передать новую `--output`, а для двух
+последних — предыдущий отчёт через `--prior`. Каждая фаза останавливает сервер.
+`live_oritech_pipes_gui.py --server-dir "$TASK_SERVER" --work NEW_WORK`
+запускается с X11/Vulkan и сам сохраняет/открывает свой отдельный мир. Online
+join лицензированным клиентом и полная исходная capability parity не проверены.
 
 ## Транспорт и ограничения
 

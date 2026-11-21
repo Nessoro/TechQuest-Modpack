@@ -24,7 +24,7 @@ Better Dungeons hmod: [адаптер и проверка YUNG's](YUNG_RUNTIME_R
 Для неё собрать контент через `tools/stage_pretty_pipes.py` и движок с тремя
 native bundles; добавить к `install` параметр `--pretty-pipes /path/to/prettypipes.hmod`.
 Установщик проверяет седьмой hmod и требует `techquest_pretty_pipes` среди
-задекларированных native extensions с той же версией (0.1.0/0.2.0/0.3.0/0.4.0/0.5.0). Старые
+задекларированных native extensions с той же версией (0.1.0–0.6.0). Старые
 шестимодульные установки совместимы. В 0.2 перенесены пять рецептов и обработчик
 установки default extractor; менеджер рецептов и общая логика установки проверены
 по оригиналу. В 0.3 добавлены три module slots и native screen: Menu engine сверён с оригиналом,
@@ -40,6 +40,16 @@ native bundles; добавить к `install` параметр `--pretty-pipes /
 в пути для medium/high. 126 исходных случаев и две реальные схемы с сохранением
 прошли; [отчёт 0.5](PRETTY_PIPES_CAPACITY_RESULT.json). Размер очереди и схема
 хранения 0.3/0.4 сохранены; новый hmod требует отдельной 0.5 native сборки.
+
+Версия 0.6 дополнительно поддерживает два native инвентаря Oritech и видимые
+соединения труб с ними; исходные рецепты и queue/menu schema сохранены.
+Для её hmod нужен native bundle `techquest_pretty_pipes` именно 0.6.0 —
+старый движок 0.5 отклоняется. Новый профиль
+`/workspace/horizon-runtime/techquest-pipes-06a-server`, порт 25643, содержит
+Oritech 0.2 и Pretty Pipes 0.6, 8 hmod, 4 bundles и два core corrections.
+На нём проверены автоматическая подача/вывоз, backpressure, груз в пути и
+физические перезапуски; после проверок профиль остановлен, lock действителен.
+Прежние профили не обновляются на месте. [Результаты](ORITECH_PIPES_RESULT.json).
 
 Вторая промышленная опция — [Oritech energy prototype 0.1](first_party/oritech/README.md):
 Basic Generator, Powered Furnace и один Machine Core. Новый контент собирается

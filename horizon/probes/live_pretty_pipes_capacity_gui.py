@@ -15,7 +15,7 @@ from graphical_fixture import GraphicalFixture
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('server-dir','work'):parser.add_argument('--'+name,type=Path,required=True)
-    args=parser.parse_args();game=GraphicalFixture(args.server_dir,args.work,'0.5.0','techquest-capacity-gui','TQCapacityGui')
+    args=parser.parse_args();game=GraphicalFixture(args.server_dir,args.work,('0.5.0','0.6.0'),'techquest-capacity-gui','TQCapacityGui')
     call,cmd,settle=game.call,game.command,game.settle
     def count(pos):
         text=cmd('data get block '+' '.join(map(str,pos))+' Items')
@@ -71,7 +71,7 @@ def main():
         status=call('status');assert status['server']['joined'] and status['server']['decode_errors']==0
         call('screenshot',game.work/'delivered.png');call('save')
     finally:game.stop()
-    report={'schema':1,'minecraft':'26.3','prototype_version':'0.5.0','connected_local_graphical_client':True,
+    report={'schema':1,'minecraft':'26.3','prototype_version':game.version,'connected_local_graphical_client':True,
             'modules_installed_by_hand':True,'competing_extractors_respect_three_free_spaces':True,
             'own_inflight_reservations_counted':True,'medium_batches_8_then_2_then_zero':True,
             'both_real_inflight_worlds_saved_reopened_delivered':True,'source_target_totals_conserved':True,

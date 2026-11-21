@@ -89,7 +89,7 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
                 or facts.get("api") != "0.2" or facts.get("side") != "both"
                 or facts.get("sha256") != checksum):
             raise ValueError("SDK rejected module identity/API/checksum: " + mod)
-        if mod == "prettypipes" and facts.get("version") not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0"):
+        if mod == "prettypipes" and facts.get("version") not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0"):
             raise ValueError("expected the reviewed Pretty Pipes content prototype")
         if mod == "oritech" and facts.get("version") not in ORITECH_NATIVE:
             raise ValueError("expected the reviewed Oritech energy prototype")
@@ -104,11 +104,11 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
             meta = tomllib.loads(archive.read("horizon-mod.toml").decode())
             if "registries" not in meta.get("capabilities", []):
                 raise ValueError("module needs registries: " + mod)
-            if mod == "prettypipes" and facts.get("version") in ("0.4.0", "0.5.0"):
+            if mod == "prettypipes" and facts.get("version") in ("0.4.0", "0.5.0", "0.6.0"):
                 menu = "data/prettypipes/horizon/menu/pipe.json"
                 if (menu not in names or json.loads(archive.read(menu)) !=
                         {"slots": 67, "data_slots": 21}):
-                    raise ValueError("Pretty Pipes 0.4/0.5 menu needs 67 slots and 21 data slots")
+                    raise ValueError("Pretty Pipes 0.4+ menu needs 67 slots and 21 data slots")
             if mod == "oritech":
                 for block, slots in (("basic_generator_block", 1), ("powered_furnace_block", 2)):
                     menu = f"data/oritech/horizon/menu/{block}.json"
@@ -167,7 +167,7 @@ def check_native_pairs(mods: dict, native: list[dict], core: list[dict] | None =
     if len(matching) != 1:
         raise ValueError("Pretty Pipes installation has no native extension declaration")
     version = mods["prettypipes"].get("version")
-    if version not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0") or matching[0].get("version") != version:
+    if version not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0") or matching[0].get("version") != version:
         raise ValueError("Pretty Pipes content/native version mismatch")
 
 

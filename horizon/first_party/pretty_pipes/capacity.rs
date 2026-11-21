@@ -4,7 +4,7 @@ use super::{Game, Kind};
 use horizon_client::items::ItemStack;
 use horizon_core::geometry::Direction;
 
-/// The first port supports the same plain inventories as its connection tag.
+/// Support the reviewed vanilla inventories and the two ported Oritech machines.
 /// Never simulate by inserting/removing real items: that would fire machine
 /// side effects and make failed routes mutate the destination.
 pub(in crate::game) fn capacity(
@@ -15,7 +15,7 @@ pub(in crate::game) fn capacity(
 ) -> Option<u32> {
     let containers = game.containers();
     let view = containers.view((pos[0], pos[1], pos[2]), false)?;
-    if !matches!(
+    let vanilla = matches!(
         game.native_block(pos).as_str(),
         "minecraft:chest"
             | "minecraft:trapped_chest"
@@ -24,8 +24,12 @@ pub(in crate::game) fn capacity(
             | "minecraft:furnace"
             | "minecraft:blast_furnace"
             | "minecraft:smoker"
-    ) || !matches!(view.kind, Kind::Generic | Kind::Hopper | Kind::Furnace)
-    {
+    ) && matches!(view.kind, Kind::Generic | Kind::Hopper | Kind::Furnace);
+    let oritech = matches!(
+        game.native_block(pos).as_str(),
+        "oritech:basic_generator_block" | "oritech:powered_furnace_block"
+    ) && view.kind == Kind::Mod;
+    if !vanilla && !oritech {
         return None;
     }
     let maximum = containers.max_stack(stack);

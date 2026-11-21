@@ -282,6 +282,20 @@ patch применяет feature modifiers после world packs, сохран�
 Состояние сырья, активной цепочки и конечного результата проверяется отдельными
 физическими открытиями мира. [Результат и журнал происхождения](ORITECH_GATHERED_RESULT.json).
 
+Pretty Pipes 0.6 добавил рабочие endpoints двух native машин Oritech: прежний
+список целей read-only capacity не допускал их, хотя слоты уже существовали.
+Теперь соблюдаются input/output slots, стороны и обычные stack/acceptance rules;
+connection tag содержит optional ссылки. На новом `techquest-pipes-06a-server`
+(порт 25643, 8 hmod, 4 native bundles и прежние два core corrections) dedicated
+и графический тесты автоматически получили/доставили 16 слитков из 16 raw iron
+и одного coal. Проверены груз в пути и финальное состояние после физических
+перезапусков, защита input slot от extraction, полная цель и продолжение доставки
+после освобождения места. В GUI три модуля установлены игроком, меню открылись,
+соединения видны и protocol decode errors — 0. Источники/машины/assembly здесь
+fixtures, а не продолжение добытого мира. 126 исходных vanilla capacity cases
+совпали, 121 Python-тест прошёл. Старые установки/бинарники/locks не изменялись;
+новый сервер остановлен и lock проверен. [Отчёт автоматизации](ORITECH_PIPES_RESULT.json).
+
 1. Продолжить Pretty Pipes: equality/filter-increase modules и их экраны,
    ветвления, приоритеты, insertion-limiting modules/сложные slot limits, переполнение и rerouting; проверить offhand, bulk edits,
    unloaded entities и точные drop semantics. Установка/снятие, основное GUI,
@@ -305,7 +319,7 @@ patch применяет feature modifiers после world packs, сохран�
    Локальная установка — LOCAL_INSTALL_RU.md; native build — first_party/terralith_wolves/README.md.
 4. Продолжить Oritech: первая цепочка уже исполняется; нужны исходные рецепты
    и переработка для кремниевого пути печи, прохождение от точки спавна
-   без инструментов/перемещения как fixtures, автоматизация/Pretty Pipes endpoints, кабели,
+   без инструментов/перемещения как fixtures, другие machine handlers и сложная автоматизация, кабели,
    улучшения, другие машины и общая делегация через core. Текущие три блока
    не заменяют полный промышленный мод. Продолжить остальные нативные механики TechQuest и подготовить проверку официальным
    лицензированным клиентом. Пользовательские данные не использовать.

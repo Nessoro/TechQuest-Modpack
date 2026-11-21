@@ -185,3 +185,16 @@ world in a new scratch directory with its action provenance retained.
 [Guided run evidence](../../ORITECH_GATHERED_RESULT.json). This does not establish
 unassisted progression from spawn, the silicon processing route, automation or
 licensed multiplayer. The engine and content versions are unchanged.
+
+## Automated input/output with Pretty Pipes
+
+[Pretty Pipes 0.6](../../ORITECH_PIPES_RESULT.json) adds read-only destination
+capacity and visible connections for this prototype's generator/furnace. The
+Oritech native/content versions stay 0.1.0/0.2.0. A dedicated server and actual
+graphical client feed coal/raw iron, extract the genuine output, preserve cargo
+across reopening and pause/resume at a full destination. An extractor leaves
+the furnace input alone. Sixteen raw iron and one coal produce sixteen ingots
+with zero residual machine energy. Machine/assembly/source-material fixtures
+are explicit; this automation world is separate from the gathered starter run.
+Other machine handlers, general NeoForge capability parity and licensed
+dedicated join remain unverified.
