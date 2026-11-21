@@ -58,6 +58,20 @@ def audit(mods_dir):
         ru = russian[namespace]
         missing = sorted(set(en) - set(ru))
         unchanged = sorted(k for k in set(en) & set(ru) if en[k] == ru[k])
+        # Minecraft's String.format-based strings can crash or display broken
+        # messages if a translation drops a printf placeholder. Keep this
+        # diagnostic separate from missing coverage: a key can exist but still
+        # require correction. Only supported format specifiers are counted.
+        def placeholders(value):
+            return sorted(re.findall(
+                r"%(?:[1-9]\\d*\\$)?[-#+ 0,(]*\\d*(?:\\.\\d+)?[a-zA-Z]",
+                value.replace("%%", ""),
+            ))
+        mismatches = {
+            key: {"english": placeholders(en[key]), "russian": placeholders(ru[key])}
+            for key in sorted(set(en) & set(ru))
+            if placeholders(en[key]) != placeholders(ru[key])
+        }
         results[namespace] = {
             "english_keys": len(en),
             "russian_keys": len(ru),
@@ -66,6 +80,8 @@ def audit(mods_dir):
             "missing_english": {key: en[key] for key in missing},
             "unchanged_count": len(unchanged),
             "unchanged_keys": unchanged,
+            "placeholder_mismatch_count": len(mismatches),
+            "placeholder_mismatches": mismatches,
             "source_jars": sorted(origins[namespace]),
         }
     return {
@@ -74,6 +90,7 @@ def audit(mods_dir):
         "namespace_count": len(results),
         "total_english_keys": sum(x["english_keys"] for x in results.values()),
         "total_missing_keys": sum(x["missing_count"] for x in results.values()),
+        "total_placeholder_mismatches": sum(x["placeholder_mismatch_count"] for x in results.values()),
         "warning_count": len(warnings),
         "warnings": warnings,
         "namespaces": results,
@@ -93,6 +110,7 @@ def main():
                            encoding="utf-8")
     print(f"Audited {result['jar_count']} JARs / {result['namespace_count']} namespaces; "
           f"{result['total_missing_keys']} Russian keys missing, "
+          f"{result['total_placeholder_mismatches']} placeholder mismatches, "
           f"{result['warning_count']} warnings.")
     print(f"Report: {args.output}")
     if args.strict and (result["total_missing_keys"] or result["warning_count"]):
