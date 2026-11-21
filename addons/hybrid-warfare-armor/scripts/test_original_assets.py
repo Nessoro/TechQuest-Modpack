@@ -163,6 +163,43 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertIn('"m"', text)
         self.assertIn('"k"', text)
 
+    def test_ic2_quantum_helmets_have_real_abilities_and_native_charge(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        main = (root / "src/main/java/dev/techquest/hybrid/HybridWarfareMod.java").read_text()
+        helmet = (root / "src/main/java/dev/techquest/hybrid/Ic2QuantumHelmetCompat.java").read_text()
+        charge = (root / "src/main/java/dev/techquest/hybrid/Ic2QuantumChargeManager.java").read_text()
+        self.assertIn("Ic2QuantumHelmetCompat.serverTick(player, helmet);", main)
+        self.assertIn("!isNativeQuantum(helmet)", main)  # no double night vision
+        self.assertIn("!Ic2QuantumChargeManager.isQuantumHybrid(helmet)", helmet)
+        self.assertIn("Ic2QuantumChargeManager.spend(helmet, 1_000)", helmet)
+        self.assertIn("player.setAirSupply", helmet)
+        self.assertIn("MobEffects.POISON", helmet)
+        self.assertIn("MobEffects.WITHER", helmet)
+        self.assertIn("Ic2Potion.radiationHolder()", helmet)
+        self.assertIn("Ic2Items.FILLED_TIN_CAN", helmet)
+        self.assertIn("can.onEaten(player, food)", helmet)
+        self.assertIn("IC2.keyboard.isModeSwitchKeyDown(player)", helmet)
+        self.assertIn("IC2.keyboard.isAltKeyDown(player)", helmet)
+        self.assertIn("CustomData.update(DataComponents.CUSTOM_DATA, helmet", helmet)
+        self.assertIn("Ic2QuantumChargeManager.spend(helmet, 1)", helmet)
+        self.assertIn('case "quantum_helmet" -> base.getPath().contains("helmet")', charge)
+        self.assertIn("ElectricItem.manager.charge(donor", charge)
+        self.assertIn("save(armor, donor)", charge)
+        # Never create replacement armor or modify base item IDs.
+        self.assertNotIn("new ArmorItem(", helmet)
+        self.assertNotIn("DataComponents.CUSTOM_NAME", helmet)
+
+    def test_helmet_smithing_recipes_exist_for_all_technologies(self):
+        expected = {"ru_helmet_6b47", "us_helmet_pasgt", "ge_helmet_m_35"}
+        for tech in TECH:
+            for helm in expected:
+                path = RECIPES / (tech + "_" + helm + ".json")
+                self.assertTrue(path.exists(), path)
+                recipe = json.loads(path.read_text())
+                self.assertEqual(recipe["base"]["item"], "superbwarfare:" + helm)
+                self.assertEqual(recipe["result"]["id"], "superbwarfare:" + helm)
+                self.assertEqual(recipe["addition"]["item"], TECH[tech][0])
+
     def test_no_custom_art_generated_or_committed(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         resources = root / "src/main/resources"
