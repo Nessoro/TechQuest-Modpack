@@ -24,7 +24,7 @@ LOCALE_COUNTS = {
     "critical_strike": 18,
     "ftbultimine": 20,
     "fluidic_tanks": 24,
-    "ic2": 1049,
+    "ic2": 1336,
     "jei": 625,
     "mekanism": 1892,
     "mekanismgenerators": 221,
@@ -65,6 +65,10 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertEqual(ic2["block.ic2.advanced_machine"], "Корпус усовершенствованного механизма")
         self.assertEqual(ic2["block.ic2.generator"], "Генератор")
         self.assertIn("EU/t", ic2["ic2.NuclearReactor.gui.info.EUoutput"])
+        self.assertEqual(ic2["ic2.crop.seed_bag.plant"], "Растение: %s")
+        self.assertEqual(ic2["ic2.generic.text.amount"], "Объём жидкости: %s mB")
+        self.assertEqual(ic2["ic2.tooltip.upgrade.overclocker.power"], "Повысить энергопотребление до %1$s%%")
+        self.assertIn("3 × 3", ic2["ic2.gravi.drill.mode.3"])
         jei = json.loads((COMPAT / "assets/jei/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("JEI", jei["jei.tooltip.config"])
         self.assertEqual(jei["jei.config.client.bookmarkList.bookmarkPreviewMode.value.DISABLED"], "Выключено")
