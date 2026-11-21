@@ -25,8 +25,9 @@ LOCALE_COUNTS = {
     "ftbultimine": 20,
     "fluidic_tanks": 24,
     "ic2": 1336,
+    "immersiveengineering": 604,
     "jei": 625,
-    "mekanism": 1892,
+    "mekanism": 2082,
     "mekanismgenerators": 221,
     "modern_industrialization": 49,
     "mowziesmobs": 440,
@@ -78,6 +79,17 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("%s", blockz["item.betterblockz.omni_spade.shift.line4"])
         mekanism = json.loads((COMPAT / "assets/mekanism/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(mekanism["constants.mekanism.mod_name"], "Mekanism")
+        self.assertIn("MekaSuit", mekanism["configuration.mekanism.client.hud.mekasuit.energy_bar.tooltip"])
+        self.assertIn("Vein Mining", mekanism["configuration.mekanism.gear.disassembler.vein_mining.tooltip"])
+        self.assertIn("mB/t", mekanism["configuration.mekanism.gear.canteen.transfer_rate.tooltip"])
+        immersive = json.loads((COMPAT / "assets/immersiveengineering/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(immersive["block.minecraft.banner.immersiveengineering.hammer.black"],
+                         "Молот (чёрный)")
+        self.assertEqual(immersive["advancement.immersiveengineering.mb_cokeoven.desc"],
+                         "Постройте коксовую печь")
+        self.assertIn("%1$s", immersive["gui.immersiveengineering.config.radio_tower.range_m"])
+        self.assertEqual(immersive["manual.immersiveengineering.electrical_grids"],
+                         "Электрические сети")
         open_claims = json.loads((COMPAT / "assets/openpartiesandclaims/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("%3$s", open_claims["gui.xaero_claims_claimed_at"])
         bookshelf = json.loads((COMPAT / "assets/bookshelf/lang/ru_ru.json").read_text(encoding="utf-8"))
