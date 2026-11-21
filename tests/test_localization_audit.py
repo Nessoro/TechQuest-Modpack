@@ -46,6 +46,25 @@ class LocalizationAuditTests(unittest.TestCase):
             self.assertEqual(report["warning_count"], 1)
             self.assertEqual(report["namespaces"]["example"]["missing_count"], 1)
 
+    def test_reports_placeholder_mismatch_without_claiming_missing_coverage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with zipfile.ZipFile(root / "format.jar", "w") as z:
+                z.writestr("assets/example/lang/en_us.json", json.dumps({
+                    "message.example.count": "Found %1$d blocks in %2$s",
+                    "message.example.safe": "Progress 100%%: %s",
+                }))
+                z.writestr("assets/example/lang/ru_ru.json", json.dumps({
+                    "message.example.count": "Найдено %1$d блоков",
+                    "message.example.safe": "Прогресс 100%%: %s",
+                }, ensure_ascii=False))
+            report = audit_mod.audit(root)
+            self.assertEqual(report["total_missing_keys"], 0)
+            self.assertEqual(report["total_placeholder_mismatches"], 1)
+            self.assertEqual(report["namespaces"]["example"]["placeholder_mismatch_count"], 1)
+            self.assertIn("message.example.count",
+                          report["namespaces"]["example"]["placeholder_mismatches"])
+
     def test_empty_directory_must_not_look_like_full_translation(self):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaisesRegex(ValueError, "No JARs"):
