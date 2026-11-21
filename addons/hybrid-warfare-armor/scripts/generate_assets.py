@@ -55,6 +55,15 @@ def generate():
             })
             count += 1
 
+    # Data-driven special recipe: crafting grid containing exactly one
+    # vanilla Elytra and one ACTUALLY energy-powered chestpiece. Java serializer
+    # validates capacity and refuses ordinary non-powered armor. Keep it in a
+    # nested folder to avoid mixing it into the 20 original fusion recipes.
+    write_json(RECIPES / "special/powered_elytra.json", {
+        "type": "techquest_hybrid:powered_elytra_attach",
+        "category": "misc",
+    })
+
     # Vanilla smithing templates + pigments can be applied on ORIGINAL SBW items.
     write_json(TRIMMABLE, {
         "replace": False,
@@ -69,6 +78,7 @@ def generate():
         "item.techquest_hybrid.prefix.mek": "Механизированная броня Mekanism",
         "item.techquest_hybrid.prefix.oritech": "Экзоброня Oritech",
         "tooltip.techquest_hybrid.tech": "Технологическое улучшение: %s",
+        "tooltip.techquest_hybrid.elytra": "Энергетическая элитра: %s энергии/с; прочность крыльев не расходуется",
         "tooltip.techquest_hybrid.energy": "Энергия: %s / %s FE",
         "tooltip.techquest_hybrid.recharge": "Заряди в устройстве, поддерживающем FE",
         "tooltip.techquest_hybrid.donor": "Встроенный предмет: %s",
@@ -90,6 +100,7 @@ def generate():
         "item.techquest_hybrid.prefix.mek": "Mekanism-Powered",
         "item.techquest_hybrid.prefix.oritech": "Oritech Exo",
         "tooltip.techquest_hybrid.tech": "Technology upgrade: %s",
+        "tooltip.techquest_hybrid.elytra": "Powered Elytra: %s energy/s; wing durability is preserved",
         "tooltip.techquest_hybrid.energy": "Energy: %s / %s FE",
         "tooltip.techquest_hybrid.recharge": "Recharge with an FE-compatible charger",
         "tooltip.techquest_hybrid.donor": "Embedded donor: %s",
