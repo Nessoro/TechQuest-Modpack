@@ -94,5 +94,17 @@ class AdditionalTranslationTests(unittest.TestCase):
                     self.assertEqual(len(json.loads(jar.read(path))), expected)
 
 
+    def test_localization_source_licenses_are_embedded(self):
+        expected = {
+            "THIRD_PARTY_LICENSES/MOWZIES_MOBS_LICENSE.txt",
+            "THIRD_PARTY_LICENSES/MINWIX_MIT.txt",
+            "THIRD_PARTY_LICENSES/XAERO_RU_CC-BY-SA-4.0.txt",
+            "THIRD_PARTY_LICENSES/README.md",
+        }
+        with zipfile.ZipFile(io.BytesIO(builder.compatibility_jar())) as jar:
+            self.assertTrue(expected.issubset(set(jar.namelist())))
+            self.assertIn(b"Creative Commons", jar.read("THIRD_PARTY_LICENSES/XAERO_RU_CC-BY-SA-4.0.txt"))
+
+
 if __name__ == "__main__":
     unittest.main()
