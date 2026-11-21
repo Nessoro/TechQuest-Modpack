@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.EventPriority;
@@ -67,6 +68,11 @@ public final class HybridWarfareMod {
             .<ItemStack>builder().persistent(ItemStack.STRICT_CODEC)
             .networkSynchronized(ItemStack.STREAM_CODEC).build();
 
+    /** The attached original Elytra, preserved with its enchantments and wear. */
+    public static final DataComponentType<ItemStack> ELYTRA_ATTACHMENT = DataComponentType
+            .<ItemStack>builder().persistent(ItemStack.STRICT_CODEC)
+            .networkSynchronized(ItemStack.STREAM_CODEC).build();
+
     private static final DeferredRegister.DataComponents COMPONENTS =
             DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID);
 
@@ -74,6 +80,10 @@ public final class HybridWarfareMod {
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
     public static final Supplier<RecipeSerializer<HybridFusionRecipe>> FUSION_SERIALIZER =
             SERIALIZERS.register("armor_fusion", HybridFusionRecipe.Serializer::new);
+
+    public static final Supplier<RecipeSerializer<PoweredElytraRecipe>> ELYTRA_SERIALIZER =
+            SERIALIZERS.register("powered_elytra_attach",
+                    () -> new SimpleCraftingRecipeSerializer<>(PoweredElytraRecipe::new));
 
     private static final Set<String> MILITARY_ARMOR = Set.of(
             "ru_helmet_6b47", "ru_chest_6b43",
@@ -85,6 +95,7 @@ public final class HybridWarfareMod {
         COMPONENTS.register("technology", () -> TECHNOLOGY);
         COMPONENTS.register("energy", () -> ENERGY);
         COMPONENTS.register("donor", () -> DONOR);
+        COMPONENTS.register("elytra_attachment", () -> ELYTRA_ATTACHMENT);
     }
 
     public HybridWarfareMod(IEventBus bus) {
@@ -162,7 +173,7 @@ public final class HybridWarfareMod {
         return Math.max(0, Math.min(ENERGY_CAPACITY, armor.getOrDefault(ENERGY, 0)));
     }
 
-    private static boolean spend(ItemStack armor, int amount) {
+    public static boolean spend(ItemStack armor, int amount) {
         if (amount <= 0 || charge(armor) < amount) return false;
         if (isNativeQuantum(armor)) {
             return Ic2QuantumChargeManager.spend(armor, amount);
@@ -313,6 +324,10 @@ public final class HybridWarfareMod {
 
     private static void tooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
+        if (PoweredElytra.hasElytra(stack)) {
+            event.getToolTip().add(Component.translatable("tooltip.techquest_hybrid.elytra",
+                    PoweredElytraEnergy.COST_PER_TICK * 20).withStyle(ChatFormatting.AQUA));
+        }
         if (!isSuperbWarfareArmor(stack)) return;
         String tech = technology(stack);
         if (tech != null) {
