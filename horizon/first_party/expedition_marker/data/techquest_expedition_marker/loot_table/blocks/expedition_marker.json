@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": { "type": "minecraft:survives_explosion" },
+      "entries": [{ "type": "minecraft:item", "name": "techquest_expedition_marker:expedition_marker" }],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "techquest_expedition_marker:blocks/expedition_marker"
+}
