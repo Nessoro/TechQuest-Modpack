@@ -239,9 +239,17 @@ public final class HybridWarfareMod {
 
     private static void tickPlayer(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        if (player.level().isClientSide() || player.tickCount % 20 != 0) return;
+        if (player.level().isClientSide()) return;
 
         ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+        // Original IC2 Quantum Helmet's inventoryTick does not run for a
+        // Superb Warfare item. Use its IC2 battery and restore native helmet
+        // functions every server tick instead of applying an always-on effect.
+        if (isNativeQuantum(helmet)) {
+            Ic2QuantumHelmetCompat.serverTick(player, helmet);
+        }
+        if (player.tickCount % 20 != 0) return;
+
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         // Also migrate already-crafted 0.2.2 chestpieces with no plate NBT.
         ensureArmorPlateBar(chest);
@@ -250,7 +258,9 @@ public final class HybridWarfareMod {
 
         // These are real, energy-consuming gameplay upgrades, not passive
         // cosmetic markers. Effects intentionally stop when charge reaches zero.
-        if ("ic2".equals(headTech) && spend(helmet, 80)) {
+        if ("ic2".equals(headTech) && !isNativeQuantum(helmet) && spend(helmet, 80)) {
+            // Compatibility with legacy 0.2.0/0.2.1 helmet items which
+            // do not contain a Quantum Helmet donor snapshot.
             player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 240, 0, true, false));
             player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 60, 0, true, false));
         } else if ("mek".equals(headTech) && spend(helmet, 70)) {
