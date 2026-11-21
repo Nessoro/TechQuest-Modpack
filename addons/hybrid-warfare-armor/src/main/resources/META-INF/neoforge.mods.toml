@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+[[mods]]
+modId="techquest_hybrid"
+version="0.2.4-SNAPSHOT"
+displayName="TechQuest Hybrid Warfare Armor"
+authors="TechQuest Project"
+description="Original Superb Warfare armor with native IC2 QuantumSuit charging, technology fusion and named smithing results."
+[[dependencies.techquest_hybrid]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.264,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.techquest_hybrid]]
+modId="superbwarfare"
+type="required"
+versionRange="[0.8.9.2,)"
+ordering="AFTER"
+side="BOTH"
+
+[[mixins]]
+config="techquest_hybrid.mixins.json"
