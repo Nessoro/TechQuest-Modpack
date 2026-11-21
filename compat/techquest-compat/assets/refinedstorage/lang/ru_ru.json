@@ -1,0 +1,12 @@
+{
+  "gui.refinedstorage.crafting_grid.press_shift_cmd_to_only_show_items_used_in_crafting": "Нажмите SHIFT + CMD, чтобы показать только предметы, используемые в рецепте.",
+  "gui.refinedstorage.grid.cmd_click_to_autocraft": "CMD + щелчок: автосоздание",
+  "gui.refinedstorage.priority.storage_help.alt_click_to_modify_extract_priority": "ALT + щелчок: изменить приоритет извлечения.",
+  "gui.refinedstorage.priority.storage_help.click_to_modify_insert_extract_priority": "Щелчок: изменить приоритет вставки и извлечения.",
+  "gui.refinedstorage.priority.storage_help.cmd_click_to_modify_insert_priority": "CMD + щелчок: изменить приоритет вставки.",
+  "gui.refinedstorage.priority.storage_help.ctrl_click_to_modify_insert_priority": "CTRL + щелчок: изменить приоритет вставки.",
+  "item.refinedstorage.controller.not_needed_because_energy_is_not_required": "Refined Storage настроен на работу без энергии. Это устройство не требуется и ни на что не влияет; оно показано только для справки.",
+  "item.refinedstorage.regulator_upgrade.cleared_configuration": "Настройки очищены.",
+  "text.autoconfig.refinedstorage.option.requireEnergy": "Требовать энергию",
+  "text.autoconfig.refinedstorage.option.requireEnergy.tooltip": "Нужна ли энергия для работы сетей и предметов. Если отключено, для работы сети не требуется контроллер."
+}

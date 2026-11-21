@@ -6,6 +6,8 @@
 
 **[Установка и скачивание](https://nessoro.github.io/TechQuest-Modpack/#download) · [Каталог модов](https://nessoro.github.io/TechQuest-Modpack/#mods) · [Ошибки и предложения](https://nessoro.github.io/TechQuest-Modpack/#feedback)**
 
+**[Русификация TechQuest](docs/LOCALIZATION_RU.md):** в черновике PR #59 завершено текстовое покрытие BuildCraft (2002 ключа и 218 страниц справочника) и BetterBlockZ (1748 ключей), добавлены переводы JEI, Mekanism, IC2, Modern Industrialization и небольших модов. Язык выбирается вручную; локализация входит в TechQuest Compatibility без изменения сторонних JAR. **Весь модпак ещё не переведён, PR не опубликован, проверка в Minecraft отложена до завершения переводов.**
+
 > **Minecraft Java 1.21.1 • NeoForge 21.1.x • Java 21 • сервер с друзьями**
 
 TechQuest — большая комплексная сборка вокруг **BuildCraft Community Edition** и **Industrial Craft 2: Nostalgia**. Дополнительно в план включены Create, Mekanism, Modern Industrialization, AE2, магия, развитие, новые мобы и миры.
