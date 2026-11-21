@@ -25,7 +25,7 @@ LOCALE_COUNTS = {
     "ftbultimine": 20,
     "fluidic_tanks": 24,
     "ic2": 1336,
-    "immersiveengineering": 604,
+    "immersiveengineering": 894,
     "jei": 625,
     "mekanism": 2082,
     "mekanismgenerators": 221,
@@ -90,6 +90,14 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("%1$s", immersive["gui.immersiveengineering.config.radio_tower.range_m"])
         self.assertEqual(immersive["manual.immersiveengineering.electrical_grids"],
                          "Электрические сети")
+        self.assertEqual(immersive["block.immersiveengineering.concrete_reinforced"],
+                         "Армированный бетон")
+        self.assertEqual(immersive["item.immersiveengineering.bullet_armor_piercing"],
+                         "Бронебойный патрон")
+        self.assertEqual(immersive["chat.immersiveengineering.info.conveyor.stacksize"],
+                         "Извлекать %1$s предметов в секунду")
+        self.assertIn("%2$s", immersive["ie.manual.entry.minerals.biomes"])
+        self.assertIn("§m6§r", immersive["desc.immersiveengineering.flavour.revolver.einhorn"])
         open_claims = json.loads((COMPAT / "assets/openpartiesandclaims/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("%3$s", open_claims["gui.xaero_claims_claimed_at"])
         bookshelf = json.loads((COMPAT / "assets/bookshelf/lang/ru_ru.json").read_text(encoding="utf-8"))
