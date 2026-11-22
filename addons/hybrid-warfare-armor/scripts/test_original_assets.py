@@ -303,6 +303,41 @@ class OriginalArmorFusionTests(unittest.TestCase):
         translations = json.loads((RES / "assets/techquest_hybrid/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("tooltip.techquest_hybrid.jei_elytra", translations)
 
+    def test_energy_elytra_has_dedicated_key_and_server_validation(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        source = root / "src/main/java/dev/techquest/hybrid"
+        keys = (source / "gui/PoweredElytraKeys.java").read_text()
+        network = (source / "PoweredElytraGlidePayload.java").read_text()
+        main = (source / "HybridWarfareMod.java").read_text()
+        mixin = (source / "flightmixin/PoweredElytraPlayerMixin.java").read_text()
+        flight = (source / "PoweredElytra.java").read_text()
+        self.assertIn("GLFW.GLFW_KEY_G", keys)
+        self.assertIn("RegisterKeyMappingsEvent", keys)
+        self.assertIn("ClientTickEvent.Post", keys)
+        self.assertIn("PacketDistributor.sendToServer(", keys)
+        self.assertIn("minecraft.screen != null", keys)
+        self.assertIn("implements CustomPacketPayload", network)
+        self.assertIn("context.player() instanceof ServerPlayer player", network)
+        self.assertIn("player.getItemBySlot(EquipmentSlot.CHEST)", network)
+        self.assertIn("PoweredElytra.hasElytra(chest)", network)
+        self.assertIn("PoweredElytraEnergy.canSpend(chest)", network)
+        self.assertIn("player.tryToStartFallFlying()", network)
+        self.assertIn("player.displayClientMessage", network)
+        self.assertIn("RegisterPayloadHandlersEvent", main)
+        self.assertIn("bus.addListener(HybridWarfareMod::registerPackets)", main)
+        self.assertIn("event.registrar(\"1\").playToServer(", main)
+        self.assertIn('@Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)', mixin)
+        self.assertIn("player.startFallFlying();", mixin)
+        self.assertIn("ItemStack.isSameItemSameComponents(chest, equipped)", flight)
+        self.assertNotIn("getItemBySlot(EquipmentSlot.CHEST) == chest", flight)
+        for lang in ("ru_ru", "en_us"):
+            strings = json.loads((RES / f"assets/techquest_hybrid/lang/{lang}.json").read_text())
+            for key in ("key.techquest_hybrid.powered_elytra_glide",
+                        "message.techquest_hybrid.elytra.empty",
+                        "message.techquest_hybrid.elytra.started",
+                        "message.techquest_hybrid.elytra.blocked"):
+                self.assertIn(key, strings)
+
     def test_no_custom_art_generated_or_committed(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         resources = root / "src/main/resources"
