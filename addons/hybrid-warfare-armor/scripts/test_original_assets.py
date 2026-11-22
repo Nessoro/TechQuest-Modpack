@@ -225,7 +225,13 @@ class OriginalArmorFusionTests(unittest.TestCase):
         energy = (root / "src/main/java/dev/techquest/hybrid/PoweredElytraEnergy.java").read_text()
         flight = (root / "src/main/java/dev/techquest/hybrid/PoweredElytra.java").read_text()
         ic2 = (root / "src/main/java/dev/techquest/hybrid/Ic2ElytraEnergy.java").read_text()
-        self.assertIn("stack.getEquipmentSlot() != EquipmentSlot.CHEST", energy)
+        # In NeoForge 1.21.1 the optional ItemStack slot override is null
+        # for normal ArmorItem stacks. 0.2.6 rejected all such chestplates.
+        self.assertIn("EquipmentSlot override = stack.getEquipmentSlot()", energy)
+        self.assertIn("if (override != null) return override == EquipmentSlot.CHEST", energy)
+        self.assertIn("stack.getItem() instanceof ArmorItem armor", energy)
+        self.assertIn("armor.getEquipmentSlot() == EquipmentSlot.CHEST", energy)
+        self.assertNotIn("stack.getEquipmentSlot() != EquipmentSlot.CHEST", energy)
         self.assertIn("HybridWarfareMod.energyCapacity(stack) > 0", energy)
         self.assertIn("power.getMaxEnergyStored() >= COST_PER_TICK", energy)
         self.assertIn("power.canExtract()", energy)
