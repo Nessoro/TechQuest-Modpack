@@ -65,6 +65,17 @@ class LocalizationAuditTests(unittest.TestCase):
             self.assertIn("message.example.count",
                           report["namespaces"]["example"]["placeholder_mismatches"])
 
+    def test_formatter_argument_order_and_explicit_indices(self):
+        signature = audit_mod.placeholder_signature
+        self.assertEqual(signature("Name %s, count %d"),
+                         signature("Количество %2$d, название %1$s"))
+        self.assertNotEqual(signature("Name %s, count %d"),
+                            signature("Количество %d, название %s"))
+        self.assertEqual(signature("Progress 100%%: %s"),
+                         signature("Прогресс 100%%: %s"))
+        self.assertEqual(signature("Repeated %1$s, %<s"),
+                         signature("Повтор %1$s, %1$s"))
+
     def test_empty_directory_must_not_look_like_full_translation(self):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaisesRegex(ValueError, "No JARs"):
