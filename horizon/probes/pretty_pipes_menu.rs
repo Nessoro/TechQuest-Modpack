@@ -105,6 +105,63 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         data_slots: 0,
         results: vec![],
     })));
+    if let Some(rows) = original["compatibility"].as_array() {
+        let mut checked = Vec::new();
+        for row in rows {
+            let mut menu = Menu::new(kind);
+            for slot in 3..67 {
+                menu.hide_slot(slot);
+            }
+            let layout = row["layout"].as_array().unwrap();
+            for (slot, id) in layout.iter().enumerate() {
+                menu.set_slot(
+                    &env,
+                    slot,
+                    stack(&json!({"id": id, "count": 1, "marker": 10 + slot})),
+                );
+            }
+            // Extra owned cargo is independent of the module compatibility
+            // oracle and must survive every menu action without becoming a slot.
+            menu.set_slot(&env, 3, Some(ItemStack::new("minecraft:iron_ingot", 8)));
+            let candidate =
+                stack(&json!({"id": row["candidate"], "count": 2, "marker": 48})).unwrap();
+            let slots = (0..3).map(|i| menu.slot(i).cloned()).collect::<Vec<_>>();
+            assert_eq!(
+                horizon_client_lib::techquest_pretty_pipes_modules::menu_accepts(
+                    &slots, &candidate
+                ),
+                row["valid"].as_bool().unwrap(),
+                "{} validity",
+                row["name"]
+            );
+            menu.carried = Some(candidate);
+            menu.click(&env, row["slot"].as_i64().unwrap() as i32, 0, Input::Pickup)?;
+            let convert = |stack: Option<&ItemStack>| {
+                let mut value = describe(stack);
+                if let Some(fields) = value.as_object_mut() {
+                    let id = fields.remove("id").unwrap();
+                    fields.insert("item".into(), id);
+                }
+                value
+            };
+            let observed = json!({"modules": (0..3).map(|i| convert(menu.slot(i))).collect::<Vec<_>>(), "cursor": convert(menu.carried.as_ref())});
+            assert_eq!(
+                observed["modules"], row["modules"],
+                "{} modules",
+                row["name"]
+            );
+            assert_eq!(observed["cursor"], row["cursor"], "{} cursor", row["name"]);
+            assert_eq!(menu.slot(3).unwrap().count, 8);
+            checked.push(json!({"name": row["name"], "observed": observed}));
+        }
+        println!(
+            "{}",
+            serde_json::to_string_pretty(
+                &json!({"schema": 1, "minecraft": "26.3", "native_menu_engine_executed": true, "compatibility_and_menu_cases_match_original": checked.len(), "synthetic_cargo_preserved": true, "cases": checked})
+            )?
+        );
+        return Ok(());
+    }
     let mut menu = Menu::new(kind);
     for i in 3..67 {
         menu.hide_slot(i);

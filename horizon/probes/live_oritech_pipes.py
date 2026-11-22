@@ -178,7 +178,7 @@ def main():
         parser.error("output and commands path must be new")
     lock = verify(args.server_dir)
     assert lock["modules"]["oritech"]["version"] in ("0.2.0", "0.3.0")
-    assert lock["modules"]["prettypipes"]["version"] in ("0.5.0", "0.6.0", "0.7.0")
+    assert lock["modules"]["prettypipes"]["version"] in ("0.5.0", "0.6.0", "0.7.0", "0.8.0")
     if args.phase != "prepare" and args.prior is None:
         parser.error("verify/final need the prior phase report")
     probe = Probe(args.server_dir, Path(lock["server_binary"]))

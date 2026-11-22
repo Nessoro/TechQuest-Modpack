@@ -170,7 +170,7 @@ fn on_the_way(game: &Game<'_>, current: &ModBlockEntity, destination: [i32; 3]) 
 }
 
 pub(super) fn use_module(game: &mut Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
-    if game.native_block(pos) != PIPE || modules::rates(&stack.item).is_none() {
+    if game.native_block(pos) != PIPE || !modules::supported(&stack.item) {
         return false;
     }
     let Some(held) = game
@@ -197,10 +197,27 @@ pub(super) fn use_module(game: &mut Game<'_>, stack: &ItemStack, pos: [i32; 3]) 
     installed
 }
 
+fn work_blocked(game: &mut Game<'_>, pos: [i32; 3], current: Option<&ModBlockEntity>) -> bool {
+    let installed = current.map_or_else(
+        || match game.world.block_entities.get(&(pos[0], pos[1], pos[2])) {
+            Some(horizon_client_lib::containers::BlockEntity::Mod(entity)) => {
+                modules::has_redstone(&entity.nbt, &entity.items)
+            }
+            _ => false,
+        },
+        |entity| modules::has_redstone(&entity.nbt, &entity.items),
+    );
+    if !installed {
+        return false;
+    }
+    let dimension = game.native_dimension().to_owned();
+    game.native_neighbor_signal(&dimension, pos) > 0
+}
+
 /// A shortest pipe-only route to a reachable inventory, excluding the source.
 /// Loaded blocks only; an unloaded chunk never becomes a route implicitly.
 fn route(
-    game: &Game<'_>,
+    game: &mut Game<'_>,
     start: [i32; 3],
     source: [i32; 3],
     item: &ItemStack,
@@ -212,6 +229,10 @@ fn route(
     let mut seen = BTreeSet::from([start]);
     let mut queue = VecDeque::from([(start, 1)]);
     while let Some((pos, distance)) = queue.pop_front() {
+        // Original canWork gates selection of new destinations, not transit
+        // or direct arrival storage of an already routed item.
+        let blocked =
+            destination.is_none() && work_blocked(game, pos, (pos == start).then_some(current));
         for direction in Direction::ALL {
             let neighbor = at(pos, direction);
             if game.native_block(neighbor) == PIPE {
@@ -220,7 +241,7 @@ fn route(
                 }
                 continue;
             }
-            if neighbor == source || destination.is_some_and(|d| d != neighbor) {
+            if blocked || neighbor == source || destination.is_some_and(|d| d != neighbor) {
                 continue;
             }
             let direction_index = Direction::ALL.iter().position(|d| *d == direction).unwrap();
@@ -334,6 +355,9 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
     let Some((period, amount)) = modules::tier(&entity.nbt) else {
         return;
     };
+    if work_blocked(game, pos, Some(entity)) {
+        return;
+    }
     if game.world.game_time % period != 0 {
         return;
     }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build private content for the native Pretty Pipes transport prototype.
 
-Registers a pipe, four module/material items and their five source recipes.
+Registers a pipe, four module/material items and their six source recipes.
 No Java code is copied. Stage/SDK checks alone do not test gameplay.
 """
 import argparse
@@ -18,7 +18,7 @@ from stage_terralith_content import read_checked
 SOURCE = Path(__file__).resolve().parents[1] / "source/techquest-post-pr48-candidate.json"
 NEOFORGE_SHA256 = "dd8680641ad05f3d796a77829c682ee999e3907e3dae77074c39ee804dc33411"
 RECIPE_NAMES = ("pipe", "blank_module", "low_extraction_module",
-                "medium_extraction_module", "high_extraction_module")
+                "medium_extraction_module", "high_extraction_module", "redstone_module")
 
 
 def glass_members(raw):
@@ -68,7 +68,7 @@ def stage(jar, sdk, output, neoforge_jar):
     if pin["version"] != "1.22.0" or hashlib.sha512(raw).hexdigest() != pin["sha512"]:
         raise ValueError("expected the pinned original Pretty Pipes 1.22.0 JAR")
     glass, missing_tags = glass_members(read_checked(neoforge_jar))
-    payloads = {"horizon-mod.toml": b'id = "prettypipes"\nname = "TechQuest Pretty Pipes transport prototype"\nversion = "0.7.0"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n'}
+    payloads = {"horizon-mod.toml": b'id = "prettypipes"\nname = "TechQuest Pretty Pipes transport prototype"\nversion = "0.8.0"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n'}
     license_text = read_checked(Path(__file__).resolve().parents[1] /
                                 "first_party/pretty_pipes/LICENSE-PRETTY-PIPES").decode()
     payloads["horizon-mod.toml"] = ("\n".join("# " + line for line in license_text.splitlines()) + "\n").encode() + payloads["horizon-mod.toml"]
@@ -145,7 +145,7 @@ def stage(jar, sdk, output, neoforge_jar):
         source_data.append({"path": loot, "sha256": hashlib.sha256(original).hexdigest()})
         data("data/prettypipes/tags/item/source/glass_blocks.json", {"values": glass})
         names = ["assets/prettypipes/textures/block/pipe.png"]
-        for item in ("blank_module", "low_extraction_module", "medium_extraction_module", "high_extraction_module"):
+        for item in ("blank_module", "low_extraction_module", "medium_extraction_module", "high_extraction_module", "redstone_module"):
             data(f"data/prettypipes/horizon/item/{item}.json", {
                 "template": "minecraft:paper", "max_stack_size": 64 if item == "blank_module" else 16})
             data(f"assets/prettypipes/models/item/{item}.json", {
@@ -172,7 +172,7 @@ def stage(jar, sdk, output, neoforge_jar):
         checksum = hashlib.sha256(package.read_bytes()).hexdigest()
         if not verdict.get("ok") or verdict["report"].get("sha256") != checksum:
             raise ValueError("SDK rejected the content prototype")
-        report = {"schema": 1, "id": "prettypipes", "prototype_version": "0.7.0",
+        report = {"schema": 1, "id": "prettypipes", "prototype_version": "0.8.0",
                   "source_version": "1.22.0", "source_jar_sha512": pin["sha512"],
                   "sha256": checksum, "sdk_validated": True, "source_assets": source_assets,
                   "requires_native_module": "techquest_pretty_pipes", "java_code_included": False,

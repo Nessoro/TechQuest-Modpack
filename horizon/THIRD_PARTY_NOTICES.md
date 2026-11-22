@@ -56,6 +56,13 @@ MIT Horizon `game/machines.rs` container rules; see the retained
 `LICENSE-HORIZON`. No Java source from NeoForge or LGPL/GPL dependencies was
 read or decompiled; the original reference runs binary dependencies only.
 
+Pretty Pipes 0.8 adapts the same pin's MIT `RedstoneModuleItem`, mutual module
+compatibility in `PipeBlockEntity.modules`, and the distinction between
+`canWork`/new destination selection and direct `store` for an in-flight item.
+Its sixth source recipe, redstone-module texture and translated name are staged
+privately with the retained complete MIT notice. Power reads use Horizon's
+pinned MIT native neighbor-signal API; no dependency Java source is used.
+
 ## Oritech energy and quartz-processing subset
 
 The Oritech 1.2.13 reference is [Rearth/Oritech at

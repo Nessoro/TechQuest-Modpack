@@ -51,6 +51,15 @@ Oritech 0.2 и Pretty Pipes 0.6, 8 hmod, 4 bundles и два core corrections.
 физические перезапуски; после проверок профиль остановлен, lock действителен.
 Прежние профили не обновляются на месте. [Результаты](ORITECH_PIPES_RESULT.json).
 
+Pretty Pipes 0.8 добавляет скрафченный redstone module и управление новыми
+извлечениями/доставками от питания. Нужны content/native именно 0.8.0.
+Профиль `/workspace/horizon-runtime/techquest-pipes-08a-server`, порт 25647,
+сохраняет Oritech content 0.3/native 0.2, 8 hmod, 4 native bundles и оба core
+corrections. Проверены шесть сторон питания, совместимость/меню, реальные
+рычаги и сохранённый груз. Уже назначенная доставка продолжается при питании
+цели; full routing/rerouting остаётся частичным. После тестов профиль остановлен,
+старые бинарники/locks не менялись. [Результаты 0.8](PRETTY_PIPES_REDSTONE_RESULT.json).
+
 Вторая промышленная опция — [Oritech energy prototype 0.1](first_party/oritech/README.md):
 Basic Generator, Powered Furnace и один Machine Core. Новый контент собирается
 через `tools/stage_oritech.py`; `install --oritech /path/to/oritech.hmod` требует

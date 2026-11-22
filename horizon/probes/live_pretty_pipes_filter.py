@@ -17,7 +17,7 @@ def main():
     parser.add_argument("--server-dir", type=Path, required=True)
     parser.add_argument("--work", type=Path, required=True)
     args = parser.parse_args()
-    game = GraphicalFixture(args.server_dir,args.work,("0.4.0","0.5.0","0.6.0","0.7.0"),"techquest-pipe-filter","TQFilterProbe")
+    game = GraphicalFixture(args.server_dir,args.work,("0.4.0","0.5.0","0.6.0","0.7.0","0.8.0"),"techquest-pipe-filter","TQFilterProbe")
     call, command, settle = game.call, game.command, game.settle
     def items(x):
         text = command(f"data get block {x} 200 0 Items")

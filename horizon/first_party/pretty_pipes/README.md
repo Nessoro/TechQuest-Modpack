@@ -1,6 +1,6 @@
-# Native Pretty Pipes prototype 0.7.0
+# Native Pretty Pipes prototype 0.8.0
 
-Прототип Horizon 26.3 поддерживает default extraction tiers, пять рецептов,
+Прототип Horizon 26.3 поддерживает default extraction tiers, шесть рецептов,
 установку/снятие модуля, главное меню и базовые фильтры экстрактора. Источник —
 Pretty Pipes 1.22.0, MIT commit `1f8ac61`.
 [Оригинальный эталон](../../PRETTY_PIPES_REFERENCE_RU.md),
@@ -20,14 +20,15 @@ Pretty Pipes 1.22.0, MIT commit `1f8ac61`.
 не могут взять транспортируемые предметы через меню.
 
 RETURN-вставка в настоящий `Menu::mod_slot` ограничивает module slots одним
-предметом, принимает только реализованные extractors и проверяет совместимость
+предметом, принимает реализованные extractors/redstone module и проверяет совместимость
 по текущему инвентарю. Low/medium/high extractors несовместимы между собой;
-blank material и обычные предметы отклоняются. Остальные menu types не меняются.
+Redstone module совместим с одним extractor; второй redstone module отклоняется.
+Blank material и обычные предметы отклоняются. Остальные menu types не меняются.
 Координаты трёх слотов и инвентаря взяты из исходного MainPipeContainer;
 используется обычная панель Horizon с переводимыми названиями.
 
 Пустая основная рука открывает меню у трубы с соседним инвентарём. Предмет
-модуля устанавливает один extractor; расходуется один предмет и в creative,
+модуля устанавливает один реализованный модуль; расходуется один предмет и в creative,
 как в оригинале. Вариант геометрии на основе chorus plant сам не создаёт
 vanilla OpenMenu effect, поэтому отдельный обработчик сохраняет порядок
 right-click hooks и открывает только меню нашей трубы. Таблица ModContainer
@@ -178,7 +179,7 @@ Loaded-only BFS ограничен 4096 pipe nodes, исходный конте�
 
 Не реализованы equality/filter-increase modules и их экраны, приоритеты,
 полная семантика ветвлений/переполнения/rerouting, insertion-limiting modules,
-redstone module и IPipeConnectable interop. Компонент фильтра должен иметь
+IPipeConnectable interop. Компонент фильтра должен иметь
 исходный размер соответствующего tier; расширенные или malformed configs
 отклоняются с остановкой извлечения, без удаления сохранённых данных.
 Не проверены точные позиции, скорость и pickup delay выпавших предметов,
@@ -319,3 +320,59 @@ xvfb-run -a python horizon/probes/live_pretty_pipes_capacity_gui.py \
 для генератора и печи сохраняются отдельно.
 `live_oritech_pulverizer_pipes.py` проверяет подачу кварца/топлива, настоящий
 результат обработки, сохранённый груз, доставку и окончательное переоткрытие.
+
+## Управление redstone (0.8)
+
+MIT `RedstoneModuleItem` отключает `canWork` при любом положительном соседнем
+сигнале. Порт использует авторитетный `native_neighbor_signal` pinned Horizon.
+Запитанный источник прекращает новые извлечения, запитанная труба не выбирается
+для новых доставок. Через неё можно пройти к другой цели. Уже назначенный груз
+продолжает движение и вставляется в свою цель даже после её включения:
+исходный `store` не повторяет `canWork`. Маршрутизация/скорость по-прежнему
+приближённые; полный исходный rerouting не реализован.
+
+Один redstone module совместим с одним extractor любого перенесённого tier
+в любом порядке. Повторный redstone module и второй extractor отклоняются;
+остальные типы модулей остаются неподдержанными. Правило одинаково для руки и
+обычного меню. Фильтр экстрактора находится по типу, а не по первому слоту.
+Redstone module не имеет собственного исходного экрана. Physical slots,
+queue schema 3, 67 container slots и 21 data slot сохранены.
+
+`stage_pretty_pipes.py` добавляет исходный шестой рецепт, текстуру и названия.
+Content/native должны иметь одинаковую версию 0.8.0; старые профили не меняются.
+`PrettyPipesRedstoneProbe.java` вызывает оригинальные module/menu APIs для
+66 сочетаний и signal/destination/store APIs для 48 случаев. Зависимости
+используются только как бинарные APIs, их Java source не читается.
+
+```sh
+python3 horizon/probes/run_pretty_pipes_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/pretty-pipes-redstone-reference-new" --accept-eula
+python3 horizon/probes/live_pretty_pipes_redstone.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/pretty-pipes-redstone-native-new" \
+  --original "$TASK_RUNTIME/pretty-pipes-redstone-reference-new/result.json"
+python3 horizon/probes/live_pretty_pipes_redstone_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/pretty-pipes-redstone-gui-new"
+```
+
+`pretty_pipes_menu.rs` принимает этот новый original JSON для 66 сравнений;
+прежний oracle по-прежнему запускает 20 старых операций и hidden-slot controls.
+`live_pretty_pipes_redstone_server.py` имеет фазы `prepare`, `verify`, `final`:
+перед каждой запустить сервер; для последних передать предыдущий `--prior`.
+Каждая фаза сохраняет и останавливает сервер. Сценарий оставляет среднюю трубу
+запитанной, проверяет остановку новых партий, доставку уже назначенной партии
+после переоткрытия и следующую партию после снятия питания с цели.
+
+Графический сценарий крафтит все шесть рецептов, ставит трубы и модули игроком,
+настраивает sample/whitelist во втором слоте, проверяет отказ дубликату и
+shift-снятие/возврат. Питание меняется взаимодействием с рычагами. Ресурсы,
+исходный верстак/сундуки/рычаги, площадка, перемещения и tick control — fixtures;
+модули и трубы не выдаются; партии в пути не подставляются. Это не unassisted survival или
+лицензированный dedicated join.
+
+[Проверенный результат 0.8](../../PRETTY_PIPES_REDSTONE_RESULT.json): 66 menu
+cases, 24 native power cases, 69 crafting grids, 126 capacity regressions,
+старые 20 menu actions, восемь Rust-тестов и 123 Python-теста. Dedicated и
+графический сценарии доставили по 16 предметов и проверили физические
+переоткрытия. Прежняя Oritech factory regression также получила/доставила
+16 ingots с проверкой backpressure и reopens. В GUI выполнены 18 крафтов;
+образец фильтра учитывается отдельно от настоящего груза.

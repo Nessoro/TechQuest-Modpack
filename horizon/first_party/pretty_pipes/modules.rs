@@ -7,6 +7,7 @@ use horizon_world::nbt::{Compound, JavaString, Tag};
 pub const MODULE_SLOTS: usize = 3;
 pub const QUEUE_SLOTS: usize = 64;
 pub const TOTAL_SLOTS: usize = MODULE_SLOTS + QUEUE_SLOTS;
+pub const REDSTONE: &str = "prettypipes:redstone_module";
 const SCHEMA: &str = "techquest_inventory_schema";
 const SNAPSHOT: &str = "techquest_modules_snapshot";
 
@@ -66,8 +67,30 @@ pub fn synchronize(nbt: &mut Compound, items: &mut Vec<Option<ItemStack>>) -> Op
 
 pub fn menu_accepts(items: &[Option<ItemStack>], stack: &ItemStack) -> bool {
     stack.count > 0
-        && rates(&stack.item).is_some()
-        && items.iter().take(MODULE_SLOTS).all(Option::is_none)
+        && supported(&stack.item)
+        && items.iter().take(MODULE_SLOTS).flatten().all(|other| {
+            supported(&other.item)
+                && ((stack.item.as_ref() == REDSTONE) != (other.item.as_ref() == REDSTONE))
+        })
+}
+
+pub fn supported(item: &str) -> bool {
+    item == REDSTONE || rates(item).is_some()
+}
+
+pub fn has_redstone(nbt: &Compound, items: &[Option<ItemStack>]) -> bool {
+    let saved;
+    let slots = if nbt.get(&JavaString::from(SCHEMA)) == Some(&Tag::Int(3)) {
+        items
+    } else {
+        saved = read(nbt).unwrap_or_default();
+        &saved
+    };
+    slots
+        .iter()
+        .take(MODULE_SLOTS)
+        .flatten()
+        .any(|s| s.item.as_ref() == REDSTONE)
 }
 
 pub fn take_inventory(
@@ -120,27 +143,27 @@ pub fn take(nbt: &mut Compound) -> Vec<Option<ItemStack>> {
     slots
 }
 
-/// One fresh default extraction module; unsupported configured combinations
-/// are preserved and rejected until those modules are implemented.
+/// Original mutual compatibility for the supported extractor/redstone subset.
+/// Unknown modules remain owned but prevent installing new combinations.
 pub fn install(nbt: &mut Compound, held: &mut Option<ItemStack>, can_have_modules: bool) -> bool {
     if !can_have_modules {
         return false;
     }
-    let Some(stack) = held
-        .as_ref()
-        .filter(|s| s.count > 0 && rates(&s.item).is_some())
-    else {
+    let Some(stack) = held.as_ref().filter(|s| s.count > 0 && supported(&s.item)) else {
         return false;
     };
     let Some(mut slots) = read(nbt) else {
         return false;
     };
-    if slots.iter().any(Option::is_some) {
+    if !menu_accepts(&slots, stack) {
         return false;
     }
+    let Some(slot) = slots.iter().position(Option::is_none) else {
+        return false;
+    };
     let mut one = stack.clone();
     one.count = 1;
-    slots[0] = Some(one);
+    slots[slot] = Some(one);
     let mut modules = Compound::new();
     modules.insert("Size".into(), Tag::Int(3));
     modules.insert("Items".into(), item_nbt::encode_items(&slots));

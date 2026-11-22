@@ -13,6 +13,12 @@ import install_isolated_server as installer
 
 
 class IsolatedInstallTests(unittest.TestCase):
+    def test_redstone_content_requires_the_matching_native_version(self):
+        mods = {"prettypipes": {"version": "0.8.0"}}
+        with self.assertRaisesRegex(ValueError, "version mismatch"):
+            installer.check_native_pairs(mods, [{"id": "techquest_pretty_pipes", "version": "0.7.0"}])
+        installer.check_native_pairs(mods, [{"id": "techquest_pretty_pipes", "version": "0.8.0"}])
+
     def test_silicon_route_rejects_old_machine_native_and_incomplete_core(self):
         mods = {"oritech": {"version": "0.3.0"}, "prettypipes": {"version": "0.7.0"}}
         native = [{"id": "techquest_oritech", "version": "0.2.0"},

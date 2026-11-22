@@ -324,6 +324,21 @@ decode errors — 0. Прочие базовые материалы, досту�
 122 Python-теста проходят, профиль остановлен, установка/движок не менялись.
 [Отдельный отчёт и доказательства](ORITECH_GATHERED_SILICON_RESULT.json).
 
+Pretty Pipes 0.8 перенёс redstone module и его совместимость с extractor:
+питание останавливает новые извлечения/выбор цели, но пропускает транзит
+и уже назначенный груз, как оригинальный `store`. 66 original menu cases,
+48 original signal/destination/store cases и 24 native six-direction gate
+cases проверены; новые menu cases и прежние 20 операций совпали.
+Графический игрок выполнил 18 крафтов (все шесть PP recipes и четыре факела),
+поставил трубы/модули, настроил filter во втором слоте, проверил отказ дубликату
+и shift-снятие/возврат, управлял рычагами. Две партии по восемь предметов дошли,
+в том числе при включении цели после отправки; проверены два переоткрытия.
+Dedicated-сценарий подтвердил те же power gates и транзит. Регрессии: 126
+capacity cases, 69 crafting grids, восемь Rust-тестов, прежняя Oritech-линия
+16 ingots/backpressure/save-reopen и 123 Python-теста. Новый профиль
+`techquest-pipes-08a-server`, порт 25647, остановлен; его lock и старые профили
+проверены, main не менялся. [Отчёт](PRETTY_PIPES_REDSTONE_RESULT.json).
+
 1. Продолжить Pretty Pipes: equality/filter-increase modules и их экраны,
    ветвления, приоритеты, insertion-limiting modules/сложные slot limits, переполнение и rerouting; проверить offhand, bulk edits,
    unloaded entities и точные drop semantics. Установка/снятие, основное GUI,
