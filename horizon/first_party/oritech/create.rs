@@ -1,4 +1,11 @@
 fn create(block: &str, entity: &mut Option<(String, horizon_world::nbt::Compound)>) {
+    if block == "oritech:energy_pipe_connection" && entity.is_none() {
+        *entity = Some((
+            block.into(),
+            [("energy".into(), horizon_world::nbt::Tag::Int(0))].into(),
+        ));
+        return;
+    }
     if matches!(
         block,
         "oritech:basic_generator_block"

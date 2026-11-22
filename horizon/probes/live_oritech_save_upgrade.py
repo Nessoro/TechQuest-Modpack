@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read and reopen a verified own Foundry 0.4 GUI save with content 0.5.
+"""Read and reopen a verified own Foundry 0.4 GUI save with content 0.5/0.6.
 
 The original save is copied and hashed; it is never opened in place. No items,
 energy, machine state or block fixtures are inserted. Tests IDs/counts, energy,
@@ -32,7 +32,8 @@ def main():
     args = parser.parse_args()
     server, source, work = checked_path(args.server_dir), checked_path(args.source_work), args.work.absolute()
     lock = verify(server)
-    assert lock['modules']['oritech']['version'] == '0.5.0'
+    target_version = lock['modules']['oritech']['version']
+    assert target_version in ('0.5.0', '0.6.0')
     assert not work.exists() and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert source not in work.parents and work not in source.parents and server not in work.parents
     proof = json.loads((Path(__file__).resolve().parents[1] / 'ORITECH_FOUNDRY_RESULT.json').read_text())
@@ -120,7 +121,7 @@ def main():
     initial = run('upgrade', True)
     reopened = run('reopen', False)
     assert {name: sha(p) for name, p in tree_files(original_world).items()} == before_hashes
-    report = {'schema': 1, 'source_content_version': '0.4.0', 'target_content_version': '0.5.0',
+    report = {'schema': 1, 'source_content_version': '0.4.0', 'target_content_version': target_version,
               'source_checked_result_sha256': sha(old_report), 'source_world_files_sha256': before_hashes,
               'own_legacy_gui_world_copied': True, 'original_world_unmodified': True,
               'new_assembler_registry_entry_present_in_target_content': True,
@@ -128,7 +129,7 @@ def main():
               'items_energy_machine_state_or_blocks_injected': False, 'synthetic_local_player': True,
               'general_component_fidelity_or_neoforge_world_import_tested': False, 'licensed_join_tested': False, 'published': False}
     (work / 'checked-result.json').write_text(json.dumps(report, indent=2) + '\n')
-    print('Own content 0.4 world retained machines, inventory and core links under 0.5 and physical reopen')
+    print('Own content 0.4 world retained machines, inventory and core links under', target_version, 'and physical reopen')
 
 
 if __name__ == '__main__':

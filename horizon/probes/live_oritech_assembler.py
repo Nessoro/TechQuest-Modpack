@@ -106,7 +106,9 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('server-dir','work','original','original-reopen'):parser.add_argument('--'+name,type=Path,required=True)
     args=parser.parse_args();server=args.server_dir.resolve();work=args.work.absolute();lock=verify(server)
-    assert lock['modules']['oritech']['version']=='0.5.0'
+    content_version=lock['modules']['oritech']['version']
+    assert content_version in ('0.5.0','0.6.0')
+    native_version=next(m['version'] for m in lock['native_modules'] if m['id']=='techquest_oritech')
     assert not work.exists() and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert server not in work.parents and work not in server.parents
     original=json.loads(args.original.read_text());reopened=json.loads(args.original_reopen.read_text())
@@ -140,7 +142,7 @@ def main():
     restart=run('reopen',reopen_operations(reopened['states']));clocks,actual=snapshots(restart['reopened'])
     assert actual[0]==saved[0]==reopened['before']
     assert actual[1:]==[v['state'] for v in reopened['states']],(actual,reopened)
-    report={'schema':1,'oritech_content_version':'0.5.0','native_machine_version':'0.4.0','processing_cases':262,'matched_snapshots':checked,
+    report={'schema':1,'oritech_content_version':content_version,'native_machine_version':native_version,'processing_cases':262,'matched_snapshots':checked,
             'assembly_geometry_cases':20,'all_four_horizontal_orientations_checked':True,'used_core_and_missing_core_rejected':True,
             'physical_destroy_callback_lifecycle_matched_using_native_invalidation':True,'four_input_permutations_and_compacted_repeated_ingredients_matched':True,
             'physical_reopen_matches_original_recipe_cache_reset':True,'saved':saved[0],'reopened':actual,

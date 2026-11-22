@@ -1,11 +1,11 @@
-# Oritech native subset 0.4 / content 0.5
+# Oritech native subset 0.5 / content 0.6
 
 First-party Rust implementation for Horizon 26.3 at
 `c78187dffffb60f31517eadcb87413386e8ce729`, Mixins
 `5a64af938ec86b00d53d16a408aabc0038fb3e57`.
 
 This is a limited port of **Basic Generator → quartz/coal Pulverizer, Powered
-Furnace, three-core Foundry and four-input Assembler**, with physical inventories, energy, fuel, processing progress, assembly,
+Furnace, three-core Foundry, four-input Assembler and basic energy cables**, with physical inventories, energy, fuel, processing progress, assembly,
 menus and saved state. It is not the complete Oritech mod or a survival-ready
 TechQuest industrial progression.
 
@@ -15,7 +15,8 @@ machine implementation. It additionally requires the separately compiled
 an explicit content/native compatibility table and refuses 0.2 with an engine
 that does not declare the reviewed core correction. Content 0.3 requires native
 0.2 and both biome core corrections. Content 0.4 requires native 0.3 and both
-corrections. Content 0.5 requires native 0.4 and both corrections. Earlier sealed
+corrections. Content 0.5 requires native 0.4; content 0.6 requires native 0.5,
+both with the two core corrections. Earlier sealed
 profiles keep their paired versions and artifacts.
 
 ## Source and license
@@ -446,7 +447,7 @@ a specific native-save regression, not NeoForge import or a general converter.
 
 [Assembler results and remaining scope](../../ORITECH_ASSEMBLER_RESULT.json).
 
-## Basic energy cable reference; native implementation pending
+## Basic energy cable reference
 
 `OritechEnergyPipeProbe.java` runs the pinned original CC0 Oritech classes on
 NeoForge 21.1.264 / Minecraft 1.21.1. It records 504 single-target cases and
@@ -488,7 +489,77 @@ This does not claim exact RNG, normal world scheduler order, player/wrench
 interaction, survival drops, waterlogging, unload behavior or the 2,048-node
 cutoff. Framed cables, ducts, superconductors and addons remain outside scope.
 
-Content 0.5/native 0.4 and the sealed 05b Horizon profile are unchanged.
-The next implementation must pass these original fixtures and real graphical
-crafting/placement, remote processing, dedicated save/reopen and regressions.
+The reference milestone used content 0.5/native 0.4. Its sealed 05b Horizon
+profile is unchanged; the following native milestone uses a new installation.
 [Original cable evidence and native acceptance work](../../ORITECH_ENERGY_PIPE_REFERENCE_RESULT.json).
+
+## Content 0.6 energy cables / native 0.5
+
+`stage_oritech.py --energy-pipes` implies `--assembler` and adds the original
+three-electrum-to-six-cables recipe, both original cable loot tables and two
+blocks. The ordinary wire has an item and no block entity; the internal
+connection block has no item and declares a ticking 10,000 E buffer. Both
+use all eight original property names/values, thin collision arms and simple
+vanilla copper-textured models. Selection is a full cube. Generator/furnace
+models and their earlier NBT assembly representation remain simplified.
+
+The native bundle has 18 hooks and two modules; the complete four-bundle
+engine transformation has 37 hooks and eight modules. `cables.rs` rebuilds
+loaded connectivity from saved states, deduplicating targets by machine
+position and face. It uses a separate unseeded `LegacyRandom` shuffle stream,
+leaving the world's RNG untouched. Connected machine cores resolve to their
+controller, without changing the target face or merging distinct core targets.
+The source interface transfers directly into a receiver, subtracting only the
+accepted amount. Other endpoint buffers are not network targets.
+
+Block changes queue lifecycle work, which runs at player placement, before
+and after simulation ticks and at command-chain boundaries. The latter also
+covers conditional commands; the initial leaf-only boundary let a frozen
+`execute if block` observe a stale interface type. Removing a last neighboring
+machine now converts the endpoint into ordinary wire, removing its buffer;
+replacement creates a fresh empty buffer. Persisted disabled-side properties
+stay disabled. A missing neighbor chunk postpones conversion so startup does
+not discard saved energy before the provider arrives. General partial-network
+unload behavior and the original saved network graph are outside this subset.
+
+The separate profile `techquest-oritech-06b-server`, port 25655, retains Pretty
+Pipes 0.10 and both core corrections. Profile 06a is the retained earlier
+conditional-command control and is not the canonical cable installation.
+
+```sh
+python3 horizon/probes/live_oritech_energy_pipes.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-energy-pipes-new" \
+  --original "$TASK_RUNTIME/oritech-energy-pipe-reference-new/initial-result.json"
+python3 horizon/probes/live_oritech_energy_pipes_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-energy-pipes-gui-new"
+```
+
+The first probe matches 1,512 original states and six layouts, plus gap/rejoin,
+loop, replacement, multiple target/face/source controls and actual core assembly.
+The disabled-edge test restores explicit saved properties; a player wrench is
+not implemented. Physical reopen preserves both endpoint buffers and the full
+cable state. With both buffers nonempty, a native tick runs both interfaces,
+so the continuation checks conservation/capacity rather than claiming the
+single-interface original callback order. `--resume-initial` is only for
+revalidating completed initial output with exactly the same operation script
+and module bytes after a checker interruption; it never repeats world actions.
+
+The GUI probe crafts six cables, places five through survival packets, assembles
+a remote furnace, inserts coal/raw iron through menus, mines/reinstalls a middle
+wire and a connection endpoint, collects two iron ingots and checks two exact
+physical reopens. Electrum, machines/core, fuel/raw input, pickaxe, bench, glass
+platform, travel and tick control are fixtures. It never seeds energy or outputs.
+
+`live_oritech_energy_pipes_server.py` has `prepare`, `verify`, `final` phases:
+start the installation before each phase and pass the previous report with
+`--prior`. Each phase stops the server. Pretty Pipes supplies one coal and two
+raw iron; energy goes through five cables and an assembled furnace core. The
+generator and its first cable lie in different chunks. Two genuine ingots are
+saved in flight, delivered after restart and retained after another restart;
+44,800 E, including 10,000 E buffered in the source interface, is conserved.
+Only fixture source chest inventories are seeded.
+
+Waterlogging interaction, tight selection boxes, player wrench controls,
+framed/duct/superconductor variants, addons, exact shuffled allocation, unloaded
+network fidelity and multiplayer remain unfinished. This is not the full mod.
+[Native cable results and regression evidence](../../ORITECH_ENERGY_PIPE_RESULT.json).

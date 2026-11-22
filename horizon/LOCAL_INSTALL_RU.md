@@ -80,6 +80,20 @@ progression и добавляет корпус, обработку катуше�
 [Результаты и хеши](ORITECH_ASSEMBLER_RESULT.json),
 [воспроизведение](first_party/oritech/README.md#content-05-assembler--native-04).
 
+Профиль энергетических кабелей — `/workspace/horizon-runtime/techquest-oritech-06b-server`,
+порт 25655: Oritech content 0.6/native 0.5, Pretty Pipes content/native 0.10,
+8 hmod, 4 native bundles и оба core corrections. `stage_oritech.py --energy-pipes`
+включает предыдущие ступени и добавляет рецепт из трёх electrum в шесть кабелей,
+обычный провод без block entity и внутренний endpoint с буфером 10 000 E.
+Сборка требует 37 injections и восемь support modules. Миры/инструменты 05b
+сохраняются; 06a оставлен как контроль ранней задержки условных команд.
+GUI проверил крафт/установку, добычу/восстановление кабеля и endpoint, удалённую
+переплавку и два переоткрытия. Dedicated-стенд с Pretty Pipes питает печь через
+core и границу чанков, сохраняет 44 800 E и доставляет два слитка после двух
+перезапусков. Wrench, waterlogging и остальные виды проводов пока не перенесены.
+[Доказательства](ORITECH_ENERGY_PIPE_RESULT.json),
+[воспроизведение](first_party/oritech/README.md#content-06-energy-cables--native-05).
+
 Pretty Pipes 0.8 добавляет скрафченный redstone module и управление новыми
 извлечениями/доставками от питания. Нужны content/native именно 0.8.0.
 Профиль `/workspace/horizon-runtime/techquest-pipes-08a-server`, порт 25647,

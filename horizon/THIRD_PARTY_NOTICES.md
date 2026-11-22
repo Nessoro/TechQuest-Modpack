@@ -125,6 +125,18 @@ complete MIT notice remains in `first_party/oritech/LICENSE-HORIZON`.
 Pretty Pipes 0.10 adds the new native endpoint and optional connection tag;
 its six original recipe payloads and transport/module semantics are unchanged.
 
+Content 0.6/native 0.5 adapts the same exact CC0 pin's `EnergyPipeBlock`,
+`EnergyPipeConnectionBlock`, `EnergyPipeInterfaceEntity`, `GenericPipeBlock`,
+`GenericPipeConnectionBlock`, `AbstractPipeBlock`, `GenericPipeInterfaceEntity`,
+`EnergyApi`, `SimpleEnergyStorage` and machine-core delegation for basic loaded
+energy networks. Consulted own headers contain no separate override; source
+hashes are retained in `ORITECH_ENERGY_PIPE_REFERENCE_RESULT.json`. The native
+queue/state/energy adapters use pinned MIT Horizon APIs. Original public JSON
+supplies the cable recipe and both loot tables; models use vanilla texture
+references. No dependency Java source, Java runtime or GeckoLib animation is
+included in the player port. Other cable variants and general network fidelity
+are not claimed.
+
 `first_party/biome_modifiers/merged-biomes.patch` adapts Horizon's MIT
 `mod_content.rs` at the existing pinned Horizon commit. It registers declared
 biome files before tag filtering and applies modifiers to the merged registry.

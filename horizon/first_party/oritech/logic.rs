@@ -37,7 +37,7 @@ fn put(nbt: &mut Compound, key: &str, n: i32) {
 fn above(pos: [i32; 3]) -> [i32; 3] {
     [pos[0], pos[1].saturating_add(1), pos[2]]
 }
-fn controller(game: &Game<'_>, pos: [i32; 3]) -> Option<[i32; 3]> {
+pub(super) fn controller(game: &Game<'_>, pos: [i32; 3]) -> Option<[i32; 3]> {
     if game.native_block(pos) != CORE {
         return None;
     }
@@ -92,7 +92,7 @@ pub(super) fn assemble(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
             .unwrap_or(false)
 }
 /// CC0 Geometry.rotatePosition; Foundry and Assembler use the same three cores.
-fn multiblock_cores(game: &Game<'_>, pos: [i32; 3]) -> [[i32; 3]; 3] {
+pub(super) fn multiblock_cores(game: &Game<'_>, pos: [i32; 3]) -> [[i32; 3]; 3] {
     let facing = game
         .native_block_property(pos, "facing")
         .unwrap_or_else(|| "north".into());
@@ -561,6 +561,9 @@ pub(super) fn interact(
                 .native_with_mod_block_entity(hit.pos, |entity| flag(&entity.nbt, ASSEMBLED))
                 .unwrap_or(false);
         let assembled = !matches!(&*id, FURNACE | FOUNDRY | ASSEMBLER) || assemble(game, hit.pos);
+        if assembled && !was_assembled {
+            super::techquest_oritech_cables::assembled(game, hit.pos);
+        }
         // Original consumes the first successful assembly click without a menu.
         if assembled && was_assembled {
             game.native_with_mod_block_entity(hit.pos, |entity| update(entity));

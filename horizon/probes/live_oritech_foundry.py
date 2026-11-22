@@ -110,7 +110,7 @@ def main():
     for name in ('server-dir','work','original','original-reopen'):parser.add_argument('--'+name,type=Path,required=True)
     args=parser.parse_args();server=args.server_dir.resolve();work=args.work.absolute();lock=verify(server)
     content_version=lock['modules']['oritech']['version']
-    assert content_version in ('0.4.0','0.5.0')
+    assert content_version in ('0.4.0','0.5.0','0.6.0')
     native_version=next(v['version'] for v in lock['native_modules'] if v['id']=='techquest_oritech')
     assert not work.exists() and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert server not in work.parents and work not in server.parents
