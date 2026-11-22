@@ -221,6 +221,23 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertIn("ItemStack.STREAM_CODEC", main)
 
 
+    def test_hybrid_armor_uses_energy_instead_of_hit_durability(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        main = (root / "src/main/java/dev/techquest/hybrid/HybridWarfareMod.java").read_text()
+        flight = (root / "src/main/java/dev/techquest/hybrid/PoweredElytra.java").read_text()
+        self.assertIn("import net.neoforged.neoforge.event.entity.living.ArmorHurtEvent;", main)
+        self.assertIn("NeoForge.EVENT_BUS.addListener(HybridWarfareMod::armorHurt)", main)
+        self.assertIn("event.getArmorItemStack(slot)", main)
+        self.assertIn("technology(stack) == null", main)
+        self.assertIn("event.getNewDamage(slot)", main)
+        self.assertIn("Math.ceil((double) damage * 100.0D)", main)
+        self.assertIn("Math.min(charge(stack), Math.max(1, cost))", main)
+        self.assertIn("if (paid > 0) spend(stack, paid)", main)
+        self.assertIn("event.setNewDamage(slot, 0.0F)", main)
+        self.assertIn("!event.getEntity().level().isClientSide()", main)
+        self.assertIn("PoweredElytraEnergy.spend(chest)", flight)
+        self.assertNotIn("hurtAndBreak(", flight)
+
     def test_balanced_boost_server_authority_and_key_separation(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         src = root / "src/main/java/dev/techquest/hybrid"
