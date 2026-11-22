@@ -33,7 +33,7 @@ LOCALE_COUNTS = {
     "mowziesmobs": 440,
     "guideme": 36,
     "oritech": 1,
-    "openpartiesandclaims": 309,
+    "openpartiesandclaims": 349,
     "refinedstorage": 10,
     "xaeroworldmap": 303,
     "waystones": 268,
@@ -101,6 +101,9 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("§m6§r", immersive["desc.immersiveengineering.flavour.revolver.einhorn"])
         open_claims = json.loads((COMPAT / "assets/openpartiesandclaims/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("%3$s", open_claims["gui.xaero_claims_claimed_at"])
+        self.assertIn("%3$s", open_claims["gui.xaero_claims_anchored_at"])
+        self.assertIn("%7$s", open_claims["gui.xaero_claims_claim_command_area_start"])
+        self.assertIn("/oclaims anchor", open_claims["gui.xaero_claims_claim_not_within_anchor_range"])
         bookshelf = json.loads((COMPAT / "assets/bookshelf/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(bookshelf["day.bookshelf.monday"], "Понедельник")
         xaero = json.loads((COMPAT / "assets/xaeroworldmap/lang/ru_ru.json").read_text(encoding="utf-8"))
