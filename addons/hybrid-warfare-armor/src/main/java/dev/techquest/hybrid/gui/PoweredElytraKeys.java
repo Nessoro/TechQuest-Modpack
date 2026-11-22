@@ -56,7 +56,8 @@ public final class PoweredElytraKeys {
                     && minecraft.screen == null;
             boolean boostHeld = available && BOOST.isDown()
                     && minecraft.player.isFallFlying();
-            if (available && boostHeld != lastBoostState) {
+            if (minecraft.player != null && minecraft.level != null
+                    && boostHeld != lastBoostState) {
                 PacketDistributor.sendToServer(new PoweredElytraBoostPayload(boostHeld));
             }
             lastBoostState = boostHeld;
