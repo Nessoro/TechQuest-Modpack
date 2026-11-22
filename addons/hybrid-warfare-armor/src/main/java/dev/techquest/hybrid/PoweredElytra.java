@@ -45,6 +45,7 @@ public final class PoweredElytra {
         if (!wearer.level().isClientSide() && (flightTicks + 1) % 10 == 0) {
             wearer.gameEvent(GameEvent.ELYTRA_GLIDE);
         }
+        if (!wearer.level().isClientSide()) PoweredElytraBoost.afterFlightTick(chest, wearer);
         // No ItemStack#hurtAndBreak: consume energy, never elytra durability.
         return true;
     }
