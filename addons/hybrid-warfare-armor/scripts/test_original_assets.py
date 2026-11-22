@@ -220,6 +220,38 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertIn("ItemStack.STRICT_CODEC", main)
         self.assertIn("ItemStack.STREAM_CODEC", main)
 
+
+    def test_balanced_boost_server_authority_and_key_separation(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        src = root / "src/main/java/dev/techquest/hybrid"
+        boost = (src / "PoweredElytraBoost.java").read_text()
+        payload = (src / "PoweredElytraBoostPayload.java").read_text()
+        keys = (src / "gui/PoweredElytraKeys.java").read_text()
+        flight = (src / "PoweredElytra.java").read_text()
+        energy = (src / "PoweredElytraEnergy.java").read_text()
+        mod = (src / "HybridWarfareMod.java").read_text()
+        self.assertIn("TOTAL_COST_PER_TICK = 500", boost)
+        self.assertIn("TOTAL_COST_PER_TICK - PoweredElytraEnergy.COST_PER_TICK", boost)
+        self.assertIn("PoweredElytraEnergy.spendExtra(chest, EXTRA_COST_PER_TICK)", boost)
+        self.assertIn("player.getItemBySlot(EquipmentSlot.CHEST)", boost)
+        self.assertIn("player.setDeltaMovement", boost)
+        self.assertIn("PoweredElytraBoost.afterFlightTick(chest, wearer)", flight)
+        self.assertIn("COST_PER_TICK = 200", energy)
+        self.assertIn("Ic2ElytraEnergy.spend(stack, amount)", energy)
+        self.assertIn("HybridWarfareMod.spend(stack, amount)", energy)
+        self.assertIn("boolean held", payload)
+        self.assertNotIn("Vec3", payload)
+        self.assertIn("GLFW.GLFW_KEY_H", keys)
+        self.assertIn("GLFW.GLFW_KEY_G", keys)
+        self.assertIn("BOOST.isDown()", keys)
+        self.assertIn("new PoweredElytraBoostPayload(boostHeld)", keys)
+        self.assertIn("PoweredElytraBoostPayload.TYPE", mod)
+        self.assertIn("PoweredElytraBoost.clearIfNotFlying", mod)
+        self.assertIn("PoweredElytraBoost.clear(player)", mod)
+        for lang in ("ru_ru", "en_us"):
+            translations = json.loads((RES / f"assets/techquest_hybrid/lang/{lang}.json").read_text())
+            self.assertIn("key.techquest_hybrid.powered_elytra_boost", translations)
+
     def test_elytra_never_uses_durability_and_rejects_unpowered_chests(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         energy = (root / "src/main/java/dev/techquest/hybrid/PoweredElytraEnergy.java").read_text()
