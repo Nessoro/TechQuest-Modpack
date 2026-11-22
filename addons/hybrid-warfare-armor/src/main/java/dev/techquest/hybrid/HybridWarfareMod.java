@@ -29,6 +29,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.entity.living.ArmorHurtEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -111,6 +112,7 @@ public final class HybridWarfareMod {
         bus.addListener(EventPriority.LOWEST, HybridWarfareMod::registerCapabilities);
         NeoForge.EVENT_BUS.addListener(HybridWarfareMod::tickPlayer);
         NeoForge.EVENT_BUS.addListener(HybridWarfareMod::tooltip);
+        NeoForge.EVENT_BUS.addListener(HybridWarfareMod::armorHurt);
     }
 
     /** Client key -> server action; no armor ItemStack data is trusted from the client. */
@@ -264,6 +266,36 @@ public final class HybridWarfareMod {
     private static void onLogout(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
             PoweredElytraBoost.clear(player);
+        }
+    }
+
+    /**
+     * Hybrid armor uses battery charge in place of the ordinary durability
+     * loss caused by attacks. Do not affect untouched Superb Warfare items,
+     * other mods' armor, or the armor protection/ballistic-plate mechanics.
+     *
+     * ArmorHurtEvent fires on both logical sides. Only the server drains the
+     * REAL donor/native battery; the durability suppression is mirrored on the
+     * client so the item bar never predicts a spurious loss.
+     */
+    private static void armorHurt(ArmorHurtEvent event) {
+        for (EquipmentSlot slot : event.getArmorMap().keySet()) {
+            if (!slot.isArmor()) continue;
+            ItemStack stack = event.getArmorItemStack(slot);
+            if (stack.isEmpty() || technology(stack) == null) continue;
+
+            Float damage = event.getNewDamage(slot);
+            if (damage == null || !Float.isFinite(damage) || damage <= 0.0F) continue;
+
+            if (!event.getEntity().level().isClientSide()) {
+                // 100 real energy units per durability point that would have
+                // been lost. Partial charge is spent rather than creating any
+                // synthetic battery, and damage is never shifted onto durability.
+                int cost = (int) Math.min(Integer.MAX_VALUE, Math.ceil((double) damage * 100.0D));
+                int paid = Math.min(charge(stack), Math.max(1, cost));
+                if (paid > 0) spend(stack, paid);
+            }
+            event.setNewDamage(slot, 0.0F);
         }
     }
 
