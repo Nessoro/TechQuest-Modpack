@@ -11,12 +11,16 @@ pub(super) const GENERATOR: &str = "oritech:basic_generator_block";
 pub(super) const FURNACE: &str = "oritech:powered_furnace_block";
 pub(super) const PULVERIZER: &str = "oritech:pulverizer_block";
 pub(super) const FOUNDRY: &str = "oritech:foundry_block";
+pub(super) const ASSEMBLER: &str = "oritech:assembler_block";
 pub(super) const CORE: &str = "oritech:machine_core_1";
 const PROGRESS: &str = "oritech.machine_progress";
 const ASSEMBLED: &str = "techquest_assembled";
 
 pub(super) fn machine(id: &str) -> bool {
-    matches!(id, GENERATOR | FURNACE | PULVERIZER | FOUNDRY)
+    matches!(id, GENERATOR | FURNACE | PULVERIZER | FOUNDRY | ASSEMBLER)
+}
+fn multiblock(id: &str) -> bool {
+    matches!(id, FOUNDRY | ASSEMBLER)
 }
 fn int(nbt: &Compound, key: &str) -> i32 {
     match nbt.get(&key.into()) {
@@ -52,12 +56,12 @@ fn controller(game: &Game<'_>, pos: [i32; 3]) -> Option<[i32; 3]> {
         ))
     });
     ((above(p) == pos && game.native_block(p) == FURNACE)
-        || (game.native_block(p) == FOUNDRY && foundry_cores(game, p).contains(&pos)))
+        || (multiblock(&game.native_block(p)) && multiblock_cores(game, p).contains(&pos)))
     .then_some(p)
 }
 pub(super) fn assemble(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
-    if game.native_block(pos) == FOUNDRY {
-        return assemble_foundry(game, pos);
+    if multiblock(&game.native_block(pos)) {
+        return assemble_multiblock(game, pos);
     }
     let core_pos = above(pos);
     if game.native_block(core_pos) != CORE {
@@ -87,8 +91,8 @@ pub(super) fn assemble(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
             })
             .unwrap_or(false)
 }
-/// CC0 Geometry.rotatePosition for Foundry's three core1 positions.
-fn foundry_cores(game: &Game<'_>, pos: [i32; 3]) -> [[i32; 3]; 3] {
+/// CC0 Geometry.rotatePosition; Foundry and Assembler use the same three cores.
+fn multiblock_cores(game: &Game<'_>, pos: [i32; 3]) -> [[i32; 3]; 3] {
     let facing = game
         .native_block_property(pos, "facing")
         .unwrap_or_else(|| "north".into());
@@ -104,17 +108,25 @@ fn foundry_cores(game: &Game<'_>, pos: [i32; 3]) -> [[i32; 3]; 3] {
         std::array::from_fn(|i| above(pos)[i].saturating_add(side[i])),
     ]
 }
-fn valid_foundry(game: &Game<'_>, pos: [i32; 3]) -> bool {
-    foundry_cores(game, pos)
+fn valid_multiblock(game: &Game<'_>, pos: [i32; 3]) -> bool {
+    multiblock_cores(game, pos)
         .iter()
         .all(|p| controller(game, *p) == Some(pos))
 }
-fn assemble_foundry(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
-    let core_positions = foundry_cores(game, pos);
+fn multiblock_loaded(game: &Game<'_>, pos: [i32; 3]) -> bool {
+    // An absent neighbour chunk reads as air. On startup the controller may
+    // tick before its cores load; that is not a physical core destruction.
+    // Streaming installs a chunk's block entities before publishing the chunk.
+    multiblock_cores(game, pos)
+        .iter()
+        .all(|p| game.world.chunks.contains_key(&(p[0] >> 4, p[2] >> 4)))
+}
+fn assemble_multiblock(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
+    let core_positions = multiblock_cores(game, pos);
     let active = game.world.block_entities.get(&(pos[0],pos[1],pos[2])).is_some_and(|e|
         matches!(e,horizon_client_lib::containers::BlockEntity::Mod(e) if flag(&e.nbt, ASSEMBLED)));
     if active {
-        return valid_foundry(game, pos);
+        return valid_multiblock(game, pos);
     }
     if !core_positions.iter().all(|p| game.native_block(*p) == CORE && game.world.block_entities.get(&(p[0],p[1],p[2])).is_some_and(|e|
         matches!(e,horizon_client_lib::containers::BlockEntity::Mod(e) if !flag(&e.nbt,"techquest_core_used")))) { return false; }
@@ -163,7 +175,7 @@ pub(super) fn release_controller(
                 .nbt
                 .insert("techquest_core_used".into(), Tag::Byte(0));
         }
-        if entity.id == FOUNDRY && pos == controller {
+        if multiblock(&entity.id) && pos == controller {
             entity.nbt.insert(ASSEMBLED.into(), Tag::Byte(0));
             if let Some(assembled) = entity.data.get_mut(3) {
                 *assembled = 0;
@@ -176,7 +188,9 @@ pub(super) fn release_at(
     pos: [i32; 3],
 ) {
     let target = match entities.get(&(pos[0], pos[1], pos[2])) {
-        Some(horizon_client_lib::containers::BlockEntity::Mod(entity)) if entity.id == FOUNDRY => {
+        Some(horizon_client_lib::containers::BlockEntity::Mod(entity))
+            if multiblock(&entity.id) =>
+        {
             pos
         }
         Some(horizon_client_lib::containers::BlockEntity::Mod(entity))
@@ -186,7 +200,7 @@ pub(super) fn release_at(
         }
         _ => return,
     };
-    if !matches!(entities.get(&(target[0],target[1],target[2])),Some(horizon_client_lib::containers::BlockEntity::Mod(entity)) if entity.id == FOUNDRY)
+    if !matches!(entities.get(&(target[0],target[1],target[2])),Some(horizon_client_lib::containers::BlockEntity::Mod(entity)) if multiblock(&entity.id))
     {
         return;
     }
@@ -218,7 +232,7 @@ pub(super) fn update(entity: &mut ModBlockEntity) {
     let energy = int(&entity.nbt, "energy").max(0);
     // data slots are not saved by Horizon. The pulverizer uses the last
     // otherwise-unused field to identify a freshly loaded recipe cache.
-    let state = if matches!(&*entity.id, PULVERIZER | FOUNDRY) {
+    let state = if matches!(&*entity.id, PULVERIZER | FOUNDRY | ASSEMBLER) {
         entity.data.get(4).copied().unwrap_or(0)
     } else {
         i32::from(flag(&entity.nbt, ASSEMBLED))
@@ -227,7 +241,7 @@ pub(super) fn update(entity: &mut ModBlockEntity) {
         energy & 0xffff,
         (energy >> 16) & 0xffff,
         int(&entity.nbt, PROGRESS),
-        if entity.id == FOUNDRY {
+        if multiblock(&entity.id) {
             i32::from(flag(&entity.nbt, ASSEMBLED))
         } else {
             int(&entity.nbt, "storedBurn")
@@ -236,8 +250,14 @@ pub(super) fn update(entity: &mut ModBlockEntity) {
     ];
 }
 pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEntity) {
-    if matches!(&*entity.id, PULVERIZER | FOUNDRY) {
-        if entity.id == FOUNDRY && flag(&entity.nbt, ASSEMBLED) && !valid_foundry(game, pos) {
+    if matches!(&*entity.id, PULVERIZER | FOUNDRY | ASSEMBLER) {
+        if multiblock(&entity.id) && !multiblock_loaded(game, pos) {
+            // Retain assembly, links and progress until validation can read
+            // the actual neighbouring blocks. Do not process against air.
+            update(entity);
+            return;
+        }
+        if multiblock(&entity.id) && flag(&entity.nbt, ASSEMBLED) && !valid_multiblock(game, pos) {
             release_controller(&mut game.world.block_entities, pos);
             entity.nbt.insert(ASSEMBLED.into(), Tag::Byte(0));
         }
@@ -344,7 +364,8 @@ fn processing_matches(
         return false;
     };
     // Original complexMatch greedily consumes copied stacks. Ingredient count
-    // is one; matching does not require a particular slot order.
+    // is one per occurrence, including repeated ingredients in a shared stack;
+    // matching does not require a particular slot order.
     let mut copied = inputs.to_vec();
     for value in ingredients {
         let Some(ingredient) = game.native_recipe_ingredient(value) else {
@@ -385,19 +406,31 @@ fn consume_processing_inputs(
 
 fn tick_processing(game: &Game<'_>, entity: &mut ModBlockEntity) {
     let foundry = entity.id == FOUNDRY;
-    let input_count = if foundry { 2 } else { 1 };
-    let energy_cost = if foundry { 128 } else { 32 };
-    let cache_key = if foundry {
+    let assembler = entity.id == ASSEMBLER;
+    let input_count = if assembler {
+        4
+    } else if foundry {
+        2
+    } else {
+        1
+    };
+    let slots = if assembler { 5 } else { 3 };
+    let energy_cost = if foundry || assembler { 128 } else { 32 };
+    let cache_key = if assembler {
+        "techquest_assembler_recipe"
+    } else if foundry {
         "techquest_foundry_recipe"
     } else {
         PULVERIZER_CACHE
     };
-    let recipe_type = if foundry {
+    let recipe_type = if assembler {
+        "oritech:assembler"
+    } else if foundry {
         "oritech:foundry"
     } else {
         "oritech:pulverizer"
     };
-    entity.items.resize(3, None);
+    entity.items.resize(slots, None);
     if entity.data.get(4) != Some(&1) {
         // The original currentRecipe is transient: a loaded machine forgets
         // it, even though progress itself was saved. Keep that observed reset
@@ -406,7 +439,9 @@ fn tick_processing(game: &Game<'_>, entity: &mut ModBlockEntity) {
         entity.data.resize(5, 0);
         entity.data[4] = 1;
     }
-    if flag(&entity.nbt, "oritech.redstone") || (foundry && !flag(&entity.nbt, ASSEMBLED)) {
+    if flag(&entity.nbt, "oritech.redstone")
+        || ((foundry || assembler) && !flag(&entity.nbt, ASSEMBLED))
+    {
         update(entity);
         return;
     }
@@ -434,7 +469,7 @@ fn tick_processing(game: &Game<'_>, entity: &mut ModBlockEntity) {
     };
     if let Some(recipe) = recipe {
         let results = recipe["results"].as_array().and_then(|values| {
-            if !(1..=3 - input_count).contains(&values.len()) {
+            if !(1..=slots - input_count).contains(&values.len()) {
                 return None;
             }
             values
@@ -521,11 +556,11 @@ pub(super) fn interact(
     if !canceled {
         let containers = game.native_containers();
         game.world.block_entities.set_mod_containers(containers);
-        let was_assembled = !matches!(&*id, FURNACE | FOUNDRY)
+        let was_assembled = !matches!(&*id, FURNACE | FOUNDRY | ASSEMBLER)
             || game
                 .native_with_mod_block_entity(hit.pos, |entity| flag(&entity.nbt, ASSEMBLED))
                 .unwrap_or(false);
-        let assembled = !matches!(&*id, FURNACE | FOUNDRY) || assemble(game, hit.pos);
+        let assembled = !matches!(&*id, FURNACE | FOUNDRY | ASSEMBLER) || assemble(game, hit.pos);
         // Original consumes the first successful assembly click without a menu.
         if assembled && was_assembled {
             game.native_with_mod_block_entity(hit.pos, |entity| update(entity));

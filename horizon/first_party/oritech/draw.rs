@@ -9,12 +9,17 @@ fn draw(
         return;
     }
     let [x, y] = origin;
+    let label_y = if block == "oritech:assembler_block" {
+        70.0
+    } else {
+        49.0
+    };
     let energy = u32::from(data.first().copied().unwrap_or(0) as u16)
         | (u32::from(data.get(1).copied().unwrap_or(0) as u16) << 16);
     game.native_text(
         batch,
         &format!("Energy: {energy}"),
-        [x + 8.0, y + 49.0],
+        [x + 8.0, y + label_y],
         0x404040,
         false,
     );
@@ -29,7 +34,7 @@ fn draw(
                 "Progress"
             }
         ),
-        [x + 8.0, y + 61.0],
+        [x + 8.0, y + label_y + 12.0],
         0x404040,
         false,
     );

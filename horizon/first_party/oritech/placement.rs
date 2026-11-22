@@ -5,7 +5,12 @@ fn foundry_placement(
     context: &horizon_world::level::PlacementContext,
     answer: &mut Option<Option<horizon_world::registry::BlockStateId>>,
 ) {
-    if answer.is_some() || game.native_state_block(state) != Some("oritech:foundry_block") {
+    if answer.is_some()
+        || !matches!(
+            game.native_state_block(state),
+            Some("oritech:foundry_block" | "oritech:assembler_block")
+        )
+    {
         return;
     }
     let index = ((f64::from(context.yaw) / 90.0 + 0.5).floor() as i64).rem_euclid(4) as usize;

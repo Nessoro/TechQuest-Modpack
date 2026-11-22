@@ -55,7 +55,7 @@ def main():
     for name in ('server-dir','work','original'):parser.add_argument('--'+name,type=Path,required=True)
     args=parser.parse_args();server=args.server_dir.resolve();work=args.work.absolute();lock=verify(server)
     version=lock['modules']['prettypipes']['version']
-    assert version in ('0.8.0','0.9.0')
+    assert version in ('0.8.0','0.9.0','0.10.0')
     assert not work.exists() and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert server not in work.parents and work not in server.parents
     original=json.loads(args.original.read_text());rows=[]

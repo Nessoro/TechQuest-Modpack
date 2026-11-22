@@ -27,7 +27,8 @@ PROCESSING_RECIPES = ("motor/motorcraft", "crafting/pulverizer", "crafting/elect
                       "crafting/alloy/rawsilicon", "silicon_from_smelting_raw_silicon")
 
 
-def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent, pulverizer=False, foundry=False):
+def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent, pulverizer=False, foundry=False, assembler=False):
+    foundry = foundry or assembler
     pulverizer = pulverizer or foundry
     materials = (*MATERIALS, *PROCESSING_MATERIALS) if pulverizer else MATERIALS
     recipe_names = (*RECIPES, *PROCESSING_RECIPES) if pulverizer else RECIPES
@@ -35,6 +36,9 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
         materials = (*materials, "coal_dust", "adamant_ingot")
         recipe_names = (*recipe_names, "crafting/foundry", "crafting/alloy/adamant")
     processing_names = (["pulverizer/quartz"] if pulverizer else []) + (["pulverizer/coal", "foundry/alloy/steel", "foundry/alloy/electrum", "foundry/alloy/adamant"] if foundry else [])
+    if assembler:
+        recipe_names = (*recipe_names, "crafting/assembler")
+        processing_names += ["assembler/magnet", "assembler/motor"]
     neo = read_checked(neoforge_jar)
     if hashlib.sha256(neo).hexdigest() != NEOFORGE_SHA256:
         raise ValueError("expected pinned NeoForge 21.1.264 universal JAR")
@@ -93,8 +97,8 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
             for name, value in normalized[section].items(): data(name, value)
 
         for name, recipe in processing.items():
-            inputs = 2 if recipe["type"] == "oritech:foundry" else 1
-            if recipe["type"] not in ("oritech:pulverizer", "oritech:foundry") or len(recipe["ingredients"]) != inputs or len(recipe["results"]) != 1:
+            inputs = {"oritech:pulverizer": 1, "oritech:foundry": 2, "oritech:assembler": 4}.get(recipe["type"])
+            if inputs is None or len(recipe["ingredients"]) != inputs or len(recipe["results"]) != 1:
                 raise ValueError("unexpected selected original processing recipe")
             converted = []
             for ingredient in recipe["ingredients"]:
@@ -139,6 +143,6 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
             "source_data": source_data, "source_assets": source_assets, "resolved_common_tags": tags,
             "missing_optional_legacy_tags": sorted(missing), "worldgen_features": ["ore_nickel", "ore_platinum", "ore_platinum_end"],
             "content_tool_sha256": hashlib.sha256(read_checked(content_tool)).hexdigest(),
-            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.3.0" if foundry else "0.2.0" if pulverizer else "0.1.0",
+            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.4.0" if assembler else "0.3.0" if foundry else "0.2.0" if pulverizer else "0.1.0",
             "processing_recipes": processing_names,
             "required_core_patch": "techquest_biome_modifiers:0.1.0"}

@@ -64,6 +64,22 @@ Normal start успевает выполнять ticks до console freeze, по
 Сборка/сценарии воспроизведения — в [README Oritech](first_party/oritech/README.md#content-04-foundry--native-03),
 границы переноса и доказательства — в [отчёте Foundry](ORITECH_FOUNDRY_RESULT.json).
 
+Новый профиль Assembler — `/workspace/horizon-runtime/techquest-oritech-05b-server`,
+порт 25653: Oritech content 0.5/native 0.4 и Pretty Pipes content/native 0.10.
+Состав остаётся 8 hmod, 4 native bundles и два core corrections.
+`stage_oritech.py --assembler` включает прежние флаги Foundry/Pulverizer/
+progression и добавляет корпус, обработку катушек и моторов. Нужны все четыре
+манифеста Mixins, 30 injections и семь support modules; архивный wrapper
+`mixins/<id>/` нельзя оставлять вложенным при подготовке `--mods`.
+Новая сборка ждёт загрузки соседних core chunks перед проверкой multiblock:
+отсутствующий чанк не считается разрушенным core. Стенд с двумя Assembler,
+разными поворотами и общей промышленной цепочкой проверяет границу чанков,
+оставшиеся входы и перезапуски. Отдельно проверяется неизменённая копия
+прежнего собственного Foundry-save под контентом 0.5. Полный перенос чужих
+миров/компонентов и licensed join этим не подтверждаются.
+[Результаты и хеши](ORITECH_ASSEMBLER_RESULT.json),
+[воспроизведение](first_party/oritech/README.md#content-05-assembler--native-04).
+
 Pretty Pipes 0.8 добавляет скрафченный redstone module и управление новыми
 извлечениями/доставками от питания. Нужны content/native именно 0.8.0.
 Профиль `/workspace/horizon-runtime/techquest-pipes-08a-server`, порт 25647,

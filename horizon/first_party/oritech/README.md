@@ -1,11 +1,11 @@
-# Oritech native subset 0.3 / content 0.4
+# Oritech native subset 0.4 / content 0.5
 
 First-party Rust implementation for Horizon 26.3 at
 `c78187dffffb60f31517eadcb87413386e8ce729`, Mixins
 `5a64af938ec86b00d53d16a408aabc0038fb3e57`.
 
 This is a limited port of **Basic Generator → quartz/coal Pulverizer, Powered
-Furnace and three-core Foundry**, with physical inventories, energy, fuel, processing progress, assembly,
+Furnace, three-core Foundry and four-input Assembler**, with physical inventories, energy, fuel, processing progress, assembly,
 menus and saved state. It is not the complete Oritech mod or a survival-ready
 TechQuest industrial progression.
 
@@ -15,7 +15,8 @@ machine implementation. It additionally requires the separately compiled
 an explicit content/native compatibility table and refuses 0.2 with an engine
 that does not declare the reviewed core correction. Content 0.3 requires native
 0.2 and both biome core corrections. Content 0.4 requires native 0.3 and both
-corrections. Earlier sealed profiles keep their paired versions and artifacts.
+corrections. Content 0.5 requires native 0.4 and both corrections. Earlier sealed
+profiles keep their paired versions and artifacts.
 
 ## Source and license
 
@@ -372,3 +373,75 @@ checks cover IDs/counts and machine energy/progress/Items, not general item
 component fidelity. A stopped hashed checkpoint precedes core destruction.
 
 [Foundry evidence and remaining scope](../../ORITECH_FOUNDRY_RESULT.json).
+
+## Content 0.5 Assembler / native 0.4
+
+`stage_oritech.py --assembler` includes the Foundry/quartz/starter content.
+The subset now has 18 ordinary recipes, seven processing recipes, fourteen
+materials, six machine/core blocks and four ores. The new ordinary Assembler
+recipe consumes three copper, two vanilla crafters, one adamant, two motors
+and one blast furnace. The two selected original processing recipes each take
+48 ticks at 128 E/tick: steel + nickel + nickel + copper yields six magnetic
+coils; nickel + steel + coil + coil yields two motors. The machine holds
+50,000 E, accepts 1,024 per call, has inputs 0–3 and result slot 4.
+
+The original accepts ingredient permutations and repeated ingredients from
+one sufficiently large stack, including an empty input slot beside that
+compacted stack. Matching consumes copies; actual consumption follows the
+source's rotating starting slot. `OritechAssemblerProbe.java` invokes the
+original for 262 cases/2,096 states, 20 assembly configurations, the physical
+core callback and a physical reload. The native comparison primes recipe
+caches by an actual tick, never by injecting private cache state.
+
+Assembler uses the same original three-core geometry as Foundry. Both now
+wait for every expected core's chunk to become resident before validating
+links or processing. Otherwise an unloaded neighbour reads as air and a
+controller that loads first loses its saved assembly. The pinned Horizon
+streamer restores a chunk's block entities before publishing it; resident
+chunks are sufficient for this check. This corrects startup at chunk borders.
+Destroying a controller while linked core chunks are unloaded, deferred orphan
+cleanup and general unloaded multiblock lifecycle remain outside the proof.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-assembler-reference-new" --oracle assembler --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-assembler-reference-new" --oracle assembler --reopen
+python3 horizon/probes/live_oritech_assembler.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-assembler-new" \
+  --original "$TASK_RUNTIME/oritech-assembler-reference-new/initial-result.json" \
+  --original-reopen "$TASK_RUNTIME/oritech-assembler-reference-new/reopen-result.json"
+python3 horizon/probes/live_oritech_assembler_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-assembler-gui-new"
+```
+
+The GUI probe crafts two manual motors, generator, Assembler and three cores
+in eleven crafts, then places/assembles them through normal interactions.
+Base metals/alloys, six initial coils, two crafters, a blast furnace, wood,
+stone, coal, a pickaxe and the initial bench are fixtures. All six initial coils
+are consumed by crafting before processing makes six new coils and two motors;
+four generated coils remain. Both distributed and compacted repeated inputs,
+result rejection, a mined/reinstalled core, cache-reset behavior, energy and
+two physical reopens are checked. Platform, teleports and tick control remain
+fixtures; this is not survival from spawn or licensed multiplayer.
+
+Pretty Pipes 0.10 adds the Assembler endpoint. The dedicated
+`live_oritech_assembler_server.py` has `prepare`, `verify`, `final` phases:
+start the server before each, pass `--prior` for the latter two, and keep output
+paths new. Two fixture Assemblers face north/east; one core group crosses a
+chunk boundary. Two coal supply 102,400 E. Raw metals produce six coils, which
+feed the second machine to make two motors, leaving four coils in its input.
+Only the result is extracted; two genuine motors are saved in flight, delivered
+after restart and checked after a second restart. Assembly, all six core flags,
+remaining coils and 90,112 E must survive. No energy, machine inventory,
+processing output or transport cargo is seeded.
+
+`live_oritech_save_upgrade.py` additionally copies the retained, checked own
+Foundry GUI world from content 0.4 and opens it with 0.5. Its source report hash
+must occur in `ORITECH_FOUNDRY_RESULT.json`, and its hmods must match the old
+sealed installation. Three old machine IDs, facing, energy/progress, the four
+collected item types and all core offsets are checked, then physically reopened.
+The source world's files are hashed before/after and left unchanged. This is
+a specific native-save regression, not NeoForge import or a general converter.
+
+[Assembler results and remaining scope](../../ORITECH_ASSEMBLER_RESULT.json).

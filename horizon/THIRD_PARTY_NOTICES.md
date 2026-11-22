@@ -111,9 +111,19 @@ and two material assets/labels from the same CC0 JAR. Native 0.3 adapts the own
 Foundry class, multiblock lifecycle, horizontal placement and geometry helpers
 at the same pin. Their headers contain no separate override. Consulted source
 SHA-256 values are recorded in `ORITECH_FOUNDRY_RESULT.json`; dependency Java
-source was not read. The own CC0 Assembler class was consulted for planning
-only; no Assembler implementation is included. Pretty Pipes 0.9 only extends
+source was not read. At the Foundry milestone the own CC0 Assembler class was
+consulted for planning only. Pretty Pipes 0.9 only extends
 its native endpoint allowlist and optional connection tag to the new Foundry.
+
+Content 0.5/native 0.4 now adapts the same pin's own Assembler class for the
+selected coils/motors recipes, four input slots and shared three-core lifecycle.
+`AssemblerBlockEntity.java` SHA-256 is
+`435944fab5c9130a6119c27ffedec58f751d1afaace0ef6bf54994755a28f031`;
+it has no separate license override. The controller's chunk-residency guard uses
+the pinned MIT Horizon world API and audited streaming installation order; the
+complete MIT notice remains in `first_party/oritech/LICENSE-HORIZON`.
+Pretty Pipes 0.10 adds the new native endpoint and optional connection tag;
+its six original recipe payloads and transport/module semantics are unchanged.
 
 `first_party/biome_modifiers/merged-biomes.patch` adapts Horizon's MIT
 `mod_content.rs` at the existing pinned Horizon commit. It registers declared

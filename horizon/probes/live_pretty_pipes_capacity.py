@@ -64,7 +64,7 @@ def main():
     for key in ('server-dir','work','original'):parser.add_argument('--'+key,type=Path,required=True)
     parser.add_argument('--baseline',action='store_true')
     args=parser.parse_args();server=args.server_dir.resolve();work=args.work.absolute();lock=verify(server)
-    if lock['modules'].get('prettypipes',{}).get('version') not in (('0.4.0',) if args.baseline else ('0.5.0','0.6.0','0.7.0','0.8.0','0.9.0')):raise ValueError('requires the selected reviewed capacity installation')
+    if lock['modules'].get('prettypipes',{}).get('version') not in (('0.4.0',) if args.baseline else ('0.5.0','0.6.0','0.7.0','0.8.0','0.9.0','0.10.0')):raise ValueError('requires the selected reviewed capacity installation')
     if work.exists() or work.is_symlink() or any(p.is_symlink() for p in work.parents) or server in work.parents or work in server.parents:raise ValueError('work must be new and separate')
     original=json.loads(args.original.read_text());rows=original['rows']
     assert original['original_destination_capacity_executed'] and len(rows)==126

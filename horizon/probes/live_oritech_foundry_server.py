@@ -11,8 +11,8 @@ from pathlib import Path
 import subprocess
 import time
 
-from install_isolated_server import verify
 from live_oritech_pipes import Probe
+from install_isolated_server import verify
 from reference_pretty_pipes import sprint
 
 GEN = "143 200 176"

@@ -105,7 +105,7 @@ def main():
     for key in ('server-dir','work','original','original-reopen'):
         parser.add_argument('--'+key,type=Path,required=True)
     args=parser.parse_args();server=args.server_dir.resolve();work=args.work.absolute();lock=verify(server)
-    assert lock['modules']['oritech']['version'] in ('0.3.0','0.4.0')
+    assert lock['modules']['oritech']['version'] in ('0.3.0','0.4.0','0.5.0')
     assert not work.exists() and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert server not in work.parents and work not in server.parents
     original=json.loads(args.original.read_text());reopened=json.loads(args.original_reopen.read_text());rows=original['rows']

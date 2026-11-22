@@ -25,7 +25,7 @@ from prepare_terralith_worldgen import RECIPE_ADVANCEMENTS, normalize_recipe_unl
 LOCK = "techquest-local-install.json"
 WORLD = "techquest-horizon-test"
 PACK = f"{WORLD}/datapacks/techquest_terralith"
-ORITECH_NATIVE = {"0.1.0": "0.1.0", "0.2.0": "0.1.0", "0.3.0": "0.2.0", "0.4.0": "0.3.0"}
+ORITECH_NATIVE = {"0.1.0": "0.1.0", "0.2.0": "0.1.0", "0.3.0": "0.2.0", "0.4.0": "0.3.0", "0.5.0": "0.4.0"}
 CORE_PATCH = Path(__file__).resolve().parents[1] / "first_party/biome_modifiers/horizon-core-patch.json"
 WORLD_CORE_PATCH = Path(__file__).resolve().parents[1] / "first_party/biome_world_packs/horizon-core-patch.json"
 
@@ -89,7 +89,7 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
                 or facts.get("api") != "0.2" or facts.get("side") != "both"
                 or facts.get("sha256") != checksum):
             raise ValueError("SDK rejected module identity/API/checksum: " + mod)
-        if mod == "prettypipes" and facts.get("version") not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0", "0.7.0", "0.8.0", "0.9.0"):
+        if mod == "prettypipes" and facts.get("version") not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0", "0.7.0", "0.8.0", "0.9.0", "0.10.0"):
             raise ValueError("expected the reviewed Pretty Pipes content prototype")
         if mod == "oritech" and facts.get("version") not in ORITECH_NATIVE:
             raise ValueError("expected the reviewed Oritech energy prototype")
@@ -104,21 +104,22 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
             meta = tomllib.loads(archive.read("horizon-mod.toml").decode())
             if "registries" not in meta.get("capabilities", []):
                 raise ValueError("module needs registries: " + mod)
-            if mod == "prettypipes" and facts.get("version") in ("0.4.0", "0.5.0", "0.6.0", "0.7.0", "0.8.0", "0.9.0"):
+            if mod == "prettypipes" and facts.get("version") in ("0.4.0", "0.5.0", "0.6.0", "0.7.0", "0.8.0", "0.9.0", "0.10.0"):
                 menu = "data/prettypipes/horizon/menu/pipe.json"
                 if (menu not in names or json.loads(archive.read(menu)) !=
                         {"slots": 67, "data_slots": 21}):
                     raise ValueError("Pretty Pipes 0.4+ menu needs 67 slots and 21 data slots")
             if mod == "oritech":
                 machines = [("basic_generator_block", 1), ("powered_furnace_block", 2)]
-                if facts.get("version") in ("0.3.0", "0.4.0"):
+                if facts.get("version") in ("0.3.0", "0.4.0", "0.5.0"):
                     machines.append(("pulverizer_block", 3))
-                if facts.get("version") == "0.4.0": machines.append(("foundry_block", 3))
+                if facts.get("version") in ("0.4.0", "0.5.0"): machines.append(("foundry_block", 3))
+                if facts.get("version") == "0.5.0": machines.append(("assembler_block", 5))
                 for block, slots in machines:
                     menu = f"data/oritech/horizon/menu/{block}.json"
                     expected_menu = {"slots": slots, "data_slots": 5}
                     if slots > 1:
-                        expected_menu["results"] = [2] if block == "foundry_block" else list(range(1, slots))
+                        expected_menu["results"] = [4] if block == "assembler_block" else [2] if block == "foundry_block" else list(range(1, slots))
                     if menu not in names or json.loads(archive.read(menu)) != expected_menu:
                         raise ValueError("Oritech energy menu has incorrect slots/data slots")
             for namespace in meta.get("namespaces", [mod]):
@@ -150,14 +151,14 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
 
 def check_native_pairs(mods: dict, native: list[dict], core: list[dict] | None = None,
                        *, new_installation: bool = False):
-    if mods.get("oritech", {}).get("version") in ("0.2.0", "0.3.0", "0.4.0"):
+    if mods.get("oritech", {}).get("version") in ("0.2.0", "0.3.0", "0.4.0", "0.5.0"):
         expected_patch = json.loads(CORE_PATCH.read_text())
         runtime_patch = json.loads(WORLD_CORE_PATCH.read_text())
         if core not in ([expected_patch], [expected_patch, runtime_patch]):
             raise ValueError("Oritech progression needs the reviewed merged-biome core correction")
         # Historical 02a locks stay verifiable. New installs must also correct
         # the feature lists replaced by an enabled world datapack.
-        if (new_installation or mods["oritech"]["version"] in ("0.3.0", "0.4.0")) and core != [expected_patch, runtime_patch]:
+        if (new_installation or mods["oritech"]["version"] in ("0.3.0", "0.4.0", "0.5.0")) and core != [expected_patch, runtime_patch]:
             raise ValueError("Oritech progression installations need the world-pack feature correction")
     if "oritech" in mods:
         matching = [m for m in native if m.get("id") == "techquest_oritech"]
@@ -171,7 +172,7 @@ def check_native_pairs(mods: dict, native: list[dict], core: list[dict] | None =
     if len(matching) != 1:
         raise ValueError("Pretty Pipes installation has no native extension declaration")
     version = mods["prettypipes"].get("version")
-    if version not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0", "0.7.0", "0.8.0", "0.9.0") or matching[0].get("version") != version:
+    if version not in ("0.1.0", "0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0", "0.7.0", "0.8.0", "0.9.0", "0.10.0") or matching[0].get("version") != version:
         raise ValueError("Pretty Pipes content/native version mismatch")
 
 

@@ -31,6 +31,7 @@ pub(in crate::game) fn capacity(
             | "oritech:powered_furnace_block"
             | "oritech:pulverizer_block"
             | "oritech:foundry_block"
+            | "oritech:assembler_block"
     ) && view.kind == Kind::Mod;
     if !vanilla && !oritech {
         return None;
