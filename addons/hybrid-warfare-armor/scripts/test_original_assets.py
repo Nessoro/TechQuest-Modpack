@@ -232,7 +232,12 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertIn("stack.getItem() instanceof ArmorItem armor", energy)
         self.assertIn("armor.getEquipmentSlot() == EquipmentSlot.CHEST", energy)
         self.assertNotIn("stack.getEquipmentSlot() != EquipmentSlot.CHEST", energy)
-        self.assertIn("HybridWarfareMod.energyCapacity(stack) > 0", energy)
+        self.assertIn('"ru_chest_6b43".equals(name)', energy)
+        self.assertIn('"us_chest_iotv".equals(name)', energy)
+        self.assertIn('&& HybridWarfareMod.technology(stack) != null', energy)
+        self.assertIn('HybridWarfareMod.energyCapacity(stack) >= COST_PER_TICK', energy)
+        self.assertLess(energy.index('if ("superbwarfare".equals(itemId.getNamespace()))'),
+                        energy.index('if (!isChestArmor(stack)) return false;'))
         self.assertIn("power.getMaxEnergyStored() >= COST_PER_TICK", energy)
         self.assertIn("power.canExtract()", energy)
         self.assertIn("power.extractEnergy(COST_PER_TICK, true)", energy)
