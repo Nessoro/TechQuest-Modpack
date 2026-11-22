@@ -31,6 +31,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 import java.util.Set;
 import java.util.List;
@@ -102,12 +103,20 @@ public final class HybridWarfareMod {
         COMPONENTS.register(bus);
         SERIALIZERS.register(bus);
         bus.addListener(HybridWarfareMod::commonSetup);
+        bus.addListener(HybridWarfareMod::registerPackets);
         // NeoForge queries the first non-null capability provider. Register
         // at LOWEST priority so IC2 and other native jetpack energy handlers
         // are queried before our supplemental FE adapter.
         bus.addListener(EventPriority.LOWEST, HybridWarfareMod::registerCapabilities);
         NeoForge.EVENT_BUS.addListener(HybridWarfareMod::tickPlayer);
         NeoForge.EVENT_BUS.addListener(HybridWarfareMod::tooltip);
+    }
+
+    /** Client key -> server action; no armor ItemStack data is trusted from the client. */
+    private static void registerPackets(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToServer(
+                PoweredElytraGlidePayload.TYPE, PoweredElytraGlidePayload.STREAM_CODEC,
+                PoweredElytraGlidePayload::handle);
     }
 
     /** Registered after IC2 has initialized its own electric-item manager. */
