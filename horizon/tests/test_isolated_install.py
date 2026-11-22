@@ -36,6 +36,23 @@ class IsolatedInstallTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "version mismatch"):
             installer.check_native_pairs(mods, native, [base, runtime])
 
+    def test_foundry_route_requires_current_machine_and_pipe_bundles(self):
+        mods = {"oritech": {"version": "0.4.0"}, "prettypipes": {"version": "0.9.0"}}
+        native = [{"id": "techquest_oritech", "version": "0.3.0"},
+                  {"id": "techquest_pretty_pipes", "version": "0.9.0"}]
+        core = [json.loads(installer.CORE_PATCH.read_text()),
+                json.loads(installer.WORLD_CORE_PATCH.read_text())]
+        installer.check_native_pairs(mods, native, core)
+        with self.assertRaisesRegex(ValueError, "world-pack feature correction"):
+            installer.check_native_pairs(mods, native, core[:1])
+        native[0]["version"] = "0.2.0"
+        with self.assertRaisesRegex(ValueError, "Oritech content/native"):
+            installer.check_native_pairs(mods, native, core)
+        native[0]["version"] = "0.3.0"
+        native[1]["version"] = "0.8.0"
+        with self.assertRaisesRegex(ValueError, "version mismatch"):
+            installer.check_native_pairs(mods, native, core)
+
     def test_new_progression_install_requires_runtime_fix_but_old_lock_remains_valid(self):
         mods = {"oritech": {"version": "0.2.0"}}
         native = [{"id": "techquest_oritech", "version": "0.1.0"}]

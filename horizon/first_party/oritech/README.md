@@ -1,11 +1,11 @@
-# Oritech native subset 0.2 / content 0.3
+# Oritech native subset 0.3 / content 0.4
 
 First-party Rust implementation for Horizon 26.3 at
 `c78187dffffb60f31517eadcb87413386e8ce729`, Mixins
 `5a64af938ec86b00d53d16a408aabc0038fb3e57`.
 
-This is a limited port of **Basic Generator → quartz Pulverizer / Powered
-Furnace + one Machine Core**, with physical inventories, energy, fuel, processing progress, assembly,
+This is a limited port of **Basic Generator → quartz/coal Pulverizer, Powered
+Furnace and three-core Foundry**, with physical inventories, energy, fuel, processing progress, assembly,
 menus and saved state. It is not the complete Oritech mod or a survival-ready
 TechQuest industrial progression.
 
@@ -14,8 +14,8 @@ machine implementation. It additionally requires the separately compiled
 [merged-biome core correction](../biome_modifiers/README.md). The installer has
 an explicit content/native compatibility table and refuses 0.2 with an engine
 that does not declare the reviewed core correction. Content 0.3 requires native
-0.2 and both biome core corrections. Earlier sealed content 0.1/0.2 profiles
-continue to use native 0.1; their artifacts remain unchanged.
+0.2 and both biome core corrections. Content 0.4 requires native 0.3 and both
+corrections. Earlier sealed profiles keep their paired versions and artifacts.
 
 ## Source and license
 
@@ -77,10 +77,18 @@ python3 horizon/tools/stage_oritech.py \
 ```
 
 Apply all `horizon/first_party` modules with pinned Mixins and rebuild Horizon.
-The manifest adds eight HEAD injections and one support module. Package the
+The current manifest adds eleven HEAD injections and one support module. Package the
 `.rs`, manifest and both license files in `mixins/techquest_oritech/`, with
 `horizon-native.json` at the `.hnmod` root, then run the SDK checker. Content
 alone does not execute the machines.
+
+For Mixins `--mods`, each immediate mod directory must contain its own
+`horizon-mixin.toml`. When staging from an `.hnmod`, use the files inside
+`mixins/<id>/` as that directory; leaving the archive wrapper nested makes the
+transformer skip the mod. For this pinned four-bundle build, verify all four
+manifests, **30 injections and seven support modules**, including the Oritech
+create/tick hooks, before compiling or sealing tools. SDK validation of an
+archive alone does not establish that its hooks reached the executable.
 
 Against a new sealed installation:
 
@@ -247,7 +255,7 @@ saves two genuine dust items in flight, then verifies delivery and another
 physical reopen. Run its `prepare`, `verify` and `final` phases with a server
 start before each, passing `--prior` for the latter two phases.
 
-Only the quartz Pulverizer recipe is staged. Addons, secondary small-dust
+Content 0.3 stages only the quartz Pulverizer recipe. Addons, secondary small-dust
 compaction, other Pulverizer recipes and full source geometry/animation remain
 outside this subset.
 
@@ -286,3 +294,81 @@ material-progression check, not unassisted survival from spawn or multiplayer.
 iron ingots and four verified physical reopens. Inventory comparisons cover
 item IDs/counts; native machine comparisons cover energy, progress and Items
 NBT. General item-component round trips are not established by this probe.
+
+## Content 0.4 Foundry / native 0.3
+
+`stage_oritech.py --foundry` includes `--pulverizer` and `--progression`.
+It stages 17 ordinary recipes, two Pulverizer recipes (quartz and coal), three
+Foundry alloy recipes, fourteen materials, five machine/core blocks and the
+same four ores. Coal or charcoal becomes one coal dust in 100 ticks. The
+Foundry produces steel from iron plus coal dust in 26 ticks, electrum from
+gold plus redstone in 80, and adamant from diamond plus nickel in 80.
+Both orders of the two inputs match the original. The manual alloy recipes
+remain available. Other original processing recipes are not staged.
+
+Without addons the Foundry holds 50,000 E, accepts 1,024 per insertion call
+and consumes 128 per processing tick. Slots 0/1 are inputs and slot 2 is the
+result. Three unused core1 blocks are required. Following the original
+`Geometry.rotatePosition`, the lower side core is east/south/west/north for a
+controller facing north/east/south/west; the others are above the controller
+and above that side core. Placement faces opposite the player's horizontal
+direction. Assembly preflights every core, so a missing or already-used core
+does not claim the remaining ones. The successful first click assembles;
+the next opens the menu.
+
+Breaking a core or controller frees its loaded linked cores. The Foundry
+pauses without resetting progress or its warm recipe cache. Reassembly resumes
+that work. A physical world reload loses the original transient recipe cache,
+so the next processing tick resets saved progress before continuing. The native
+implementation also invalidates links on direct block replacement. The original
+raw `Level.setBlockAndUpdate` bypasses its own destroy callback; the Java oracle
+explicitly calls the original physical destroy callback for that comparison.
+No parity is claimed for the raw-editor bypass, unloaded cross-chunk cores,
+addons, higher-quality cores or general core capability delegation.
+
+`OritechFoundryProbe.java` executes 68 cases/680 states of the original server
+tick, 20 core configurations across all four facings, physical core destruction,
+coal/charcoal processing and a physical save/reopen. The native probe assembles
+through the connected owner's normal UseItemOn packet route. Processing cache
+fixtures are primed by a real tick, never by injecting private cache fields.
+The previous generator/furnace and quartz oracles are run against the new engine.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-foundry-reference-new" --oracle foundry --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-foundry-reference-new" --oracle foundry --reopen
+python3 horizon/probes/live_oritech_foundry.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-foundry-new" \
+  --original "$TASK_RUNTIME/oritech-foundry-reference-new/initial-result.json" \
+  --original-reopen "$TASK_RUNTIME/oritech-foundry-reference-new/reopen-result.json"
+python3 horizon/probes/live_oritech_foundry_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-foundry-gui-new"
+```
+
+Pretty Pipes 0.9 adds the Foundry endpoint to 0.8's unchanged transport/module
+semantics. `live_oritech_foundry_server.py` uses an isolated dedicated server,
+linked-core/source-material fixtures, and four independent pipe networks.
+One coal fuels the generator, four more go into the Pulverizer and four iron
+ingots go into the Foundry. Only the machines create dust, energy and four
+steel. Extraction queues those genuine ingots before saving. The `prepare`,
+`verify`, `final` phases each save/stop; start the server before every phase and
+pass `--prior` to the latter two. Normal server startup can deliver cargo before
+the console freezes time, so reopening checks cargo-plus-destination conservation
+and exact unchanged machine state. A second restart checks the final state.
+With its extractor still active, an additional coal/iron source pair creates
+one more genuine dust and leaves both Foundry inputs intact at 88 E, below a
+128 E processing tick. The final restart preserves those two starved inputs
+and the four delivered steel. No output or machine inventory is seeded.
+
+The graphical run performs fourteen real crafts, places all three machines
+and cores, creates four coal dust, collects four steel/one electrum/one adamant,
+mines and reinstalls a real core, and checks two physical reopens and energy
+conservation. Base materials, the initial bench, pickaxe, glass platform,
+teleports and tick control are fixtures. In this run the physical core break
+coincides with progress zero; the separate original/native lifecycle comparison
+proves nonzero progress 13 remains paused and resumes at 14. Inventory reopen
+checks cover IDs/counts and machine energy/progress/Items, not general item
+component fidelity. A stopped hashed checkpoint precedes core destruction.
+
+[Foundry evidence and remaining scope](../../ORITECH_FOUNDRY_RESULT.json).

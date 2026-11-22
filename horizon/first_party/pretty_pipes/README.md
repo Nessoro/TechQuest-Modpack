@@ -376,3 +376,18 @@ cases, 24 native power cases, 69 crafting grids, 126 capacity regressions,
 переоткрытия. Прежняя Oritech factory regression также получила/доставила
 16 ingots с проверкой backpressure и reopens. В GUI выполнены 18 крафтов;
 образец фильтра учитывается отдельно от настоящего груза.
+
+## 0.9: endpoint Foundry
+
+Версия 0.9 сохраняет шесть рецептов, меню и transport/redstone/filter semantics
+0.8, добавляя native Foundry Oritech в read-only capacity allowlist и optional
+connection tag. Foundry принимает предметы в два input slots; extraction берёт
+только result slot 2. Новый профиль требует content/native PP 0.9 вместе с
+Oritech content 0.4/native 0.3 и прежними двумя core corrections.
+`live_oritech_foundry_server.py` проверяет подачу угля/железа, перенос настоящей
+пыли из Pulverizer, производство четырёх steel и доставку через перезапуски.
+Дополнительные уголь/железо оставляют оба настоящих входа в Foundry при 88 E:
+включённый extractor не забирает их, и перезапуск сохраняет это состояние.
+Машины, сборка core, источники и модули — явные fixtures; энергия, обработанные
+продукты и груз в пути не подставляются. 126 прежних capacity cases и 24 power
+gate cases повторно проверяются на новом движке. [Отчёт](../../ORITECH_FOUNDRY_RESULT.json).

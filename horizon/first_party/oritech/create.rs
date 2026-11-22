@@ -4,6 +4,7 @@ fn create(block: &str, entity: &mut Option<(String, horizon_world::nbt::Compound
         "oritech:basic_generator_block"
             | "oritech:powered_furnace_block"
             | "oritech:pulverizer_block"
+            | "oritech:foundry_block"
             | "oritech:machine_core_1"
     ) && entity.is_none()
     {

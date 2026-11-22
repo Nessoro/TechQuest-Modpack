@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("server-dir", "work"): parser.add_argument("--" + name, type=Path, required=True)
     args = parser.parse_args()
-    game = GraphicalFixture(args.server_dir, args.work, ("0.1.0", "0.2.0", "0.3.0"), "techquest-oritech-gui", "TQEnergyGui", module="oritech", frozen=True)
+    game = GraphicalFixture(args.server_dir, args.work, ("0.1.0", "0.2.0", "0.3.0", "0.4.0"), "techquest-oritech-gui", "TQEnergyGui", module="oritech", frozen=True)
     call, cmd, settle = game.call, game.command, game.settle
     def number(x, key):
         value = cmd(f"data get block {x} 200 0 {key}")

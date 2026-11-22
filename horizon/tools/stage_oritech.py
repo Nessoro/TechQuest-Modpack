@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BLOCKS = ("basic_generator_block", "powered_furnace_block", "machine_core_1")
 
 
-def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=None, port_pack=None, pulverizer=False):
+def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=None, port_pack=None, pulverizer=False, foundry=False):
     if output.exists() or output.is_symlink() or any(p.is_symlink() for p in output.absolute().parents):
         raise ValueError("output must be a new directory without symlinks")
     for parent in output.absolute().parents:
@@ -31,9 +31,11 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
     raw = read_checked(jar)
     if pin["version"] != "1.2.13" or hashlib.sha512(raw).hexdigest() != pin["sha512"]:
         raise ValueError("expected pinned Oritech 1.2.13")
+    pulverizer = pulverizer or foundry
     progression = progression or pulverizer
-    version = "0.3.0" if pulverizer else "0.2.0" if progression else "0.1.0"
+    version = "0.4.0" if foundry else "0.3.0" if pulverizer else "0.2.0" if progression else "0.1.0"
     blocks = (*BLOCKS, "pulverizer_block") if pulverizer else BLOCKS
+    if foundry: blocks = (*blocks, "foundry_block")
     payloads = {"horizon-mod.toml": ('id = "oritech"\nname = "TechQuest Oritech energy prototype"\nversion = "' + version + '"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n').encode()}
     license_text = read_checked(ROOT / "first_party/oritech/LICENSE-ORITECH").decode()
     # SDK content packages keep assets/data/manifest; retain the dedication in
@@ -51,8 +53,14 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
         name = "assets/oritech/textures/block/machine_core_1.png"
         payloads[name] = archive.read(name)
     for block in blocks:
-        data(f"data/oritech/horizon/block/{block}.json", {"template": "minecraft:iron_block", "properties": {"hardness": 5.0, "occludes": False}})
-        data(f"assets/oritech/blockstates/{block}.json", {"variants": {"": {"model": f"oritech:block/{block}"}}})
+        definition = {"template": "minecraft:iron_block", "properties": {"hardness": 5.0, "occludes": False}}
+        variants = {"": {"model": f"oritech:block/{block}"}}
+        if block == "foundry_block":
+            definition["state_properties"] = {"facing": {"type": "enum", "values": ["north", "east", "south", "west"]}}
+            definition["default_state"] = {"facing": "north"}
+            variants = {"facing="+face: {"model": f"oritech:block/{block}", "y": y} for face,y in (("north",0),("east",90),("south",180),("west",270))}
+        data(f"data/oritech/horizon/block/{block}.json", definition)
+        data(f"assets/oritech/blockstates/{block}.json", {"variants": variants})
         data(f"assets/oritech/models/item/{block}.json", {"parent": f"oritech:block/{block}"})
         data(f"assets/oritech/items/{block}.json", {"model": {"type": "minecraft:model", "model": f"oritech:item/{block}"}})
         textures = {"all": "oritech:block/machine_core_1"} if block == "machine_core_1" else {
@@ -61,10 +69,10 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
         data(f"assets/oritech/models/block/{block}.json", {"parent": "minecraft:block/cube_all" if block == "machine_core_1" else "minecraft:block/orientable", "textures": textures})
         data(f"data/oritech/loot_table/blocks/{block}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": "oritech:" + block}], "conditions": [{"type": "minecraft:survives_explosion"}]}]})
         if block != "machine_core_1":
-            slots = {"basic_generator_block": 1, "powered_furnace_block": 2, "pulverizer_block": 3}[block]
+            slots = {"basic_generator_block": 1, "powered_furnace_block": 2, "pulverizer_block": 3, "foundry_block": 3}[block]
             menu = {"slots": slots, "data_slots": 5}
             if slots > 1:
-                menu["results"] = list(range(1, slots))
+                menu["results"] = [2] if block == "foundry_block" else list(range(1, slots))
             data(f"data/oritech/horizon/menu/{block}.json", menu)
     data("data/minecraft/tags/block/mineable/pickaxe.json", {"values": ["oritech:" + b for b in blocks]})
     progression_report = None
@@ -72,7 +80,7 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
         if any(p is None for p in (neoforge_jar, content_tool, port_pack)):
             raise ValueError("--progression requires --neoforge-jar, --content-tool and --port-pack")
         from stage_oritech_progression import add_progression
-        progression_report = add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, output.absolute().parent, pulverizer=pulverizer)
+        progression_report = add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, output.absolute().parent, pulverizer=pulverizer, foundry=foundry)
     with tempfile.TemporaryDirectory(prefix="oritech-stage-", dir=output.absolute().parent) as tmp:
         root = Path(tmp) / "module"
         for name, content in payloads.items():
@@ -99,6 +107,7 @@ def main():
     for name in ("jar", "sdk", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--progression", action="store_true")
+    parser.add_argument("--foundry", action="store_true", help="selected three-core foundry/alloy route; implies --pulverizer")
     parser.add_argument("--pulverizer", action="store_true", help="add the selected quartz/silicon processing route (implies --progression)")
     for name in ("neoforge-jar", "content-tool", "port-pack"):
         parser.add_argument("--" + name, type=Path)

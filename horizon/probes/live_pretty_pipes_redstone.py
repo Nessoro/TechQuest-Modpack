@@ -54,7 +54,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('server-dir','work','original'):parser.add_argument('--'+name,type=Path,required=True)
     args=parser.parse_args();server=args.server_dir.resolve();work=args.work.absolute();lock=verify(server)
-    assert lock['modules']['prettypipes']['version']=='0.8.0'
+    version=lock['modules']['prettypipes']['version']
+    assert version in ('0.8.0','0.9.0')
     assert not work.exists() and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert server not in work.parents and work not in server.parents
     original=json.loads(args.original.read_text());rows=[]
@@ -90,7 +91,7 @@ def main():
         wanted=8 if expected['can_work'] else 0
         assert before==64 and before-after==queued==wanted and target==0,(expected,before,after,queued,target)
         checks.append({**expected,'extracted':before-after,'queued':queued,'destination_before_arrival':target})
-    report={'schema':1,'content_and_native_version':'0.8.0','original_can_work_cases_matched':len(checks),'checks':checks,
+    report={'schema':1,'content_and_native_version':version,'original_can_work_cases_matched':len(checks),'checks':checks,
             'actual_extraction_ticks_executed':True,'all_six_power_directions_checked':True,'signal_strengths':[0,15],
             'medium_tier_amount_used_to_observe_original_tier_independent_gate':True,
             'source_module_direction_and_power_fixtures_injected':True,'transport_cargo_seeded':False,'licensed_join_tested':False,'published':False}

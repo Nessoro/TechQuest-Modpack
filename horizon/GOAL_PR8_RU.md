@@ -339,6 +339,29 @@ capacity cases, 69 crafting grids, восемь Rust-тестов, прежня�
 `techquest-pipes-08a-server`, порт 25647, остановлен; его lock и старые профили
 проверены, main не менялся. [Отчёт](PRETTY_PIPES_REDSTONE_RESULT.json).
 
+Следующий этап Oritech content 0.4/native 0.3 переносит Foundry с тремя core1,
+двумя input slots и отдельным result slot: steel, electrum и adamant, плюс
+coal/charcoal → coal dust в Pulverizer. 68 original cases/680 состояний,
+20 вариантов core и физическое переоткрытие совпали; графический контроль
+всех четырёх поворотов при установке прошёл. В наборе 17 обычных и пять
+processing recipes, 14 материалов, пять machine/core blocks и прежние четыре
+руды. Pretty Pipes 0.9 добавляет Foundry endpoint. Dedicated-линия получает
+четыре steel из железа/угля без подстановки энергии, машинного инвентаря,
+обработанных продуктов или груза; проверены два перезапуска и энергобаланс.
+Регрессии: 414 energy states, 536 quartz states с переоткрытием, 126 capacity
+cases, 24 power gate cases, 66/20 menu cases, 872 crafting grids и 60 loot rolls.
+124 Python-теста проходят. Профиль 04a сохраняется; отдельный 04c на порту
+25651 содержит исправленное расположение Foundry slots, остальные механики
+между этими native bundles побайтно не менялись. В GUI выполнены 14 крафтов:
+три мотора, три машины и три core созданы/поставлены игроком. Получены четыре
+steel, один electrum и один adamant; проверены отказ result slot, добыча/
+возврат core и два точных переоткрытия. Исходные металлы/сплавы/топливо,
+инструмент, площадка и перемещения — fixtures, энергия и продукты не выдаются.
+В GUI core сломан на границе рецепта с progress 0; ненулевые 13 → pause → 14
+отдельно подтверждены сравнением оригинального callback и native invalidation.
+Профиль 04c и прежние проверенные профили остановлены, locks совпали; main не
+менялся. Этап не завершает весь модпак. [Отчёт и 53 хеша доказательств](ORITECH_FOUNDRY_RESULT.json).
+
 1. Продолжить Pretty Pipes: equality/filter-increase modules и их экраны,
    ветвления, приоритеты, insertion-limiting modules/сложные slot limits, переполнение и rerouting; проверить offhand, bulk edits,
    unloaded entities и точные drop semantics. Установка/снятие, основное GUI,
@@ -360,10 +383,11 @@ capacity cases, 69 crafting grids, восемь Rust-тестов, прежня�
    tags базового движка обрезают custom biome IDs; wolf extension обходит это
    через кеш мира, остальные сущности ещё требуют аудита.
    Локальная установка — LOCAL_INSTALL_RU.md; native build — first_party/terralith_wolves/README.md.
-4. Продолжить Oritech: начальные платиновый и кремниевый пути печи исполняются;
+4. Продолжить Oritech: начальные платиновый и кремниевый пути печи,
+   угольный Pulverizer и три Foundry alloys исполняются;
    нужны остальные рецепты и прохождение от точки спавна
    без инструментов/перемещения как fixtures, другие machine handlers и сложная автоматизация, кабели,
-   улучшения, другие машины и общая делегация через core. Четыре machine/core блока
+   улучшения, другие машины и общая делегация через core. Пять machine/core блоков
    не заменяют полный промышленный мод. Продолжить остальные нативные механики TechQuest и подготовить проверку официальным
    лицензированным клиентом. Пользовательские данные не использовать.
 

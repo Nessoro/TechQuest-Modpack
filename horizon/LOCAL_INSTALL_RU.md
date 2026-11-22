@@ -51,6 +51,19 @@ Oritech 0.2 и Pretty Pipes 0.6, 8 hmod, 4 bundles и два core corrections.
 физические перезапуски; после проверок профиль остановлен, lock действителен.
 Прежние профили не обновляются на месте. [Результаты](ORITECH_PIPES_RESULT.json).
 
+Новый профиль Foundry — `/workspace/horizon-runtime/techquest-oritech-04c-server`,
+порт 25651: Oritech content 0.4/native 0.3, Pretty Pipes content/native 0.9,
+8 hmod, 4 native bundles и прежние два core corrections. Прежние profiles,
+бинарники и locks сохраняются. `stage_oritech.py --foundry` включает прежние
+стартовый и кремниевый пути, добавляет Foundry, coal dust и три processing alloys.
+Новая машина требует три core1 с оригинальной геометрией и принимает два входа.
+Dedicated-сценарий автоматически производит четыре steel и проверяет доставку
+через два перезапуска; в машины не подставляются энергия, инвентарь или продукты.
+Normal start успевает выполнять ticks до console freeze, поэтому проверяется
+сохранность суммы «груз + сундук», а не неизменная позиция груза при запуске.
+Сборка/сценарии воспроизведения — в [README Oritech](first_party/oritech/README.md#content-04-foundry--native-03),
+границы переноса и доказательства — в [отчёте Foundry](ORITECH_FOUNDRY_RESULT.json).
+
 Pretty Pipes 0.8 добавляет скрафченный redstone module и управление новыми
 извлечениями/доставками от питания. Нужны content/native именно 0.8.0.
 Профиль `/workspace/horizon-runtime/techquest-pipes-08a-server`, порт 25647,

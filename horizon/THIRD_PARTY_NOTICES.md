@@ -106,6 +106,15 @@ no-addon quartz processing path and transient recipe-cache behavior. The own
 `PulverizerBlockEntity.java` at the same pin has no separate license header;
 its SHA-256 is `3d240c40254a4b05805e7ca7212592e8e5843808553c47e19700eab11e43fa4a`.
 
+Content 0.4 adds two ordinary recipes, coal pulverization, three Foundry alloys
+and two material assets/labels from the same CC0 JAR. Native 0.3 adapts the own
+Foundry class, multiblock lifecycle, horizontal placement and geometry helpers
+at the same pin. Their headers contain no separate override. Consulted source
+SHA-256 values are recorded in `ORITECH_FOUNDRY_RESULT.json`; dependency Java
+source was not read. The own CC0 Assembler class was consulted for planning
+only; no Assembler implementation is included. Pretty Pipes 0.9 only extends
+its native endpoint allowlist and optional connection tag to the new Foundry.
+
 `first_party/biome_modifiers/merged-biomes.patch` adapts Horizon's MIT
 `mod_content.rs` at the existing pinned Horizon commit. It registers declared
 biome files before tag filtering and applies modifiers to the merged registry.

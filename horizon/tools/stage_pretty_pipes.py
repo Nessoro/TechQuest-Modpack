@@ -68,7 +68,7 @@ def stage(jar, sdk, output, neoforge_jar):
     if pin["version"] != "1.22.0" or hashlib.sha512(raw).hexdigest() != pin["sha512"]:
         raise ValueError("expected the pinned original Pretty Pipes 1.22.0 JAR")
     glass, missing_tags = glass_members(read_checked(neoforge_jar))
-    payloads = {"horizon-mod.toml": b'id = "prettypipes"\nname = "TechQuest Pretty Pipes transport prototype"\nversion = "0.8.0"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n'}
+    payloads = {"horizon-mod.toml": b'id = "prettypipes"\nname = "TechQuest Pretty Pipes transport prototype"\nversion = "0.9.0"\napi = "0.2"\nside = "both"\ncapabilities = ["registries"]\n'}
     license_text = read_checked(Path(__file__).resolve().parents[1] /
                                 "first_party/pretty_pipes/LICENSE-PRETTY-PIPES").decode()
     payloads["horizon-mod.toml"] = ("\n".join("# " + line for line in license_text.splitlines()) + "\n").encode() + payloads["horizon-mod.toml"]
@@ -88,7 +88,8 @@ def stage(jar, sdk, output, neoforge_jar):
         "minecraft:furnace", "minecraft:blast_furnace", "minecraft:smoker",
         {"id": "oritech:basic_generator_block", "required": False},
         {"id": "oritech:powered_furnace_block", "required": False},
-        {"id": "oritech:pulverizer_block", "required": False}]})
+        {"id": "oritech:pulverizer_block", "required": False},
+        {"id": "oritech:foundry_block", "required": False}]})
     faces = {face: {"texture": "#pipe"} for face in ("up", "down", "north", "south", "east", "west")}
     boxes = {"core": ([6, 6, 6], [10, 10, 10]), "down": ([6, 0, 6], [10, 6, 10]),
              "up": ([6, 10, 6], [10, 16, 10]), "north": ([6, 6, 0], [10, 10, 6]),
@@ -172,7 +173,7 @@ def stage(jar, sdk, output, neoforge_jar):
         checksum = hashlib.sha256(package.read_bytes()).hexdigest()
         if not verdict.get("ok") or verdict["report"].get("sha256") != checksum:
             raise ValueError("SDK rejected the content prototype")
-        report = {"schema": 1, "id": "prettypipes", "prototype_version": "0.8.0",
+        report = {"schema": 1, "id": "prettypipes", "prototype_version": "0.9.0",
                   "source_version": "1.22.0", "source_jar_sha512": pin["sha512"],
                   "sha256": checksum, "sdk_validated": True, "source_assets": source_assets,
                   "requires_native_module": "techquest_pretty_pipes", "java_code_included": False,

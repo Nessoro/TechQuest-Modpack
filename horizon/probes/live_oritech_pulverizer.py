@@ -105,7 +105,7 @@ def main():
     for key in ('server-dir','work','original','original-reopen'):
         parser.add_argument('--'+key,type=Path,required=True)
     args=parser.parse_args();server=args.server_dir.resolve();work=args.work.absolute();lock=verify(server)
-    assert lock['modules']['oritech']['version']=='0.3.0'
+    assert lock['modules']['oritech']['version'] in ('0.3.0','0.4.0')
     assert not work.exists() and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert server not in work.parents and work not in server.parents
     original=json.loads(args.original.read_text());reopened=json.loads(args.original_reopen.read_text());rows=original['rows']
@@ -146,7 +146,7 @@ def main():
     assert states[0]==saved[0]==comparable(reopened['before'])
     assert [clock-clocks[0] for clock in clocks[1:]]==[state['ticks'] for state in reopened['states']]
     assert states[1:]==[comparable(state['state']) for state in reopened['states']],(states,reopened['states'])
-    report={'schema':1,'oritech_content_version':'0.3.0','native_machine_version':'0.2.0','cases':len(rows),'snapshots':checked,'mismatches':mismatches,'actual_processing_ticks_executed':True,
+    report={'schema':1,'oritech_content_version':lock['modules']['oritech']['version'],'native_machine_version':next(m['version'] for m in lock['native_modules'] if m['id']=='techquest_oritech'),'cases':len(rows),'snapshots':checked,'mismatches':mismatches,'actual_processing_ticks_executed':True,
             'original_saved_state':comparable(original['saved']),'native_saved_state':saved[0],'physical_reopen_matches_original':True,'reopen_states':states,
             'original_transient_recipe_reset_after_load_matched':True,'recipe_cache_primed_by_actual_tick':True,'no_runtime_cache_fields_injected':True,
             'inventory_energy_progress_redstone_and_output_fixtures_injected':True,'addons_tested':False,'source_original_burst_without_addons_zero':True,

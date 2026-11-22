@@ -27,9 +27,14 @@ PROCESSING_RECIPES = ("motor/motorcraft", "crafting/pulverizer", "crafting/elect
                       "crafting/alloy/rawsilicon", "silicon_from_smelting_raw_silicon")
 
 
-def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent, pulverizer=False):
+def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent, pulverizer=False, foundry=False):
+    pulverizer = pulverizer or foundry
     materials = (*MATERIALS, *PROCESSING_MATERIALS) if pulverizer else MATERIALS
     recipe_names = (*RECIPES, *PROCESSING_RECIPES) if pulverizer else RECIPES
+    if foundry:
+        materials = (*materials, "coal_dust", "adamant_ingot")
+        recipe_names = (*recipe_names, "crafting/foundry", "crafting/alloy/adamant")
+    processing_names = (["pulverizer/quartz"] if pulverizer else []) + (["pulverizer/coal", "foundry/alloy/steel", "foundry/alloy/electrum", "foundry/alloy/adamant"] if foundry else [])
     neo = read_checked(neoforge_jar)
     if hashlib.sha256(neo).hexdigest() != NEOFORGE_SHA256:
         raise ValueError("expected pinned NeoForge 21.1.264 universal JAR")
@@ -74,8 +79,10 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
             ingredients = list(recipe.get("key", {}).values()) + ([recipe["ingredient"]] if "ingredient" in recipe else [])
             for ingredient in ingredients:
                 if "tag" in ingredient and ingredient["tag"].startswith("c:"): resolve(ingredient["tag"])
-        if pulverizer:
-            resolve("c:gems/quartz")
+        processing = {"data/oritech/recipe/"+name+".json": json.loads(take("data/oritech/recipe/"+name+".json")) for name in processing_names}
+        for recipe in processing.values():
+            for ingredient in recipe["ingredients"]:
+                if "tag" in ingredient and ingredient["tag"].startswith("c:"): resolve(ingredient["tag"])
         for tag, values in tags.items():
             ns, path = tag.split(":", 1); data(f"data/{ns}/tags/item/{path}.json", {"values": values})
         loot = {f"data/oritech/loot_table/blocks/{o}.json": json.loads(take(f"data/oritech/loot_table/blocks/{o}.json")) for o in ORES}
@@ -85,19 +92,15 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
         for section in ("recipes", "loot"):
             for name, value in normalized[section].items(): data(name, value)
 
-        if pulverizer:
-            name = "data/oritech/recipe/pulverizer/quartz.json"
-            recipe = json.loads(take(name))
-            if recipe.get("type") != "oritech:pulverizer" or len(recipe.get("ingredients", [])) != 1 or len(recipe.get("results", [])) != 1:
-                raise ValueError("expected the selected original quartz pulverizer recipe")
+        for name, recipe in processing.items():
+            inputs = 2 if recipe["type"] == "oritech:foundry" else 1
+            if recipe["type"] not in ("oritech:pulverizer", "oritech:foundry") or len(recipe["ingredients"]) != inputs or len(recipe["results"]) != 1:
+                raise ValueError("unexpected selected original processing recipe")
             converted = []
             for ingredient in recipe["ingredients"]:
-                if set(ingredient) == {"tag"}:
-                    converted.append("#" + ingredient["tag"])
-                elif set(ingredient) == {"item"}:
-                    converted.append(ingredient["item"])
-                else:
-                    raise ValueError("unsupported original processing ingredient")
+                if set(ingredient) == {"tag"}: converted.append("#" + ingredient["tag"])
+                elif set(ingredient) == {"item"}: converted.append(ingredient["item"])
+                else: raise ValueError("unsupported original processing ingredient")
             recipe["ingredients"] = converted
             data(name, recipe)
 
@@ -136,6 +139,6 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
             "source_data": source_data, "source_assets": source_assets, "resolved_common_tags": tags,
             "missing_optional_legacy_tags": sorted(missing), "worldgen_features": ["ore_nickel", "ore_platinum", "ore_platinum_end"],
             "content_tool_sha256": hashlib.sha256(read_checked(content_tool)).hexdigest(),
-            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.2.0" if pulverizer else "0.1.0",
-            "processing_recipes": ["pulverizer/quartz"] if pulverizer else [],
+            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.3.0" if foundry else "0.2.0" if pulverizer else "0.1.0",
+            "processing_recipes": processing_names,
             "required_core_patch": "techquest_biome_modifiers:0.1.0"}

@@ -1,0 +1,825 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-22T09:44:57.579953+00:00",
+  "minecraft": "26.3",
+  "scope": "Selected no-addon three-core Foundry, coal Pulverizer, graphical crafted alloys and dedicated Pretty Pipes automation",
+  "versions": {
+    "oritech_content": "0.4.0",
+    "oritech_native": "0.3.0",
+    "pretty_pipes_content_and_native": "0.9.0"
+  },
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "source": {
+    "oritech_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "license_basis": "Pinned own source LICENSE.md and pinned JAR declare CC0-1.0; current project metadata differs; consulted own headers have no override",
+    "consulted_own_source_sha256": {
+      "common/src/main/java/rearth/oritech/block/entity/processing/FoundryBlockEntity.java": "cb35ae2d9d967289618d0edec9bc4441f88d29b7101d806b7a3d5c1cac5de2c3",
+      "common/src/main/java/rearth/oritech/util/Geometry.java": "42600ffb54fa56b43261d6f3a3cf2c150a860173a801d56ac08fe6cbd45e32ae",
+      "common/src/main/java/rearth/oritech/init/recipes/OritechRecipe.java": "28655bcf3f0d5b6e5610dbe4308fb1b003dac928a90fb887ef24d4bed57baea8",
+      "common/src/main/java/rearth/oritech/block/base/block/MultiblockMachine.java": "0e9365b6013b23a72d860b195c12d3676b1507462196800d74911c5df601f2e3",
+      "common/src/main/java/rearth/oritech/block/base/block/MachineBlock.java": "6c1a8700bb5fed9e6fa4e1b1a2260a48ff58c3f5000a2e0d88abf210546cdee5",
+      "common/src/main/java/rearth/oritech/block/base/block/UpgradableMachineBlock.java": "7fe905e6a54bfc1f8404fcf16917e314ff574e730800ac4e4c8a96314801f861",
+      "common/src/main/java/rearth/oritech/block/entity/processing/AssemblerBlockEntity.java": "435944fab5c9130a6119c27ffedec58f751d1afaace0ef6bf54994755a28f031"
+    },
+    "assembler_consulted_for_planning_only_not_implemented": true,
+    "dependency_java_source_read_or_decompiled": false
+  },
+  "content": {
+    "ordinary_recipes": 17,
+    "pulverizer_recipes": 2,
+    "foundry_recipes": 3,
+    "materials": 14,
+    "machine_and_core_blocks": 5,
+    "ore_blocks": 4,
+    "processing_recipes": [
+      "pulverizer/quartz",
+      "pulverizer/coal",
+      "foundry/alloy/steel",
+      "foundry/alloy/electrum",
+      "foundry/alloy/adamant"
+    ],
+    "all_original_recipes_ported": false
+  },
+  "native_foundry": {
+    "energy_capacity": 50000,
+    "max_insertion_per_call": 1024,
+    "energy_per_processing_tick": 128,
+    "input_slots": [
+      0,
+      1
+    ],
+    "result_slots": [
+      2
+    ],
+    "core1_required": 3,
+    "lower_side_core_by_controller_facing": {
+      "north": "east",
+      "east": "south",
+      "south": "west",
+      "west": "north"
+    },
+    "three_alloys_duration_ticks": {
+      "steel": 26,
+      "electrum": 80,
+      "adamant": 80
+    },
+    "original_processing_cases": 68,
+    "matched_states": 680,
+    "assembly_cases": 20,
+    "missing_and_already_used_cores_rejected": true,
+    "all_four_graphical_placement_facings_checked": true,
+    "normal_owner_use_item_on_packet_assembles": true,
+    "physical_destroy_callback_lifecycle_matched": true,
+    "native_direct_block_replacement_also_invalidates_links": true,
+    "original_raw_set_block_without_destroy_callback_parity_claimed": false,
+    "physical_reopen_transient_recipe_reset_matched": true,
+    "runtime_recipe_cache_fields_seeded": false,
+    "coal_and_charcoal_pulverization_matched": true
+  },
+  "graphical": {
+    "schema": 1,
+    "oritech_content_version": "0.4.0",
+    "native_machine_version": "0.3.0",
+    "crafts": [
+      {
+        "output": "minecraft:furnace",
+        "count": 1,
+        "consumed": {
+          "minecraft:cobblestone": 8
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:motor",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 1,
+          "oritech:steel_ingot": 4,
+          "oritech:magnetic_coil": 2
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:motor",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 1,
+          "oritech:steel_ingot": 4,
+          "oritech:magnetic_coil": 2
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:motor",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 1,
+          "oritech:steel_ingot": 4,
+          "oritech:magnetic_coil": 2
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:pulverizer_block",
+        "count": 1,
+        "consumed": {
+          "minecraft:iron_ingot": 5,
+          "oritech:nickel_ingot": 1,
+          "oritech:motor": 2,
+          "minecraft:copper_block": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:basic_generator_block",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 5,
+          "minecraft:copper_ingot": 1,
+          "oritech:magnetic_coil": 2,
+          "minecraft:furnace": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "minecraft:cauldron",
+        "count": 1,
+        "consumed": {
+          "minecraft:iron_ingot": 7
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:foundry_block",
+        "count": 1,
+        "consumed": {
+          "minecraft:copper_ingot": 5,
+          "oritech:motor": 1,
+          "oritech:electrum_ingot": 2,
+          "minecraft:cauldron": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "minecraft:crafting_table",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 4
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "oritech:machine_core_1",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 8,
+          "minecraft:crafting_table": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "minecraft:crafting_table",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 4
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "oritech:machine_core_1",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 8,
+          "minecraft:crafting_table": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "minecraft:crafting_table",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 4
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "oritech:machine_core_1",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 8,
+          "minecraft:crafting_table": 1
+        },
+        "inventory_grid": false
+      }
+    ],
+    "base_material_and_tool_fixtures": {
+      "minecraft:iron_ingot": 16,
+      "oritech:nickel_ingot": 10,
+      "oritech:steel_ingot": 12,
+      "oritech:magnetic_coil": 8,
+      "minecraft:copper_block": 1,
+      "minecraft:copper_ingot": 6,
+      "oritech:electrum_ingot": 2,
+      "minecraft:coal": 6,
+      "minecraft:cobblestone": 8,
+      "minecraft:oak_planks": 36,
+      "minecraft:gold_ingot": 1,
+      "minecraft:redstone": 1,
+      "minecraft:diamond": 1,
+      "minecraft:diamond_pickaxe": 1
+    },
+    "placed_facing": "north",
+    "placement_yaw": -0.0,
+    "placement_faces_opposite_observed_player_yaw": true,
+    "core_positions": [
+      [
+        -2267,
+        200,
+        2272
+      ],
+      [
+        -2268,
+        201,
+        2272
+      ],
+      [
+        -2267,
+        201,
+        2272
+      ]
+    ],
+    "all_motors_machines_and_three_cores_crafted_and_player_placed": true,
+    "missing_core_rejected_without_claiming_others": true,
+    "first_assembly_click_consumed": true,
+    "coal_dust_and_processing_outputs_not_given": true,
+    "machine_energy_inventory_or_progress_not_injected": true,
+    "foundry_result_slot_refuses_input": true,
+    "four_steel_one_electrum_one_adamant_collected": true,
+    "real_core_mined_collected_and_reassembled": {
+      "block": "minecraft:air",
+      "block_before": "oritech:machine_core_1",
+      "drops": {
+        "oritech:machine_core_1": 1
+      },
+      "items_left_on_ground": 1,
+      "ok": true,
+      "on_ground": [
+        {
+          "count": 1,
+          "id": 37,
+          "item": "oritech:machine_core_1",
+          "pos": [
+            -2265.70896319373,
+            200.0,
+            2272.4338012729895
+          ]
+        }
+      ],
+      "picked_up": {},
+      "pos": [
+        -2267,
+        200,
+        2272
+      ],
+      "ticks": 19
+    },
+    "progress_while_core_missing": 0,
+    "progress_after_warm_reassembly_tick": 1,
+    "reopen_cold_cache_first_progress": 1,
+    "energy_conserved_including_13_lost_preload_ticks": true,
+    "saved": {
+      "inventory": {
+        "minecraft:diamond": 1,
+        "minecraft:diamond_pickaxe": 1,
+        "minecraft:gold_ingot": 1,
+        "minecraft:redstone": 1,
+        "oritech:nickel_ingot": 1
+      },
+      "generator": {
+        "energy": "12936",
+        "\"oritech.machine_progress\"": "0",
+        "Items": "Found no elements matching Items"
+      },
+      "pulverizer": {
+        "energy": "25000",
+        "\"oritech.machine_progress\"": "0",
+        "Items": "Found no elements matching Items"
+      },
+      "foundry": {
+        "energy": "50000",
+        "\"oritech.machine_progress\"": "13",
+        "Items": "[{count: 4, Slot: 0b, id: \"minecraft:iron_ingot\"}, {count: 4, Slot: 1b, id: \"oritech:coal_dust\"}]"
+      },
+      "assembled": 1,
+      "core_used": [
+        1,
+        1,
+        1
+      ]
+    },
+    "final": {
+      "inventory": {
+        "minecraft:diamond_pickaxe": 1,
+        "oritech:adamant_ingot": 1,
+        "oritech:electrum_ingot": 1,
+        "oritech:steel_ingot": 4
+      },
+      "generator": {
+        "energy": "0",
+        "\"oritech.machine_progress\"": "0",
+        "Items": "Found no elements matching Items"
+      },
+      "pulverizer": {
+        "energy": "25000",
+        "\"oritech.machine_progress\"": "0",
+        "Items": "Found no elements matching Items"
+      },
+      "foundry": {
+        "energy": "29144",
+        "\"oritech.machine_progress\"": "0",
+        "Items": "Found no elements matching Items"
+      },
+      "assembled": 1,
+      "core_used": [
+        1,
+        1,
+        1
+      ]
+    },
+    "two_physical_reopens_exact": true,
+    "protocol_decode_errors": 0,
+    "synthetic_local_player": true,
+    "unassisted_survival_or_licensed_join_tested": false,
+    "published": false
+  },
+  "core_pause_evidence": {
+    "graphical_core_break_progress": 0,
+    "graphical_break_coincided_with_recipe_boundary": true,
+    "nonzero_progress_13_pause_and_14_resume_proved_by_headless_original_comparison": true
+  },
+  "dedicated_factory": {
+    "profile": "techquest-oritech-04c-server",
+    "port": 25651,
+    "initial_source_fixtures": {
+      "generator_coal": 1,
+      "pulverizer_coal": 4,
+      "iron_ingots": 4
+    },
+    "input_protection_additional_source_fixtures": {
+      "pulverizer_coal": 1,
+      "iron_ingots": 1
+    },
+    "machines_linked_cores_chests_pipes_modules_are_fixtures": true,
+    "machine_inventory_energy_progress_outputs_or_cargo_injected": false,
+    "generated_energy": 51200,
+    "coal_pulverization_energy_used": 12800,
+    "steel_processing_energy_used": 13312,
+    "energy_after_first_batch": 25088,
+    "additional_dust_energy_used": 3200,
+    "final_energy": 21888,
+    "both_foundry_inputs_protected_with_extractor_active": true,
+    "final_starved_iron_and_dust": [
+      1,
+      1
+    ],
+    "genuine_steel_saved_in_flight": 4,
+    "delivered_steel": 4,
+    "physical_server_restarts": 2,
+    "normal_startup_may_deliver_cargo_before_console_freeze": true,
+    "reopen_cargo_plus_destination_conserved_and_machine_state_exact": true,
+    "final_state_exact_after_second_restart": true,
+    "checks": {
+      "prepare": {
+        "without_extractors": {
+          "fuel_source": 1,
+          "coal_source": 4,
+          "iron_source": 4,
+          "generator_coal": 0,
+          "pulverizer_coal": 0,
+          "pulverizer_dust": 0,
+          "foundry_iron": 0,
+          "foundry_dust": 0,
+          "foundry_steel": 0,
+          "output_steel": 0,
+          "cargo": {
+            "minecraft:coal": 0,
+            "minecraft:iron_ingot": 0,
+            "oritech:coal_dust": 0,
+            "oritech:steel_ingot": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": 1,
+          "core_used": [
+            1,
+            1,
+            1
+          ]
+        },
+        "automatically_processed": {
+          "fuel_source": 0,
+          "coal_source": 0,
+          "iron_source": 0,
+          "generator_coal": 0,
+          "pulverizer_coal": 0,
+          "pulverizer_dust": 0,
+          "foundry_iron": 0,
+          "foundry_dust": 0,
+          "foundry_steel": 4,
+          "output_steel": 0,
+          "cargo": {
+            "minecraft:coal": 0,
+            "minecraft:iron_ingot": 0,
+            "oritech:coal_dust": 0,
+            "oritech:steel_ingot": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 25000,
+            "144 200 176": 88
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": 1,
+          "core_used": [
+            1,
+            1,
+            1
+          ]
+        },
+        "saved_in_flight": {
+          "fuel_source": 0,
+          "coal_source": 0,
+          "iron_source": 0,
+          "generator_coal": 0,
+          "pulverizer_coal": 0,
+          "pulverizer_dust": 0,
+          "foundry_iron": 0,
+          "foundry_dust": 0,
+          "foundry_steel": 0,
+          "output_steel": 0,
+          "cargo": {
+            "minecraft:coal": 0,
+            "minecraft:iron_ingot": 0,
+            "oritech:coal_dust": 0,
+            "oritech:steel_ingot": 4
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 25000,
+            "144 200 176": 88
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": 1,
+          "core_used": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "verify": {
+        "immediately_after_reopen": {
+          "fuel_source": 0,
+          "coal_source": 0,
+          "iron_source": 0,
+          "generator_coal": 0,
+          "pulverizer_coal": 0,
+          "pulverizer_dust": 0,
+          "foundry_iron": 0,
+          "foundry_dust": 0,
+          "foundry_steel": 0,
+          "output_steel": 4,
+          "cargo": {
+            "minecraft:coal": 0,
+            "minecraft:iron_ingot": 0,
+            "oritech:coal_dust": 0,
+            "oritech:steel_ingot": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 25000,
+            "144 200 176": 88
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": 1,
+          "core_used": [
+            1,
+            1,
+            1
+          ]
+        },
+        "first_batch_delivered": {
+          "fuel_source": 0,
+          "coal_source": 0,
+          "iron_source": 0,
+          "generator_coal": 0,
+          "pulverizer_coal": 0,
+          "pulverizer_dust": 0,
+          "foundry_iron": 0,
+          "foundry_dust": 0,
+          "foundry_steel": 0,
+          "output_steel": 4,
+          "cargo": {
+            "minecraft:coal": 0,
+            "minecraft:iron_ingot": 0,
+            "oritech:coal_dust": 0,
+            "oritech:steel_ingot": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 25000,
+            "144 200 176": 88
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": 1,
+          "core_used": [
+            1,
+            1,
+            1
+          ]
+        },
+        "both_input_slots_protected_while_energy_starved": {
+          "fuel_source": 0,
+          "coal_source": 0,
+          "iron_source": 0,
+          "generator_coal": 0,
+          "pulverizer_coal": 0,
+          "pulverizer_dust": 0,
+          "foundry_iron": 1,
+          "foundry_dust": 1,
+          "foundry_steel": 0,
+          "output_steel": 4,
+          "cargo": {
+            "minecraft:coal": 0,
+            "minecraft:iron_ingot": 0,
+            "oritech:coal_dust": 0,
+            "oritech:steel_ingot": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 21800,
+            "144 200 176": 88
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": 1,
+          "core_used": [
+            1,
+            1,
+            1
+          ]
+        },
+        "final": {
+          "fuel_source": 0,
+          "coal_source": 0,
+          "iron_source": 0,
+          "generator_coal": 0,
+          "pulverizer_coal": 0,
+          "pulverizer_dust": 0,
+          "foundry_iron": 1,
+          "foundry_dust": 1,
+          "foundry_steel": 0,
+          "output_steel": 4,
+          "cargo": {
+            "minecraft:coal": 0,
+            "minecraft:iron_ingot": 0,
+            "oritech:coal_dust": 0,
+            "oritech:steel_ingot": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 21800,
+            "144 200 176": 88
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": 1,
+          "core_used": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "final": {
+        "final": {
+          "fuel_source": 0,
+          "coal_source": 0,
+          "iron_source": 0,
+          "generator_coal": 0,
+          "pulverizer_coal": 0,
+          "pulverizer_dust": 0,
+          "foundry_iron": 1,
+          "foundry_dust": 1,
+          "foundry_steel": 0,
+          "output_steel": 4,
+          "cargo": {
+            "minecraft:coal": 0,
+            "minecraft:iron_ingot": 0,
+            "oritech:coal_dust": 0,
+            "oritech:steel_ingot": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 21800,
+            "144 200 176": 88
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": 1,
+          "core_used": [
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    }
+  },
+  "regressions": {
+    "generator_furnace_cases": 63,
+    "generator_furnace_states": 414,
+    "quartz_pulverizer_cases": 67,
+    "quartz_pulverizer_states": 536,
+    "quartz_physical_reopen_matched": true,
+    "capacity_cases": 126,
+    "redstone_cases": 24,
+    "module_menu_cases": 66,
+    "legacy_menu_operations": 20,
+    "crafting_grids": 872,
+    "ore_loot_rolls": 60,
+    "python_unit_tests": 124,
+    "all_six_pretty_pipes_recipe_payloads_unchanged_from_0_8": true,
+    "processing_transport_and_recipe_regressions_run_on_04a": true,
+    "04c_native_bundle_differs_only_in_screen_slot_positions": true,
+    "foundry_680_states_graphical_chain_and_dedicated_factory_rerun_on_04c": true
+  },
+  "installation": {
+    "profile": "techquest-oritech-04c-server",
+    "port": 25651,
+    "bind": "127.0.0.1",
+    "online_mode": true,
+    "whitelist": true,
+    "eula_consent_reused": true,
+    "content_modules": 8,
+    "native_bundles": 4,
+    "core_corrections": 2,
+    "locks_verified_and_servers_stopped": [
+      {
+        "profile": "techquest-oritech-04c-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-oritech-04a-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-pipes-08a-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-oritech-03b-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-pipes-06a-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-oritech-02b-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      }
+    ],
+    "historical_profiles_tools_locks_unchanged": true
+  },
+  "mojang_access": {
+    "version_manifest_http": 200,
+    "known_library_http": 200,
+    "public_session_service_blocklist_http": 200,
+    "root_session_url_http": 403,
+    "authenticated_join_tested": false
+  },
+  "developer_probe_source_sha256": {
+    "horizon/probes/OritechFoundryProbe.java": "a62a6751318d7222fadb881c244299b117617314e8cb1f0bd039d595c5dac8de",
+    "horizon/probes/live_oritech_foundry.py": "a6606162720956a2c3db1a784dea0f8a561459cd54d0fe94dd0b30a4476dc479",
+    "horizon/probes/live_oritech_foundry_gui.py": "3fa1fd4f1f1b36b83516ad7846af26e5ecff200b8a82395c92fd3fa45c36f781",
+    "horizon/probes/live_oritech_foundry_server.py": "d8e99d8b5840d5e06563e0dac559b42368c695d1867d786511333548e00707af",
+    "horizon/probes/run_oritech_reference.py": "9e24c1f9b43d31a8a4f8ddd1e5e92c0ec1eb0224de97d0ae2ca0ec3efc56f4a2"
+  },
+  "proof_files_sha256": {
+    "oritech-foundry-reference-v2/initial-result.json": "36f5772c068db93252ee848091a49f6dc82c8f8f8106fc2e09a9b8be7423f809",
+    "oritech-foundry-reference-v2/reopen-result.json": "bf826328b9cd8c1b7fa6d79524227fd76c0fed4833c90fa41b6706b1b585dd25",
+    "oritech-foundry-reference-v2/inputs.json": "f5476afc17b931771ed009e94ad61b1d912318e06b34d01335d687b03b455476",
+    "oritech-04c-foundry-parity-v1/checked-result.json": "e0925d2c70be020363c4a40b5872869296589cf3c5590dd0be9ac2f926400b6e",
+    "oritech-04c-foundry-parity-v1/initial-result.jsonl": "154829f13a39f36758ed4f7a59f7680200c86f355ace2ac36ce2ecdc830cec44",
+    "oritech-04c-foundry-parity-v1/reopen-result.jsonl": "1bc0acbacf001539fd11c6f1d08c33483ab0d5d99b32cda12ecb6a7b4e7e98de",
+    "oritech-04-content-cases-v1.json": "947f2f788415beb36aca1ab475dcf511083325def2547cbe9e4a2a742e196104",
+    "oritech-04-content-reference-v1/initial-result.json": "823585bcbfeb67a1b7071f6a791069f0ba65333761ed93ff37e1534d4a370655",
+    "oritech-04-content-reference-v1/inputs.json": "50dd1a10c9ef905c0011d3853b2ad01f21896f29991a1d99b9b1bf2d8d886d2e",
+    "oritech-04-content-parity-result-v1.json": "b8b23a7eb1b0e4538cf9d1775f78cd90c2679082f351fa8302257c357197243d",
+    "oritech-04a-energy-regression-v1/checked-result.json": "bdcde62b55a8d4d551897fab31987bd9c6fc822e2b59d37443f445e3d903fc62",
+    "oritech-04a-pulverizer-regression-v1/checked-result.json": "f78ea73ab86c2c4fbfe2d9da3c29291e9444e1eda4767b0ee5486a135f074fa2",
+    "oritech-04a-capacity-regression-v1/checked-result.json": "4f9c5d919bd85e66b53b03e8c685f0941b4846ccb9265659a17cb8abf0e4e901",
+    "oritech-04a-redstone-regression-v1/checked-result.json": "4adb10759515a2e23de11513a09c3179ce2fa8a3b35b3ff6c38e7040dd8584cc",
+    "oritech-04-pipes-menu-redstone-result-v1.json": "fb8cbafd99816d6271df5ff5fcd33ef3f8281cdbcf299dc5e9958781c07febad",
+    "oritech-04-pipes-menu-legacy-result-v1.json": "d15bb00c6667c9bf6f8f3321859620cb5bc1da32d2c830d3eedc6eaad6765fbf",
+    "oritech-04a-facing-gui-v1/result.json": "e04ed4b0cceae396de6a1e714429b92d0ee622906ce7245713ab802706bedeec",
+    "oritech-04a-facing-gui-v1/actions.json": "1b226d5d2c1b40859914e1a86799091a5747b10157c4be8592b42eb5a163f8b4",
+    "oritech-04-network-check-v1.json": "4feb0b44aac48e882d16ae863e7878ff64da6f487d68b2f1a5746e96b2f6602e",
+    "oritech-04-network-check-v2.json": "dd03d0db8bc99dc925309231ebf9f8bfb0db45134b99eff13dcd5760e5de1294",
+    "oritech-04-pipes-recipes-unchanged-v1.json": "b56a2e423456bb0763ff0cbf84e0afb3ca76c5741905ae3dd67b763395e959ba",
+    "oritech-04-ui-only-bundle-delta-v1.json": "923c3e145b3db4059a5e033c74eeb57fc3328112e02e652115cf6fd749105877",
+    "oritech-04-python-tests-v3.log": "91c86208c269865dbcd150b61b3ded67e0592cacc122ab8331f713a55bc9ee3d",
+    "oritech-04-profile-verification-v2.json": "65e11282d52f3fbe81a2378e7af6765985a1722547e841f0f488755e338b4722",
+    "oritech-04c-install-v1.json": "4712b0a970baf9d923d71816090426271d58fd8f904f8645ac6a627fbe23629a",
+    "techquest-oritech-04c-server/techquest-local-install.json": "9a33035c198be544c227c9e6fc51241dbdc09631093cd91bc7e7e0bfdac4b028",
+    "native-tools-oritech-04c/build-result.json": "72405e028520cc236f261f3a10e79c9bd08c958540bee407a99f0572e7075963",
+    "techquest_oritech-oritech04-v3.hnmod": "b9123fa90564dfe6f7b544d2f580b6b26330ad9f3a654ba1306893c3394bd7e1",
+    "techquest_pretty_pipes-oritech04-v1.hnmod": "dffad0eaf4047ad99e5ea9870e0a75ecc6ed04221c5e2c0e74b5449a11b86e95",
+    "oritech-04-native-sdk-v3.json": "dd8a17947f88ef50f5370784872fd4d2f144e518fcbff2b30e07d5164b09add1",
+    "oritech-04-mixins-v4.json": "103843c08f65d9da9a18b607eef8fe28f146178a08447406c081e7fce3992a9e",
+    "oritech-04-core-patches-v4.json": "32a9ca6daf5c9c640844852a3d7a6c136af411270511396a01b58f87849e434d",
+    "oritech-04-native-generation-v4/.horizon-mixins-stage.json": "924aaac12d6143327dba031428665899664943b55c1d5fd0407c08bee9cd94ff",
+    "oritech-04-native-build-v4.log": "91bbb5c5d19a11b6cfa143bb2ffa9ae790a826dfb223732b1dbe2cadcfc92d3f",
+    "oritech-content-04-v1/techquest-oritech-trial.json": "29d83ca8a4524439771c4cab33975b99c52ac9546e8c923daefa4d8d8f127895",
+    "oritech-04-content-compile-command-v1.json": "c0731ea8a90331646a81e3d9521233f2f6fb18c5a18701917f710d65d2b38fda",
+    "oritech-04-pipes-menu-compile-command-v1.json": "a9396cab8a7001dad2173821d2b4a2985a94081bf422a427349636023bcf96c4",
+    "oritech-04c-foundry-server-prepare-v1.json": "c63e56914144b5a9b119cf3c4c1e28ff3b771fda891796e4dbd272903e150c14",
+    "oritech-04c-foundry-server-prepare-v1.commands.json": "fb07fc67f2f82a4eaab0fd0ddfc9eb058f575bcc87761ab8721ad2592fd931b7",
+    "oritech-04c-foundry-server-verify-v1.json": "f835e857b08d2421fb21f0cb108d5580f242a5e1b017398f42e8762d009274c8",
+    "oritech-04c-foundry-server-verify-v1.commands.json": "a1ac26b8a07bdf5f8411cd626dbc069cd7f122f641c95cdbc0db9e26b5ca8bbd",
+    "oritech-04c-foundry-server-final-v1.json": "3d42e88eabbcc81490e43574d18eb5405c6f874200f94ebbf11675cad797d067",
+    "oritech-04c-foundry-server-final-v1.commands.json": "24c32c6e45e7c18ae3c6878e9adb8cf26179e98422c60a8b9a3089e6e9e8d68d",
+    "oritech-04c-foundry-gui-v1/checked-result.json": "c20a4e407a741b061c1cb116c57b70e43ca2472631f45aec63b96a9eea1d6c35",
+    "oritech-04c-foundry-gui-v1/actions.json": "c7917ec4edda17125c35b882447ee0e14418885458859ddd81fd137548526caa",
+    "oritech-04c-foundry-gui-v1/foundry-two-inputs.png": "4b94b5767edbc544f65160e6b31e2aa7bd4bb170099fd3dadf3b42e16da5cfd6",
+    "oritech-04c-foundry-gui-v1/foundry-working.png": "c15a67b8c0025ae28d25fdfbf59434f542fd7d44ad33dd567cf5a010b00289a9",
+    "oritech-04c-foundry-gui-v1/foundry-collected-alloys.png": "4d00cd0c815613693af088168c688c4a467e8acdc67010d161d9cbc7e81651ef",
+    "oritech-04c-foundry-gui-v1/craft-and-partial-steel-console.log": "0c43116439f3849a8ac2ba2f1748e4c3f40a90a7c02f268fb7b6666804459cc6",
+    "oritech-04c-foundry-gui-v1/rebuild-and-alloys-console.log": "cdf5af44ed3e6ea5d77754fa9518d770dac3077ed9b253c3b679607d6df91d45",
+    "oritech-04c-foundry-gui-v1/final-reopen-console.log": "871f7fe1b56c286e43ab2cfaf3d7982aad87b457e0b3ef685374ad3d52337c9f",
+    "oritech-04c-foundry-gui-v1/partial-steel-checkpoint/checkpoint.json": "d84d7f4ca1f7e5d7e23c647b290629a3fabc6582ee3c4d1718a6f8af92fc30ed",
+    "oritech-04c-foundry-gui-v1/partial-steel-checkpoint/actions.json": "30b1cbaf347d10522fbbfd583227d26e31a78c81da3b5fca8d8d725b0f610f7d"
+  },
+  "remaining_scope": [
+    "Other Foundry/Pulverizer recipes, addons and higher-quality cores",
+    "Unloaded or cross-chunk multiblock lifecycle and general core capability delegation",
+    "Unassisted survival from spawn and complete TechQuest mechanics",
+    "Licensed dedicated client join, multiplayer and comparable load measurements",
+    "Full source machine geometry, working animations and visual fidelity"
+  ],
+  "excluded_failed_native_stage": {
+    "generation": "oritech-04-native-generation-v3",
+    "injections": 19,
+    "modules": 6,
+    "missing_flat_oritech_manifest": true,
+    "not_used_by_final_profile": true
+  },
+  "neo_forge_main_changed": false,
+  "licensed_join_tested": false,
+  "full_modpack_ported": false,
+  "goal_complete": false,
+  "pushed": false,
+  "merged": false,
+  "published": false
+}

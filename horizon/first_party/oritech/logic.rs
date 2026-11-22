@@ -1,4 +1,4 @@
-// Oritech 1.2.13 generator/furnace semantics: Rearth, CC0-1.0.
+// Oritech 1.2.13 selected machine semantics: Rearth, CC0-1.0.
 // Source pin and scope: README.md; dedication retained in LICENSE-ORITECH.
 // Horizon integration adapts MIT Game::use_hand and native energy helpers;
 // Copyright (c) 2026 Ludovic Marie and Horizon contributors. LICENSE-HORIZON.
@@ -10,12 +10,13 @@ use horizon_world::nbt::{Compound, Tag};
 pub(super) const GENERATOR: &str = "oritech:basic_generator_block";
 pub(super) const FURNACE: &str = "oritech:powered_furnace_block";
 pub(super) const PULVERIZER: &str = "oritech:pulverizer_block";
+pub(super) const FOUNDRY: &str = "oritech:foundry_block";
 pub(super) const CORE: &str = "oritech:machine_core_1";
 const PROGRESS: &str = "oritech.machine_progress";
 const ASSEMBLED: &str = "techquest_assembled";
 
 pub(super) fn machine(id: &str) -> bool {
-    matches!(id, GENERATOR | FURNACE | PULVERIZER)
+    matches!(id, GENERATOR | FURNACE | PULVERIZER | FOUNDRY)
 }
 fn int(nbt: &Compound, key: &str) -> i32 {
     match nbt.get(&key.into()) {
@@ -50,9 +51,14 @@ fn controller(game: &Game<'_>, pos: [i32; 3]) -> Option<[i32; 3]> {
             ["controller_x", "controller_y", "controller_z"][i],
         ))
     });
-    (above(p) == pos && game.native_block(p) == FURNACE).then_some(p)
+    ((above(p) == pos && game.native_block(p) == FURNACE)
+        || (game.native_block(p) == FOUNDRY && foundry_cores(game, p).contains(&pos)))
+    .then_some(p)
 }
 pub(super) fn assemble(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
+    if game.native_block(pos) == FOUNDRY {
+        return assemble_foundry(game, pos);
+    }
     let core_pos = above(pos);
     if game.native_block(core_pos) != CORE {
         return false;
@@ -81,6 +87,112 @@ pub(super) fn assemble(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
             })
             .unwrap_or(false)
 }
+/// CC0 Geometry.rotatePosition for Foundry's three core1 positions.
+fn foundry_cores(game: &Game<'_>, pos: [i32; 3]) -> [[i32; 3]; 3] {
+    let facing = game
+        .native_block_property(pos, "facing")
+        .unwrap_or_else(|| "north".into());
+    let side = match facing.as_str() {
+        "east" => [0, 0, 1],
+        "south" => [-1, 0, 0],
+        "west" => [0, 0, -1],
+        _ => [1, 0, 0],
+    };
+    [
+        std::array::from_fn(|i| pos[i].saturating_add(side[i])),
+        above(pos),
+        std::array::from_fn(|i| above(pos)[i].saturating_add(side[i])),
+    ]
+}
+fn valid_foundry(game: &Game<'_>, pos: [i32; 3]) -> bool {
+    foundry_cores(game, pos)
+        .iter()
+        .all(|p| controller(game, *p) == Some(pos))
+}
+fn assemble_foundry(game: &mut Game<'_>, pos: [i32; 3]) -> bool {
+    let core_positions = foundry_cores(game, pos);
+    let active = game.world.block_entities.get(&(pos[0],pos[1],pos[2])).is_some_and(|e|
+        matches!(e,horizon_client_lib::containers::BlockEntity::Mod(e) if flag(&e.nbt, ASSEMBLED)));
+    if active {
+        return valid_foundry(game, pos);
+    }
+    if !core_positions.iter().all(|p| game.native_block(*p) == CORE && game.world.block_entities.get(&(p[0],p[1],p[2])).is_some_and(|e|
+        matches!(e,horizon_client_lib::containers::BlockEntity::Mod(e) if !flag(&e.nbt,"techquest_core_used")))) { return false; }
+    for p in core_positions {
+        let linked = game.native_with_mod_block_entity(p, |core| {
+            core.nbt.insert("techquest_core_used".into(), Tag::Byte(1));
+            for (i, key) in ["controller_x", "controller_y", "controller_z"]
+                .iter()
+                .enumerate()
+            {
+                put(&mut core.nbt, key, pos[i] - p[i]);
+            }
+        });
+        if linked.is_none() {
+            return false;
+        }
+    }
+    game.native_with_mod_block_entity(pos, |entity| {
+        entity.nbt.insert(ASSEMBLED.into(), Tag::Byte(1))
+    })
+    .is_some()
+}
+
+fn linked_to(nbt: &Compound, pos: [i32; 3]) -> [i32; 3] {
+    std::array::from_fn(|i| {
+        pos[i].saturating_add(int(
+            nbt,
+            ["controller_x", "controller_y", "controller_z"][i],
+        ))
+    })
+}
+pub(super) fn release_controller(
+    entities: &mut horizon_client_lib::block_entities::BlockEntities,
+    controller: [i32; 3],
+) {
+    for (key, value) in entities.iter_mut() {
+        let horizon_client_lib::containers::BlockEntity::Mod(entity) = value else {
+            continue;
+        };
+        let pos = [key.0, key.1, key.2];
+        if entity.id == CORE
+            && flag(&entity.nbt, "techquest_core_used")
+            && linked_to(&entity.nbt, pos) == controller
+        {
+            entity
+                .nbt
+                .insert("techquest_core_used".into(), Tag::Byte(0));
+        }
+        if entity.id == FOUNDRY && pos == controller {
+            entity.nbt.insert(ASSEMBLED.into(), Tag::Byte(0));
+            if let Some(assembled) = entity.data.get_mut(3) {
+                *assembled = 0;
+            }
+        }
+    }
+}
+pub(super) fn release_at(
+    entities: &mut horizon_client_lib::block_entities::BlockEntities,
+    pos: [i32; 3],
+) {
+    let target = match entities.get(&(pos[0], pos[1], pos[2])) {
+        Some(horizon_client_lib::containers::BlockEntity::Mod(entity)) if entity.id == FOUNDRY => {
+            pos
+        }
+        Some(horizon_client_lib::containers::BlockEntity::Mod(entity))
+            if entity.id == CORE && flag(&entity.nbt, "techquest_core_used") =>
+        {
+            linked_to(&entity.nbt, pos)
+        }
+        _ => return,
+    };
+    if !matches!(entities.get(&(target[0],target[1],target[2])),Some(horizon_client_lib::containers::BlockEntity::Mod(entity)) if entity.id == FOUNDRY)
+    {
+        return;
+    }
+    release_controller(entities, target);
+}
+
 fn shrink(slot: &mut Option<ItemStack>) {
     if let Some(stack) = slot {
         stack.count = stack.count.saturating_sub(1);
@@ -106,7 +218,7 @@ pub(super) fn update(entity: &mut ModBlockEntity) {
     let energy = int(&entity.nbt, "energy").max(0);
     // data slots are not saved by Horizon. The pulverizer uses the last
     // otherwise-unused field to identify a freshly loaded recipe cache.
-    let state = if entity.id == PULVERIZER {
+    let state = if matches!(&*entity.id, PULVERIZER | FOUNDRY) {
         entity.data.get(4).copied().unwrap_or(0)
     } else {
         i32::from(flag(&entity.nbt, ASSEMBLED))
@@ -115,13 +227,21 @@ pub(super) fn update(entity: &mut ModBlockEntity) {
         energy & 0xffff,
         (energy >> 16) & 0xffff,
         int(&entity.nbt, PROGRESS),
-        int(&entity.nbt, "storedBurn"),
+        if entity.id == FOUNDRY {
+            i32::from(flag(&entity.nbt, ASSEMBLED))
+        } else {
+            int(&entity.nbt, "storedBurn")
+        },
         state,
     ];
 }
 pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEntity) {
-    if entity.id == PULVERIZER {
-        tick_pulverizer(game, entity);
+    if matches!(&*entity.id, PULVERIZER | FOUNDRY) {
+        if entity.id == FOUNDRY && flag(&entity.nbt, ASSEMBLED) && !valid_foundry(game, pos) {
+            release_controller(&mut game.world.block_entities, pos);
+            entity.nbt.insert(ASSEMBLED.into(), Tag::Byte(0));
+        }
+        tick_processing(game, entity);
         return;
     }
     let count = if entity.id == GENERATOR { 1 } else { 2 };
@@ -212,38 +332,87 @@ pub(super) fn tick(game: &mut Game<'_>, pos: [i32; 3], entity: &mut ModBlockEnti
 
 const PULVERIZER_CACHE: &str = "techquest_pulverizer_recipe";
 
-fn pulverizer_matches(
+fn processing_matches(
     game: &Game<'_>,
     recipe: &serde_json::Value,
-    input: Option<&ItemStack>,
+    inputs: &[Option<ItemStack>],
 ) -> bool {
-    let Some(input) = input.filter(|stack| stack.count > 0) else {
+    let Some(ingredients) = recipe["ingredients"]
+        .as_array()
+        .filter(|v| v.len() == inputs.len())
+    else {
         return false;
     };
-    let Some(ingredients) = recipe["ingredients"].as_array().filter(|v| v.len() == 1) else {
-        return false;
-    };
-    game.native_recipe_ingredient(&ingredients[0])
-        .is_some_and(|ingredient| ingredient.test(input))
+    // Original complexMatch greedily consumes copied stacks. Ingredient count
+    // is one; matching does not require a particular slot order.
+    let mut copied = inputs.to_vec();
+    for value in ingredients {
+        let Some(ingredient) = game.native_recipe_ingredient(value) else {
+            return false;
+        };
+        let Some(slot) = copied.iter_mut().find(|s| {
+            s.as_ref()
+                .is_some_and(|s| s.count > 0 && ingredient.test(s))
+        }) else {
+            return false;
+        };
+        shrink(slot);
+    }
+    true
 }
 
-fn tick_pulverizer(game: &Game<'_>, entity: &mut ModBlockEntity) {
+fn consume_processing_inputs(
+    game: &Game<'_>,
+    recipe: &serde_json::Value,
+    inputs: &mut [Option<ItemStack>],
+) {
+    let mut offset = 0;
+    for value in recipe["ingredients"].as_array().unwrap() {
+        let ingredient = game.native_recipe_ingredient(value).unwrap();
+        for i in 0..inputs.len() {
+            let index = (i + offset) % inputs.len();
+            if inputs[index]
+                .as_ref()
+                .is_some_and(|s| s.count > 0 && ingredient.test(s))
+            {
+                shrink(&mut inputs[index]);
+                offset += 1;
+                break;
+            }
+        }
+    }
+}
+
+fn tick_processing(game: &Game<'_>, entity: &mut ModBlockEntity) {
+    let foundry = entity.id == FOUNDRY;
+    let input_count = if foundry { 2 } else { 1 };
+    let energy_cost = if foundry { 128 } else { 32 };
+    let cache_key = if foundry {
+        "techquest_foundry_recipe"
+    } else {
+        PULVERIZER_CACHE
+    };
+    let recipe_type = if foundry {
+        "oritech:foundry"
+    } else {
+        "oritech:pulverizer"
+    };
     entity.items.resize(3, None);
     if entity.data.get(4) != Some(&1) {
         // The original currentRecipe is transient: a loaded machine forgets
         // it, even though progress itself was saved. Keep that observed reset
         // behavior without global entity maps or native pointer identities.
-        entity.nbt.remove(&PULVERIZER_CACHE.into());
+        entity.nbt.remove(&cache_key.into());
         entity.data.resize(5, 0);
         entity.data[4] = 1;
     }
-    if flag(&entity.nbt, "oritech.redstone") {
+    if flag(&entity.nbt, "oritech.redstone") || (foundry && !flag(&entity.nbt, ASSEMBLED)) {
         update(entity);
         return;
     }
     let mut progress = int(&entity.nbt, PROGRESS);
     let mut energy = int(&entity.nbt, "energy").max(0);
-    let cached = entity.nbt.get(&PULVERIZER_CACHE.into()).and_then(|value| {
+    let cached = entity.nbt.get(&cache_key.into()).and_then(|value| {
         if let Tag::String(text) = value {
             text.to_string()
                 .ok()
@@ -254,18 +423,18 @@ fn tick_pulverizer(game: &Game<'_>, entity: &mut ModBlockEntity) {
     });
     let is_cached = cached
         .as_ref()
-        .is_some_and(|value| pulverizer_matches(game, value, entity.items[0].as_ref()));
+        .is_some_and(|value| processing_matches(game, value, &entity.items[..input_count]));
     let recipe = if is_cached {
         cached
     } else {
-        game.native_recipes_of_type("oritech:pulverizer")
+        game.native_recipes_of_type(recipe_type)
             .iter()
-            .find(|recipe| pulverizer_matches(game, &recipe.json, entity.items[0].as_ref()))
+            .find(|recipe| processing_matches(game, &recipe.json, &entity.items[..input_count]))
             .map(|recipe| (*recipe.json).clone())
     };
     if let Some(recipe) = recipe {
         let results = recipe["results"].as_array().and_then(|values| {
-            if !(1..=2).contains(&values.len()) {
+            if !(1..=3 - input_count).contains(&values.len()) {
                 return None;
             }
             values
@@ -278,18 +447,21 @@ fn tick_pulverizer(game: &Game<'_>, entity: &mut ModBlockEntity) {
             .filter(|n| *n > 0 && *n <= i32::MAX as i64);
         let results = results.filter(|results| {
             results.iter().enumerate().all(|(i, result)| {
-                entity.items[i + 1].as_ref().is_none_or(|current| {
-                    current.item == result.item
-                        && current.count.saturating_add(result.count) <= max_stack(game, current)
-                })
+                entity.items[i + input_count]
+                    .as_ref()
+                    .is_none_or(|current| {
+                        current.item == result.item
+                            && current.count.saturating_add(result.count)
+                                <= max_stack(game, current)
+                    })
             })
         });
         if let (Some(results), Some(duration)) = (results, duration) {
             if !is_cached {
                 progress = 0;
             }
-            if energy >= 32 {
-                energy -= 32;
+            if energy >= energy_cost {
+                energy -= energy_cost;
                 progress += 1;
                 if !is_cached {
                     // The source keeps a matching cached recipe over /reload.
@@ -298,20 +470,20 @@ fn tick_pulverizer(game: &Game<'_>, entity: &mut ModBlockEntity) {
                     if let Ok(text) = serde_json::to_string(&recipe) {
                         entity
                             .nbt
-                            .insert(PULVERIZER_CACHE.into(), Tag::String(text.as_str().into()));
+                            .insert(cache_key.into(), Tag::String(text.as_str().into()));
                     }
                 }
                 if i64::from(progress) >= duration {
-                    shrink(&mut entity.items[0]);
+                    consume_processing_inputs(game, &recipe, &mut entity.items[..input_count]);
                     for (i, result) in results.into_iter().enumerate() {
-                        if let Some(current) = &mut entity.items[i + 1] {
+                        if let Some(current) = &mut entity.items[i + input_count] {
                             current.count += result.count;
                         } else {
-                            entity.items[i + 1] = Some(result);
+                            entity.items[i + input_count] = Some(result);
                         }
                     }
-                    // Only the original quartz recipe is staged in this subset;
-                    // it has no secondary small dust to combine or random result.
+                    // Selected recipes have no secondary small-dust compaction
+                    // or random result processing.
                     progress = 0;
                 }
             }
@@ -319,7 +491,7 @@ fn tick_pulverizer(game: &Game<'_>, entity: &mut ModBlockEntity) {
             progress = 0;
         }
     } else {
-        entity.nbt.remove(&PULVERIZER_CACHE.into());
+        entity.nbt.remove(&cache_key.into());
         progress = 0;
     }
     put(&mut entity.nbt, "energy", energy);
@@ -349,11 +521,11 @@ pub(super) fn interact(
     if !canceled {
         let containers = game.native_containers();
         game.world.block_entities.set_mod_containers(containers);
-        let was_assembled = id != FURNACE
+        let was_assembled = !matches!(&*id, FURNACE | FOUNDRY)
             || game
                 .native_with_mod_block_entity(hit.pos, |entity| flag(&entity.nbt, ASSEMBLED))
                 .unwrap_or(false);
-        let assembled = id != FURNACE || assemble(game, hit.pos);
+        let assembled = !matches!(&*id, FURNACE | FOUNDRY) || assemble(game, hit.pos);
         // Original consumes the first successful assembly click without a menu.
         if assembled && was_assembled {
             game.native_with_mod_block_entity(hit.pos, |entity| update(entity));
