@@ -37,11 +37,23 @@ public final class PoweredElytraEnergy {
     }
 
     public static boolean isPoweredChest(ItemStack stack) {
-        if (!isChestArmor(stack)) {
-            return false;
+        if (stack.isEmpty()) return false;
+
+        // Some Superb Warfare armor subclasses do not expose a reliable
+        // ItemStack equipment-slot override in NeoForge. Match only the two
+        // exact supported chest item IDs, and demand a real tech upgrade.
+        // This must happen BEFORE the generic ArmorItem/slot fallback.
+        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if ("superbwarfare".equals(itemId.getNamespace())) {
+            String name = itemId.getPath();
+            return ("ru_chest_6b43".equals(name) || "us_chest_iotv".equals(name))
+                    && HybridWarfareMod.technology(stack) != null
+                    && HybridWarfareMod.energyCapacity(stack) >= COST_PER_TICK;
         }
+
+        if (!isChestArmor(stack)) return false;
         if (HybridWarfareMod.technology(stack) != null) {
-            return HybridWarfareMod.energyCapacity(stack) > 0;
+            return HybridWarfareMod.energyCapacity(stack) >= COST_PER_TICK;
         }
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if ("ic2".equals(id.getNamespace()) && ModList.get().isLoaded("ic2")) {
