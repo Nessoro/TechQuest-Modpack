@@ -563,3 +563,48 @@ Waterlogging interaction, tight selection boxes, player wrench controls,
 framed/duct/superconductor variants, addons, exact shuffled allocation, unloaded
 network fidelity and multiplayer remain unfinished. This is not the full mod.
 [Native cable results and regression evidence](../../ORITECH_ENERGY_PIPE_RESULT.json).
+
+## Wrench reference; native implementation pending
+
+The pinned original `Wrench`, `ItemContent` and `OritechStartupConfig` own CC0
+sources define a one-stack tool, eight-tick cooldown and **tight cable selection
+by default**. Native content 0.6 currently retains a full selection cube; the
+wrench milestone must supply the original thin selection shape as well as its
+interaction logic. Collision already uses thin geometry.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-wrench-reference-new" --oracle wrench --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-wrench-reference-new" --oracle wrench --reopen
+```
+
+`OritechWrenchProbe.java` records 9,600 original shape rays: 64 masks (bits
+north/east/south/west/up/down), six views and 25 perpendicular fraction pairs.
+The actual thin shape is hit 5,760 times, 960 per view; the original protected
+side selector is called for each hit. Its active **outer boxes are 5..11**,
+followed by a center box; the center is skipped once an outer box clipped.
+Do not replace this algorithm with the first block face or nearest center face.
+
+The fixture synchronizes FakePlayer head/body and previous rotation and checks
+the resulting view vector at every aim. The initial unsynchronized development
+runs are excluded. Original dependency APIs are binary-only; no dependency Java
+source or bytecode is read/decompiled.
+
+Twelve direction/hand cases execute 72 original item uses at offsets
+0, 1, 7, 8, 9, 16. Successful uses occur at 0/8/16, with the held tool retained.
+An air miss also consumes the cooldown, blocking the other hand until tick 8.
+Thirteen neighbor callbacks cover six sides, ordinary wire/interface conversion
+and an invalid target. Disconnecting an endpoint's last machine discards its
+333 E fixture buffer; reconnecting starts empty. Four Shift-removal cases
+(ordinary/interface × survival/creative) each drop one normal cable. The native
+implementation must preserve the creative drop behavior, instead of applying
+ordinary creative mining rules. The recipe consumes three steel and one nickel.
+
+A disconnected pair is physically saved/reopened, compared exactly and then
+reconnected through a fresh original wrench use. These are developer FakePlayer
+callbacks with explicit block/camera/cooldown fixtures, not real client packets.
+The next work remains native dispatch, graphical crafting/actions, saves and
+regressions; waterlogging and other wrench targets are separate remaining work.
+The existing native 0.5/content 0.6 source bytes and sealed profile are unchanged.
+[Original wrench contract and hashes](../../ORITECH_WRENCH_REFERENCE_RESULT.json).

@@ -1,0 +1,337 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-22T20:50:35.885520+00:00",
+  "scope": "Original CC0 Oritech wrench camera/side selection, cooldown, neighbor callbacks and Shift removal; native wrench implementation pending",
+  "horizon_target": "26.3",
+  "unchanged_native_cable_content_version": "0.6.0",
+  "unchanged_native_cable_bundle_version": "0.5.0",
+  "source": {
+    "oritech_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "license_basis": "Exact pinned own CC0-1.0 dedication and matching binary declaration; consulted own headers have no override",
+    "source_blob_sha1_checked_against_pinned_tree_for_new_reads": true,
+    "own_source_sha256": {
+      "item/tools/Wrench.java": "c92f738ef5686f096c2618a252f5ce4fcc8a1d880edba83d1abbd3781f2d2807",
+      "init/OritechStartupConfig.java": "f460d0d226ed417a2f4cebade76466c7c4bfed67a8d4ef0237a9e67f70a0baf0",
+      "init/ItemContent.java": "696accf4423042ca60dd52453cbe7953c52d4cfcd3b61735b75174706e1b38dd",
+      "block/blocks/pipes/GenericPipeBlock.java": "ed3a14fa0664245fe33291faae2a72a83b049c321805d85212ee4581ef6d28eb",
+      "block/blocks/pipes/GenericPipeConnectionBlock.java": "283be877a9368efab9a58d2ba4c9f711aaa57d5bdeedce4962da55a08bd3c66b"
+    },
+    "dependency_java_source_read_or_decompiled": false
+  },
+  "original": {
+    "reference_inputs": {
+      "oracle": "wrench",
+      "probe_source_sha256": "a5ef0ad6a360f2020d2628a640bc89cc1ca0858f37feeff0830da4cdfbd26d03",
+      "probe_jar_sha256": "f539618b91cdf97daa10c7d37d29032ad5c5caebd099cf3e657e088da7b84b04",
+      "oritech": "1.2.13",
+      "minecraft": "1.21.1",
+      "neoforge": "21.1.264"
+    },
+    "head_body_and_previous_rotation_explicitly_synchronized": true,
+    "camera_view_direction_checked_on_every_aim": true,
+    "default_tight_cable_hitboxes": true,
+    "geometry_rays": 9600,
+    "all_connection_masks": 64,
+    "mask_bit_order": [
+      "north",
+      "east",
+      "south",
+      "west",
+      "up",
+      "down"
+    ],
+    "view_directions": 6,
+    "perpendicular_fraction_pairs_per_direction": 25,
+    "actual_thin_selection_shape_hits": 5760,
+    "selection_shape_misses": 3840,
+    "hits_by_view": {
+      "down": 960,
+      "up": 960,
+      "north": 960,
+      "south": 960,
+      "west": 960,
+      "east": 960
+    },
+    "side_selection": "Original active outer boxes 5..11 then center; center skipped when an outer shape already clipped. Actual EnergyPipeBlock selection uses thin 6..10 geometry.",
+    "full_item_use_hand_direction_cases": 12,
+    "full_item_use_calls": 72,
+    "full_use_clock_checkpoints": [
+      0,
+      1,
+      7,
+      8,
+      9,
+      16
+    ],
+    "cooldown_ticks": 8,
+    "results_at_checkpoints": [
+      "SUCCESS",
+      "FAIL",
+      "FAIL",
+      "SUCCESS",
+      "FAIL",
+      "SUCCESS"
+    ],
+    "cooldown_fractions_at_checkpoints": [
+      1,
+      0.875,
+      0.125,
+      1,
+      0.875,
+      1
+    ],
+    "miss_consumes_cooldown_and_blocks_other_hand": {
+      "blocked_offhand": {
+        "result": "FAIL",
+        "ray_before_use": {
+          "type": "BLOCK",
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "face": "up",
+          "selected_side": "east"
+        },
+        "cooldown": 1.0,
+        "stack_count": 1,
+        "state": {
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "false",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "0"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        }
+      },
+      "after_eight_ticks": {
+        "result": "SUCCESS",
+        "ray_before_use": {
+          "type": "BLOCK",
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "face": "up",
+          "selected_side": "east"
+        },
+        "cooldown": 1.0,
+        "stack_count": 1,
+        "state": {
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "0",
+            "north": "0",
+            "south": "0",
+            "straight": "false",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "0"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        }
+      },
+      "miss": {
+        "result": "FAIL",
+        "ray_before_use": {
+          "type": "MISS",
+          "pos": [
+            0,
+            7,
+            0
+          ],
+          "face": "down"
+        },
+        "cooldown": 1.0,
+        "stack_count": 1,
+        "state": {
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "false",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "0"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        }
+      },
+      "kind": "air_miss_and_cross_hand_shared_cooldown"
+    },
+    "neighbor_callback_cases": 13,
+    "callback_sides": 6,
+    "ordinary_and_machine_interface_toggling": true,
+    "last_machine_disconnect_converts_to_storage_free_wire": true,
+    "discarded_interface_energy_per_case": 333,
+    "recreated_interface_starts_with_energy": 0,
+    "shift_removal_cases": 4,
+    "survival_and_creative_each_tested": true,
+    "ordinary_and_internal_interface_each_tested": true,
+    "each_shift_removal_drops_one_normal_wire": true,
+    "right_click_wrench_stack_not_consumed": true,
+    "wrench_item_configuration_from_own_source": {
+      "max_stack_size": 1,
+      "tool_mining_speed_on_listed_blocks": 25,
+      "default_mining_speed": 1,
+      "damage_per_block_component": 1
+    },
+    "wrench_recipe_from_original_public_json": {
+      "id": "oritech:crafting/wrench",
+      "steel_ingots": 3,
+      "nickel_ingots": 1,
+      "output_count": 1
+    },
+    "physical_world_reopen": true,
+    "saved_side": "west",
+    "saved_disconnected_pair": {
+      "self": {
+        "block": "oritech:energy_pipe",
+        "properties": {
+          "down": "0",
+          "east": "0",
+          "north": "0",
+          "south": "0",
+          "straight": "false",
+          "up": "0",
+          "waterlogged": "false",
+          "west": "0"
+        },
+        "has_block_entity": false,
+        "has_energy_api": false
+      },
+      "neighbor": {
+        "block": "oritech:energy_pipe",
+        "properties": {
+          "down": "0",
+          "east": "0",
+          "north": "0",
+          "south": "0",
+          "straight": "false",
+          "up": "0",
+          "waterlogged": "false",
+          "west": "0"
+        },
+        "has_block_entity": false,
+        "has_energy_api": false
+      }
+    },
+    "reopened_exact_before": {
+      "self": {
+        "block": "oritech:energy_pipe",
+        "properties": {
+          "down": "0",
+          "east": "0",
+          "north": "0",
+          "south": "0",
+          "straight": "false",
+          "up": "0",
+          "waterlogged": "false",
+          "west": "0"
+        },
+        "has_block_entity": false,
+        "has_energy_api": false
+      },
+      "neighbor": {
+        "block": "oritech:energy_pipe",
+        "properties": {
+          "down": "0",
+          "east": "0",
+          "north": "0",
+          "south": "0",
+          "straight": "false",
+          "up": "0",
+          "waterlogged": "false",
+          "west": "0"
+        },
+        "has_block_entity": false,
+        "has_energy_api": false
+      }
+    },
+    "reconnected_after_reopen": {
+      "self": {
+        "block": "oritech:energy_pipe",
+        "properties": {
+          "down": "0",
+          "east": "0",
+          "north": "0",
+          "south": "0",
+          "straight": "false",
+          "up": "0",
+          "waterlogged": "false",
+          "west": "1"
+        },
+        "has_block_entity": false,
+        "has_energy_api": false
+      },
+      "neighbor": {
+        "block": "oritech:energy_pipe",
+        "properties": {
+          "down": "0",
+          "east": "1",
+          "north": "0",
+          "south": "0",
+          "straight": "false",
+          "up": "0",
+          "waterlogged": "false",
+          "west": "0"
+        },
+        "has_block_entity": false,
+        "has_energy_api": false
+      }
+    },
+    "driver_limits": "synthetic NeoForge FakePlayer with explicit pose/view and direct original use calls; cooldown clock stepped explicitly; no account or real input packets"
+  },
+  "next_native_acceptance": [
+    "Add the original craftable one-stack wrench and selected tool component without changing sealed 0.6/0.5 content/tools",
+    "Use the original default thin selection boxes and compare ray/side kernel with these 9600 recorded rays",
+    "Route real main/offhand actions, per-player shared 8-tick cooldown and failures through native Game dispatch",
+    "Toggle both ends of a wire connection; retype last-machine endpoints with original buffer removal/recreation semantics",
+    "Shift dismantles either cable block, including creative, and drops one normal cable without consuming the wrench",
+    "Graphical craft, active-network disconnect/reconnect, Shift drops and disabled-edge physical reopen",
+    "Dedicated automation/restarts, previous native save-copy and regression checks in a new versioned installation",
+    "Continue waterlogging/fluid interactions and remaining TechQuest criteria after wrench controls"
+  ],
+  "not_tested": [
+    "Native Horizon wrench, real original client input packets or native packet dispatch",
+    "Actual original left-click wrench mining, durability effects or configurable tooltip/audio playback",
+    "Wrench actions on machines/addons/other cable variants, zipline behavior or third-party compatible wrench tags",
+    "Waterlogging, unloaded networks, creative original player placement or full item-component fidelity",
+    "Licensed client dedicated join or multiplayer"
+  ],
+  "excluded_driver_controls": [
+    "oritech-wrench-reference-v1: unsynchronized FakePlayer head, reenable-after-reopen assertion failed",
+    "oritech-wrench-reference-v2: unsynchronized FakePlayer head; not the camera selection reference"
+  ],
+  "validation": {
+    "python_tests_passed": 126,
+    "original_reference_server_stopped": true,
+    "canonical_06b_lock_verified": true,
+    "canonical_06b_status": "Stopped.",
+    "native_source_bytes_unchanged": true
+  },
+  "private_evidence_sha256": {
+    "oritech-wrench-reference-v3/initial-result.json": "0a7f6b74dc8476dfe0d5591f8d7c0d2c0f0194a4b789a276fe5a63c3abcaaedc",
+    "oritech-wrench-reference-v3/reopen-result.json": "63972ea3634ca131e0461870fa66d67565db041a3547a4bfb3995443847084ff",
+    "oritech-wrench-reference-v3/inputs.json": "056cd29677e99d2ab43ea66ee581febf0c8bdafe60b0512b949ba7b2c3554828",
+    "oritech-wrench-reference-v3/initial-console.log": "7247fe5602718c4768d3c446b2678f17b68b49f2e564fc49306b2c15e468193c",
+    "oritech-wrench-reference-v3/reopen-console.log": "9b813ff6adcad8ad721269bb8a574f8d82aa1b7efca1e694d5bf43c820cb583f",
+    "oritech-wrench-reference-python-tests-v1.log": "089d7d3c0e04cf5cdc764d2eb907ba39a5755ae4939c13ed9bf199958c9a1ebf"
+  },
+  "native_wrench_implemented": false,
+  "goal_complete": false,
+  "push_merge_or_publication_performed": false
+}

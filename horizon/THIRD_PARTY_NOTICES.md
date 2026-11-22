@@ -137,6 +137,12 @@ references. No dependency Java source, Java runtime or GeckoLib animation is
 included in the player port. Other cable variants and general network fidelity
 are not claimed.
 
+The developer-only wrench oracle additionally invokes the same pinned CC0
+`Wrench` and consults own `ItemContent`/`OritechStartupConfig`. New source blobs
+are checked against the pinned Git tree; hashes and exact scope are retained
+in `ORITECH_WRENCH_REFERENCE_RESULT.json`. This reference milestone does not
+add a wrench implementation or dependency Java to the native runtime.
+
 `first_party/biome_modifiers/merged-biomes.patch` adapts Horizon's MIT
 `mod_content.rs` at the existing pinned Horizon commit. It registers declared
 biome files before tag filtering and applies modifiers to the merged registry.

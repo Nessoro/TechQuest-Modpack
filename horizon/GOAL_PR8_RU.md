@@ -410,6 +410,18 @@ Wrench, waterlogging, другие варианты проводов, общие
 мультиплеер ещё не готовы. [Исходный эталон](ORITECH_ENERGY_PIPE_REFERENCE_RESULT.json),
 [нативный результат](ORITECH_ENERGY_PIPE_RESULT.json).
 
+Для следующего этапа wrench собран отдельный оригинальный эталон Oritech:
+9600 лучей по 64 connection masks, 5760 попаданий с проверкой выбранной грани,
+12 сочетаний руки/направления и 72 вызова с cooldown, 13 neighbor callbacks,
+четыре Shift-removal cases и физическое переоткрытие отключённой связи.
+Общий cooldown 8 тиков действует и после промаха; Shift-вызов роняет один
+обычный кабель также в creative. В FakePlayer явно синхронизированы голова,
+тело и предыдущий поворот; прежние несинхронизированные прогоны исключены.
+У исходника tight cable hitboxes по умолчанию включены: нативный следующий
+этап должен заменить прежний полный selection cube. Нативный wrench пока
+не реализован; профиль 06b/его исходники не менялись, 126 Python-тестов прошли.
+[Эталон wrench и критерии переноса](ORITECH_WRENCH_REFERENCE_RESULT.json).
+
 1. Продолжить Pretty Pipes: equality/filter-increase modules и их экраны,
    ветвления, приоритеты, insertion-limiting modules/сложные slot limits, переполнение и rerouting; проверить offhand, bulk edits,
    unloaded entities и точные drop semantics. Установка/снятие, основное GUI,
