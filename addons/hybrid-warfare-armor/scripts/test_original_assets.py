@@ -275,6 +275,34 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertIn("renderer.addLayer(new PoweredElytraLayer", event)
         self.assertNotIn("dev.techquest.hybrid.client;", event)
 
+    def test_optional_jei_displays_only_real_powered_elytra_recipe_examples(self):
+        root = pathlib.Path(__file__).resolve().parents[1]
+        plugin = (root / "src/main/java/dev/techquest/hybrid/jei/PoweredElytraJeiPlugin.java").read_text()
+        recipe = (root / "src/main/java/dev/techquest/hybrid/PoweredElytraRecipe.java").read_text()
+        gradle = (root / "build.gradle").read_text()
+        self.assertIn("@JeiPlugin", plugin)
+        self.assertIn("implements IModPlugin", plugin)
+        self.assertIn("registration.addRecipes(RecipeTypes.CRAFTING, examples)", plugin)
+        self.assertIn("registration.addItemStackInfo", plugin)
+        self.assertIn("instanceof PoweredElytraRecipe", plugin)  # real server recipe required
+        self.assertIn('Ingredient.of(powered), Ingredient.of(Items.ELYTRA)', plugin)
+        self.assertIn('result.set(HybridWarfareMod.ELYTRA_ATTACHMENT', plugin)
+        self.assertIn('powered.set(HybridWarfareMod.TECHNOLOGY', plugin)
+        self.assertIn('powered.set(HybridWarfareMod.DONOR', plugin)
+        self.assertIn('"ru_chest_6b43", "us_chest_iotv"', plugin)
+        self.assertIn('"ic2:quantum_chestplate"', plugin)
+        self.assertIn('new ShapelessRecipe(', plugin)
+        self.assertIn("extends CustomRecipe", recipe)
+        self.assertNotIn("isSpecial()", recipe)  # do not alter in-game special crafting rules
+        self.assertIn("PoweredElytra.canAttach(found[0], found[1])", recipe)
+        self.assertIn("compileOnly 'mezz.jei:jei-1.21.1-common-api:19.64.0.455'", gradle)
+        self.assertIn("compileOnly 'mezz.jei:jei-1.21.1-neoforge-api:19.64.0.455'", gradle)
+        self.assertNotIn("implementation 'mezz.jei", gradle)
+        self.assertNotIn("runtimeOnly 'mezz.jei", gradle)
+        self.assertIn("dev.techquest.hybrid.jei;", plugin)
+        translations = json.loads((RES / "assets/techquest_hybrid/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("tooltip.techquest_hybrid.jei_elytra", translations)
+
     def test_no_custom_art_generated_or_committed(self):
         root = pathlib.Path(__file__).resolve().parents[1]
         resources = root / "src/main/resources"
