@@ -78,6 +78,23 @@ public final class PoweredElytraEnergy {
                 && power.extractEnergy(COST_PER_TICK, true) >= COST_PER_TICK;
     }
 
+    /** Extra energy on a boost tick, in addition to the baseline 200. */
+    public static boolean spendExtra(ItemStack stack, int amount) {
+        if (amount <= 0 || !isPoweredChest(stack)) return false;
+        if (HybridWarfareMod.technology(stack) != null) {
+            return HybridWarfareMod.spend(stack, amount);
+        }
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if ("ic2".equals(id.getNamespace()) && ModList.get().isLoaded("ic2")) {
+            return Ic2ElytraEnergy.canSpend(stack, amount)
+                    && Ic2ElytraEnergy.spend(stack, amount);
+        }
+        IEnergyStorage power = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        return power != null && power.canExtract()
+                && power.extractEnergy(amount, true) >= amount
+                && power.extractEnergy(amount, false) == amount;
+    }
+
     public static boolean spend(ItemStack stack) {
         if (!canSpend(stack)) return false;
         if (HybridWarfareMod.technology(stack) != null) {
