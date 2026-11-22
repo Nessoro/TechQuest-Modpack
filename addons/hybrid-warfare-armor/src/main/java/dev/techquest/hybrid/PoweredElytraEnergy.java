@@ -3,6 +3,7 @@ package dev.techquest.hybrid;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -22,8 +23,21 @@ public final class PoweredElytraEnergy {
 
     private PoweredElytraEnergy() {}
 
+    /**
+     * NeoForge's ItemStack.getEquipmentSlot() is an optional override only.
+     * It normally returns null even for valid ArmorItem chestplates.
+     * ArmorItem itself knows the actual vanilla armor slot.
+     */
+    private static boolean isChestArmor(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        EquipmentSlot override = stack.getEquipmentSlot();
+        if (override != null) return override == EquipmentSlot.CHEST;
+        return stack.getItem() instanceof ArmorItem armor
+                && armor.getEquipmentSlot() == EquipmentSlot.CHEST;
+    }
+
     public static boolean isPoweredChest(ItemStack stack) {
-        if (stack.isEmpty() || stack.getEquipmentSlot() != EquipmentSlot.CHEST) {
+        if (!isChestArmor(stack)) {
             return false;
         }
         if (HybridWarfareMod.technology(stack) != null) {
