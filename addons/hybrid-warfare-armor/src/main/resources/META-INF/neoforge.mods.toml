@@ -3,7 +3,7 @@ loaderVersion="[4,)"
 license="MIT"
 [[mods]]
 modId="techquest_hybrid"
-version="0.2.6-SNAPSHOT"
+version="0.2.7-SNAPSHOT"
 displayName="TechQuest Hybrid Warfare Armor"
 authors="TechQuest Project"
 description="Original Superb Warfare armor with native IC2 QuantumSuit charging, technology fusion and named smithing results."
