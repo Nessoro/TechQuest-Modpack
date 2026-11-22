@@ -347,7 +347,7 @@ class OriginalArmorFusionTests(unittest.TestCase):
         self.assertIn("RegisterKeyMappingsEvent", keys)
         self.assertIn("ClientTickEvent.Post", keys)
         self.assertIn("PacketDistributor.sendToServer(", keys)
-        self.assertIn("minecraft.screen != null", keys)
+        self.assertIn("minecraft.screen == null", keys)
         self.assertIn("implements CustomPacketPayload", network)
         self.assertIn("context.player() instanceof ServerPlayer player", network)
         self.assertIn("player.getItemBySlot(EquipmentSlot.CHEST)", network)
