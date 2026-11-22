@@ -29,7 +29,11 @@ public final class PoweredElytra {
     }
 
     public static boolean canFly(ItemStack chest, LivingEntity wearer) {
-        return wearer.getItemBySlot(EquipmentSlot.CHEST) == chest
+        // Another mod can supply a copy of the equipped ItemStack during
+        // its flight handler. Requiring object identity (==) rejected a valid
+        // powered 6B43 even though the Elytra and charge were present.
+        ItemStack equipped = wearer.getItemBySlot(EquipmentSlot.CHEST);
+        return (chest == equipped || ItemStack.isSameItemSameComponents(chest, equipped))
                 && hasElytra(chest) && PoweredElytraEnergy.canSpend(chest);
     }
 
