@@ -36,6 +36,7 @@ LOCALE_COUNTS = {
     "openpartiesandclaims": 309,
     "refinedstorage": 10,
     "xaeroworldmap": 303,
+    "waystones": 268,
 }
 
 
@@ -105,6 +106,15 @@ class AdditionalTranslationTests(unittest.TestCase):
         xaero = json.loads((COMPAT / "assets/xaeroworldmap/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("карты", xaero["effect.xaeroworldmap.no_cave_maps"])
         self.assertIn("%1$s", xaero["gui.xaero_wm_ceiling"])
+        waystones = json.loads((COMPAT / "assets/waystones/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(waystones["gui.waystones.waystone_selection.item_requirement"],
+                         "Стоимость предметами: %d %s")
+        self.assertEqual(waystones["commands.waystones.cooldown.set.success.multiple"],
+                         "Перезарядка %s установлена на %d секунд для %d игроков")
+        self.assertIn("{Biome}", waystones["waystones.configuration.worldGen.nameGenerationTemplate.tooltip"])
+        self.assertIn("BlueMap", waystones["waystones.configuration.blueMap.enabled.tooltip"])
+        self.assertEqual(waystones["chat.waystones.teleport_failed"],
+                         "Телепортация не удалась.")
         mowzie = json.loads((COMPAT / "assets/mowziesmobs/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(mowzie["itemGroup.mowziesmobs.creativeTab"], "Mowzie's Mobs")
 
