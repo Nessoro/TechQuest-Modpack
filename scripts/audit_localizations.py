@@ -14,6 +14,33 @@ from pathlib import Path
 LOCALE = re.compile(r"^assets/([a-z0-9_.-]+)/lang/(en_us|ru_ru)\.json$")
 MAX_LANG_BYTES = 8 * 1024 * 1024
 
+# Java Formatter indices matter: swapping bare %s and %d is unsafe, but
+# repositioning %1$s/%2$d is fine if each argument keeps its type.
+PRINTF = re.compile(r"%(?:([1-9]\d*)\$)?([-#+ 0,(<]*)(?:\d+)?(?:\.\d+)?([a-zA-Z])")
+
+
+def placeholder_signature(value):
+    """Return (argument index, conversion) pairs, ignoring literal %% and %n."""
+    implicit_index = 0
+    previous_index = None
+    signature = []
+    for match in PRINTF.finditer(value.replace("%%", "")):
+        explicit, flags, conversion = match.groups()
+        conversion = conversion.lower()
+        if conversion == "n":
+            continue
+        if explicit is not None:
+            index = int(explicit)
+        elif "<" in flags and previous_index is not None:
+            index = previous_index
+        else:
+            implicit_index += 1
+            index = implicit_index
+        previous_index = index
+        signature.append((index, conversion))
+    return sorted(signature)
+
+
 
 def audit(mods_dir):
     files = sorted(Path(mods_dir).glob("*.jar"))
@@ -58,19 +85,13 @@ def audit(mods_dir):
         ru = russian[namespace]
         missing = sorted(set(en) - set(ru))
         unchanged = sorted(k for k in set(en) & set(ru) if en[k] == ru[k])
-        # Minecraft's String.format-based strings can crash or display broken
-        # messages if a translation drops a printf placeholder. Keep this
-        # diagnostic separate from missing coverage: a key can exist but still
-        # require correction. Only supported format specifiers are counted.
-        def placeholders(value):
-            return sorted(re.findall(
-                r"%(?:[1-9]\d*\$)?[-#+ 0,(]*\d*(?:\.\d+)?[a-zA-Z]",
-                value.replace("%%", ""),
-            ))
+        # Compare formatter argument indices and types, not just the number
+        # of placeholders. A dropped or reordered unindexed %s/%d is unsafe.
         mismatches = {
-            key: {"english": placeholders(en[key]), "russian": placeholders(ru[key])}
+            key: {"english": placeholder_signature(en[key]),
+                  "russian": placeholder_signature(ru[key])}
             for key in sorted(set(en) & set(ru))
-            if placeholders(en[key]) != placeholders(ru[key])
+            if placeholder_signature(en[key]) != placeholder_signature(ru[key])
         }
         results[namespace] = {
             "english_keys": len(en),
