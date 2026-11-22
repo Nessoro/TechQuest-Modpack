@@ -1,0 +1,833 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-22T11:18:23.896954+00:00",
+  "scope": "Original Oritech basic energy pipe contract for the next Horizon implementation; no new native cable implementation",
+  "horizon_target": "26.3",
+  "current_horizon_content_version": "0.5.0",
+  "current_horizon_native_version": "0.4.0",
+  "oritech_source_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+  "license_basis": "Pinned own LICENSE.md and binary JAR dedicate Oritech 1.2.13 under CC0-1.0; consulted own headers have no override",
+  "dependency_java_source_read_or_decompiled": false,
+  "reference": {
+    "oracle": "energy_pipe",
+    "probe_source_sha256": "8a9d54d18ed0e5f817cbb53979e357e74fd7e1ad6fc8c5cbcc0e36ed29de7c1d",
+    "probe_jar_sha256": "eb0ebbfff8a42b2cd58962f90246d667cf1e52a34b369de560917fec57f207d1",
+    "oritech": "1.2.13",
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.264"
+  },
+  "original": {
+    "server_callbacks_executed": true,
+    "single_target_cases": 504,
+    "single_target_states": 1512,
+    "buffer_api_cases": 128,
+    "layout_directions": 6,
+    "target_machines": [
+      "powered_furnace_block",
+      "pulverizer_block",
+      "foundry_block",
+      "assembler_block"
+    ],
+    "supplied_energy": [
+      0,
+      1,
+      255,
+      256,
+      257,
+      1024,
+      10000
+    ],
+    "target_initial_energy": [
+      "empty",
+      "capacity minus one",
+      "full"
+    ],
+    "manual_tick_checkpoints": [
+      1,
+      2,
+      40
+    ],
+    "ordinary_wire_block": "oritech:energy_pipe",
+    "ordinary_wire_has_block_entity_or_energy_api": false,
+    "endpoint_block": "oritech:energy_pipe_connection",
+    "endpoint_capacity_and_per_call_insert_extract": 10000,
+    "all_six_endpoint_faces_share_one_buffer": true,
+    "network_transfer": "source endpoint directly to machine targets, not through other endpoint buffers",
+    "same_machine_two_faces_energy_per_step": 512,
+    "two_source_interfaces_energy_per_step": 512,
+    "scarce_multi_target_allocation": "Original Collections.shuffle is unseeded; either first target is accepted, no exact order claim",
+    "split_rejoin_and_loop_callbacks_passed": true,
+    "last_machine_removal_reverts_endpoint_to_ordinary_wire": true,
+    "removed_endpoint_energy_discarded": 333,
+    "replacement_endpoint_starts_empty": true,
+    "original_side_toggle_callback_passed": true,
+    "side_toggle_driver": "direct original protected toggle callback; no player/wrench interaction tested",
+    "assembled_furnace_core_delegation_energy": 256,
+    "inactive_core_has_no_energy_api": true,
+    "physical_world_reopen": true,
+    "before_reopen": {
+      "targets": [
+        {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "face": "east"
+        },
+        {
+          "pos": [
+            6,
+            0,
+            0
+          ],
+          "face": "west"
+        }
+      ],
+      "nodes": [
+        {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "block": "oritech:basic_generator_block",
+          "properties": {
+            "facing": "north"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 0,
+          "capacity": 50000
+        },
+        {
+          "pos": [
+            1,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe_connection",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 1000,
+          "capacity": 10000
+        },
+        {
+          "pos": [
+            2,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        },
+        {
+          "pos": [
+            3,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        },
+        {
+          "pos": [
+            4,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        },
+        {
+          "pos": [
+            5,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe_connection",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 777,
+          "capacity": 10000
+        },
+        {
+          "pos": [
+            6,
+            0,
+            0
+          ],
+          "block": "oritech:powered_furnace_block",
+          "properties": {
+            "facing": "north",
+            "lit": "false",
+            "machine_assembled": "false"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 9536,
+          "capacity": 10000
+        }
+      ]
+    },
+    "after_reopen_one_manual_tick": {
+      "nodes": [
+        {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "block": "oritech:basic_generator_block",
+          "properties": {
+            "facing": "north"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 0,
+          "capacity": 50000
+        },
+        {
+          "pos": [
+            1,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe_connection",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 744,
+          "capacity": 10000
+        },
+        {
+          "pos": [
+            2,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        },
+        {
+          "pos": [
+            3,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        },
+        {
+          "pos": [
+            4,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        },
+        {
+          "pos": [
+            5,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe_connection",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 777,
+          "capacity": 10000
+        },
+        {
+          "pos": [
+            6,
+            0,
+            0
+          ],
+          "block": "oritech:powered_furnace_block",
+          "properties": {
+            "facing": "north",
+            "lit": "false",
+            "machine_assembled": "false"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 9792,
+          "capacity": 10000
+        }
+      ],
+      "targets": [
+        {
+          "face": "east",
+          "pos": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "face": "west",
+          "pos": [
+            6,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "after_reopen_two_manual_ticks": {
+      "nodes": [
+        {
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "block": "oritech:basic_generator_block",
+          "properties": {
+            "facing": "north"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 0,
+          "capacity": 50000
+        },
+        {
+          "pos": [
+            1,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe_connection",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 536,
+          "capacity": 10000
+        },
+        {
+          "pos": [
+            2,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        },
+        {
+          "pos": [
+            3,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        },
+        {
+          "pos": [
+            4,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": false,
+          "has_energy_api": false
+        },
+        {
+          "pos": [
+            5,
+            0,
+            0
+          ],
+          "block": "oritech:energy_pipe_connection",
+          "properties": {
+            "down": "0",
+            "east": "1",
+            "north": "0",
+            "south": "0",
+            "straight": "true",
+            "up": "0",
+            "waterlogged": "false",
+            "west": "1"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 777,
+          "capacity": 10000
+        },
+        {
+          "pos": [
+            6,
+            0,
+            0
+          ],
+          "block": "oritech:powered_furnace_block",
+          "properties": {
+            "facing": "north",
+            "lit": "false",
+            "machine_assembled": "false"
+          },
+          "has_block_entity": true,
+          "has_energy_api": true,
+          "energy": 10000,
+          "capacity": 10000
+        }
+      ],
+      "targets": [
+        {
+          "face": "east",
+          "pos": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "face": "west",
+          "pos": [
+            6,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "remote_fuel_chain": {
+      "processing_cost": 6400,
+      "tick_order": [
+        "generator",
+        "source_interface",
+        "far_interface",
+        "furnace"
+      ],
+      "fixture_inputs": {
+        "minecraft:coal": 1,
+        "minecraft:raw_iron": 2
+      },
+      "machine_inventories_seeded_inputs_only": true,
+      "machine_or_cable_energy_seeded": false,
+      "states": [
+        {
+          "far_buffer": 0,
+          "furnace": {
+            "energy": 0,
+            "progress": 1,
+            "items": [
+              {
+                "item": "minecraft:raw_iron",
+                "slot": 0,
+                "count": 2
+              }
+            ]
+          },
+          "ticks": 1,
+          "generator": {
+            "energy": 0,
+            "progress": 1599,
+            "items": []
+          },
+          "source_buffer": 0
+        },
+        {
+          "far_buffer": 0,
+          "furnace": {
+            "energy": 0,
+            "progress": 2,
+            "items": [
+              {
+                "item": "minecraft:raw_iron",
+                "slot": 0,
+                "count": 2
+              }
+            ]
+          },
+          "ticks": 2,
+          "generator": {
+            "energy": 0,
+            "progress": 1598,
+            "items": []
+          },
+          "source_buffer": 0
+        },
+        {
+          "far_buffer": 0,
+          "furnace": {
+            "energy": 0,
+            "progress": 45,
+            "items": [
+              {
+                "item": "minecraft:raw_iron",
+                "slot": 0,
+                "count": 2
+              }
+            ]
+          },
+          "ticks": 45,
+          "generator": {
+            "energy": 0,
+            "progress": 1555,
+            "items": []
+          },
+          "source_buffer": 0
+        },
+        {
+          "far_buffer": 0,
+          "furnace": {
+            "energy": 0,
+            "progress": 0,
+            "items": [
+              {
+                "item": "minecraft:raw_iron",
+                "slot": 0,
+                "count": 1
+              },
+              {
+                "item": "minecraft:iron_ingot",
+                "slot": 1,
+                "count": 1
+              }
+            ]
+          },
+          "ticks": 100,
+          "generator": {
+            "energy": 0,
+            "progress": 1500,
+            "items": []
+          },
+          "source_buffer": 0
+        },
+        {
+          "far_buffer": 0,
+          "furnace": {
+            "energy": 0,
+            "progress": 1,
+            "items": [
+              {
+                "item": "minecraft:raw_iron",
+                "slot": 0,
+                "count": 1
+              },
+              {
+                "item": "minecraft:iron_ingot",
+                "slot": 1,
+                "count": 1
+              }
+            ]
+          },
+          "ticks": 101,
+          "generator": {
+            "energy": 0,
+            "progress": 1499,
+            "items": []
+          },
+          "source_buffer": 0
+        },
+        {
+          "far_buffer": 0,
+          "furnace": {
+            "energy": 0,
+            "progress": 0,
+            "items": [
+              {
+                "item": "minecraft:iron_ingot",
+                "slot": 1,
+                "count": 2
+              }
+            ]
+          },
+          "ticks": 200,
+          "generator": {
+            "energy": 0,
+            "progress": 1400,
+            "items": []
+          },
+          "source_buffer": 0
+        },
+        {
+          "far_buffer": 0,
+          "furnace": {
+            "energy": 32,
+            "progress": 0,
+            "items": [
+              {
+                "item": "minecraft:iron_ingot",
+                "slot": 1,
+                "count": 2
+              }
+            ]
+          },
+          "ticks": 201,
+          "generator": {
+            "energy": 0,
+            "progress": 1399,
+            "items": []
+          },
+          "source_buffer": 0
+        },
+        {
+          "far_buffer": 0,
+          "furnace": {
+            "energy": 10000,
+            "progress": 0,
+            "items": [
+              {
+                "item": "minecraft:iron_ingot",
+                "slot": 1,
+                "count": 2
+              }
+            ]
+          },
+          "ticks": 1600,
+          "generator": {
+            "energy": 24800,
+            "progress": 0,
+            "items": []
+          },
+          "source_buffer": 10000
+        },
+        {
+          "far_buffer": 0,
+          "furnace": {
+            "energy": 10000,
+            "progress": 0,
+            "items": [
+              {
+                "item": "minecraft:iron_ingot",
+                "slot": 1,
+                "count": 2
+              }
+            ]
+          },
+          "ticks": 1601,
+          "generator": {
+            "energy": 24800,
+            "progress": 0,
+            "items": []
+          },
+          "source_buffer": 10000
+        }
+      ],
+      "generated": 51200,
+      "remaining": 44800
+    },
+    "driver_limits": "ServerStartedEvent freezes the loop; original methods are called on the server thread in an explicit order. Fixture blocks, source inputs and most scalar-case energy are seeded. The fuel chain seeds coal/raw iron only, with all energy starting empty."
+  },
+  "next_native_acceptance": [
+    "Only machine-facing energy_pipe_connection has a 10000 E block entity; normal wire has none",
+    "Automatic normal/interface conversion, six connections and correct original cable drops",
+    "Loaded network transfer obeys individual machine-face and per-call limits; no per-hop buffer or energy loss",
+    "Break/rejoin, loop, machine replacement and assembled-core delegation match original fixtures",
+    "Preserve disabled side state; do not silently reconnect a manually disabled edge",
+    "Real graphical cable craft/placement and distant powered processing through native Game dispatch",
+    "Dedicated world save/reopen with buffered energy and own previous save-copy regression",
+    "Fresh versioned installation, SDK/lock checks and current machine/Pretty Pipes regressions"
+  ],
+  "not_tested": [
+    "Native Horizon cables or GUI cable crafting/placement",
+    "Original player/wrench interaction, survival drops or waterlogging",
+    "Framed cables, duct, superconductor, booster or other machine/addon providers",
+    "2048-node cutoff edge, unload/reload of partial networks or general orphan-core repair",
+    "Exact shuffled allocation order, vanilla world RNG parity or arbitrary configuration values",
+    "Licensed client dedicated join or multiplayer"
+  ],
+  "validation": {
+    "python_tests_passed": 125,
+    "original_reference_server_stopped": true,
+    "sealed_horizon_profiles_changed": false,
+    "current_05b_profile_lock_verified": true
+  },
+  "source_sha256": {
+    "block/blocks/pipes/AbstractPipeBlock.java": "6d674d9c85448be3a6d2c399f267091549698c82b9f166a7113bc94f41acc7ee",
+    "block/blocks/pipes/GenericPipeBlock.java": "ed3a14fa0664245fe33291faae2a72a83b049c321805d85212ee4581ef6d28eb",
+    "block/blocks/pipes/GenericPipeConnectionBlock.java": "283be877a9368efab9a58d2ba4c9f711aaa57d5bdeedce4962da55a08bd3c66b",
+    "block/blocks/pipes/energy/EnergyPipeBlock.java": "522f9d92e6eea82fab6bc134b8523bdf09b96bb06582e67f28e404b2eed35c6a",
+    "block/blocks/pipes/energy/EnergyPipeConnectionBlock.java": "8626b92fa247ba97eceeb0f5cddc71f1a38e91b3df57ca5c943822fe4b19dddb",
+    "block/entity/pipes/GenericPipeInterfaceEntity.java": "3fc7b6240b2464cf12ebbc4b3f145b739e3a75933181b8f61de4e41ef7fa8046",
+    "block/entity/pipes/EnergyPipeInterfaceEntity.java": "7fcf5c30be1c398fbd4dcb23ef1135514b2b2f0f7848e9695d84ff9e622f0ee3",
+    "api/energy/EnergyApi.java": "2c16614ccdcaf03b5c1fdb4c01e726049a48aa772474157ecb84a3a025f6866e",
+    "api/energy/containers/SimpleEnergyStorage.java": "c57582ca7a3ffe688ca061c3737ba160c833bc8a64819b81a442a325676bdb31",
+    "block/entity/MachineCoreEntity.java": "b18a9cc1197be0f5e0d9b5ac88fa8e2892627707cf0710276a2fab0732ded7dd",
+    "block/base/entity/UpgradableGeneratorBlockEntity.java": "7c6aaf25f2113833713a1e5f30ce80c93fd690cd6ac46f15fc82dd741d788c27",
+    "block/entity/generators/BasicGeneratorEntity.java": "24e7ffed71a7d0fe5c49bfa021d08e410b109cd4a56221ea2b7e02dc40f49204"
+  },
+  "private_evidence": [
+    {
+      "path": "oritech-energy-pipe-reference-v2/initial-result.json",
+      "sha256": "d9d20d551aa526283f64df43dcb73f9f58b2df0dc97bba0462642834a5fb7aa2"
+    },
+    {
+      "path": "oritech-energy-pipe-reference-v2/reopen-result.json",
+      "sha256": "a1e8418b77dcf13c3fa2d31e375be9e03796f35bef856a527d6e1f3c4ab4b54c"
+    },
+    {
+      "path": "oritech-energy-pipe-reference-v2/inputs.json",
+      "sha256": "846e8f5cfc35036fd832204bed5968754627fdd57d3720bc0d7eb4d7316b268c"
+    },
+    {
+      "path": "oritech-energy-pipe-reference-v2/initial-console.log",
+      "sha256": "ea2891949de78a980d1524201c2c52a98b2b0d7586b585c60a6f892947e2c981"
+    },
+    {
+      "path": "oritech-energy-pipe-reference-v2/reopen-console.log",
+      "sha256": "720b48d76922f9ab4f9fe1eaa97c6ced00f24561517e8eef56553a1bceb8f9ee"
+    },
+    {
+      "path": "oritech-energy-pipe-python-tests-v1.log",
+      "sha256": "f5f7f41ff708fa63409d8d6fb2410313809f2bd6b2984ca537fd67171f3c5056"
+    },
+    {
+      "path": "oritech-energy-pipe-05b-profile-verification-v1.json",
+      "sha256": "df99d0cfc1f4b697e602a7c61f9003d30c9444b63dee9f3d6655ec9ce03cd75a"
+    }
+  ],
+  "native_energy_cables_implemented": false,
+  "goal_complete": false,
+  "push_merge_or_publication_performed": false
+}

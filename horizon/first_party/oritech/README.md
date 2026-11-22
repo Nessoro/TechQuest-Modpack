@@ -445,3 +445,50 @@ The source world's files are hashed before/after and left unchanged. This is
 a specific native-save regression, not NeoForge import or a general converter.
 
 [Assembler results and remaining scope](../../ORITECH_ASSEMBLER_RESULT.json).
+
+## Basic energy cable reference; native implementation pending
+
+`OritechEnergyPipeProbe.java` runs the pinned original CC0 Oritech classes on
+NeoForge 21.1.264 / Minecraft 1.21.1. It records 504 single-target cases and
+1,512 states across all six directions and four current processing machines,
+128 insert/extract/simulation cases and six layouts. Run in a fresh work folder:
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-energy-pipe-reference-new" --oracle energy_pipe --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-energy-pipe-reference-new" --oracle energy_pipe --reopen
+```
+
+Normal `oritech:energy_pipe` has no block entity or energy API. Only
+`energy_pipe_connection`, created automatically next to an energy provider,
+has a 10,000 E buffer and 10,000 E insertion/extraction limits per call. Its
+tick transfers directly to connected machine faces; other endpoint buffers
+are not relay targets. A furnace with two connected faces receives 512 E in
+one callback, and two source interfaces can also give one furnace 512 E in
+one ordered step. A global per-machine/per-tick limit would change the source.
+
+Gap/rejoin, a loop with an alternative path, machine replacement and the
+original side-toggle callback are covered. Removing the last neighboring
+machine reverts its endpoint to ordinary wire and discards that endpoint's
+stored energy; a replacement starts empty. Assembling a furnace core turns
+its adjacent wire into an interface and delegates energy to the controller.
+Unassembled cores expose no energy API. Physical world reopen preserves all
+seven source/wire/target nodes, connection states, network targets and buffered
+energy; subsequent direct original ticks obey receiver capacity.
+
+One coal and two raw iron also run through the original generator, five
+cables and an assembled remote furnace, producing two iron ingots without
+seeding energy or outputs. After 1,600 generation ticks, 51,200 E generated
+minus 6,400 E processing leaves 44,800 E across machines/source interface.
+The driver freezes the server loop and calls callbacks in an explicit order;
+block placement and raw inputs are fixtures. Scarce multi-target energy can
+go to either receiver because the original uses unseeded `Collections.shuffle`.
+This does not claim exact RNG, normal world scheduler order, player/wrench
+interaction, survival drops, waterlogging, unload behavior or the 2,048-node
+cutoff. Framed cables, ducts, superconductors and addons remain outside scope.
+
+Content 0.5/native 0.4 and the sealed 05b Horizon profile are unchanged.
+The next implementation must pass these original fixtures and real graphical
+crafting/placement, remote processing, dedicated save/reopen and regressions.
+[Original cable evidence and native acceptance work](../../ORITECH_ENERGY_PIPE_REFERENCE_RESULT.json).
