@@ -104,6 +104,7 @@ public final class HybridWarfareMod {
         SERIALIZERS.register(bus);
         bus.addListener(HybridWarfareMod::commonSetup);
         bus.addListener(HybridWarfareMod::registerPackets);
+        NeoForge.EVENT_BUS.addListener(HybridWarfareMod::onLogout);
         // NeoForge queries the first non-null capability provider. Register
         // at LOWEST priority so IC2 and other native jetpack energy handlers
         // are queried before our supplemental FE adapter.
@@ -117,6 +118,9 @@ public final class HybridWarfareMod {
         event.registrar("1").playToServer(
                 PoweredElytraGlidePayload.TYPE, PoweredElytraGlidePayload.STREAM_CODEC,
                 PoweredElytraGlidePayload::handle);
+        event.registrar("1").playToServer(
+                PoweredElytraBoostPayload.TYPE, PoweredElytraBoostPayload.STREAM_CODEC,
+                PoweredElytraBoostPayload::handle);
     }
 
     /** Registered after IC2 has initialized its own electric-item manager. */
@@ -257,9 +261,18 @@ public final class HybridWarfareMod {
         }
     }
 
+    private static void onLogout(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+            PoweredElytraBoost.clear(player);
+        }
+    }
+
     private static void tickPlayer(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
         if (player.level().isClientSide()) return;
+        if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+            PoweredElytraBoost.clearIfNotFlying(serverPlayer);
+        }
 
         ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
         // Original IC2 Quantum Helmet's inventoryTick does not run for a
