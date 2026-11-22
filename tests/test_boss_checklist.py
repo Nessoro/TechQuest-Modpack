@@ -48,7 +48,7 @@ class BossChecklistTests(unittest.TestCase):
                              NAMESPACE + ":kill/" + entity_id)
             self.assertEqual(advancement["display"]["frame"],
                              "goal" if category == "miniboss" else "challenge")
-            self.assertIn("Око", LEGENDARY_GUIDES["frostbitten_golem"] if entity_id == "frostbitten_golem" else "Око")
+            self.assertTrue(LEGENDARY_GUIDES[entity_id], entity_id)
             self.assertEqual(
                 self.read_text("data/" + NAMESPACE + "/function/kill/"
                                + entity_id + ".mcfunction"),
