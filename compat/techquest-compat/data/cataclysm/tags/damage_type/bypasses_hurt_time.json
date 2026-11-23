@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "superbwarfare:gunfire",
+    "superbwarfare:gunfire_headshot",
+    "incoming:strike",
+    "incoming:shockwave",
+    "incoming:kinetic",
+    "incoming:debris",
+    "incoming:fragment",
+    "incoming:nuclear_blast",
+    "incoming:player_nuclear_blast"
+  ]
+}
