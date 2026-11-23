@@ -1,4 +1,4 @@
-# Oritech native subset 0.6 / content 0.8
+# Oritech native subset 0.7 / content 0.9
 
 First-party Rust implementation for Horizon 26.3 at
 `c78187dffffb60f31517eadcb87413386e8ce729`, Mixins
@@ -17,7 +17,7 @@ that does not declare the reviewed core correction. Content 0.3 requires native
 0.2 and both biome core corrections. Content 0.4 requires native 0.3 and both
 corrections. Content 0.5 requires native 0.4; content 0.6 requires native 0.5,
 both with the two core corrections. Content 0.7/0.8 requires native 0.6 and both
-corrections. Earlier sealed
+corrections. Content 0.9 requires native 0.7 and both corrections. Earlier sealed
 profiles keep their paired versions and artifacts.
 
 ## Source and license
@@ -743,3 +743,71 @@ dimensions, unloaded networks, machine/wrench dispatch, full industrial
 progression and licensed multiplayer remain open.
 [Original contract](../../ORITECH_WATERLOGGING_REFERENCE_RESULT.json),
 [native gameplay results and limitations](../../ORITECH_WATERLOGGING_RESULT.json).
+
+## Content 0.9 machine use / native 0.7
+
+`stage_oritech.py --machine-use` includes `--waterlogging` and pairs the
+unchanged recipes, assets and block bindings with native 0.7. Only the content
+manifest differs from 0.8. The installer rejects an older wrench engine for
+this version. Use a fresh profile; sealed 08a and earlier worlds remain intact.
+
+The five ported original machine classes are not `Wrenchable`. Their block
+interaction consumes an ordinary click before the held item runs, including
+wrench, stick, bucket or an offhand tool. An assembled machine opens its menu;
+an unsuccessful assembly attempt still consumes the click. Wrench cooldown
+does not prevent this block phase and opening a menu does not add cooldown.
+Secondary use skips the block phase only when either hand holds an item, so
+Shift with empty hands still opens the menu. To place cores against a machine
+while holding a block, use Shift. After the block phase passes, a wrench ray
+hitting a machine face can toggle the adjacent cable. This neighbor callback
+toggles even with Shift; it does not remove the cable or rotate the machine.
+
+The original oracle executes server `useItemOn` and `useItem` with a synthetic
+hand driver. NeoForge's base FakePlayer suppresses menu opening, so the accepted
+probe records the requested provider and constructs its actual original menu
+in an instrumented FakePlayer. Its 440 cases include all five machine classes,
+assembled/unassembled states, dry/wet and enabled/disabled wires, both game
+modes/hands, other held items, active cooldown, chest/stone controls and a
+physical wet-neighbor reopen. The 138 requested menus were materialized. This
+establishes the server callback contract, not a real original client window or
+packet trace. [Original contract](../../ORITECH_WRENCH_DISPATCH_REFERENCE_RESULT.json).
+
+Two server guards alone are insufficient: the Horizon client initially still
+predicted the old iron-block result and sent a following `UseItem`, toggling
+the cable after the menu opened. `machine_prediction.rs` consumes the remote
+block result under the same hand/secondary-use guard, without changing client
+inventory, energy or assembly. Native 0.7 adds this single prediction hook to
+the preceding 40 hooks; there are still ten support modules and two core
+corrections. The failed server-only 09a profile is retained as a control.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-dispatch-original-new" --oracle wrench_dispatch --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-dispatch-original-new" --oracle wrench_dispatch --reopen
+python3 horizon/probes/live_oritech_wrench_dispatch_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-dispatch-gui-new" \
+  --original "$TASK_RUNTIME/oritech-dispatch-original-new/initial-result.json"
+```
+
+The GUI comparison uses real local client clicks and menu windows; machine
+assembly, inventory, world positions, time and 333 E endpoint buffers are
+explicit fixtures. `--limit` is a diagnostic prefix and cannot stand in for
+the complete acceptance matrix. This does not establish licensed multiplayer,
+other wrench targets, full machine rendering or unassisted industrial
+progression. Keep the overall [PR #8 goal](../../GOAL_PR8_RU.md) active.
+
+Accepted profile `techquest-oritech-09b-server`, port **25660**, matches all 110
+selected original GUI cases, including both hands, cooldown, unassembled
+machines and vanilla controls. The wet disabled neighbor survives a physical
+reopen and reconnects empty through a machine-face wrench click. Fresh tests
+also matched 3,726 machine states and 1,512 cable states. Bucket/Shift/lifecycle
+GUI checks passed; the wet power line produced and collected two iron ingots,
+with two exact reopens and 12,640 − 6,400 = 6,240 E retained. Its cores are now
+placed with Shift through the normal client route. Dedicated automation kept
+44,800 E and delivered two ingots through two restarts. A copied 0.8 save retained
+machines, wires, energy and inventory under 0.9 without changing the source.
+All 128 Python tests passed; fourteen sealed server profiles were verified
+and stopped. Prior crafting/loot/geometry evidence is retained by comparing
+the unchanged content payloads; those prior tests were not rerun for this
+manifest-only content change. [Native results and hashes](../../ORITECH_WRENCH_DISPATCH_RESULT.json).

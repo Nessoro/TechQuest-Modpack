@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-23T09:37:42.785837+00:00",
+  "scope": "Original Oritech block-before-item machine menus, held items, cooldown and neighboring energy-cable wrench dispatch",
+  "source": {
+    "oritech_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "license_basis": "Pinned own CC0-1.0 dedication and matching JAR; consulted own headers have no override",
+    "new_own_source_blobs_verified_against_pinned_git_tree": true,
+    "own_source_sha256": {
+      "block/base/block/MachineBlock.java": "6c1a8700bb5fed9e6fa4e1b1a2260a48ff58c3f5000a2e0d88abf210546cdee5",
+      "block/base/block/UpgradableMachineBlock.java": "7fe905e6a54bfc1f8404fcf16917e314ff574e730800ac4e4c8a96314801f861",
+      "item/tools/Wrench.java": "c92f738ef5686f096c2618a252f5ce4fcc8a1d880edba83d1abbd3781f2d2807",
+      "block/blocks/pipes/GenericPipeBlock.java": "ed3a14fa0664245fe33291faae2a72a83b049c321805d85212ee4581ef6d28eb",
+      "block/blocks/pipes/GenericPipeConnectionBlock.java": "283be877a9368efab9a58d2ba4c9f711aaa57d5bdeedce4962da55a08bd3c66b"
+    },
+    "dependency_java_source_read_or_decompiled": false
+  },
+  "reference_inputs": {
+    "oracle": "wrench_dispatch",
+    "probe_source_sha256": "07d619d6f06f417fd5f4b97772bbdffd58fd43930da2fab4543d815c4ac02a9b",
+    "probe_jar_sha256": "b040631e4641dd7a1baaabe5e16307d83b263885a1cdf8238a746f10c3b45abe",
+    "oritech": "1.2.13",
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.264"
+  },
+  "counts": {
+    "cases": 440,
+    "block_state_variants": 10,
+    "cases_per_variant": 44,
+    "menu_requests": 138,
+    "original_menu_providers_materialized": 138,
+    "cases_by_block": {
+      "oritech:basic_generator_block": 44,
+      "oritech:pulverizer_block": 44,
+      "oritech:powered_furnace_block": 88,
+      "oritech:foundry_block": 88,
+      "oritech:assembler_block": 88,
+      "minecraft:chest": 44,
+      "minecraft:stone": 44
+    }
+  },
+  "behavior": {
+    "five_ported_machine_classes_implement_wrenchable": false,
+    "ordinary_click_with_held_wrench_stick_or_bucket_opens_assembled_machine_menu": true,
+    "empty_main_with_offhand_wrench_opens_menu_before_offhand_item": true,
+    "secondary_use_skips_machine_block_phase_only_when_either_hand_full": true,
+    "shift_with_both_hands_empty_opens_menu": true,
+    "shift_wrench_machine_face_toggles_adjacent_cable_without_removing_it": true,
+    "ordinary_machine_menu_does_not_apply_wrench_cooldown": true,
+    "machine_menu_opens_even_while_wrench_on_cooldown": true,
+    "unassembled_without_cores_consumes_click_without_opening_menu_or_applying_wrench_cooldown": true,
+    "last_connection_discards_333_energy_and_reconnect_starts_empty": true,
+    "wet_disabled_neighbor_physical_reopen_then_original_shift_reconnect": true
+  },
+  "menu_total_slots_with_player_inventory": {
+    "basic_generator": 37,
+    "pulverizer": 39,
+    "powered_furnace": 38,
+    "foundry": 39,
+    "assembler": 41,
+    "vanilla_chest": 63
+  },
+  "fixture_boundary": "instrumented FakePlayer records openMenu and materializes the original MenuProvider; main/off hand driver invokes original server useItemOn then useItem when not consumed; not a real client/window or packet ordering proof; assembly flags may be seeded",
+  "fixtures": [
+    "assembly flags, dry/wet states, 333 E endpoint buffer and disabled edge",
+    "synthetic player game mode, inventory, pose, hand sequence and initial cooldown",
+    "instrumented FakePlayer openMenu constructs the actual original provider without network delivery"
+  ],
+  "excluded_controls": {
+    "v1": "Java compile error; no accepted oracle",
+    "v2": "NeoForge base FakePlayer suppresses menus; callbacks executed but containerMenu is not a usable menu observation"
+  },
+  "not_proven": [
+    "original Minecraft client window or packet ordering",
+    "machine rotation, other wrenchable machines or general fluid-container machine handling",
+    "licensed login, multiplayer or complete industrial modpack"
+  ],
+  "proof_files_sha256": {
+    "oritech-wrench-dispatch-reference-v3/inputs.json": "05b7bf081d719d60a8f52aaa16fef82f595d29f13fe00e5a9d4978379bc29a81",
+    "oritech-wrench-dispatch-reference-v3/initial-result.json": "26cd5b760b1508952e7b0a621be4503f7dcef108fc2f331d83a0e0c8cc2182ba",
+    "oritech-wrench-dispatch-reference-v3/reopen-result.json": "eafb7cd751c23f9ce4651377b99d69314e70bb423ee4353127bb1dd640c2c0ae"
+  },
+  "published": false
+}

@@ -27,7 +27,7 @@ PROCESSING_RECIPES = ("motor/motorcraft", "crafting/pulverizer", "crafting/elect
                       "crafting/alloy/rawsilicon", "silicon_from_smelting_raw_silicon")
 
 
-def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent, pulverizer=False, foundry=False, assembler=False, energy_pipes=False, wrench=False):
+def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent, pulverizer=False, foundry=False, assembler=False, energy_pipes=False, wrench=False, machine_use=False):
     foundry = foundry or assembler
     pulverizer = pulverizer or foundry
     materials = (*MATERIALS, *PROCESSING_MATERIALS) if pulverizer else MATERIALS
@@ -157,6 +157,6 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
             "source_data": source_data, "source_assets": source_assets, "resolved_common_tags": tags,
             "missing_optional_legacy_tags": sorted(missing), "worldgen_features": ["ore_nickel", "ore_platinum", "ore_platinum_end"],
             "content_tool_sha256": hashlib.sha256(read_checked(content_tool)).hexdigest(),
-            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.6.0" if wrench else "0.5.0" if energy_pipes else "0.4.0" if assembler else "0.3.0" if foundry else "0.2.0" if pulverizer else "0.1.0",
+            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.7.0" if machine_use else "0.6.0" if wrench else "0.5.0" if energy_pipes else "0.4.0" if assembler else "0.3.0" if foundry else "0.2.0" if pulverizer else "0.1.0",
             "processing_recipes": processing_names,
             "required_core_patch": "techquest_biome_modifiers:0.1.0"}

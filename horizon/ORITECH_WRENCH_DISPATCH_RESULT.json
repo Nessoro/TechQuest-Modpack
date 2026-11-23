@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-23T09:49:00.364836+00:00",
+  "minecraft": "26.3",
+  "scope": "Held-item machine menus, secondary-use adjacent-cable wrench behavior and client prediction; isolated actual GUI, wet factory and own native saves",
+  "versions": {
+    "oritech_content": "0.9.0",
+    "oritech_native": "0.7.0",
+    "pretty_pipes_content_and_native": "0.10.0"
+  },
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "source": {
+    "oritech_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "license": "Pinned own CC0-1.0 dedication, Horizon MIT; notices retained",
+    "original_contract": "ORITECH_WRENCH_DISPATCH_REFERENCE_RESULT.json",
+    "original_contract_sha256": "f6c6d3e6ca5db67268f1fac3c5cab5e3f93587e818d2d9649552abda580d9d93",
+    "dependency_java_source_read_or_decompiled": false
+  },
+  "implementation": {
+    "original_block_before_item_guard_for_five_machines": true,
+    "shift_neighbor_toggle_even_with_sneak": true,
+    "machine_rotation_invented": false,
+    "client_prediction_consumes_only_block_result_without_inventory_or_energy_mutation": true,
+    "combined_injections": 41,
+    "support_modules": 10,
+    "retained_core_corrections": 2,
+    "only_changed_content_payloads": [
+      "horizon-mod.toml"
+    ],
+    "recipes_loot_assets_shapes_and_fluid_bindings_identical_to_08": true,
+    "other_three_native_bundles_unchanged": true,
+    "own_source_archive_verified_files": 26
+  },
+  "original": {
+    "server_cases": 440,
+    "materialized_menu_providers": 138,
+    "instrumented_fake_player_boundary_not_real_original_client": true
+  },
+  "graphical_dispatch": {
+    "matched_original_cases": 110,
+    "cases_by_block": {
+      "oritech:basic_generator_block": 36,
+      "oritech:pulverizer_block": 16,
+      "oritech:powered_furnace_block": 18,
+      "oritech:foundry_block": 18,
+      "oritech:assembler_block": 18,
+      "minecraft:chest": 2,
+      "minecraft:stone": 2
+    },
+    "menus_opened": 52,
+    "wet_cases": 44,
+    "creative_cases": 8,
+    "cooldown_menu_and_secondary_use_controls": 2,
+    "wet_disabled_neighbor_physical_reopen_and_empty_reconnect": true,
+    "wire_all_properties_energy_and_inventory_counts_checked": true,
+    "protocol_decode_errors": 0,
+    "screenshots_visually_inspected": [
+      "held-wrench-machine-menu.png"
+    ]
+  },
+  "fixtures": {
+    "dispatch": [
+      "block/core assembly state",
+      "333 E endpoint buffer",
+      "inventory, pose, time and game mode"
+    ],
+    "original": "Synthetic hand driver calls original useItemOn then useItem; instrumented FakePlayer records openMenu and constructs actual MenuProvider",
+    "wet_power": {
+      "oritech:electrum_ingot": 3,
+      "oritech:basic_generator_block": 1,
+      "oritech:powered_furnace_block": 1,
+      "oritech:machine_core_1": 1,
+      "minecraft:coal": 1,
+      "minecraft:raw_iron": 2,
+      "minecraft:diamond_pickaxe": 1,
+      "oritech:wrench": 1,
+      "minecraft:water_bucket": 5
+    },
+    "energy_or_outputs_seeded_in_wet_power": false,
+    "unassisted_survival_progression_claim": false
+  },
+  "regressions": {
+    "fresh_native_machine_states": 3726,
+    "fresh_native_cable_states": 1512,
+    "fresh_graphical_waterlogging": {
+      "placements": 8,
+      "bucket_uses": 24,
+      "wet_shift_removals": 4,
+      "wet_lifecycle_and_physical_reopen": true
+    },
+    "python_tests": 128,
+    "prior_craft_loot_geometry_binding_evidence_retained_by_payload_byte_comparison_not_rerun": true
+  },
+  "wet_graphical_factory": {
+    "two_real_iron_ingots_collected": true,
+    "wrench_cut_and_reconnect": true,
+    "core_placed_with_shift_against_machine": true,
+    "wet_endpoint_real_drop_collected_and_reinstalled": true,
+    "all_five_cables_still_wet": true,
+    "physical_reopens_exact": 2,
+    "generated": 12640,
+    "consumed": 6400,
+    "stored": 6240,
+    "energy_conserved": true,
+    "energy_or_output_seeded": false
+  },
+  "dedicated": {
+    "physical_restarts": 2,
+    "all_five_cables_wet_in_every_snapshot": true,
+    "stored_energy": 44800,
+    "iron_ingots_automatically_delivered": 2,
+    "energy_outputs_or_cargo_seeded": false,
+    "glass_trough_fixture": true,
+    "pretty_pipes_flooded_factory_or_fluid_interaction_proven": false,
+    "licensed_join_or_multiplayer_tested": false
+  },
+  "own_native_save_upgrade": {
+    "source_content": "0.8.0",
+    "target_content": "0.9.0",
+    "source_world_all_bytes_unchanged": true,
+    "energy_burn_progress_cores_all_wires_and_inventory_ids_counts_preserved": true,
+    "physical_reopen_exact": true,
+    "items_energy_progress_or_blocks_injected": false,
+    "java_world_import_or_general_component_fidelity_tested": false
+  },
+  "installation": {
+    "profile": "techquest-oritech-09b-server",
+    "sealed_tools": "native-tools-oritech-09b",
+    "port": 25660,
+    "bind": "127.0.0.1",
+    "online_mode": true,
+    "whitelist": true,
+    "hmods": 8,
+    "native_bundles": 4,
+    "stopped": true,
+    "profile_locks_verified_stopped": 14,
+    "prior_profiles_and_neoforge_main_preserved": true
+  },
+  "controls_and_checker_fixes": {
+    "08a": "Prior native 0.6 fails first held-wrench menu case, retained as negative control",
+    "09a": "Server-only fix opens menu but old client prediction sends subsequent UseItem and toggles the cable; excluded",
+    "transformer_v2": "Fully qualified ControlFlow return payload is rejected by helper signature matching; v3 uses target tuple spelling and builds",
+    "dedicated_runner_v1": "Prepare succeeded and stopped server; outer wrapper called a nonexistent installer stop subcommand. Verified saved prepare result and resumed only verify/final; probe itself always stops server"
+  },
+  "remaining": [
+    "Other wrenchable targets, sounds and full machine rendering",
+    "Other cable variants, fluid transport/storage and electronic industrial chain, upgrades and remaining machines/recipes",
+    "General unloaded/dimension-switching networks and full component fidelity",
+    "Complete industrial/world/client/multiplayer/reproducibility/comparable-load criteria in GOAL_PR8_RU.md"
+  ],
+  "proof_files_sha256": {
+    "native-tools-oritech-09b/build-result.json": "b6ad1f6a3c6ea30ea315ec47850543e329d0600de6b3fa8588060b3988c37480",
+    "oritech-08a-dispatch-negative-gui-v1.log": "4bc5b436d827f3a311987843a198711b4513a386b9624707e33cbd955de17965",
+    "oritech-09-content-delta-v1.json": "74790c0166355dc3e9cc05147ce6ae41aa398c1a473f094e5b3ae3f2ec6b6a8f",
+    "oritech-09-core-patches-v3.json": "32a9ca6daf5c9c640844852a3d7a6c136af411270511396a01b58f87849e434d",
+    "oritech-09-mixins-v3.json": "8a33f0fbb0b2b22aaa71cebdde3e3fd65e86161c6571794cde555af2d1b5845f",
+    "oritech-09-native-build-v2.log": "e44a81fa2d7e52cb6feaef7abe915efd1a21ef328925c948185e9f5cc616d627",
+    "oritech-09-native-source-verification-v1.json": "55bc52da4325c68e79ec8bcf57287210a40cb77d7a2b3437f4f0cd8379631d89",
+    "oritech-09-profile-verification-v1.json": "329be3f6fa872c739bc038fa22096cae99e5516af2b81552ba06cee6575b3bdd",
+    "oritech-09-python-tests-v2.log": "7ac27d7c2a1864481fedb5f10b8a2cb940066666160406b125f3738d100c7320",
+    "oritech-09-stage-sync-v3.json": "088f66d7cf0ed454ca73d01245e193b33c6b0d6b70f536486abc2077b95f9abe",
+    "oritech-09-techquest_oritech-sdk-v3.json": "259faafc34e4071263ad9e55c8b62835ba3eb8067c17e4d0479289a2b3eb8533",
+    "oritech-09-techquest_pretty_pipes-sdk-v3.json": "c34c0aa410e5956a18722d25b8aad363a9ce4e8fde3ba8812d77fbf388245a9f",
+    "oritech-09a-dispatch-gui-v1.log": "1be7061ffe74a6f6066dfc86b5eba5e03b1fc814cba5d5f8c76a395d3dcffb7f",
+    "oritech-09b-assembler-regression-v1/checked-result.json": "388670b94d3a4260603d48cf850d1bb59817e4b7b2baa5871f8f4a60687bf643",
+    "oritech-09b-cable-save-upgrade-v1/checked-result.json": "ac85c621c97d3572e149036e1714ee6e66434357b034b8b03955b78d57e232da",
+    "oritech-09b-dispatch-gui-v1/actions.json": "bde533437de104f70848f43dce6cd27aa639dad65eb8b25d599a1e26718a4af7",
+    "oritech-09b-dispatch-gui-v1/checked-result.json": "7d1801a649735c73e74531fcecdb2ac4a6a3d93a5bc725c0eedcae0ccd650e72",
+    "oritech-09b-dispatch-gui-v1/held-wrench-machine-menu.png": "b4cb0e02deb3bbd9bf91072920c352810a0e31df719282fb4929c3887300aa79",
+    "oritech-09b-dispatch-gui-v1/restored-neighbor-connected.png": "988d56b654cf5dd89a9bfeb906e6da52cd43a64f78ab044b30f80f695eca20a1",
+    "oritech-09b-dispatch-gui-v1/wet-disconnected-neighbor.png": "6b22a42c28fdc84568d4295b9fe8e15502663a8a3ac248fdef6d5526aea6d79e",
+    "oritech-09b-energy-pipes-regression-v1/checked-result.json": "51587fcd5cccd8dbeecf87581c96ba3c6eb1cc81726cfcd994acfa5f4b3413c5",
+    "oritech-09b-energy-regression-v1/checked-result.json": "a7718cdeea35efbe8872f937d308afcb6e5435ef32ba3e61c7880815c2b1569b",
+    "oritech-09b-foundry-regression-v1/checked-result.json": "927b2872d2fc1cb8e8a34911ff9f8deb7edae89df8288732f935831162b48dbc",
+    "oritech-09b-install-v1.json": "5e42286de75f09ce2fab6fb019e8f501dacd730437a1d1a4eb2ea0af6b24b771",
+    "oritech-09b-pulverizer-regression-v1/checked-result.json": "55bf2c977eea67025363d817dfff180513eb2595baf37a8316a8131fb1e95101",
+    "oritech-09b-waterlogging-gui-v1/actions.json": "f3c3b5ea1ecc77e0c9729327badacf6eb39c2e038b5973f5593e06bf8406c98f",
+    "oritech-09b-waterlogging-gui-v1/checked-result.json": "18c413c2da7becd670503c2712134d614dec0db56f2d80dc9a95656d8a30f380",
+    "oritech-09b-waterlogging-gui-v1/restored-source-drained.png": "13cfbf0a85f0cba6b59f5400086886f3c9130e8599dfb67bed75263913bb447f",
+    "oritech-09b-waterlogging-gui-v1/wet-endpoint.png": "ccd769dbb12cafead98e811272a3d80e7244e91772699721e21af5aa4c00d2f9",
+    "oritech-09b-wet-energy-pipes-gui-v1/actions.json": "5cc393bb3930e61c5c4b8d85c25ecc60d617876f8e2129756f7d788fcb6b52b1",
+    "oritech-09b-wet-energy-pipes-gui-v1/broken-cable-paused.png": "3712195af9a87fdd59c4b2504ccba63dd7b08e58281153067feb08baf56209e2",
+    "oritech-09b-wet-energy-pipes-gui-v1/checked-result.json": "f490a3fdbd2c1127ee0660eede178d0f1ecb7295a842292e7ff06fb862fd7c48",
+    "oritech-09b-wet-energy-pipes-gui-v1/collected-iron.png": "a26ed259f73c1c6ce54563bebc8d7ec0c669c620aef653dca8c1541bf1d38c8c",
+    "oritech-09b-wet-energy-pipes-gui-v1/remote-output.png": "9b198f9701264d1e6cf617180a01874d474db1d1d46b6de7c9062769ec2f8db0",
+    "oritech-09b-wet-energy-pipes-gui-v1/remote-working.png": "3ceb574c9313444fe87539853d53971c38e74405dc46f509db17170937639375",
+    "oritech-09b-wet-energy-pipes-server-final-v1.commands.json": "2b8ae7d5cad7189dc137ce9bcf18f1193210463a56db2951404f60c5f5569256",
+    "oritech-09b-wet-energy-pipes-server-final-v1.json": "0776cb7d72f70df7ca9534868fd2c9acb8189101c7130eb0645df838f339be63",
+    "oritech-09b-wet-energy-pipes-server-prepare-v1.commands.json": "81cb2f1ab5ab50b0ec7dc2841071b2598ca8830ecc391736da38ec16943ee3a1",
+    "oritech-09b-wet-energy-pipes-server-prepare-v1.json": "89eeaa6512fe8ec45b3cad94ebdcb3cfb82fe0b4e22ef219f44cd5a6f902dbc3",
+    "oritech-09b-wet-energy-pipes-server-resume-v2.log": "923a0794f764fe1ca6331a9fac5f023430cb6c8d2dca02cfad4cefbcb9615bee",
+    "oritech-09b-wet-energy-pipes-server-v1.log": "3507ab2ae23e5ddc6ba77461379a62ae241492922e1eb935b3c4fbed1d16491f",
+    "oritech-09b-wet-energy-pipes-server-verify-v1.commands.json": "c8cf727ee0fed5610874f409da2dd26c71ca9914006bd652d2dc1af98bd5551c",
+    "oritech-09b-wet-energy-pipes-server-verify-v1.json": "bf1cab031ec933437f2b6f8f3c5dc5d54f21699f09ccda1715ec286770c2f252",
+    "oritech-content-09-stage-v1.json": "39e47141d012e9814cc1cff79fd29256234d87dffff797d01344ed56d8b1319a",
+    "oritech-content-09-v1/techquest-oritech-trial.json": "39e47141d012e9814cc1cff79fd29256234d87dffff797d01344ed56d8b1319a",
+    "oritech-wrench-dispatch-reference-v3/initial-result.json": "26cd5b760b1508952e7b0a621be4503f7dcef108fc2f331d83a0e0c8cc2182ba",
+    "oritech-wrench-dispatch-reference-v3/inputs.json": "05b7bf081d719d60a8f52aaa16fef82f595d29f13fe00e5a9d4978379bc29a81",
+    "oritech-wrench-dispatch-reference-v3/reopen-result.json": "eafb7cd751c23f9ce4651377b99d69314e70bb423ee4353127bb1dd640c2c0ae"
+  },
+  "goal_complete": false,
+  "published": false
+}

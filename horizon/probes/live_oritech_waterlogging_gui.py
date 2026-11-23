@@ -28,7 +28,7 @@ def main():
     args = parser.parse_args()
     original = json.loads(args.original.read_text())
     assert original["original_waterlogging_callbacks_executed"] and original["flow_chunks_forced"]
-    game = GraphicalFixture(args.server_dir, args.work, "0.8.0", "waterlogging-gui", "TQWaterGui", module="oritech", frozen=True)
+    game = GraphicalFixture(args.server_dir, args.work, ("0.8.0", "0.9.0"), "waterlogging-gui", "TQWaterGui", module="oritech", frozen=True)
     cmd, call, settle = game.command, game.call, game.settle
     checked = []
 
@@ -139,7 +139,7 @@ def main():
         call("screenshot", game.work/"restored-source-drained.png")
     finally:
         game.stop()
-    result = {"schema": 1, "content_version": "0.8.0", "native_version": "0.6.0", "placement_cases": len(placements),
+    result = {"schema": 1, "content_version": game.version, "native_version": "0.7.0" if game.version=="0.9.0" else "0.6.0", "placement_cases": len(placements),
               "bucket_cases": len(original["bucket_uses"]), "wet_shift_cases": 4, "checks": checked,
               "wet_lifecycle_matched": True, "wet_endpoint_physical_reopen_exact": True, "restored_source_drained_by_bucket": True,
               "endpoint_fixture_energy_seeded": 333, "protocol_decode_errors": 0, "licensed_multiplayer_tested": False,

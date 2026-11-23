@@ -108,7 +108,7 @@ Waterlogging в этом профиле отсутствует; остальны
 [Доказательства](ORITECH_WRENCH_RESULT.json),
 [воспроизведение](first_party/oritech/README.md#content-07-cable-wrench--native-06).
 
-Текущий профиль базового waterlogging — `/workspace/horizon-runtime/techquest-oritech-08a-server`,
+Профиль базового waterlogging — `/workspace/horizon-runtime/techquest-oritech-08a-server`,
 порт 25658, Oritech content 0.8/native 0.6. `stage_oritech.py --waterlogging`
 включает wrench и использует штатный waterlogged binding без новых native hooks.
 Движок, четыре bundles и два core corrections из `native-tools-oritech-07a`
@@ -121,6 +121,20 @@ Dedicated сохраняет пять мокрых кабелей, 44 800 E и �
 Остальные промышленные механики и мультиплеер ещё не готовы.
 [Доказательства](ORITECH_WATERLOGGING_RESULT.json),
 [воспроизведение](first_party/oritech/README.md#content-08-waterlogging--native-06-retained).
+
+Текущий профиль взаимодействия с машинами —
+`/workspace/horizon-runtime/techquest-oritech-09b-server`, порт 25660,
+Oritech content 0.9/native 0.7, прежние Pretty Pipes 0.10 и оба core corrections.
+Инструменты находятся отдельно в `native-tools-oritech-09b`: 41 injection,
+10 support modules, восемь hmod и четыре native bundles.
+`stage_oritech.py --machine-use` включает предыдущие ступени. Обычный клик
+с предметом открывает меню машины; Shift с занятой рукой пропускает эту фазу
+и позволяет ставить core или переключать соседний кабель ключом.
+Новый клиентский hook также предотвращает лишнее действие предметом после меню.
+Профиль 09a сохранён как контроль ошибки прежнего client prediction;
+08a и старые профили не менялись. Полный industrial port и licensed join
+этой проверкой не завершаются.
+[Воспроизведение и границы проверки](first_party/oritech/README.md#content-09-machine-use--native-07).
 
 Pretty Pipes 0.8 добавляет скрафченный redstone module и управление новыми
 извлечениями/доставками от питания. Нужны content/native именно 0.8.0.

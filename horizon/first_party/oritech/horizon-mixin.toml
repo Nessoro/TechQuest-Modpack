@@ -1,6 +1,6 @@
 [mod]
 id = "techquest_oritech"
-version = "0.6.0"
+version = "0.7.0"
 
 [compatibility]
 horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
@@ -229,6 +229,17 @@ cancellable = true
 bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "hit", ty = "Option<&crate::game::Hit>", value = "block_hit" },
+]
+
+[[injection]]
+id = "machine_client_prediction"
+target = "horizon_client::game::remote::Game<'_>::remote_block_reacts"
+kind = "HEAD"
+helper = "machine_prediction.rs"
+cancellable = true
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "hit", ty = "&crate::game::Hit", value = "hit" },
 ]
 
 [[injection]]

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Open a hashed own 0.7 powered-cable GUI save under the 0.8 waterlogged binding.
+"""Open a hashed own 0.7/0.8 cable GUI save under a later native binding.
 
 Copies the save; never opens the source in place. No items, machine energy,
 progress or block state is injected. Checks selected scalar fields and item
@@ -28,14 +28,17 @@ def main():
         parser.add_argument("--"+key, type=Path, required=True)
     args = parser.parse_args()
     server, source, work = checked_path(args.server_dir), checked_path(args.source_work), args.work.absolute()
-    lock = verify(server); assert lock["modules"]["oritech"]["version"] == "0.8.0"
+    lock = verify(server); target_version = lock["modules"]["oritech"]["version"]; assert target_version in ("0.8.0", "0.9.0")
     assert not work.exists() and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert source not in work.parents and work not in source.parents and server not in work.parents
-    proof = json.loads((Path(__file__).resolve().parents[1]/"ORITECH_WRENCH_RESULT.json").read_text())
     report = source/"checked-result.json"
-    assert sha(report) == proof["proof_files_sha256"][source.name+"/checked-result.json"]
     old = json.loads(report.read_text())
-    assert old["oritech_content_version"] == "0.7.0" and old["two_physical_reopens_exact"]
+    source_version = old["oritech_content_version"]
+    assert source_version in ("0.7.0", "0.8.0") and old["two_physical_reopens_exact"]
+    assert (source_version, target_version) in (("0.7.0", "0.8.0"), ("0.7.0", "0.9.0"), ("0.8.0", "0.9.0"))
+    proof_name = "ORITECH_WRENCH_RESULT.json" if source_version=="0.7.0" else "ORITECH_WATERLOGGING_RESULT.json"
+    proof = json.loads((Path(__file__).resolve().parents[1]/proof_name).read_text())
+    assert sha(report) == proof["proof_files_sha256"][source.name+"/checked-result.json"]
     previous_lock = verify(source.parent/proof["installation"]["profile"])
     for ident, spec in previous_lock["modules"].items():
         assert sha(source/"horizon-mods"/(ident+".hmod")) == spec["sha256"]
@@ -95,12 +98,12 @@ def main():
 
     checks = {phase: run(phase) for phase in ("upgrade", "physical-reopen")}
     assert {name: sha(p) for name, p in tree_files(original_world).items()} == before_hashes
-    result = {"schema": 1, "source_content": "0.7.0", "target_content": "0.8.0", "checks": checks,
+    result = {"schema": 1, "source_content": source_version, "target_content": target_version, "checks": checks,
               "source_result_sha256": sha(report), "source_world_files_sha256": before_hashes,
               "source_world_unmodified": True, "items_energy_progress_or_blocks_injected": False,
               "complete_component_fidelity_or_java_import_tested": False}
     (work/"checked-result.json").write_text(json.dumps(result, indent=2)+"\n")
-    print("Own 0.7 cable world retained energy, burn, core flags, all cable states and inventory under 0.8 and physical reopen")
+    print("Own", source_version, "cable world retained energy, burn, core flags, all cable states and inventory under", target_version, "and physical reopen")
 
 
 if __name__ == "__main__":

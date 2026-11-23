@@ -29,7 +29,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("runtime", "work"): parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--accept-eula", action="store_true"); parser.add_argument("--reopen", action="store_true")
-    parser.add_argument("--oracle", choices=("energy", "content", "pulverizer", "foundry", "assembler", "energy_pipe", "wrench", "waterlogging"), default="energy")
+    parser.add_argument("--oracle", choices=("energy", "content", "pulverizer", "foundry", "assembler", "energy_pipe", "wrench", "waterlogging", "wrench_dispatch"), default="energy")
     parser.add_argument("--cases", type=Path)
     args = parser.parse_args(); runtime = args.runtime.resolve(); work = args.work.absolute()
     if args.oracle == "content" and (args.cases is None or args.reopen):
@@ -37,7 +37,7 @@ def main():
     if (work.is_symlink() or any(p.is_symlink() for p in work.parents)
             or runtime == work or runtime in work.parents and work.parent != runtime):
         raise ValueError("reference must be a separate direct runtime child or separate workspace directory")
-    probe = Path(__file__).with_name({"energy": "OritechEnergyProbe.java", "content": "OritechContentProbe.java", "pulverizer": "OritechPulverizerProbe.java", "foundry": "OritechFoundryProbe.java", "assembler": "OritechAssemblerProbe.java", "energy_pipe": "OritechEnergyPipeProbe.java", "wrench": "OritechWrenchProbe.java", "waterlogging": "OritechWaterloggingProbe.java"}[args.oracle])
+    probe = Path(__file__).with_name({"energy": "OritechEnergyProbe.java", "content": "OritechContentProbe.java", "pulverizer": "OritechPulverizerProbe.java", "foundry": "OritechFoundryProbe.java", "assembler": "OritechAssemblerProbe.java", "energy_pipe": "OritechEnergyPipeProbe.java", "wrench": "OritechWrenchProbe.java", "waterlogging": "OritechWaterloggingProbe.java", "wrench_dispatch": "OritechWrenchDispatchProbe.java"}[args.oracle])
     sha = lambda p: hashlib.sha256(read_checked(p)).hexdigest()
     server = work / "server"; jar = work / "probe/techquest-reference-probe.jar"
     if not args.reopen:
@@ -97,7 +97,7 @@ def main():
     if args.reopen and args.oracle in ("pulverizer", "foundry", "assembler"):
         initial = json.loads((work / "initial-result.json").read_text())
         assert result["before"] == initial["saved"]
-    if args.reopen and args.oracle in ("energy_pipe", "wrench", "waterlogging"):
+    if args.reopen and args.oracle in ("energy_pipe", "wrench", "waterlogging", "wrench_dispatch"):
         initial = json.loads((work / "initial-result.json").read_text())
         assert result["before"] == initial["saved"]
     print("Original Oritech", args.oracle, phase, "passed")

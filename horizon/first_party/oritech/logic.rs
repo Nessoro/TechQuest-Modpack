@@ -543,9 +543,12 @@ pub(super) fn interact(
     };
     let id = game.native_block(hit.pos);
     if !machine(&id)
-        || game.held().is_some()
         || game.hand != horizon_client_lib::first_person::Hand::Main
-        || (game.keys.held(crate::game::Mapping::Sneak) && game.offhand.is_some())
+        // Original MachineBlock's default block use precedes item use,
+        // including held tools and an item on cooldown. Secondary use only
+        // skips that phase when either hand holds something.
+        || (game.keys.held(crate::game::Mapping::Sneak)
+            && (game.held().is_some() || game.offhand.is_some()))
     {
         return std::ops::ControlFlow::Continue(());
     }

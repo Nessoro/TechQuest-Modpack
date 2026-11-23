@@ -1,8 +1,7 @@
 // Selected original Wrench semantics: Rearth, CC0-1.0; LICENSE-ORITECH.
 // Horizon Game/use/cooldown integration: MIT, LICENSE-HORIZON.
 use super::{
-    Game, Hit, techquest_oritech, techquest_oritech_cable_hit as selection,
-    techquest_oritech_cables as cables,
+    Game, Hit, techquest_oritech_cable_hit as selection, techquest_oritech_cables as cables,
 };
 use horizon_client_lib::items::ItemStack;
 use horizon_core::geometry::{Direction, Vec3};
@@ -108,11 +107,9 @@ fn attempt(game: &mut Game<'_>) -> bool {
         selection::select_side(mask, local, end)
             .is_some_and(|side| cables::toggle_side(game, hit.pos, side))
     } else {
-        // Other Oritech wrenchable machines are a later port; do not turn
-        // their own action into an invented neighboring-cable interaction.
-        if techquest_oritech::machine(&game.native_block(hit.pos)) {
-            return false;
-        }
+        // The five ported machines are not Wrenchable in the original.
+        // Once their block phase passes (e.g. secondary use), a ray hitting
+        // their face may address the adjacent cable, even while sneaking.
         let Some(face) = Direction::ALL
             .into_iter()
             .find(|side| side.normal() == hit.face)

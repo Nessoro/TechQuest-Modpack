@@ -122,8 +122,8 @@ def main():
     parser.add_argument('--prior',type=Path)
     parser.add_argument('--waterlogged-cables',action='store_true')
     args=parser.parse_args();assert not args.output.exists() and not args.output.with_suffix('.commands.json').exists()
-    lock=verify(args.server_dir);assert lock['modules']['oritech']['version'] in ('0.6.0','0.7.0','0.8.0')
-    if args.waterlogged_cables:assert lock['modules']['oritech']['version']=='0.8.0'
+    lock=verify(args.server_dir);assert lock['modules']['oritech']['version'] in ('0.6.0','0.7.0','0.8.0','0.9.0')
+    if args.waterlogged_cables:assert lock['modules']['oritech']['version'] in ('0.8.0','0.9.0')
     if args.phase!='prepare' and args.prior is None:parser.error('prior phase report required')
     probe=Factory(args.server_dir,Path(lock['server_binary']))
     probe.waterlogged_cables=args.waterlogged_cables

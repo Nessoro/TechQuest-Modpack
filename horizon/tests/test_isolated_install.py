@@ -97,6 +97,17 @@ class IsolatedInstallTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Oritech content/native"):
                 installer.check_native_pairs(mods, native, core)
 
+    def test_machine_dispatch_rejects_the_prior_wrench_engine(self):
+        mods = {"oritech": {"version": "0.9.0"}, "prettypipes": {"version": "0.10.0"}}
+        native = [{"id": "techquest_oritech", "version": "0.7.0"},
+                  {"id": "techquest_pretty_pipes", "version": "0.10.0"}]
+        core = [json.loads(installer.CORE_PATCH.read_text()),
+                json.loads(installer.WORLD_CORE_PATCH.read_text())]
+        installer.check_native_pairs(mods, native, core)
+        native[0]["version"] = "0.6.0"
+        with self.assertRaisesRegex(ValueError, "Oritech content/native"):
+            installer.check_native_pairs(mods, native, core)
+
     def test_new_progression_install_requires_runtime_fix_but_old_lock_remains_valid(self):
         mods = {"oritech": {"version": "0.2.0"}}
         native = [{"id": "techquest_oritech", "version": "0.1.0"}]
