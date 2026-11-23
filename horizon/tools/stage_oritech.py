@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BLOCKS = ("basic_generator_block", "powered_furnace_block", "machine_core_1")
 
 
-def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=None, port_pack=None, pulverizer=False, foundry=False, assembler=False, energy_pipes=False, wrench=False):
+def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=None, port_pack=None, pulverizer=False, foundry=False, assembler=False, energy_pipes=False, wrench=False, waterlogging=False):
     if output.exists() or output.is_symlink() or any(p.is_symlink() for p in output.absolute().parents):
         raise ValueError("output must be a new directory without symlinks")
     for parent in output.absolute().parents:
@@ -31,12 +31,13 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
     raw = read_checked(jar)
     if pin["version"] != "1.2.13" or hashlib.sha512(raw).hexdigest() != pin["sha512"]:
         raise ValueError("expected pinned Oritech 1.2.13")
+    wrench = wrench or waterlogging
     energy_pipes = energy_pipes or wrench
     assembler = assembler or energy_pipes
     foundry = foundry or assembler
     pulverizer = pulverizer or foundry
     progression = progression or pulverizer
-    version = "0.7.0" if wrench else "0.6.0" if energy_pipes else "0.5.0" if assembler else "0.4.0" if foundry else "0.3.0" if pulverizer else "0.2.0" if progression else "0.1.0"
+    version = "0.8.0" if waterlogging else "0.7.0" if wrench else "0.6.0" if energy_pipes else "0.5.0" if assembler else "0.4.0" if foundry else "0.3.0" if pulverizer else "0.2.0" if progression else "0.1.0"
     blocks = (*BLOCKS, "pulverizer_block") if pulverizer else BLOCKS
     if foundry: blocks = (*blocks, "foundry_block")
     if assembler: blocks = (*blocks, "assembler_block")
@@ -80,7 +81,7 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
             data(f"data/oritech/horizon/menu/{block}.json", menu)
     data("data/minecraft/tags/block/mineable/pickaxe.json", {"values": ["oritech:" + b for b in blocks]})
     if energy_pipes:
-        add_energy_pipes(payloads, raw, data, tight_selection=wrench)
+        add_energy_pipes(payloads, raw, data, tight_selection=wrench, waterlogging=waterlogging)
     progression_report = None
     if progression:
         if any(p is None for p in (neoforge_jar, content_tool, port_pack)):
@@ -103,6 +104,7 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
                   "requires_native_module": "techquest_oritech", "blocks": list(blocks),
                   "energy_pipe_blocks": ["energy_pipe", "energy_pipe_connection"] if energy_pipes else [],
                   "wrench_and_default_tight_cable_selection": wrench,
+                  "basic_cable_waterlogging": waterlogging,
                   "java_code_included": False, "original_recipes_ported": bool(progression), "all_original_recipes_ported": False,
                   "progression_subset": progression_report, "full_mod_ported": False, "gameplay_tested": False}
         (root / "techquest-oritech-trial.json").write_text(json.dumps(report, indent=2) + "\n")
@@ -110,7 +112,7 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
     return report
 
 
-def add_energy_pipes(payloads, raw, data, tight_selection=False):
+def add_energy_pipes(payloads, raw, data, tight_selection=False, waterlogging=False):
     """Basic CC0 geometry with a normal wire and a separate item-less endpoint."""
     directions = ("down", "up", "north", "south", "west", "east")
     boxes = {"core": [6, 6, 6, 10, 10, 10], "down": [6, 0, 6, 10, 6, 10],
@@ -121,6 +123,11 @@ def add_energy_pipes(payloads, raw, data, tight_selection=False):
     # default tight selection, with the same thin geometry as collision.
     properties = {d: {"type": "enum", "values": ["0", "1"]} for d in directions}
     properties.update({k: {"type": "boolean"} for k in ("straight", "waterlogged")})
+    if waterlogging:
+        # HeavyCore's only inherited state is waterlogged. Its pinned MIT
+        # binding supplies SimpleWaterloggedBlock, placement and neighbor-fluid
+        # ticks, without adding axis/facing states or replacing cable geometry.
+        del properties["waterlogged"]
     shapes = {",".join(str((mask >> i) & 1) for i in range(6)):
               [boxes["core"], *(boxes[d] for i, d in enumerate(directions) if mask & (1 << i))]
               for mask in range(64)}
@@ -132,10 +139,14 @@ def add_energy_pipes(payloads, raw, data, tight_selection=False):
                   for key, value in shapes.items()}
     for block in ("energy_pipe", "energy_pipe_connection"):
         definition = {
-            "template": "minecraft:iron_block", "item": block == "energy_pipe",
+            "template": "minecraft:heavy_core" if waterlogging else "minecraft:iron_block", "item": block == "energy_pipe",
             "properties": {"hardness": 1.0, "explosion_resistance": 2.0, "occludes": False},
             "state_properties": properties, "collision_shapes": {"properties": list(directions), "values": shapes}}
         if tight_selection: definition["shapes"] = definition["collision_shapes"]
+        if waterlogging:
+            definition["properties"]["sounds"] = "minecraft:iron_block"
+            if block == "energy_pipe":
+                definition["components"] = {"minecraft:rarity": "common"}
         data(f"data/oritech/horizon/block/{block}.json", definition)
         data(f"assets/oritech/blockstates/{block}.json", {"multipart": [
             {"apply": {"model": "oritech:block/techquest_energy_core"}}] + [
@@ -166,6 +177,7 @@ def main():
     for name in ("jar", "sdk", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--progression", action="store_true")
+    parser.add_argument("--waterlogging", action="store_true", help="basic cable SimpleWaterlogged behavior; implies --wrench")
     parser.add_argument("--wrench", action="store_true", help="craftable basic cable wrench and default tight selection; implies --energy-pipes")
     parser.add_argument("--energy-pipes", action="store_true", help="basic energy cables; implies --assembler")
     parser.add_argument("--assembler", action="store_true", help="four-input coils/motors; implies --foundry")

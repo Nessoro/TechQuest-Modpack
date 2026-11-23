@@ -146,6 +146,14 @@ pinned MIT Horizon geometry/item-use/cooldown APIs. The wrench recipe, handheld
 model, texture and names come from the pinned own CC0 JAR; the one-stack tool
 declaration follows own `ItemContent`. No dependency Java is included.
 
+The waterlogging oracle invokes original CC0 `AbstractPipeBlock`,
+`GenericPipeBlock`, `GenericPipeConnectionBlock` and `Wrench`, with Minecraft
+and NeoForge public binary APIs. Source blob checks and hashes are retained in
+`ORITECH_WATERLOGGING_REFERENCE_RESULT.json`. Content 0.8 binds the two cables
+to the existing MIT Horizon HeavyCore/SimpleWaterlogged behavior, overriding
+geometry, strength, sounds and ordinary item rarity. No foreign Java source,
+new player-side Java or original game resources are committed.
+
 `first_party/biome_modifiers/merged-biomes.patch` adapts Horizon's MIT
 `mod_content.rs` at the existing pinned Horizon commit. It registers declared
 biome files before tag filtering and applies modifiers to the merged registry.

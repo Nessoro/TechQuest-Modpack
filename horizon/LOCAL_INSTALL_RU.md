@@ -104,9 +104,23 @@ core и границу чанков, сохраняет 44 800 E и достав
 GUI подтвердил крафт двух wrench, обе руки, общий cooldown после промаха,
 четыре Shift-дропа, потерю буфера последней отключённой грани и два переоткрытия.
 Регрессии машин/кабелей, крафта/loot и dedicated-цепочки прошли.
-Waterlogging, остальные цели wrench и лицензированный мультиплеер ещё не готовы.
+Waterlogging в этом профиле отсутствует; остальные цели wrench и лицензированный мультиплеер ещё не готовы.
 [Доказательства](ORITECH_WRENCH_RESULT.json),
 [воспроизведение](first_party/oritech/README.md#content-07-cable-wrench--native-06).
+
+Текущий профиль базового waterlogging — `/workspace/horizon-runtime/techquest-oritech-08a-server`,
+порт 25658, Oritech content 0.8/native 0.6. `stage_oritech.py --waterlogging`
+включает wrench и использует штатный waterlogged binding без новых native hooks.
+Движок, четыре bundles и два core corrections из `native-tools-oritech-07a`
+переиспользованы без изменения; 07b и прежние профили сохранены.
+Проверены 512 состояний, 264 сравнения с оригиналом, оба GUI-сценария с ведрами,
+мокрой линией питания, wrench, добычей/подбором endpoint и переоткрытиями.
+Dedicated сохраняет пять мокрых кабелей, 44 800 E и два слитка после перезапусков;
+его стеклянный лоток изолирует ещё не перенесённое взаимодействие Pretty Pipes с водой.
+Копия собственного сохранения 0.7 открылась под 0.8 без изменения исходника.
+Остальные промышленные механики и мультиплеер ещё не готовы.
+[Доказательства](ORITECH_WATERLOGGING_RESULT.json),
+[воспроизведение](first_party/oritech/README.md#content-08-waterlogging--native-06-retained).
 
 Pretty Pipes 0.8 добавляет скрафченный redstone module и управление новыми
 извлечениями/доставками от питания. Нужны content/native именно 0.8.0.

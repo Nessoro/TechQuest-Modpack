@@ -36,6 +36,7 @@ PIPES=([f'{x} 201 176' for x in range(136,143)]
 
 
 class Factory(Probe):
+    waterlogged_cables=False
     def load(self):
         self.command('tick freeze');self.command('forceload add 128 160 159 191')
         deadline=time.monotonic()+45
@@ -46,12 +47,15 @@ class Factory(Probe):
 
     def snapshot(self):
         cargo={item:sum(self.items(pos)[item] for pos in PIPES) for item in (COAL,RAW_IRON,IRON)}
-        return {'fuel_source':dict(self.items(FUEL)),'raw_source':dict(self.items(RAW)),
+        result={'fuel_source':dict(self.items(FUEL)),'raw_source':dict(self.items(RAW)),
                 'generator':dict(self.items(GEN)),'furnace':dict(self.items(FURNACE)),
                 'output':dict(self.items(OUTPUT)),'cargo':cargo,
                 'energy':{pos:self.number(pos,'energy') for pos in (GEN,FURNACE,SOURCE_ENDPOINT,FAR_ENDPOINT)},
                 'progress':{pos:self.number(pos,'"oritech.machine_progress"') for pos in (GEN,FURNACE)},
-                'assembled':self.number(FURNACE,'techquest_assembled'),'core_used':self.number(CORE,'techquest_core_used')}
+                'assembled':self.number(FURNACE,'techquest_assembled'),'core_used':self.number(CORE,'techquest_core_used'),
+                **({'all_cables_wet':all('Test passed' in self.command('execute if block '+pos+' oritech:energy_pipe'+('_connection' if pos in (SOURCE_ENDPOINT,FAR_ENDPOINT) else '')+'[waterlogged=true]') for pos in WIRES)} if self.waterlogged_cables else {})}
+        if self.waterlogged_cables:assert result['all_cables_wet'],result
+        return result
 
     def source(self,pos,item,count):
         assert pos in (FUEL,RAW)
@@ -67,7 +71,13 @@ class Factory(Probe):
         self.setblock(GEN,'oritech:basic_generator_block')
         self.setblock(FURNACE,'oritech:powered_furnace_block{techquest_assembled:1b}')
         self.setblock(CORE,'oritech:machine_core_1{techquest_core_used:1b,controller_x:0,controller_y:-1,controller_z:0}')
-        for pos in WIRES:self.setblock(pos,'oritech:energy_pipe')
+        if self.waterlogged_cables:
+            # Explicit glass trough fixture isolates this test from Pretty
+            # Pipes' still-unported fluid interaction outside the cable line.
+            for x in range(144,149):
+                for y,z in ((200,176),(201,175),(201,177)):
+                    self.setblock(f'{x} {y} {z}','minecraft:glass')
+        for pos in WIRES:self.setblock(pos,'oritech:energy_pipe'+('[waterlogged=true]' if self.waterlogged_cables else ''))
         for pos in (FUEL,RAW,OUTPUT):self.setblock(pos,'minecraft:chest')
         for pos in PIPES:self.setblock(pos,'prettypipes:pipe')
         self.source(FUEL,COAL,1);self.source(RAW,RAW_IRON,2)
@@ -110,15 +120,19 @@ def main():
     for name in ('server-dir','output'):parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--phase',choices=('prepare','verify','final'),required=True)
     parser.add_argument('--prior',type=Path)
+    parser.add_argument('--waterlogged-cables',action='store_true')
     args=parser.parse_args();assert not args.output.exists() and not args.output.with_suffix('.commands.json').exists()
-    lock=verify(args.server_dir);assert lock['modules']['oritech']['version'] in ('0.6.0','0.7.0')
+    lock=verify(args.server_dir);assert lock['modules']['oritech']['version'] in ('0.6.0','0.7.0','0.8.0')
+    if args.waterlogged_cables:assert lock['modules']['oritech']['version']=='0.8.0'
     if args.phase!='prepare' and args.prior is None:parser.error('prior phase report required')
     probe=Factory(args.server_dir,Path(lock['server_binary']))
+    probe.waterlogged_cables=args.waterlogged_cables
     try:
         probe.load()
         if args.phase=='prepare':checks=probe.prepare()
         else:
             prior=json.loads(args.prior.read_text());assert prior['phase']==('prepare' if args.phase=='verify' else 'verify')
+            assert prior.get('waterlogged_cables',False)==args.waterlogged_cables
             if args.phase=='verify':checks=probe.finish(prior)
             else:
                 final=probe.snapshot();assert final==prior['checks']['final'],(final,prior)
@@ -128,6 +142,7 @@ def main():
         try:subprocess.run([str(probe.binary),'--dir',str(probe.server),'stop'],check=True,capture_output=True,text=True,timeout=90)
         finally:args.output.with_suffix('.commands.json').write_text(json.dumps(probe.rows,indent=2)+'\n')
     report={'schema':1,'phase':args.phase,'checks':checks,'oritech_content_version':lock['modules']['oritech']['version'],
+            'waterlogged_cables':args.waterlogged_cables,'glass_trough_fixture':args.waterlogged_cables,
             'oritech_native_version':next(m['version'] for m in lock['native_modules'] if m['id']=='techquest_oritech'),
             'pretty_pipes_version':'0.10.0','generator_and_source_interface_cross_chunk_boundary':True,
             'energy_enters_furnace_through_assembled_core':True,'fixture_source_inputs':{COAL:1,RAW_IRON:2},

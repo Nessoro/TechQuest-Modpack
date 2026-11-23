@@ -1,11 +1,11 @@
-# Oritech native subset 0.6 / content 0.7
+# Oritech native subset 0.6 / content 0.8
 
 First-party Rust implementation for Horizon 26.3 at
 `c78187dffffb60f31517eadcb87413386e8ce729`, Mixins
 `5a64af938ec86b00d53d16a408aabc0038fb3e57`.
 
 This is a limited port of **Basic Generator → quartz/coal Pulverizer, Powered
-Furnace, three-core Foundry, four-input Assembler, basic energy cables and cable wrench**, with physical inventories, energy, fuel, processing progress, assembly,
+Furnace, three-core Foundry, four-input Assembler, waterloggable basic energy cables and cable wrench**, with physical inventories, energy, fuel, processing progress, assembly,
 menus and saved state. It is not the complete Oritech mod or a survival-ready
 TechQuest industrial progression.
 
@@ -16,7 +16,7 @@ an explicit content/native compatibility table and refuses 0.2 with an engine
 that does not declare the reviewed core correction. Content 0.3 requires native
 0.2 and both biome core corrections. Content 0.4 requires native 0.3 and both
 corrections. Content 0.5 requires native 0.4; content 0.6 requires native 0.5,
-both with the two core corrections. Content 0.7 requires native 0.6 and both
+both with the two core corrections. Content 0.7/0.8 requires native 0.6 and both
 corrections. Earlier sealed
 profiles keep their paired versions and artifacts.
 
@@ -667,6 +667,79 @@ the cable regression matches 1,512 states, six layouts and physical reopen.
 The native crafting/loot engines match 988 grids and 90 rolls. The dedicated
 Pretty Pipes/core-powered chain passes all three restart phases with 44,800 E
 and two genuine ingots. These use explicit fixtures, not unassisted progression
-or a licensed multiplayer join. Waterlogging, other wrench targets, sound,
+or a licensed multiplayer join. At this milestone waterlogging was pending;
+content 0.8 below implements the basic cables. Other wrench targets, sound,
 custom hover behavior, full unload fidelity and the rest of Oritech remain open.
 [Native wrench evidence and limits](../../ORITECH_WRENCH_RESULT.json).
+
+## Content 0.8 waterlogging / native 0.6 retained
+
+`stage_oritech.py --waterlogging` includes `--wrench` and changes only the two
+cable declarations and version manifest. Both use Horizon's existing MIT
+`minecraft:heavy_core` binding: its only inherited state is `waterlogged`, and
+it supplies `SimpleWaterloggedBlock`, placement, fluid state and neighbor water
+ticks. The seven other cable properties, thin shapes and models are retained;
+sounds stay as before and the ordinary item's rarity is explicitly common.
+No new native hooks, bundle, core patch or engine rebuild is needed. The new
+`techquest-oritech-08a-server`, port **25658**, reuses the sealed
+`native-tools-oritech-07a` engine and all four bundles unchanged. Earlier
+profiles and packages remain sealed.
+
+The original oracle runs the pinned CC0 Oritech classes through 34 placements,
+16 liquid callbacks, four pickups, 24 neighbor updates, 24 bucket uses and
+eight Shift removals. Source water waterlogs a placed cable; all 15 flowing or
+falling levels leave it dry. A wet cable exposes a full still-water source.
+Only still water is accepted, and placing liquid in an already wet cable
+returns false. Both hands and survival/creative item outcomes are recorded.
+Wet Shift removal leaves the source and drops one ordinary wire, also in
+creative. Losing the last provider preserves water while discarding energy.
+Four forced chunks make real fluid ticks run: six snapshots at 0/1/4/5/6/10
+ticks cover 25 cells each. The initial unforced-chunk flow control is excluded.
+
+The materialized content has 512 cable states with the original eight
+properties and correct wet/dry fluid metadata. The standalone native binding
+probe matches **264** original comparisons, including the scheduled flow grid.
+It deliberately does not implement native graph callbacks. Running it on the
+old iron-block binding fails on wet fluid metadata, retained as a negative
+control. Separate real gameplay probes cover that integration:
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-waterlogging-original-new" --oracle waterlogging --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-waterlogging-original-new" --oracle waterlogging --reopen
+python3 horizon/probes/live_oritech_waterlogging_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-waterlogging-gui-new" \
+  --original "$TASK_RUNTIME/oritech-waterlogging-original-new/initial-result.json"
+python3 horizon/probes/live_oritech_energy_pipes_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-wet-power-gui-new" --wrench-controls --waterlogged-cables
+```
+
+The first GUI probe checks eight placements, all 24 original bucket outcomes,
+four wet Shift drops, live endpoint conversion and physical reopen/drain.
+Its 333 E endpoint buffers are deliberate scalar fixtures. The power probe
+instead waterlogs all five survival-placed cables through bucket use, cuts and
+reconnects a middle edge, pauses/resumes smelting and collects two real ingots.
+It mines the wet endpoint, follows and collects the water-carried drop, restores
+it into the remaining source and verifies two exact physical reopens. Energy
+balances at **15,680 generated − 6,400 consumed = 9,280 stored**. Equipment,
+materials, water buckets, travel, time and dry elevated access stands are
+fixtures; machine energy, processing and outputs are never seeded.
+
+The dedicated probe's `--waterlogged-cables` variant preserves all five wet
+states, 44,800 E and two genuine ingots through its three restart phases. Its
+explicit glass trough separates the energy line from Pretty Pipes' unported
+fluid interaction; this is not a flooded-factory compatibility claim.
+`live_oritech_cable_save_upgrade.py` copies the proven own 0.7 GUI world into
+0.8, checking energy/burn, core flags, cable states and item IDs/counts twice,
+without injecting anything or modifying the source world. General components
+and NeoForge save import are not covered.
+
+Machine/cable regressions retain 3,726/1,512 matched states, geometry retains
+9,600 selector rays plus 19,200 content-shape rays, and crafting/loot retains
+988 grids/90 rolls. The Python suite passes 127 tests. Twelve installation
+locks are verified stopped. Other cable variants, all bucket variants and
+dimensions, unloaded networks, machine/wrench dispatch, full industrial
+progression and licensed multiplayer remain open.
+[Original contract](../../ORITECH_WATERLOGGING_REFERENCE_RESULT.json),
+[native gameplay results and limitations](../../ORITECH_WATERLOGGING_RESULT.json).

@@ -89,10 +89,13 @@ class IsolatedInstallTests(unittest.TestCase):
                   {"id": "techquest_pretty_pipes", "version": "0.10.0"}]
         core = [json.loads(installer.CORE_PATCH.read_text()),
                 json.loads(installer.WORLD_CORE_PATCH.read_text())]
-        installer.check_native_pairs(mods, native, core)
-        native[0]["version"] = "0.5.0"
-        with self.assertRaisesRegex(ValueError, "Oritech content/native"):
+        for content in ("0.7.0", "0.8.0"):
+            mods["oritech"]["version"] = content
+            native[0]["version"] = "0.6.0"
             installer.check_native_pairs(mods, native, core)
+            native[0]["version"] = "0.5.0"
+            with self.assertRaisesRegex(ValueError, "Oritech content/native"):
+                installer.check_native_pairs(mods, native, core)
 
     def test_new_progression_install_requires_runtime_fix_but_old_lock_remains_valid(self):
         mods = {"oritech": {"version": "0.2.0"}}

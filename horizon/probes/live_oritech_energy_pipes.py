@@ -149,7 +149,7 @@ def main():
     parser.add_argument("--resume-initial",action="store_true",help="recheck completed initial output against the exact script/module bytes, then reopen")
     args=parser.parse_args();server=args.server_dir.resolve();work=args.work.absolute();lock=verify(server)
     content_version=lock["modules"]["oritech"]["version"]
-    assert content_version in ("0.6.0","0.7.0")
+    assert content_version in ("0.6.0","0.7.0","0.8.0")
     native_version=next(m["version"] for m in lock["native_modules"] if m["id"]=="techquest_oritech")
     assert work.exists()==args.resume_initial and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert server not in work.parents and work not in server.parents
