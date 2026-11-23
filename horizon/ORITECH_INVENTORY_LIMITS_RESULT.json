@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-23T18:42:16.568114+00:00",
+  "scope": "Component maximum stack size in actual Inventory.add, a prerequisite for portable fluid tanks; native tank gameplay remains pending",
+  "versions": {
+    "oritech_content": "0.10.0",
+    "oritech_native": "0.8.0",
+    "pretty_pipes_content_and_native": "0.10.0"
+  },
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "source": {
+    "original_minecraft": "1.21.1",
+    "original_neoforge": "21.1.264",
+    "oritech_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "original_inventory_add_executed_through_public_binary_api": true,
+    "dependency_java_source_read_or_decompiled": false,
+    "horizon_integration_license": "MIT; retained LICENSE-HORIZON",
+    "fluid_reference": "ORITECH_FLUID_TANK_REFERENCE_RESULT.json",
+    "fluid_reference_sha256": "c6c5b136502496e57db9090bea424a623d61343751373a64ae3a35ab48c4aa89"
+  },
+  "implementation": {
+    "entry": "horizon_client::game::inventory_add",
+    "use_stack_component_limit_before_prototype": true,
+    "component_range": [
+      1,
+      99
+    ],
+    "reenter_original_algorithm_once_with_effective_limit": true,
+    "slot_order_and_existing_overflow_algorithm_retained": true,
+    "new_hooks": 1,
+    "combined_hooks": 42,
+    "support_modules": 10,
+    "retained_core_corrections": 2,
+    "only_changed_content_payloads": [
+      "horizon-mod.toml"
+    ],
+    "no_new_fluid_tank_or_pipe_blocks": true,
+    "other_three_bundles_unchanged": true
+  },
+  "comparison": {
+    "original_cases": 192,
+    "matched_actual_native_inventory_cases": 192,
+    "items": [
+      "minecraft:stone",
+      "minecraft:ender_pearl"
+    ],
+    "limit_variants": [
+      "prototype",
+      1,
+      2,
+      16,
+      64,
+      99
+    ],
+    "counts": [
+      1,
+      2,
+      64,
+      100
+    ],
+    "modes": [
+      "empty",
+      "selected occupied",
+      "selected and offhand occupied",
+      "full inventory"
+    ],
+    "native_command_fixture_not_original_client_packets": true,
+    "observer_normalizes_equipment_offhand_in_26_3": true,
+    "physical_own_player_inventory_reopen_exact": true,
+    "saved": [
+      {
+        "slot": 0,
+        "item": "minecraft:stone",
+        "count": 1,
+        "maximum": 1
+      },
+      {
+        "slot": 1,
+        "item": "minecraft:stone",
+        "count": 1,
+        "maximum": 1
+      },
+      {
+        "slot": 2,
+        "item": "minecraft:ender_pearl",
+        "count": 99,
+        "maximum": 99
+      },
+      {
+        "slot": 3,
+        "item": "minecraft:ender_pearl",
+        "count": 1,
+        "maximum": 99
+      }
+    ],
+    "dropped_overflow_and_item_entity_merging_compared": false
+  },
+  "negative_control": {
+    "old_profile": "techquest-oritech-09b-server",
+    "two_limit_one_items": [
+      {
+        "slot": 0,
+        "item": "minecraft:stone",
+        "count": 2,
+        "maximum": 1
+      }
+    ],
+    "original_expected": [
+      {
+        "count": 1,
+        "maximum": 1,
+        "item": "minecraft:stone",
+        "slot": 0
+      },
+      {
+        "count": 1,
+        "maximum": 1,
+        "item": "minecraft:stone",
+        "slot": 1
+      }
+    ]
+  },
+  "checker_control": "v1 only read Inventory and omitted 26.3 equipment.offhand; native item replace had succeeded. Canonical v2 observes both locations and passes all fixtures.",
+  "graphical_regression": {
+    "wet_power_line_two_real_iron_ingots_collected": true,
+    "bucket_filled_five_cables_and_wrench_cut_rejoin": true,
+    "wet_endpoint_drop_collected_and_reinstalled": true,
+    "physical_reopens_exact": 2,
+    "generated": 15712,
+    "consumed": 6400,
+    "stored": 9312,
+    "energy_or_machine_outputs_seeded": false
+  },
+  "save_upgrade": {
+    "source_content": "0.8.0",
+    "target_content": "0.10.0",
+    "source_world_all_bytes_unchanged": true,
+    "energy_burn_progress_cores_wires_and_item_ids_counts_preserved": true,
+    "physical_reopen_exact": true
+  },
+  "dedicated": {
+    "boot_save_and_physical_reopen": true,
+    "stopped": true,
+    "automation_matrix_rerun": false,
+    "licensed_join_or_multiplayer_tested": false
+  },
+  "python_tests": 129,
+  "installation": {
+    "profile": "techquest-oritech-10a-server",
+    "sealed_tools": "native-tools-oritech-10a",
+    "port": 25661,
+    "bind": "127.0.0.1",
+    "online_mode": true,
+    "whitelist": true,
+    "hmods": 8,
+    "native_bundles": 4,
+    "stopped": true,
+    "profile_locks_verified_stopped": 15,
+    "prior_profiles_and_neoforge_main_preserved": true
+  },
+  "next": [
+    "Register Small Tank canonical component-aware NBT and CustomFluid API, tick/inventory/menu/bucket/comparator/glow callbacks",
+    "Port portable fluid item components, loot and placement; check actual item-entity merging and GUI behavior",
+    "Original fluid pipe extraction cadence/modes/network, source recipes and complete industrial chain",
+    "Full world/client/multiplayer/reproducibility/comparable-load criteria in GOAL_PR8_RU.md"
+  ],
+  "proof_files_sha256": {
+    "native-tools-oritech-10a/build-result.json": "460e169c331a98557f1acdfeeafb296eeb4b98c06b29fdf6c075a9d76006cdc3",
+    "oritech-09b-component-limit-control-v1/result.jsonl": "63adf2ba04ca5eaf674c36e6e47adb29f2b9eace7035b49644d2123e7886c3d0",
+    "oritech-10-content-delta-v1.json": "6943af1e4ce242a0d7e80445692763c97aa4aec401be3b94388f06462e879147",
+    "oritech-10-core-patches-v1.json": "32a9ca6daf5c9c640844852a3d7a6c136af411270511396a01b58f87849e434d",
+    "oritech-10-mixins-v1.json": "257f22fa55fc013306e90deaaf9abe7532eb275f5d87dd32c73252bd367b1fae",
+    "oritech-10-native-build-v1.log": "42fde8d7988e0701051df42148f8458fa8a402264d319f077c1aadd065615392",
+    "oritech-10-native-source-verification-v1.json": "fb6ba13d77f214d30ae31659476e9c01feda0a3769279699395d8c95d56f5928",
+    "oritech-10-profile-verification-v1.json": "3a2b0b5f18c4d311d1d5f79bc09c58302fecf97e82d6f686c6ab575895cf778b",
+    "oritech-10-python-tests-v1.log": "1fbb7cb546b2d5198e8a02a993b7bd06a864e8b32fa3b5261e9361168b04b585",
+    "oritech-10a-cable-save-upgrade-v1/checked-result.json": "c2991be1d33592577f2babfc4b56eb2a43892a682682148b4abbabbfc4d8b4b7",
+    "oritech-10a-dedicated-boot-v1.json": "30546dbd802a35733c84c0e026e2772e3b4dfc447381f62bcea8d49a5d52ce28",
+    "oritech-10a-install-v1.json": "f5a4aeadf4cbeb1af82b23229cd98f56d056fbfd12e67a6c6ed9d0c81b7b8dbd",
+    "oritech-10a-inventory-limits-v1.log": "a70b20c5a8b93a57aeb0e52d532e57899f9a0149e467deea5d5ad6ac76d84469",
+    "oritech-10a-inventory-limits-v2/checked-result.json": "df1268869982e3752271cf26e3dba2ab5de9b7fb12614a6afc24fbb1e3972310",
+    "oritech-10a-inventory-limits-v2/initial-result.jsonl": "463dd591429ae4af27e28ce373cbb8a85b4c8840dea32ef9638a1603e01f2c4b",
+    "oritech-10a-inventory-limits-v2/matrix-result.json": "5ce9646cd5745db0d8e9dd2a2bcf43009ef5fd13e56a5fbbb9feee61e5cd2b0f",
+    "oritech-10a-inventory-limits-v2/reopen-result.jsonl": "7bdc1223b5411c7c42b02b75112a6bafefbc0cf6356ab5eedac57df11defce2c",
+    "oritech-10a-wet-energy-pipes-gui-v1/actions.json": "ae877be27db826ce0596d287572a9dbf2e3c730f45ab3c95b49b220382019c10",
+    "oritech-10a-wet-energy-pipes-gui-v1/broken-cable-paused.png": "63fac674db11087d25c62b0e554956d383554f7449a4cb0cdbfbeeb1bda2332a",
+    "oritech-10a-wet-energy-pipes-gui-v1/checked-result.json": "ee827e35b7ebfc58f4de5f7c63522eea8af42ce6a88ab1842151cf9e5ef922ae",
+    "oritech-10a-wet-energy-pipes-gui-v1/collected-iron.png": "35d0f16fd50145b8eca36146f3ca8eb51521828697ca66d342f166bc4698a604",
+    "oritech-10a-wet-energy-pipes-gui-v1/remote-output.png": "b0bd90f46700875611cbd1d09133264cf14df7dbc0080e356487e7f4772de913",
+    "oritech-10a-wet-energy-pipes-gui-v1/remote-working.png": "97c5a587c016663a63fc43f4072f94810c1b4f8d745679c26a30fe7501ee7ed1",
+    "oritech-content-010-stage-v1.json": "3553a2c214e12ea11dd713228956a32c257df4329d7cc72fc229e91696a84291",
+    "oritech-inventory-limits-reference-v1/initial-result.json": "e4fc8410c45866bfbb35831aafcb2d5b1b5180b0c9b5c2c73699651fdfbc2b95",
+    "oritech-inventory-limits-reference-v1/inputs.json": "c1c4f86f4b08a56fcbe94731980a44135f8d8fa45598ccd115eb0c04536ba57a"
+  },
+  "goal_complete": false,
+  "published": false
+}

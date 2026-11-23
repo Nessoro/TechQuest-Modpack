@@ -30,11 +30,11 @@ def main():
     parser.add_argument("--wrench-controls",action="store_true",help="cut/reconnect the live network with a craftable wrench fixture")
     parser.add_argument("--waterlogged-cables",action="store_true",help="waterlog all five cables with real bucket uses before powering them")
     args=parser.parse_args()
-    game=GraphicalFixture(args.server_dir,args.work,("0.6.0","0.7.0","0.8.0","0.9.0"),"techquest-cables-gui","TQCableGui",module="oritech",frozen=True)
+    game=GraphicalFixture(args.server_dir,args.work,("0.6.0","0.7.0","0.8.0","0.9.0","0.10.0"),"techquest-cables-gui","TQCableGui",module="oritech",frozen=True)
     shutil.copytree(game.server/"techquest-horizon-test/datapacks",game.work/"saves"/game.world/"datapacks")
     test=GatheredChain(game);cmd,call,settle=game.command,game.call,game.settle
-    if args.wrench_controls:assert game.version in ("0.7.0","0.8.0","0.9.0")
-    if args.waterlogged_cables:assert game.version in ("0.8.0","0.9.0")
+    if args.wrench_controls:assert game.version in ("0.7.0","0.8.0","0.9.0","0.10.0")
+    if args.waterlogged_cables:assert game.version in ("0.8.0","0.9.0","0.10.0")
     def number(pos,key):
         reply=cmd("data get block "+coord(pos)+" "+key)
         match=re.search(r"has the following block data:\s*(-?\d+)",reply)
@@ -74,10 +74,10 @@ def main():
             if call("screen").get("carried"):call("click-slot",source);settle()
             call("close")
         call("look-at-block",pos[0],pos[1]-1,pos[2]);settle()
-        if game.version=="0.9.0":call("key","shift","down");settle()
+        if game.version in ("0.9.0","0.10.0"):call("key","shift","down");settle()
         try:call("place",*pos,"--item",item);settle()
         finally:
-            if game.version=="0.9.0":call("key","shift","up");settle()
+            if game.version in ("0.9.0","0.10.0"):call("key","shift","up");settle()
         block=call("block",*pos)["block"].split("[")[0]
         assert block in ("oritech:energy_pipe","oritech:energy_pipe_connection") if cable else block==item
         assert test.counts().get(item,0)==before-1
@@ -206,7 +206,7 @@ def main():
         approach(WIRES[2]);test.empty_hand();call("look-at-block",*FURNACE)
         call("screenshot",game.work/"collected-iron.png");call("save")
     finally:game.stop()
-    report={"schema":1,"oritech_content_version":game.version,"native_version":"0.7.0" if game.version=="0.9.0" else "0.6.0" if game.version in ("0.7.0","0.8.0") else "0.5.0","supplied_fixtures":supplied,
+    report={"schema":1,"oritech_content_version":game.version,"native_version":"0.8.0" if game.version=="0.10.0" else "0.7.0" if game.version=="0.9.0" else "0.6.0" if game.version in ("0.7.0","0.8.0") else "0.5.0","supplied_fixtures":supplied,
             "all_five_cables_waterlogged_by_bucket_use":args.waterlogged_cables,
             "dry_elevated_camera_stand_fixture":args.waterlogged_cables,
             "crafts":test.crafts,"wire_crafted_from_three_electrum":6,"five_wires_placed_by_survival_packets":True,

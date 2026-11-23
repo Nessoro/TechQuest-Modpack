@@ -1,4 +1,4 @@
-# Oritech native subset 0.7 / content 0.9
+# Oritech native subset 0.8 / content 0.10
 
 First-party Rust implementation for Horizon 26.3 at
 `c78187dffffb60f31517eadcb87413386e8ce729`, Mixins
@@ -17,7 +17,8 @@ that does not declare the reviewed core correction. Content 0.3 requires native
 0.2 and both biome core corrections. Content 0.4 requires native 0.3 and both
 corrections. Content 0.5 requires native 0.4; content 0.6 requires native 0.5,
 both with the two core corrections. Content 0.7/0.8 requires native 0.6 and both
-corrections. Content 0.9 requires native 0.7 and both corrections. Earlier sealed
+corrections. Content 0.9 requires native 0.7; content 0.10 requires native 0.8,
+both with the same core corrections. Earlier sealed
 profiles keep their paired versions and artifacts.
 
 ## Source and license
@@ -811,3 +812,62 @@ All 128 Python tests passed; fourteen sealed server profiles were verified
 and stopped. Prior crafting/loot/geometry evidence is retained by comparing
 the unchanged content payloads; those prior tests were not rerun for this
 manifest-only content change. [Native results and hashes](../../ORITECH_WRENCH_DISPATCH_RESULT.json).
+
+## Fluid tank contract and content 0.10 inventory prerequisite
+
+The original Small Tank contract is now recorded separately in
+[the fluid reference](../../ORITECH_FLUID_TANK_REFERENCE_RESULT.json). It covers
+2,560 storage operations, 768 bucket-processing cases (3,072 tick snapshots),
+80 portable-container cases (400 snapshots), 48 gravity layouts, 320 held-item
+cases, ten clone/loot/placement cases and sixteen component/stack-limit cases.
+The original tank holds 256,000 mB by default. It processes slot 0 toward an
+item, slot 1 toward the tank, then gravity into a `SimpleFluidStorage` below.
+An input moves to output slot 2 only after an operation moves zero fluid.
+Filled portable tanks retain their fluid component and have a stack limit of
+one; empty ones stack to 64. Original physical reopen and the next processing
+tick passed. These use actual original callbacks with explicit scalar fixtures
+and instrumented FakePlayer menus, not an original client or packet trace.
+
+`fluid_storage.rs` is a candidate for the next game implementation. Its insert,
+extract and simulation paths match all 2,560 original observations, including
+fluid/component mismatch. The standalone Rust probe supplies only the resource
+type, representing component patches by their original debug strings. This is
+an equality check, not proof of production NBT/network encoding. The module is
+not registered in the game. Small Tank and Fluid Pipe are not yet in the hmod.
+
+Before those items can be integrated, the game's `Inventory.add` path needed
+a fix: it always used the item prototype's stack size even when the stack had
+`minecraft:max_stack_size`. The 09b engine puts two items with limit 1 into one
+stack of 2. `inventory_limit.rs` re-enters the existing algorithm once with the
+valid component limit, retaining its slot order and overflow behavior. A
+separate original `Inventory.add` oracle covers 192 cases: stone/ender pearls,
+plain or limits 1/2/16/64/99, four input counts, selected/offhand/full inventory.
+The 10a engine matches all inventories, including a physical player-data reopen.
+The observer reads 26.3 `equipment.offhand` separately from `Inventory`; assuming
+the old offhand slot layout was a rejected checker control.
+
+`stage_oritech.py --stack-limits` includes `--machine-use`. Content 0.10 changes
+only the manifest and requires native 0.8. Profile `techquest-oritech-10a-server`,
+port **25661**, uses separate `native-tools-oritech-10a`, 42 injections, ten
+support modules, eight hmod and the same two core corrections. The other three
+native bundles are byte-identical. Previous sealed profiles are preserved.
+The wet-power GUI and copied 0.8 save were checked again; all 129 Python tests
+passed. Dedicated boot/save/reopen was checked separately; automation and
+licensed join were not rerun for this inventory-only fix.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-fluid-original-new" --oracle fluid_tank --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-fluid-original-new" --oracle fluid_tank --reopen
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-inventory-original-new" --oracle inventory_limits --accept-eula
+python3 horizon/probes/live_oritech_inventory_limits.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-inventory-native-new" \
+  --original "$TASK_RUNTIME/oritech-inventory-original-new/initial-result.json"
+```
+
+Inventory comparison excludes ground overflow and item-entity merge behavior;
+portable tank gameplay, fluid component codecs, menu/bucket/loot/placement hooks
+and the fluid network remain the next work. The overall goal stays active.
+[Inventory fix evidence](../../ORITECH_INVENTORY_LIMITS_RESULT.json).

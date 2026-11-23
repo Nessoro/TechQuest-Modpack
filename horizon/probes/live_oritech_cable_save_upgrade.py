@@ -28,14 +28,14 @@ def main():
         parser.add_argument("--"+key, type=Path, required=True)
     args = parser.parse_args()
     server, source, work = checked_path(args.server_dir), checked_path(args.source_work), args.work.absolute()
-    lock = verify(server); target_version = lock["modules"]["oritech"]["version"]; assert target_version in ("0.8.0", "0.9.0")
+    lock = verify(server); target_version = lock["modules"]["oritech"]["version"]; assert target_version in ("0.8.0", "0.9.0", "0.10.0")
     assert not work.exists() and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert source not in work.parents and work not in source.parents and server not in work.parents
     report = source/"checked-result.json"
     old = json.loads(report.read_text())
     source_version = old["oritech_content_version"]
     assert source_version in ("0.7.0", "0.8.0") and old["two_physical_reopens_exact"]
-    assert (source_version, target_version) in (("0.7.0", "0.8.0"), ("0.7.0", "0.9.0"), ("0.8.0", "0.9.0"))
+    assert (source_version, target_version) in (("0.7.0", "0.8.0"), ("0.7.0", "0.9.0"), ("0.8.0", "0.9.0"), ("0.8.0", "0.10.0"))
     proof_name = "ORITECH_WRENCH_RESULT.json" if source_version=="0.7.0" else "ORITECH_WATERLOGGING_RESULT.json"
     proof = json.loads((Path(__file__).resolve().parents[1]/proof_name).read_text())
     assert sha(report) == proof["proof_files_sha256"][source.name+"/checked-result.json"]

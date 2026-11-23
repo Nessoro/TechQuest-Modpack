@@ -1,6 +1,6 @@
 [mod]
 id = "techquest_oritech"
-version = "0.7.0"
+version = "0.8.0"
 
 [compatibility]
 horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
@@ -262,4 +262,18 @@ bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
   { name = "stack", ty = "&horizon_client_lib::items::ItemStack", value = "stack" },
   { name = "claimed", ty = "&mut bool", value = "claimed" },
+]
+
+[[injection]]
+id = "inventory_component_limit"
+target = "horizon_client::game::inventory_add"
+kind = "HEAD"
+helper = "inventory_limit.rs"
+cancellable = true
+bindings = [
+  { name = "inventory", ty = "&mut [Option<horizon_client_lib::items::ItemStack>]", value = "&mut *inventory" },
+  { name = "offhand", ty = "&mut Option<horizon_client_lib::items::ItemStack>", value = "&mut *offhand" },
+  { name = "selected", ty = "usize", value = "selected" },
+  { name = "maximum", ty = "u32", value = "max" },
+  { name = "stack", ty = "&mut horizon_client_lib::items::ItemStack", value = "&mut *stack" },
 ]

@@ -488,8 +488,30 @@ GUI повторил waterlogging и работающую мокрую лини�
 и остановлены. [Оригинальный dispatch](ORITECH_WRENCH_DISPATCH_REFERENCE_RESULT.json),
 [игровые результаты и ограничения](ORITECH_WRENCH_DISPATCH_RESULT.json).
 
-Следующий этап — жидкостная цепочка Oritech:
-исходные Small Tank и Fluid Pipe, их extraction modes, ведра, контейнеры,
+Начат исходный эталон Small Tank: вместимость 256 000 mB, 2560 storage cases,
+768 bucket-processing cases/3072 snapshots, 80 portable cases/400 snapshots,
+48 gravity layouts, 320 held-item cases, десять clone/loot/placement cases,
+16 ограничений стека и физическое переоткрытие. Rust-кандидат хранения совпал
+в 2560 случаях через type shim; он ещё не зарегистрирован в игровом движке,
+кодирование fluid components не проверено. Бак и жидкостные трубы пока отсутствуют
+в hmod. [Исходный контракт и границы](ORITECH_FLUID_TANK_REFERENCE_RESULT.json).
+
+Подготовка выявила необходимое исправление: `Inventory.add` игнорировал
+`minecraft:max_stack_size` и объединял два предмета с лимитом 1 в стек из двух.
+Content 0.10/native 0.8 добавляет один hook с эффективным лимитом компонента,
+сохраняя исходный алгоритм инвентаря. Профиль 10a, порт 25661, tools 10a,
+42 hooks/10 modules, прежние восемь hmod и два core corrections.
+192 сравнения с original Inventory.add и физическое переоткрытие прошли.
+Мокрая GUI-линия вновь произвела два слитка и пережила два переоткрытия;
+копия save 0.8 сохранилась под 0.10 без изменения исходника. Прошли 129 Python-тестов.
+Это предпосылка переносного бака, не завершённый жидкостный порт.
+[Результат исправления инвентаря](ORITECH_INVENTORY_LIMITS_RESULT.json).
+
+Следующий этап — подключить Small Tank к Horizon по готовому эталону:
+canonical fluid NBT и component identity, CustomFluid API, обработка слотов,
+ведра/меню, comparator/glow, gravity, portable item/loot/placement и сохранения.
+Проверить также ground merge/max-stack и настоящие GUI действия. Затем перенести
+исходные рецепты Small Tank/Fluid Pipe и сеть с extraction modes, ведра, контейнеры,
 меню и сохранения. Fluid Pipe извлекает из исходного хранилища и отправляет
 жидкость целям; это не энергетический endpoint с переименованным буфером.
 Далее продолжить остальные промышленные механики и игровые критерии.

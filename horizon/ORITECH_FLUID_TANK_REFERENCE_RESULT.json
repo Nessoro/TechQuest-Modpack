@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-23T18:40:12.993791+00:00",
+  "scope": "Original Small Tank storage, container ticks, gravity, held bucket/menu dispatch, portable item data and native storage candidate; no native tank gameplay yet",
+  "source": {
+    "oritech_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "license": "Pinned own CC0-1.0 dedication and matching JAR declaration; consulted headers have no override",
+    "own_source_blobs_checked_against_pinned_tree": true,
+    "own_source_sha256": {
+      "common/src/main/java/rearth/oritech/api/fluid/FluidApi.java": "7c5b49fbabb4b595199e87ae55e8b7b57e7e980267ea17cc0825643506b5014f",
+      "common/src/main/java/rearth/oritech/api/fluid/BlockFluidApi.java": "ff64e40fae066f07d6ef3ff2d1e03db8535e393a7a26bc9b71f63661ccdb24d8",
+      "common/src/main/java/rearth/oritech/api/fluid/ItemFluidApi.java": "76d7df5765019d70bacc232475f0789f190388af8d868acc217b9a6f9af67568",
+      "common/src/main/java/rearth/oritech/api/fluid/containers/SimpleFluidStorage.java": "f9c78e8cb66c95f40222c6c7a74b093d242e0fd20c6e11db05c7a9ef024cf0ad",
+      "common/src/main/java/rearth/oritech/block/blocks/storage/SmallFluidTank.java": "85160d4da342cd66d13818c67a03212dd62b12f1881fedf3b492ddb83add1dfa",
+      "common/src/main/java/rearth/oritech/item/other/SmallFluidTankBlockItem.java": "1159de4ea8268f6bed5c196233621a00ed8afafe27a8ba64b9db047068f65a2d",
+      "common/src/main/java/rearth/oritech/block/blocks/pipes/fluid/FluidPipeBlock.java": "94dd6a75b510a7cd42d77d663911641bf668e433e1945f1605ff6dc2872f8183",
+      "common/src/main/java/rearth/oritech/block/entity/pipes/FluidPipeInterfaceEntity.java": "7580c9ec434761c8ccd91f00e675c880c0254203b987003fb2905a079650607f",
+      "common/src/main/java/rearth/oritech/block/entity/storage/SmallTankEntity.java": "01b398fc9fc15cdc46dbc332a4212091d95dfe65352e35abb6f1b2529b8177f2",
+      "common/src/main/java/rearth/oritech/api/fluid/containers/SimpleItemFluidStorage.java": "fbaa9c7370df1ca1797cf79360cf0bf60433df180e632815d8f66b9243db7bab",
+      "common/src/main/java/rearth/oritech/api/fluid/containers/SimpleInOutFluidStorage.java": "11fba363eeea079e27f003e4e7b6c84466f293582626e64c656cfa5a523f3783",
+      "neoforge/src/main/java/rearth/oritech/neoforge/NeoforgeFluidApiImpl.java": "0ca0c8035f41ac99ed02eb3a6f39ba75263ee3572054971bb475ce3c049242e3",
+      "common/src/main/java/rearth/oritech/block/blocks/pipes/ExtractablePipeConnectionBlock.java": "024cd60ac9f3d765fc4089ee6760ea8e4d0ee16d31d6ed49d94466d324568abe",
+      "common/src/main/java/rearth/oritech/block/entity/pipes/ExtractablePipeInterfaceEntity.java": "ce1e00646641803f702b8994487b8972313f2f777cf27d27dfef1fd5ce69e05d",
+      "common/src/main/java/rearth/oritech/block/blocks/pipes/fluid/FluidPipeConnectionBlock.java": "3208f83b4e34bbfc0c3d06918aa6fb7cef6e33300d78b7bfa5abec5fac8f5906",
+      "common/src/main/java/rearth/oritech/init/OritechConfig.java": "cc638c6053be9c091bd43b0b5a407226beeb278b64e9ecd1f6901f1f05d7f697"
+    },
+    "dependency_java_source_read_or_decompiled": false
+  },
+  "reference_inputs": {
+    "oracle": "fluid_tank",
+    "probe_source_sha256": "f0ff07f8ed4c968af16315df911f6a54786a6b74bcc7b9c86b0906905f37a4c2",
+    "probe_jar_sha256": "db065718b4f9749ed58203b7a0b583ee2fee2a6fdd3aa5714b94280176cf1a9d",
+    "oritech": "1.2.13",
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.264"
+  },
+  "capacity_millibuckets": 256000,
+  "bucket_millibuckets": 1000,
+  "counts": {
+    "storage": 2560,
+    "processing": 768,
+    "portable_processing": 80,
+    "gravity": 48,
+    "buckets": 320,
+    "item_data": 10,
+    "component_limits": 16
+  },
+  "processing_tick_snapshots": 3072,
+  "portable_processing_tick_snapshots": 400,
+  "behavior": {
+    "insert_and_extract_preserve_component_identity": true,
+    "simulation_does_not_mutate_storage": true,
+    "partial_or_mismatched_buckets_consume_block_click_without_moving": true,
+    "creative_bucket_interaction_also_replaces_hand_container": true,
+    "empty_main_opens_menu_before_offhand_fluid_item": true,
+    "menu_slots_including_player": 39,
+    "input_slot_zero_fills_container_and_slot_one_drains_container": true,
+    "output_slot_two_transfer_happens_only_after_zero_moved": true,
+    "processing_rejects_stacked_input_count_above_one": true,
+    "portable_processing_transfer_limit_per_tick": 64000,
+    "gravity_runs_after_container_processing": true,
+    "gravity_accepts_only_original_SimpleFluidStorage_below": true,
+    "comparator_float_formula": "0 for empty fluid, otherwise int(1 + float32(amount)/float32(capacity)*14)",
+    "nonempty_lava_tank_lit": true,
+    "filled_clone_and_loot_callback_return_fluid_and_maximum_stack_one": true,
+    "empty_portable_tanks_stack_to_64": true
+  },
+  "physical_reopen": {
+    "before_exact": true,
+    "actual_original_tick_after_load": true,
+    "after_total_lava": 257345
+  },
+  "native_candidate": {
+    "candidate_storage_code_executed": true,
+    "capacity": 256000,
+    "comparisons": 2560,
+    "component_equality_checked": true,
+    "mismatches": [],
+    "schema": 1,
+    "type_shim_uses_original_component_patch_debug_strings": true,
+    "game_hook_registered": false,
+    "actual_fluid_component_encoding_tested": false,
+    "comparison_type_shim": "NativeFluidStack component patch represented by original debug string; checks equality, not production NBT/network codec"
+  },
+  "fixtures": [
+    "initial tank amounts and inventory",
+    "four/five direct original serverTick invocations rather than a complete scheduler",
+    "synthetic main/offhand driver and instrumented FakePlayer menus",
+    "creative item count 2 for bucket compatibility tests is a scalar fixture"
+  ],
+  "driver": "Original fluid storage, SmallTankEntity serverTick and server useItemOn/useItem; instrumented FakePlayer materializes requested MenuProvider; initial fluids, inventory and hand driver are fixtures, not real client packets or licensed multiplayer",
+  "not_proven": [
+    "Horizon fluid tank or pipe gameplay",
+    "native item fluid component encoding, stack/drop/placement fidelity",
+    "fluid pipe extraction modes, rate, network or unloaded behavior",
+    "all mod fluids or configuration variants",
+    "licensed player, multiplayer or complete modpack"
+  ],
+  "proof_files_sha256": {
+    "oritech-fluid-tank-reference-v2/inputs.json": "65116032714903ca3276595a85c167a71bbf803951adfd274fb2170931c812c7",
+    "oritech-fluid-tank-reference-v2/initial-result.json": "455b41d723406d95d0a32dc6ffde978726c39e6b7df7d359ee4941351ad6726b",
+    "oritech-fluid-tank-reference-v2/reopen-result.json": "ecdf60f7b44cde8538d7097759feab197d66dbbb2b3362135be5e2583abf6005",
+    "oritech-fluid-storage-compile-v2.json": "bc3285a33cf423e30e715632b6a5a73c324b3bb66c0b6b314b4e6e811d258c1b",
+    "oritech-fluid-storage-result-v2.json": "c14dc646526052cef71eeab385380b8e70bb1c070ec1d56c92db956aa1aa82b2",
+    "oritech-fluid-own-source-verification-v1.json": "6ce797d8a2b964b374aa897b298c629e157f0838be618bdf3070e4a09715e594",
+    "oritech-fluid-own-source-verification-v2.json": "e102fec7ec191f02180b2385002b13a9d02b805688da2595078ea48c8ecb8c92",
+    "oritech-fluid-own-source-verification-v3.json": "204f50fc59b918c57f16c2ddb0344f99bdbfb11d7d99d8c4694bb4d7e9d84327"
+  },
+  "goal_complete": false,
+  "published": false
+}

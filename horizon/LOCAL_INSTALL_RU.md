@@ -122,7 +122,7 @@ Dedicated сохраняет пять мокрых кабелей, 44 800 E и �
 [Доказательства](ORITECH_WATERLOGGING_RESULT.json),
 [воспроизведение](first_party/oritech/README.md#content-08-waterlogging--native-06-retained).
 
-Текущий профиль взаимодействия с машинами —
+Профиль взаимодействия с машинами —
 `/workspace/horizon-runtime/techquest-oritech-09b-server`, порт 25660,
 Oritech content 0.9/native 0.7, прежние Pretty Pipes 0.10 и оба core corrections.
 Инструменты находятся отдельно в `native-tools-oritech-09b`: 41 injection,
@@ -135,6 +135,18 @@ Oritech content 0.9/native 0.7, прежние Pretty Pipes 0.10 и оба core 
 08a и старые профили не менялись. Полный industrial port и licensed join
 этой проверкой не завершаются.
 [Воспроизведение и границы проверки](first_party/oritech/README.md#content-09-machine-use--native-07).
+
+Текущий профиль с исправлением лимитов стека —
+`/workspace/horizon-runtime/techquest-oritech-10a-server`, порт 25661,
+Oritech content 0.10/native 0.8, tools `native-tools-oritech-10a`.
+`stage_oritech.py --stack-limits` включает предыдущие ступени; payloads hmod
+отличаются от 0.9 только манифестом. Движок учитывает `minecraft:max_stack_size`
+при добавлении предметов в инвентарь: 192 original cases и собственный player-save
+проверены. Добавлен один hook, всего 42/10, прежние два core corrections.
+Проверены мокрая GUI-линия, копия save 0.8 и dedicated boot/save/reopen;
+прежняя automation matrix не повторялась. Баки и жидкостные трубы пока не входят
+в этот профиль; их original oracle подготовлен отдельно.
+[Результаты и ограничения](ORITECH_INVENTORY_LIMITS_RESULT.json).
 
 Pretty Pipes 0.8 добавляет скрафченный redstone module и управление новыми
 извлечениями/доставками от питания. Нужны content/native именно 0.8.0.

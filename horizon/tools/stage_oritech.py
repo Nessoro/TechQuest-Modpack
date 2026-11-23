@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BLOCKS = ("basic_generator_block", "powered_furnace_block", "machine_core_1")
 
 
-def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=None, port_pack=None, pulverizer=False, foundry=False, assembler=False, energy_pipes=False, wrench=False, waterlogging=False, machine_use=False):
+def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=None, port_pack=None, pulverizer=False, foundry=False, assembler=False, energy_pipes=False, wrench=False, waterlogging=False, machine_use=False, stack_limits=False):
     if output.exists() or output.is_symlink() or any(p.is_symlink() for p in output.absolute().parents):
         raise ValueError("output must be a new directory without symlinks")
     for parent in output.absolute().parents:
@@ -31,6 +31,7 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
     raw = read_checked(jar)
     if pin["version"] != "1.2.13" or hashlib.sha512(raw).hexdigest() != pin["sha512"]:
         raise ValueError("expected pinned Oritech 1.2.13")
+    machine_use = machine_use or stack_limits
     waterlogging = waterlogging or machine_use
     wrench = wrench or waterlogging
     energy_pipes = energy_pipes or wrench
@@ -38,7 +39,7 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
     foundry = foundry or assembler
     pulverizer = pulverizer or foundry
     progression = progression or pulverizer
-    version = "0.9.0" if machine_use else "0.8.0" if waterlogging else "0.7.0" if wrench else "0.6.0" if energy_pipes else "0.5.0" if assembler else "0.4.0" if foundry else "0.3.0" if pulverizer else "0.2.0" if progression else "0.1.0"
+    version = "0.10.0" if stack_limits else "0.9.0" if machine_use else "0.8.0" if waterlogging else "0.7.0" if wrench else "0.6.0" if energy_pipes else "0.5.0" if assembler else "0.4.0" if foundry else "0.3.0" if pulverizer else "0.2.0" if progression else "0.1.0"
     blocks = (*BLOCKS, "pulverizer_block") if pulverizer else BLOCKS
     if foundry: blocks = (*blocks, "foundry_block")
     if assembler: blocks = (*blocks, "assembler_block")
@@ -88,7 +89,7 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
         if any(p is None for p in (neoforge_jar, content_tool, port_pack)):
             raise ValueError("--progression requires --neoforge-jar, --content-tool and --port-pack")
         from stage_oritech_progression import add_progression
-        progression_report = add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, output.absolute().parent, pulverizer=pulverizer, foundry=foundry, assembler=assembler, energy_pipes=energy_pipes, wrench=wrench, machine_use=machine_use)
+        progression_report = add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, output.absolute().parent, pulverizer=pulverizer, foundry=foundry, assembler=assembler, energy_pipes=energy_pipes, wrench=wrench, machine_use=machine_use, stack_limits=stack_limits)
     with tempfile.TemporaryDirectory(prefix="oritech-stage-", dir=output.absolute().parent) as tmp:
         root = Path(tmp) / "module"
         for name, content in payloads.items():
@@ -107,6 +108,7 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
                   "wrench_and_default_tight_cable_selection": wrench,
                   "basic_cable_waterlogging": waterlogging,
                   "machine_menu_and_wrench_neighbor_dispatch": machine_use,
+                  "inventory_component_stack_limits": stack_limits,
                   "java_code_included": False, "original_recipes_ported": bool(progression), "all_original_recipes_ported": False,
                   "progression_subset": progression_report, "full_mod_ported": False, "gameplay_tested": False}
         (root / "techquest-oritech-trial.json").write_text(json.dumps(report, indent=2) + "\n")
@@ -179,6 +181,7 @@ def main():
     for name in ("jar", "sdk", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--progression", action="store_true")
+    parser.add_argument("--stack-limits", action="store_true", help="component stack limits for portable-container preparation; implies --machine-use")
     parser.add_argument("--machine-use", action="store_true", help="held-item machine menus and original neighboring-cable wrench dispatch; implies --waterlogging")
     parser.add_argument("--waterlogging", action="store_true", help="basic cable SimpleWaterlogged behavior; implies --wrench")
     parser.add_argument("--wrench", action="store_true", help="craftable basic cable wrench and default tight selection; implies --energy-pipes")
