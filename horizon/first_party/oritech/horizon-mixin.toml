@@ -1,6 +1,6 @@
 [mod]
 id = "techquest_oritech"
-version = "0.5.0"
+version = "0.6.0"
 
 [compatibility]
 horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
@@ -204,4 +204,51 @@ helper = "cable_clone.rs"
 bindings = [
   { name = "block", ty = "&str", value = "block" },
   { name = "stack", ty = "&mut Option<horizon_client_lib::items::ItemStack>", value = "stack" },
+]
+
+[[module]]
+id = "cable_wrench_selection"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_oritech_cable_hit"
+source = "cable_hit.rs"
+visibility = "pub(crate)"
+
+[[module]]
+id = "cable_wrench_use"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_oritech_wrench"
+source = "wrench.rs"
+visibility = "pub(crate)"
+
+[[injection]]
+id = "wrench_turn"
+target = "horizon_client::game::Game<'_>::use_hand"
+kind = "HEAD"
+helper = "wrench_interact.rs"
+cancellable = true
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "hit", ty = "Option<&crate::game::Hit>", value = "block_hit" },
+]
+
+[[injection]]
+id = "wrench_use_on"
+target = "horizon_client::game::native_hooks::Game<'_>::native_use_item_on"
+kind = "HEAD"
+helper = "wrench_item.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "stack", ty = "&horizon_client_lib::items::ItemStack", value = "stack" },
+  { name = "claimed", ty = "&mut bool", value = "claimed" },
+]
+
+[[injection]]
+id = "wrench_use"
+target = "horizon_client::game::native_hooks::Game<'_>::native_use_item"
+kind = "HEAD"
+helper = "wrench_item.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "stack", ty = "&horizon_client_lib::items::ItemStack", value = "stack" },
+  { name = "claimed", ty = "&mut bool", value = "claimed" },
 ]

@@ -1,11 +1,11 @@
-# Oritech native subset 0.5 / content 0.6
+# Oritech native subset 0.6 / content 0.7
 
 First-party Rust implementation for Horizon 26.3 at
 `c78187dffffb60f31517eadcb87413386e8ce729`, Mixins
 `5a64af938ec86b00d53d16a408aabc0038fb3e57`.
 
 This is a limited port of **Basic Generator → quartz/coal Pulverizer, Powered
-Furnace, three-core Foundry, four-input Assembler and basic energy cables**, with physical inventories, energy, fuel, processing progress, assembly,
+Furnace, three-core Foundry, four-input Assembler, basic energy cables and cable wrench**, with physical inventories, energy, fuel, processing progress, assembly,
 menus and saved state. It is not the complete Oritech mod or a survival-ready
 TechQuest industrial progression.
 
@@ -16,7 +16,8 @@ an explicit content/native compatibility table and refuses 0.2 with an engine
 that does not declare the reviewed core correction. Content 0.3 requires native
 0.2 and both biome core corrections. Content 0.4 requires native 0.3 and both
 corrections. Content 0.5 requires native 0.4; content 0.6 requires native 0.5,
-both with the two core corrections. Earlier sealed
+both with the two core corrections. Content 0.7 requires native 0.6 and both
+corrections. Earlier sealed
 profiles keep their paired versions and artifacts.
 
 ## Source and license
@@ -79,7 +80,7 @@ python3 horizon/tools/stage_oritech.py \
 ```
 
 Apply all `horizon/first_party` modules with pinned Mixins and rebuild Horizon.
-The current manifest adds eleven HEAD injections and one support module. Package the
+The current manifest adds 21 HEAD injections and four support modules. Package the
 `.rs`, manifest and both license files in `mixins/techquest_oritech/`, with
 `horizon-native.json` at the `.hnmod` root, then run the SDK checker. Content
 alone does not execute the machines.
@@ -88,7 +89,7 @@ For Mixins `--mods`, each immediate mod directory must contain its own
 `horizon-mixin.toml`. When staging from an `.hnmod`, use the files inside
 `mixins/<id>/` as that directory; leaving the archive wrapper nested makes the
 transformer skip the mod. For this pinned four-bundle build, verify all four
-manifests, **30 injections and seven support modules**, including the Oritech
+manifests, **40 injections and 10 support modules**, including the Oritech
 create/tick hooks, before compiling or sealing tools. SDK validation of an
 archive alone does not establish that its hooks reached the executable.
 
@@ -499,8 +500,10 @@ profile is unchanged; the following native milestone uses a new installation.
 three-electrum-to-six-cables recipe, both original cable loot tables and two
 blocks. The ordinary wire has an item and no block entity; the internal
 connection block has no item and declares a ticking 10,000 E buffer. Both
-use all eight original property names/values, thin collision arms and simple
-vanilla copper-textured models. Selection is a full cube. Generator/furnace
+use all eight original property names/values and simple
+vanilla copper-textured models. Selection is a full cube. The old collision
+declaration mistakenly uses model pixels as block coordinates; content 0.7
+corrects this below. Generator/furnace
 models and their earlier NBT assembly representation remain simplified.
 
 The native bundle has 18 hooks and two modules; the complete four-bundle
@@ -536,8 +539,8 @@ python3 horizon/probes/live_oritech_energy_pipes_gui.py --server-dir "$TASK_SERV
 
 The first probe matches 1,512 original states and six layouts, plus gap/rejoin,
 loop, replacement, multiple target/face/source controls and actual core assembly.
-The disabled-edge test restores explicit saved properties; a player wrench is
-not implemented. Physical reopen preserves both endpoint buffers and the full
+The disabled-edge test restores explicit saved properties; content 0.6 has no
+player wrench. Physical reopen preserves both endpoint buffers and the full
 cable state. With both buffers nonempty, a native tick runs both interfaces,
 so the continuation checks conservation/capacity rather than claiming the
 single-interface original callback order. `--resume-initial` is only for
@@ -564,13 +567,12 @@ framed/duct/superconductor variants, addons, exact shuffled allocation, unloaded
 network fidelity and multiplayer remain unfinished. This is not the full mod.
 [Native cable results and regression evidence](../../ORITECH_ENERGY_PIPE_RESULT.json).
 
-## Wrench reference; native implementation pending
+## Wrench reference
 
 The pinned original `Wrench`, `ItemContent` and `OritechStartupConfig` own CC0
 sources define a one-stack tool, eight-tick cooldown and **tight cable selection
-by default**. Native content 0.6 currently retains a full selection cube; the
-wrench milestone must supply the original thin selection shape as well as its
-interaction logic. Collision already uses thin geometry.
+by default**. Native content 0.6 retains a full selection cube; content 0.7
+below supplies thin selection and corrects collision coordinate units.
 
 ```sh
 python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
@@ -604,7 +606,67 @@ ordinary creative mining rules. The recipe consumes three steel and one nickel.
 A disconnected pair is physically saved/reopened, compared exactly and then
 reconnected through a fresh original wrench use. These are developer FakePlayer
 callbacks with explicit block/camera/cooldown fixtures, not real client packets.
-The next work remains native dispatch, graphical crafting/actions, saves and
-regressions; waterlogging and other wrench targets are separate remaining work.
-The existing native 0.5/content 0.6 source bytes and sealed profile are unchanged.
+Waterlogging and other wrench targets are separate remaining work.
+The historical native 0.5/content 0.6 sealed profile is unchanged.
 [Original wrench contract and hashes](../../ORITECH_WRENCH_REFERENCE_RESULT.json).
+
+## Content 0.7 cable wrench / native 0.6
+
+`stage_oritech.py --wrench` includes the earlier cable/machine subsets and adds
+the original three-steel/one-nickel recipe, handheld model, texture, translations
+and one-stack tool. Both cables now declare the same thin outline/collision in
+**block units** (6/16..10/16). The old 0.6 collision declaration used pixel
+coordinates directly; its historical report's thin-collision description was
+incorrect. Earlier content/profile bytes remain preserved as controls.
+
+`cable_hit.rs` implements the original 5..11 outer-piece priority. Its exact
+native module matches 9,600 original rays/5,760 hits; resolving both staged
+content declarations checks another 19,200 rays across 128 shapes. This catches
+the content-unit error that a standalone geometry comparison cannot detect.
+
+`wrench.rs` preserves the vanilla block-use and permission/cooldown phases via
+a guarded recursive `use_hand`, capturing one custom item attempt. Native
+useOn/use are deduplicated; the tool starts an eight-player-tick cooldown even
+on a miss, shared between hands. Cable changes update both sides, retaining
+other properties and recomputing `straight`. Losing the final provider converts
+the interface to normal wire and discards its buffer; reconnecting starts at
+zero. Shift calls the drop-producing destruction path even in creative.
+The native bundle has 21 hooks/four modules; all four bundles total **40
+hooks/10 modules**, with both core corrections retained.
+
+The separate `techquest-oritech-07b-server`, port **25657**, uses the sealed
+`native-tools-oritech-07a` build, eight hmods and Pretty Pipes 0.10. Profile 07a
+retains the failed content-unit candidate; 06b and all earlier profiles remain
+sealed. No changes were pushed or published.
+
+```sh
+python3 horizon/probes/live_oritech_wrench_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-wrench-gui-new"
+python3 horizon/probes/live_oritech_energy_pipes_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-cables-wrench-gui-new" --wrench-controls
+```
+
+The graphical controls probe crafts two wrenches, checks both hands, a missed
+use blocking a rapid following cable click, and a cross-hand repeat within
+eight measured player ticks. Four Shift cases each drop/collect one normal
+wire, preserving both tools. Real clicks discard a deliberately seeded 333 E
+last-provider buffer and reconnect an empty interface. Two physical reopens
+preserve the disabled pair and inventory. The cooldown runs while the world is
+frozen; timing records bound the actual input interval, rather than claiming
+`/tick freeze` stops player cooldowns. Exact native expiry at tick 8 and all
+original neighbor-callback geometries remain unproven.
+
+The live-power GUI variant cuts a middle edge with the wrench, drains the
+furnace buffer until processing pauses, reconnects the edge and collects two
+real iron ingots. Its two physical reopens and energy balance pass: 12,480 E
+generated, 6,400 consumed, 6,080 stored. Only equipment, source materials and
+access/time controls are fixtures; no machine energy or outputs are seeded.
+
+Energy/Pulverizer/Foundry/Assembler regressions match 3,726 original states;
+the cable regression matches 1,512 states, six layouts and physical reopen.
+The native crafting/loot engines match 988 grids and 90 rolls. The dedicated
+Pretty Pipes/core-powered chain passes all three restart phases with 44,800 E
+and two genuine ingots. These use explicit fixtures, not unassisted progression
+or a licensed multiplayer join. Waterlogging, other wrench targets, sound,
+custom hover behavior, full unload fidelity and the rest of Oritech remain open.
+[Native wrench evidence and limits](../../ORITECH_WRENCH_RESULT.json).

@@ -25,7 +25,7 @@ from prepare_terralith_worldgen import RECIPE_ADVANCEMENTS, normalize_recipe_unl
 LOCK = "techquest-local-install.json"
 WORLD = "techquest-horizon-test"
 PACK = f"{WORLD}/datapacks/techquest_terralith"
-ORITECH_NATIVE = {"0.1.0": "0.1.0", "0.2.0": "0.1.0", "0.3.0": "0.2.0", "0.4.0": "0.3.0", "0.5.0": "0.4.0", "0.6.0": "0.5.0"}
+ORITECH_NATIVE = {"0.1.0": "0.1.0", "0.2.0": "0.1.0", "0.3.0": "0.2.0", "0.4.0": "0.3.0", "0.5.0": "0.4.0", "0.6.0": "0.5.0", "0.7.0": "0.6.0"}
 CORE_PATCH = Path(__file__).resolve().parents[1] / "first_party/biome_modifiers/horizon-core-patch.json"
 WORLD_CORE_PATCH = Path(__file__).resolve().parents[1] / "first_party/biome_world_packs/horizon-core-patch.json"
 
@@ -111,10 +111,10 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
                     raise ValueError("Pretty Pipes 0.4+ menu needs 67 slots and 21 data slots")
             if mod == "oritech":
                 machines = [("basic_generator_block", 1), ("powered_furnace_block", 2)]
-                if facts.get("version") in ("0.3.0", "0.4.0", "0.5.0", "0.6.0"):
+                if facts.get("version") in ("0.3.0", "0.4.0", "0.5.0", "0.6.0", "0.7.0"):
                     machines.append(("pulverizer_block", 3))
-                if facts.get("version") in ("0.4.0", "0.5.0", "0.6.0"): machines.append(("foundry_block", 3))
-                if facts.get("version") in ("0.5.0", "0.6.0"): machines.append(("assembler_block", 5))
+                if facts.get("version") in ("0.4.0", "0.5.0", "0.6.0", "0.7.0"): machines.append(("foundry_block", 3))
+                if facts.get("version") in ("0.5.0", "0.6.0", "0.7.0"): machines.append(("assembler_block", 5))
                 for block, slots in machines:
                     menu = f"data/oritech/horizon/menu/{block}.json"
                     expected_menu = {"slots": slots, "data_slots": 5}
@@ -122,6 +122,20 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
                         expected_menu["results"] = [4] if block == "assembler_block" else [2] if block == "foundry_block" else list(range(1, slots))
                     if menu not in names or json.loads(archive.read(menu)) != expected_menu:
                         raise ValueError("Oritech energy menu has incorrect slots/data slots")
+                if facts.get("version") == "0.7.0":
+                    for block in ("energy_pipe", "energy_pipe_connection"):
+                        value = json.loads(archive.read(f"data/oritech/horizon/block/{block}.json"))
+                        if value.get("shapes") != value.get("collision_shapes") or not value.get("shapes"):
+                            raise ValueError("Oritech wrench needs original tight cable selection")
+                        bounds = value["shapes"].get("values", {}).values()
+                        if len(value["shapes"].get("values", {})) != 64 or any(
+                                not 0 <= v <= 1 for boxes in bounds for box in boxes for v in box):
+                            raise ValueError("Oritech cable shapes need all masks in block units")
+                        if value.get("item") != (block == "energy_pipe"):
+                            raise ValueError("Oritech connection endpoint must remain item-less")
+                    tool = json.loads(archive.read("data/oritech/horizon/item/wrench.json"))
+                    if tool.get("max_stack_size") != 1 or "minecraft:tool" not in tool.get("components", {}):
+                        raise ValueError("Oritech wrench needs its one-stack tool declaration")
             for namespace in meta.get("namespaces", [mod]):
                 if namespace in owners and owners[namespace] != mod:
                     raise ValueError("namespace has multiple owners: " + namespace)
@@ -151,14 +165,14 @@ def check_modules(modules: Path, terralith: Path, datapack: Path, sdk: Path, wor
 
 def check_native_pairs(mods: dict, native: list[dict], core: list[dict] | None = None,
                        *, new_installation: bool = False):
-    if mods.get("oritech", {}).get("version") in ("0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0"):
+    if mods.get("oritech", {}).get("version") in ("0.2.0", "0.3.0", "0.4.0", "0.5.0", "0.6.0", "0.7.0"):
         expected_patch = json.loads(CORE_PATCH.read_text())
         runtime_patch = json.loads(WORLD_CORE_PATCH.read_text())
         if core not in ([expected_patch], [expected_patch, runtime_patch]):
             raise ValueError("Oritech progression needs the reviewed merged-biome core correction")
         # Historical 02a locks stay verifiable. New installs must also correct
         # the feature lists replaced by an enabled world datapack.
-        if (new_installation or mods["oritech"]["version"] in ("0.3.0", "0.4.0", "0.5.0", "0.6.0")) and core != [expected_patch, runtime_patch]:
+        if (new_installation or mods["oritech"]["version"] in ("0.3.0", "0.4.0", "0.5.0", "0.6.0", "0.7.0")) and core != [expected_patch, runtime_patch]:
             raise ValueError("Oritech progression installations need the world-pack feature correction")
     if "oritech" in mods:
         matching = [m for m in native if m.get("id") == "techquest_oritech"]

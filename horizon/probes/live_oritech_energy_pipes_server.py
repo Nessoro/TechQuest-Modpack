@@ -111,7 +111,7 @@ def main():
     parser.add_argument('--phase',choices=('prepare','verify','final'),required=True)
     parser.add_argument('--prior',type=Path)
     args=parser.parse_args();assert not args.output.exists() and not args.output.with_suffix('.commands.json').exists()
-    lock=verify(args.server_dir);assert lock['modules']['oritech']['version']=='0.6.0'
+    lock=verify(args.server_dir);assert lock['modules']['oritech']['version'] in ('0.6.0','0.7.0')
     if args.phase!='prepare' and args.prior is None:parser.error('prior phase report required')
     probe=Factory(args.server_dir,Path(lock['server_binary']))
     try:
@@ -127,7 +127,8 @@ def main():
     finally:
         try:subprocess.run([str(probe.binary),'--dir',str(probe.server),'stop'],check=True,capture_output=True,text=True,timeout=90)
         finally:args.output.with_suffix('.commands.json').write_text(json.dumps(probe.rows,indent=2)+'\n')
-    report={'schema':1,'phase':args.phase,'checks':checks,'oritech_content_version':'0.6.0','oritech_native_version':'0.5.0',
+    report={'schema':1,'phase':args.phase,'checks':checks,'oritech_content_version':lock['modules']['oritech']['version'],
+            'oritech_native_version':next(m['version'] for m in lock['native_modules'] if m['id']=='techquest_oritech'),
             'pretty_pipes_version':'0.10.0','generator_and_source_interface_cross_chunk_boundary':True,
             'energy_enters_furnace_through_assembled_core':True,'fixture_source_inputs':{COAL:1,RAW_IRON:2},
             'energy_machine_inventory_outputs_or_cargo_seeded':False,'normal_startup_ticks_may_deliver_cargo_before_console_freeze':True,

@@ -148,7 +148,9 @@ def main():
     for name in ("server-dir","work","original"):parser.add_argument("--"+name,type=Path,required=True)
     parser.add_argument("--resume-initial",action="store_true",help="recheck completed initial output against the exact script/module bytes, then reopen")
     args=parser.parse_args();server=args.server_dir.resolve();work=args.work.absolute();lock=verify(server)
-    assert lock["modules"]["oritech"]["version"]=="0.6.0"
+    content_version=lock["modules"]["oritech"]["version"]
+    assert content_version in ("0.6.0","0.7.0")
+    native_version=next(m["version"] for m in lock["native_modules"] if m["id"]=="techquest_oritech")
     assert work.exists()==args.resume_initial and not work.is_symlink() and not any(p.is_symlink() for p in work.parents)
     assert server not in work.parents and work not in server.parents
     original=json.loads(args.original.read_text());assert len(original["rows"])==504
@@ -225,7 +227,7 @@ def main():
     for key in ("after_1","after_2"):
         _,states=snapshots(reopened[key]);state=states[0];after.append(state)
         assert sum(state.values())==11313 and state["target"]==10000 and state["source"]==0,state
-    report={"schema":1,"oritech_content_version":"0.6.0","native_version":"0.5.0","single_target_cases":504,
+    report={"schema":1,"oritech_content_version":content_version,"native_version":native_version,"single_target_cases":504,
             "matched_states":checked,"layout_directions":6,"ordinary_wire_has_no_block_entity":True,
             "gap_rejoin_replacement_loop_multiple_targets_faces_sources_matched":True,
             "disabled_side_properties_respected":True,"native_wrench_interaction_tested":False,

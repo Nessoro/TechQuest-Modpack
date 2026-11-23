@@ -8,6 +8,7 @@ normal survival interactions; energy, burn progress and outputs are never seeded
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 import shutil
@@ -26,10 +27,12 @@ coord=lambda p:" ".join(map(str,p))
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ("server-dir","work"):parser.add_argument("--"+name,type=Path,required=True)
+    parser.add_argument("--wrench-controls",action="store_true",help="cut/reconnect the live network with a craftable wrench fixture")
     args=parser.parse_args()
-    game=GraphicalFixture(args.server_dir,args.work,"0.6.0","techquest-cables-gui","TQCableGui",module="oritech",frozen=True)
+    game=GraphicalFixture(args.server_dir,args.work,("0.6.0","0.7.0"),"techquest-cables-gui","TQCableGui",module="oritech",frozen=True)
     shutil.copytree(game.server/"techquest-horizon-test/datapacks",game.work/"saves"/game.world/"datapacks")
     test=GatheredChain(game);cmd,call,settle=game.command,game.call,game.settle
+    if args.wrench_controls:assert game.version=="0.7.0"
     def number(pos,key):
         reply=cmd("data get block "+coord(pos)+" "+key)
         match=re.search(r"has the following block data:\s*(-?\d+)",reply)
@@ -92,8 +95,31 @@ def main():
         assert test.counts().get("oritech:energy_pipe",0)==before+1,(result,test.counts())
         assert call("block",*pos)["block"]=="minecraft:air"
         return result
+    def wrench_toggle(enabled):
+        pos=WIRES[2]
+        cmd(f"setblock {pos[0]+1} 199 {pos[2]} minecraft:stone_slab[type=bottom]")
+        cmd(f"tp @s {pos[0]+1.2} 199.5 {pos[2]+.05}")
+        # empty_hand may have moved the selected wrench out of the hotbar
+        # before the screenshot. `select ITEM` only searches the hotbar.
+        if not any(s.get("item")=="oritech:wrench" for s in call("inventory")["hotbar"]):
+            call("open-inventory");settle();_,slots=test.slots()
+            source=next(i for i,s in slots.items() if 9<=i<36 and s.get("item")=="oritech:wrench")
+            destination=next(i for i in range(9) if not slots[i].get("item"))
+            call("click-slot",source);settle();call("click-slot",destination);settle();call("close");settle()
+        call("select","oritech:wrench");call("wait",12)
+        call("look",math.degrees(math.atan2(.7,.45)),math.degrees(math.atan2(.665,math.hypot(.7,.45))));settle()
+        assert call("looking-at")["block"]["pos"]==list(pos)
+        call("mouse","right","click");settle()
+        left,right=call("block",*pos)["state"],call("block",*WIRES[3])["state"]
+        assert f"east={int(enabled)}" in left and f"west={int(enabled)}" in right,(left,right)
+        # Leave the half-height camera stand before replacing it with a
+        # full block. Otherwise the fixture embeds the player in its floor.
+        approach(pos)
+        cmd(f"setblock {pos[0]+1} 199 {pos[2]} minecraft:glass")
+        return {"control":"wrench","enabled":enabled,"left":left,"right":right}
     supplied={"oritech:electrum_ingot":3,"oritech:basic_generator_block":1,"oritech:powered_furnace_block":1,
               "oritech:machine_core_1":1,"minecraft:coal":1,"minecraft:raw_iron":2,"minecraft:diamond_pickaxe":1}
+    if args.wrench_controls:supplied["oritech:wrench"]=1
     try:
         game.start("craft-and-save");cmd("clear @s");cmd("difficulty peaceful");cmd("gamemode spectator")
         cmd("tp @s -2271.5 200 2275.5");call("wait-ready",timeout=180);cmd("tick freeze")
@@ -124,10 +150,12 @@ def main():
     finally:game.stop()
     try:
         game.start("reopen-and-break");cmd("tick freeze");reopened=state();assert reopened==saved,(saved,reopened)
-        middle_break=mine_and_collect(WIRES[2]);step(40);paused=state();step(10);still=state()
+        middle_break=wrench_toggle(False) if args.wrench_controls else mine_and_collect(WIRES[2]);step(40);paused=state();step(10);still=state()
         assert paused["furnace_progress"]==still["furnace_progress"] and still["furnace_energy"]==0,(paused,still)
         approach(WIRES[2]);call("look-at-block",*WIRES[3]);call("screenshot",game.work/"broken-cable-paused.png")
-        place("oritech:energy_pipe",WIRES[2],cable=True);step(220);completed=state()
+        if args.wrench_controls:wrench_toggle(True)
+        else:place("oritech:energy_pipe",WIRES[2],cable=True)
+        step(220);completed=state()
         assert completed["output_count"]==2 and completed["furnace_progress"]==0 and "minecraft:raw_iron" not in completed["furnace_items"],completed
         screen,slots=open_machine(FURNACE,2);assert slots[301]["item"]=="minecraft:iron_ingot" and slots[301]["count"]==2,screen
         call("screenshot",game.work/"remote-output.png");call("click-slot",301,"shift");settle();call("close");settle()
@@ -141,11 +169,11 @@ def main():
         approach(WIRES[2]);test.empty_hand();call("look-at-block",*FURNACE)
         call("screenshot",game.work/"collected-iron.png");call("save")
     finally:game.stop()
-    report={"schema":1,"oritech_content_version":"0.6.0","native_version":"0.5.0","supplied_fixtures":supplied,
+    report={"schema":1,"oritech_content_version":game.version,"native_version":"0.6.0" if game.version=="0.7.0" else "0.5.0","supplied_fixtures":supplied,
             "crafts":test.crafts,"wire_crafted_from_three_electrum":6,"five_wires_placed_by_survival_packets":True,
             "normal_wire_has_no_block_entity":True,"endpoint_is_internal_block_without_item":True,
             "coal_and_raw_iron_inserted_by_menu_packets":True,"machine_energy_progress_or_output_seeded":False,
-            "middle_wire_physical_break_pauses_processing":True,"rejoined_network_resumes_processing":True,
+            "middle_wire_physical_break_pauses_processing":not args.wrench_controls,"wrench_side_cut_pauses_processing":args.wrench_controls,"rejoined_network_resumes_processing":True,
             "internal_endpoint_drops_normal_cable_item":True,"middle_break":middle_break,"endpoint_break":endpoint_break,
             "two_iron_ingots_produced_and_collected":True,"two_physical_reopens_exact":True,"energy_conserved":True,
             "saved":saved,"paused":paused,"completed":completed,"final":final,"protocol_decode_errors":0,

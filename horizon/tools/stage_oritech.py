@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BLOCKS = ("basic_generator_block", "powered_furnace_block", "machine_core_1")
 
 
-def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=None, port_pack=None, pulverizer=False, foundry=False, assembler=False, energy_pipes=False):
+def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=None, port_pack=None, pulverizer=False, foundry=False, assembler=False, energy_pipes=False, wrench=False):
     if output.exists() or output.is_symlink() or any(p.is_symlink() for p in output.absolute().parents):
         raise ValueError("output must be a new directory without symlinks")
     for parent in output.absolute().parents:
@@ -31,11 +31,12 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
     raw = read_checked(jar)
     if pin["version"] != "1.2.13" or hashlib.sha512(raw).hexdigest() != pin["sha512"]:
         raise ValueError("expected pinned Oritech 1.2.13")
+    energy_pipes = energy_pipes or wrench
     assembler = assembler or energy_pipes
     foundry = foundry or assembler
     pulverizer = pulverizer or foundry
     progression = progression or pulverizer
-    version = "0.6.0" if energy_pipes else "0.5.0" if assembler else "0.4.0" if foundry else "0.3.0" if pulverizer else "0.2.0" if progression else "0.1.0"
+    version = "0.7.0" if wrench else "0.6.0" if energy_pipes else "0.5.0" if assembler else "0.4.0" if foundry else "0.3.0" if pulverizer else "0.2.0" if progression else "0.1.0"
     blocks = (*BLOCKS, "pulverizer_block") if pulverizer else BLOCKS
     if foundry: blocks = (*blocks, "foundry_block")
     if assembler: blocks = (*blocks, "assembler_block")
@@ -79,13 +80,13 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
             data(f"data/oritech/horizon/menu/{block}.json", menu)
     data("data/minecraft/tags/block/mineable/pickaxe.json", {"values": ["oritech:" + b for b in blocks]})
     if energy_pipes:
-        add_energy_pipes(payloads, raw, data)
+        add_energy_pipes(payloads, raw, data, tight_selection=wrench)
     progression_report = None
     if progression:
         if any(p is None for p in (neoforge_jar, content_tool, port_pack)):
             raise ValueError("--progression requires --neoforge-jar, --content-tool and --port-pack")
         from stage_oritech_progression import add_progression
-        progression_report = add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, output.absolute().parent, pulverizer=pulverizer, foundry=foundry, assembler=assembler, energy_pipes=energy_pipes)
+        progression_report = add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, output.absolute().parent, pulverizer=pulverizer, foundry=foundry, assembler=assembler, energy_pipes=energy_pipes, wrench=wrench)
     with tempfile.TemporaryDirectory(prefix="oritech-stage-", dir=output.absolute().parent) as tmp:
         root = Path(tmp) / "module"
         for name, content in payloads.items():
@@ -101,6 +102,7 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
                   "sha256": hashlib.sha256(package.read_bytes()).hexdigest(), "sdk_validated": True,
                   "requires_native_module": "techquest_oritech", "blocks": list(blocks),
                   "energy_pipe_blocks": ["energy_pipe", "energy_pipe_connection"] if energy_pipes else [],
+                  "wrench_and_default_tight_cable_selection": wrench,
                   "java_code_included": False, "original_recipes_ported": bool(progression), "all_original_recipes_ported": False,
                   "progression_subset": progression_report, "full_mod_ported": False, "gameplay_tested": False}
         (root / "techquest-oritech-trial.json").write_text(json.dumps(report, indent=2) + "\n")
@@ -108,25 +110,33 @@ def stage(jar, sdk, output, progression=False, neoforge_jar=None, content_tool=N
     return report
 
 
-def add_energy_pipes(payloads, raw, data):
+def add_energy_pipes(payloads, raw, data, tight_selection=False):
     """Basic CC0 geometry with a normal wire and a separate item-less endpoint."""
     directions = ("down", "up", "north", "south", "west", "east")
     boxes = {"core": [6, 6, 6, 10, 10, 10], "down": [6, 0, 6, 10, 6, 10],
              "up": [6, 10, 6, 10, 16, 10], "north": [6, 6, 0, 10, 10, 6],
              "south": [6, 6, 10, 10, 10, 16], "west": [0, 6, 6, 6, 10, 10],
              "east": [10, 6, 6, 16, 10, 10]}
-    # Eight original property names/values. Collision is the original thin
-    # union; selection remains a cube (tightCableHitboxes is not implemented).
+    # Historical 0.6 keeps cube selection. Wrench 0.7 uses the original
+    # default tight selection, with the same thin geometry as collision.
     properties = {d: {"type": "enum", "values": ["0", "1"]} for d in directions}
     properties.update({k: {"type": "boolean"} for k in ("straight", "waterlogged")})
     shapes = {",".join(str((mask >> i) & 1) for i in range(6)):
               [boxes["core"], *(boxes[d] for i, d in enumerate(directions) if mask & (1 << i))]
               for mask in range(64)}
+    if tight_selection:
+        # Model elements use pixels; Horizon's BlockShapes uses block units.
+        # Preserve historical 0.6 bytes, correcting both outlines and collision
+        # for the new wrench profile.
+        shapes = {key: [[v / 16 for v in box] for box in value]
+                  for key, value in shapes.items()}
     for block in ("energy_pipe", "energy_pipe_connection"):
-        data(f"data/oritech/horizon/block/{block}.json", {
+        definition = {
             "template": "minecraft:iron_block", "item": block == "energy_pipe",
             "properties": {"hardness": 1.0, "explosion_resistance": 2.0, "occludes": False},
-            "state_properties": properties, "collision_shapes": {"properties": list(directions), "values": shapes}})
+            "state_properties": properties, "collision_shapes": {"properties": list(directions), "values": shapes}}
+        if tight_selection: definition["shapes"] = definition["collision_shapes"]
+        data(f"data/oritech/horizon/block/{block}.json", definition)
         data(f"assets/oritech/blockstates/{block}.json", {"multipart": [
             {"apply": {"model": "oritech:block/techquest_energy_core"}}] + [
             {"when": {d: "1"}, "apply": {"model": f"oritech:block/techquest_energy_{d}"}} for d in directions]})
@@ -156,6 +166,7 @@ def main():
     for name in ("jar", "sdk", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--progression", action="store_true")
+    parser.add_argument("--wrench", action="store_true", help="craftable basic cable wrench and default tight selection; implies --energy-pipes")
     parser.add_argument("--energy-pipes", action="store_true", help="basic energy cables; implies --assembler")
     parser.add_argument("--assembler", action="store_true", help="four-input coils/motors; implies --foundry")
     parser.add_argument("--foundry", action="store_true", help="selected three-core foundry/alloy route; implies --pulverizer")

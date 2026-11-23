@@ -140,8 +140,11 @@ are not claimed.
 The developer-only wrench oracle additionally invokes the same pinned CC0
 `Wrench` and consults own `ItemContent`/`OritechStartupConfig`. New source blobs
 are checked against the pinned Git tree; hashes and exact scope are retained
-in `ORITECH_WRENCH_REFERENCE_RESULT.json`. This reference milestone does not
-add a wrench implementation or dependency Java to the native runtime.
+in `ORITECH_WRENCH_REFERENCE_RESULT.json`. Native `cable_hit.rs`, `wrench.rs`
+and the side-toggle adapter carry the selected CC0 wrench behavior through
+pinned MIT Horizon geometry/item-use/cooldown APIs. The wrench recipe, handheld
+model, texture and names come from the pinned own CC0 JAR; the one-stack tool
+declaration follows own `ItemContent`. No dependency Java is included.
 
 `first_party/biome_modifiers/merged-biomes.patch` adapts Horizon's MIT
 `mod_content.rs` at the existing pinned Horizon commit. It registers declared

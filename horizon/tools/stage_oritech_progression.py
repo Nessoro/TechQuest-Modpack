@@ -27,7 +27,7 @@ PROCESSING_RECIPES = ("motor/motorcraft", "crafting/pulverizer", "crafting/elect
                       "crafting/alloy/rawsilicon", "silicon_from_smelting_raw_silicon")
 
 
-def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent, pulverizer=False, foundry=False, assembler=False, energy_pipes=False):
+def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent, pulverizer=False, foundry=False, assembler=False, energy_pipes=False, wrench=False):
     foundry = foundry or assembler
     pulverizer = pulverizer or foundry
     materials = (*MATERIALS, *PROCESSING_MATERIALS) if pulverizer else MATERIALS
@@ -41,6 +41,8 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
         processing_names += ["assembler/magnet", "assembler/motor"]
     if energy_pipes:
         recipe_names = (*recipe_names, "crafting/energy")
+    if wrench:
+        recipe_names = (*recipe_names, "crafting/wrench")
     neo = read_checked(neoforge_jar)
     if hashlib.sha256(neo).hexdigest() != NEOFORGE_SHA256:
         raise ValueError("expected pinned NeoForge 21.1.264 universal JAR")
@@ -116,6 +118,14 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
             texture = json.loads(payloads[model])["textures"]["layer0"].split(":", 1)[1]
             name = f"assets/oritech/textures/{texture}.png"; payloads[name] = take(name, True)
             data(f"assets/oritech/items/{material}.json", {"model": {"type": "minecraft:model", "model": f"oritech:item/{material}"}})
+        if wrench:
+            data("data/oritech/horizon/item/wrench.json", {"template": "minecraft:stick", "max_stack_size": 1,
+                "components": {"minecraft:tool": {"rules": [{"blocks": ["oritech:energy_pipe", "oritech:energy_pipe_connection"],
+                    "speed": 25.0, "correct_for_drops": True}], "default_mining_speed": 1.0, "damage_per_block": 1}}})
+            for name in ("assets/oritech/models/item/wrench.json", "assets/oritech/textures/item/wrench.png"):
+                payloads[name] = take(name, True)
+            data("assets/oritech/items/wrench.json", {"model": {"type": "minecraft:model", "model": "oritech:item/wrench"}})
+            data("data/c/tags/item/tools/wrench.json", {"values": ["oritech:wrench"]})
         for ore, template in ORES.items():
             data(f"data/oritech/horizon/block/{ore}.json", {"template": "minecraft:" + template})
             for name in (f"assets/oritech/blockstates/{ore}.json", f"assets/oritech/models/block/{ore}.json", f"assets/oritech/models/item/{ore}.json", f"assets/oritech/textures/block/{ore}.png"):
@@ -124,6 +134,8 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
         for language in ("en_us", "ru_ru"):
             name = f"assets/oritech/lang/{language}.json"; labels = json.loads(payloads[name]); source = json.loads(original.read(name))
             for key in [*("item.oritech."+m for m in materials), *("block.oritech."+o for o in ORES)]: labels[key] = source[key]
+            if wrench:
+                for key in ("item.oritech.wrench", "tooltip.oritech.wrench"):labels[key] = source[key]
             data(name, labels)
         name = "data/minecraft/tags/block/mineable/pickaxe.json"
         data(name, {"values": json.loads(payloads[name])["values"] + ["oritech:"+o for o in ORES]})
@@ -145,6 +157,6 @@ def add_progression(payloads, raw, neoforge_jar, content_tool, port_pack, parent
             "source_data": source_data, "source_assets": source_assets, "resolved_common_tags": tags,
             "missing_optional_legacy_tags": sorted(missing), "worldgen_features": ["ore_nickel", "ore_platinum", "ore_platinum_end"],
             "content_tool_sha256": hashlib.sha256(read_checked(content_tool)).hexdigest(),
-            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.5.0" if energy_pipes else "0.4.0" if assembler else "0.3.0" if foundry else "0.2.0" if pulverizer else "0.1.0",
+            "port_pack_sha256": hashlib.sha256(read_checked(port_pack)).hexdigest(), "native_version_required": "0.6.0" if wrench else "0.5.0" if energy_pipes else "0.4.0" if assembler else "0.3.0" if foundry else "0.2.0" if pulverizer else "0.1.0",
             "processing_recipes": processing_names,
             "required_core_patch": "techquest_biome_modifiers:0.1.0"}

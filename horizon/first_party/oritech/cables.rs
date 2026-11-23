@@ -59,7 +59,7 @@ pub(super) fn changed(level: &GameLevel<'_>, pos: [i32; 3], old: BlockStateId, n
     }
     let mode = if cable(after) && !cable(before) {
         1
-        } else if !cable(after) && after.as_ref() != "minecraft:air" {
+    } else if !cable(after) && after.as_ref() != "minecraft:air" {
         2
     } else {
         0
@@ -80,6 +80,53 @@ fn connected(game: &Game<'_>, pos: [i32; 3], face: Direction) -> bool {
     game.native_block_property(pos, NAMES[face as usize])
         .as_deref()
         == Some("1")
+}
+fn write_side(game: &mut Game<'_>, pos: [i32; 3], face: Direction, enabled: bool) {
+    let registry = game.pack.assets.registry;
+    let Some(mut state) = registry
+        .state(game.world.block(pos[0], pos[1], pos[2]))
+        .cloned()
+    else {
+        return;
+    };
+    state.properties.insert(
+        NAMES[face as usize].into(),
+        if enabled { "1" } else { "0" }.into(),
+    );
+    let arms = NAMES.map(|key| state.properties.get(key).is_some_and(|v| v == "1"));
+    let straight = arms.iter().filter(|v| **v).count() == 2
+        && ((arms[0] && arms[1]) || (arms[2] && arms[3]) || (arms[4] && arms[5]));
+    state
+        .properties
+        .insert("straight".into(), straight.to_string());
+    if let Ok(state) = registry.resolve(&state) {
+        let dimension = game.dim.id().to_string();
+        game.native_set_block(&dimension, pos, state, 3);
+    }
+}
+pub(super) fn toggle_side(game: &mut Game<'_>, pos: [i32; 3], face: Direction) -> bool {
+    flush(game);
+    if !cable(&game.native_block(pos)) {
+        return false;
+    }
+    let next = neighbor(pos, face);
+    let enabled = !connected(game, pos, face);
+    let other_wire = cable(&game.native_block(next));
+    if enabled && !other_wire && !provider(game, next, face.opposite()) {
+        return false;
+    }
+    write_side(game, pos, face, enabled);
+    if other_wire {
+        write_side(game, next, face.opposite(), enabled);
+    }
+    // Properties changed on the same block type, so the generic change
+    // observer intentionally did not force a new automatic connection.
+    mark(game.dim.id(), pos, 0);
+    if other_wire {
+        mark(game.dim.id(), next, 0);
+    }
+    flush(game);
+    true
 }
 fn refresh(game: &mut Game<'_>, pos: [i32; 3], create: u8) {
     let id = game.native_block(pos);

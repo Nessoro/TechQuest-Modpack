@@ -90,9 +90,23 @@ progression и добавляет корпус, обработку катуше�
 GUI проверил крафт/установку, добычу/восстановление кабеля и endpoint, удалённую
 переплавку и два переоткрытия. Dedicated-стенд с Pretty Pipes питает печь через
 core и границу чанков, сохраняет 44 800 E и доставляет два слитка после двух
-перезапусков. Wrench, waterlogging и остальные виды проводов пока не перенесены.
+перезапусков. В этом историческом профиле wrench отсутствует; waterlogging и остальные виды проводов пока не перенесены.
 [Доказательства](ORITECH_ENERGY_PIPE_RESULT.json),
 [воспроизведение](first_party/oritech/README.md#content-06-energy-cables--native-05).
+
+Новый профиль wrench — `/workspace/horizon-runtime/techquest-oritech-07b-server`,
+порт 25657, Oritech content 0.7/native 0.6, прежний Pretty Pipes 0.10,
+8 hmod, 4 native bundles и два core corrections. Инструменты — отдельные
+`native-tools-oritech-07a`; сборка содержит 40 injections/10 modules.
+`stage_oritech.py --wrench` включает прежние ступени. Тонкое выделение и коллизия
+теперь задаются в долях блока; старый 0.6 ошибочно задавал collision в пикселях.
+Профиль 07a оставлен как контроль этой ошибки, 06b сохранён.
+GUI подтвердил крафт двух wrench, обе руки, общий cooldown после промаха,
+четыре Shift-дропа, потерю буфера последней отключённой грани и два переоткрытия.
+Регрессии машин/кабелей, крафта/loot и dedicated-цепочки прошли.
+Waterlogging, остальные цели wrench и лицензированный мультиплеер ещё не готовы.
+[Доказательства](ORITECH_WRENCH_RESULT.json),
+[воспроизведение](first_party/oritech/README.md#content-07-cable-wrench--native-06).
 
 Pretty Pipes 0.8 добавляет скрафченный redstone module и управление новыми
 извлечениями/доставками от питания. Нужны content/native именно 0.8.0.
