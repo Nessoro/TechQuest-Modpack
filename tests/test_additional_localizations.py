@@ -27,7 +27,7 @@ LOCALE_COUNTS = {
     "ic2": 1336,
     "immersiveengineering": 894,
     "jei": 625,
-    "mekanism": 2211,
+    "mekanism": 2279,
     "mekanismgenerators": 364,
     "modern_industrialization": 49,
     "mowziesmobs": 440,
@@ -97,6 +97,9 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("mB/t", mekanism["configuration.mekanism.gear.scuba_tank.fill_rate.tooltip"])
         self.assertEqual(mekanism["configuration.mekanism.gear.meka_tool.energy_usage.silk"],
                          "Шёлковое касание")
+        self.assertIn("FE/RF", mekanism["configuration.mekanism.general.energy_conversion.blacklist.fluxnetworks.tooltip"])
+        self.assertIn("mB/t", mekanism["configuration.mekanism.general.fill_rate.chemical.tooltip"])
+        self.assertIn("mekanism", mekanism["configuration.mekanism.general.cardboard.mod_blacklist.tooltip"])
         immersive = json.loads((COMPAT / "assets/immersiveengineering/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(immersive["block.minecraft.banner.immersiveengineering.hammer.black"],
                          "Молот (чёрный)")
