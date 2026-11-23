@@ -428,6 +428,18 @@ def client_config_overrides(cfg):
     return result
 
 
+def boss_damage_overrides(cfg):
+    """Cataclysm range-only compatibility without bypassing boss mechanics."""
+    if not any(m.get("project") == "l_enders-cataclysm" for m in cfg.get("mods", [])):
+        return {}
+    if cfg.get("minecraft") != "1.21.1" or cfg.get("loader") != "neoforge":
+        raise BuildError("Review Cataclysm range preset for this game version/loader")
+    preset = ROOT / "compat/boss-damage/conditions-preserved.toml"
+    if not preset.is_file():
+        raise BuildError("Missing Cataclysm boss range preset")
+    return {"config/cataclysm-common.toml": preset.read_bytes()}
+
+
 def opac_config_overrides(cfg):
     """Seed a safe Open Parties and Claims config for NEW NeoForge worlds only.
 
@@ -513,11 +525,13 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
             archive.writestr("overrides/options.txt", settings)
             archive.writestr("overrides/TECHQUEST_OPTIMIZED.txt",
                 "Unified optimized TechQuest client. Iris shaders are not included. "
-                "Gameplay mods are preserved. Set graphics Fast, view distance 4-6, "
+                "Gameplay mods are preserved. Set graphics Fast, view distance 16, "
                 "particles minimal. The settings are not a guarantee of FPS gains.\n")
         for relative, data in guide_overrides().items():
             archive.writestr("overrides/" + relative, data)
         for relative, data in client_config_overrides(cfg).items():
+            archive.writestr("overrides/" + relative, data)
+        for relative, data in boss_damage_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
         for relative, data in opac_config_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
@@ -623,6 +637,11 @@ def main():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
+    for relative, data in boss_damage_overrides(cfg).items():
+        for side in ("client", "server"):
+            target = out / side / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
     for relative, data in opac_config_overrides(cfg).items():
         for side in ("client", "server"):
             target = out / side / relative
@@ -644,7 +663,7 @@ def main():
     (out / "server" / "server.properties").write_text(
         "motd=TechQuest Industrial Frontier\nmax-players=8\nonline-mode=true\n"
         "white-list=true\nenforce-whitelist=true\nenable-rcon=false\n"
-        "view-distance=6\nsimulation-distance=5\nallow-flight=true\n", encoding="utf-8")
+        "view-distance=14\nsimulation-distance=5\nallow-flight=true\n", encoding="utf-8")
     (out / "server" / "START_HERE.txt").write_text(
         "Install official NeoForge %s for Minecraft %s with Java 21; then "
         "review Mojang EULA and set eula=true only if you agree. Enable whitelist "

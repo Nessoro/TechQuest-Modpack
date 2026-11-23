@@ -1,6 +1,6 @@
 {
   "pack_name": "TechQuest: Industrial Frontier — 0.3.3.1",
-  "version": "0.3.3.1",
+  "version": "0.3.3.2",
   "minecraft": "1.21.1",
   "loader": "neoforge",
   "loader_version": "21.1.264",
@@ -622,10 +622,10 @@
   "performance_profile": {
     "unified": true,
     "shader_loader_included": false,
-    "notes": "Одна сборка с клиентскими оптимизациями и серверным снижением дальности симуляции; карта/HP только на клиенте, внутриигровое руководство Patchouli. Проверить производительность Spark.",
+    "notes": "Единый профиль: клиент 16 чанков, сервер 14; симуляция 5. Cataclysm: дальняя атака до 256 блоков без изменения особых фаз и правил боссов. Тесты FPS/TPS обязательны.",
     "video_defaults": {
       "graphicsMode": 0,
-      "renderDistance": 6,
+      "renderDistance": 16,
       "simulationDistance": 5,
       "entityDistanceScaling": 0.5,
       "particles": 2,

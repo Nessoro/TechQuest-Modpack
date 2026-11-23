@@ -68,7 +68,7 @@ def prepare_properties(target):
             "white-list=true\n"
             "enforce-whitelist=true\n"
             "enable-rcon=false\n"
-            "view-distance=6\n"
+            "view-distance=14\n"
             "simulation-distance=5\n"
             "allow-flight=true\n", encoding="utf-8")
 
@@ -94,7 +94,8 @@ def install_guide_overrides(pack_path, target):
             if not (relative.startswith("patchouli_books/techquest_guide/") or
                     relative in ("config/openloader/packs/techquest_starter_guide.zip",
                                 "config/openloader/packs/techquest_micropatch_033.zip",
-                                "defaultconfigs/openpartiesandclaims-server.toml",
+                                "config/cataclysm-common.toml",
+                                 "defaultconfigs/openpartiesandclaims-server.toml",
                                 "defaultconfigs/modern_industrialization-server.toml")):
                 continue
             if ".." in Path(relative).parts or any(c in relative for c in ("\\", "\x00", ":")):

@@ -150,7 +150,7 @@ internal sealed class InstallerForm : Form
             "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
             "7. AMW (необязательно): скачайте официальный JAR с CurseForge, затем нажмите «3. Добавить AMW».\n" +
             "   Для сервера положите тот же JAR в mods и проверьте совместимость с Incoming.\n" +
-            "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
+            "Оптимизированный профиль: графика Fast, 16 чанков (сервер — 14), без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
             "В игре: Xaero Minimap/World Map, здоровье мобов Health Indicator TXF (HP цифрами),\n" +
             "книга «Путеводитель TechQuest» через Patchouli (в творческом режиме).\n" +
@@ -232,7 +232,11 @@ internal sealed class InstallerForm : Form
                 if (File.ReadAllText(miPath + ".techquest-original.bak") != miOriginal) return 30;
                 string options = File.ReadAllText(Path.Combine(probe, "options.txt"));
                 if (!options.Split('\n').Contains("graphicsMode:0") ||
-                    !options.Split('\n').Contains("maxFps:60")) return 8;
+                    !options.Split('\n').Contains("maxFps:60") ||
+                    !options.Split('\n').Contains("renderDistance:16")) return 8;
+                string bossPreset = File.ReadAllText(Path.Combine(probe, "config", "cataclysm-common.toml"));
+                if (!bossPreset.Contains("[mobs.ender_guardian.cap_config]") ||
+                    !bossPreset.Contains("range_cap = 256.0")) return 34;
                 File.WriteAllText(Path.Combine(probe, "options.txt"), "existing-player-settings");
                 InstallGuideOverrides(probe);
                 if (File.ReadAllText(Path.Combine(probe, "options.txt")) != "existing-player-settings") return 9;
@@ -518,6 +522,7 @@ internal sealed class InstallerForm : Form
                 relative == "config/betterzoom-client.toml" ||
                 
                 relative == "config/incoming-client.toml" ||
+                relative == "config/cataclysm-common.toml" ||
                 relative == "config/explosionoverhaul/explosionoverhaul-client.toml" ||
                 relative == "config/jade/plugins.json" ||
                 relative == "config/healthindicatortxf.json5" ||

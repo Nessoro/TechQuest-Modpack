@@ -105,7 +105,7 @@ class CompatibilityTests(unittest.TestCase):
             self.assertIn("online-mode=true", lines)
             self.assertIn("enforce-whitelist=true", lines)
             self.assertFalse(any("\\n" in line for line in lines))
-            self.assertIn("view-distance=6", lines)
+            self.assertIn("view-distance=14", lines)
             self.assertIn("simulation-distance=5", lines)
 
     def test_same_client_options_and_server_book_are_installed_without_overwriting(self):
