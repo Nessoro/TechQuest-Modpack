@@ -1,5 +1,10 @@
 # Исправления совместимости TechQuest
 
+## 0.3.3.3 — экспериментальный мост военного урона к Cataclysm
+
+В наш `techquest-compat-1.0.0.jar` добавлен data-pack ресурс `data/cataclysm/tags/damage_type/bypasses_hurt_time.json` с `replace:false`. Он дополняет Cataclysm для обычного `gunfire` Superb Warfare и семи повреждений Incoming 3.10.4, обходя только внутренний `damageBucket` Cataclysm. Он **не** создаёт потерянные события попадания, не снимает фазовую защиту, не меняет `minecraft:bypasses_invulnerability` и может изменить суммарный DPS. Это проверяемый экспериментальный кандидат, не доказанное исправление. [Сценарии проверки](../docs/BOSS_WEAPON_DAMAGE_0333_RU.md).
+
+
 ## Проверка кандидата 0.3.3 перед игровым запуском
 
 - `python scripts/audit_jar_metadata.py` (Python 3.11+) проверяет готовые клиентские и серверные JAR,
