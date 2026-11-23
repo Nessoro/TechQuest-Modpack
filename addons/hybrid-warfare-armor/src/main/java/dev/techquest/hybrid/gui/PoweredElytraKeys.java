@@ -52,6 +52,7 @@ public final class PoweredElytraKeys {
     public static final class Input {
         private Input() {}
         private static boolean lastBoostState = false;
+        private static int boostHeldTicks = 0;
 
         @SubscribeEvent
         public static void onClientTick(ClientTickEvent.Post event) {
@@ -61,8 +62,13 @@ public final class PoweredElytraKeys {
                     && minecraft.screen == null;
             boolean boostHeld = available && BOOST.isDown()
                     && minecraft.player.isFallFlying();
+            if (boostHeld) boostHeldTicks++;
+            else boostHeldTicks = 0;
+            // Reassert every half-second while held to survive glide-state
+            // packet ordering and transient server fall-flying resets.
             if (minecraft.player != null && minecraft.level != null
-                    && boostHeld != lastBoostState) {
+                    && (boostHeld != lastBoostState
+                        || (boostHeld && boostHeldTicks % 10 == 0))) {
                 PacketDistributor.sendToServer(new PoweredElytraBoostPayload(boostHeld));
             }
             lastBoostState = boostHeld;
