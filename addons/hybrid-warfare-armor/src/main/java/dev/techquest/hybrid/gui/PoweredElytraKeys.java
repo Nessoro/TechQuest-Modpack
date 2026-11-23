@@ -4,6 +4,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.techquest.hybrid.HybridWarfareMod;
 import dev.techquest.hybrid.PoweredElytraGlidePayload;
 import dev.techquest.hybrid.PoweredElytraBoostPayload;
+import dev.techquest.hybrid.PoweredElytraBoost;
+import dev.techquest.hybrid.PoweredElytra;
+import dev.techquest.hybrid.PoweredElytraEnergy;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
@@ -61,6 +66,17 @@ public final class PoweredElytraKeys {
                 PacketDistributor.sendToServer(new PoweredElytraBoostPayload(boostHeld));
             }
             lastBoostState = boostHeld;
+            // The local player controls movement; a server-only velocity
+            // adjustment is overwritten by the regular client movement loop.
+            // Client prediction costs NO energy. Server still pays 200 + 300.
+            if (boostHeld) {
+                ItemStack chest = minecraft.player.getItemBySlot(EquipmentSlot.CHEST);
+                if (PoweredElytra.canFly(chest, minecraft.player)
+                        && PoweredElytraEnergy.canSpendAmount(chest,
+                                PoweredElytraBoost.TOTAL_COST_PER_TICK)) {
+                    PoweredElytraBoost.applyAcceleration(minecraft.player);
+                }
+            }
             if (!available) {
                 while (GLIDE.consumeClick()) {}
                 return;
