@@ -141,7 +141,7 @@ async function githubJSON(url) {
 // Release assets can be downloaded directly by anonymous visitors. Workflow
 // artifacts, even successful ones, still require GitHub authentication.
 const PUBLIC_FALLBACK_TAG = 'v0.3.3-micro2-preview';
-const INSTALLER_ASSET = /^TechQuest(?:Installer|_\d+\.\d+\.\d+(?:[-_][A-Za-z0-9.]+)?)\.exe$/i;
+const INSTALLER_ASSET = /^TechQuest(?:Installer|_\d+\.\d+\.\d+(?:\.\d+)?(?:[-_][A-Za-z0-9.]+)?)\.exe$/i;
 
 function directReleaseAssetUrl(tag, filename) {
   if (!/^v\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.-]+)?$/.test(tag) ||

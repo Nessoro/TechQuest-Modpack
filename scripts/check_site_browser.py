@@ -32,18 +32,23 @@ def main():
             context = browser.new_context(viewport={"width": 1440, "height": 1000}, device_scale_factor=1)
 
             def github(route):
-                if "/artifacts" in route.request.url:
-                    data = {"artifacts": [{"id": 123, "name": "TechQuest-Windows-GUI-Installer", "expired": False}]}
-                elif "/actions/" in route.request.url:
-                    data = {"workflow_runs": [{"id": 456, "conclusion": "success", "head_sha": "abcdef123456",
-                            "created_at": "2026-11-08T12:00:00Z",
-                            "html_url": "https://github.com/Nessoro/TechQuest-Modpack/actions/runs/456"}]}
+                url = route.request.url
+                if '/releases?' in url:
+                    tag = 'v0.3.3.2-preview'
+                    base = 'https://github.com/Nessoro/TechQuest-Modpack/releases/download/' + tag + '/'
+                    data = [{'tag_name': tag, 'draft': False, 'published_at': '2026-11-23T12:00:00Z',
+                             'assets': [
+                               {'name': 'TechQuest_0.3.3.2.exe', 'size': 20000001,
+                                'state': 'uploaded', 'browser_download_url': base + 'TechQuest_0.3.3.2.exe'},
+                               {'name': 'SHA256SUMS.txt', 'size': 200,
+                                'state': 'uploaded', 'browser_download_url': base + 'SHA256SUMS.txt'}]}]
+                elif '/issues?' in url:
+                    data = [{'number': 21, 'title': '<script>bad()</script> Обновление установщика',
+                             'html_url': 'https://github.com/Nessoro/TechQuest-Modpack/issues/21',
+                             'created_at': '2026-11-08T12:00:00Z', 'labels': []}]
                 else:
-                    data = [{"number": 21, "title": "<script>bad()</script> Обновление установщика",
-                             "html_url": "https://github.com/Nessoro/TechQuest-Modpack/issues/21",
-                             "created_at": "2026-11-08T12:00:00Z", "labels": []}]
+                    data = []
                 route.fulfill(json=data)
-
             context.route("https://api.github.com/**", github)
             page = context.new_page()
             errors = []
@@ -51,7 +56,8 @@ def main():
             page.add_init_script("window.open=(url)=>{window.__draft=url;return null}")
             page.goto(url, wait_until="networkidle")
             assert page.locator(".mod-card").count() == 6
-            assert page.locator("#download-link").get_attribute("href").endswith("/456/artifacts/123")
+            assert page.locator("#download-link").get_attribute("href").endswith("/v0.3.3.2-preview/TechQuest_0.3.3.2.exe")
+            assert page.locator("#checksum-link").get_attribute("href").endswith("/v0.3.3.2-preview/SHA256SUMS.txt")
             assert not page.locator("#mods").evaluate("(el) => el.open")
             assert not page.locator("#feedback").evaluate("(el) => el.open")
             page.locator("#issues > summary").click()
@@ -97,10 +103,10 @@ def main():
             context.unroute("https://api.github.com/**", github)
             context.route("https://api.github.com/**", lambda route: route.fulfill(status=403, json={}))
             page.reload(wait_until="networkidle")
-            assert "Не удалось" in page.locator("#build-status").inner_text()
+            assert "v0.3.3-micro2-preview" in page.locator("#download-link").get_attribute("href")
             page.locator("#issues > summary").click()
             assert "недоступны" in page.locator("#issues-feed").inner_text()
-            assert "/actions/workflows/build-alpha.yml" in page.locator("#download-link").get_attribute("href")
+            assert "/releases/download/" in page.locator("#download-link").get_attribute("href")
             assert not errors, errors
             context.close()
             context = browser.new_context(java_script_enabled=False)
