@@ -27,7 +27,7 @@ LOCALE_COUNTS = {
     "ic2": 1336,
     "immersiveengineering": 894,
     "jei": 625,
-    "mekanism": 2082,
+    "mekanism": 2139,
     "mekanismgenerators": 221,
     "modern_industrialization": 49,
     "mowziesmobs": 440,
@@ -83,6 +83,9 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("MekaSuit", mekanism["configuration.mekanism.client.hud.mekasuit.energy_bar.tooltip"])
         self.assertIn("Vein Mining", mekanism["configuration.mekanism.gear.disassembler.vein_mining.tooltip"])
         self.assertIn("mB/t", mekanism["configuration.mekanism.gear.canteen.transfer_rate.tooltip"])
+        self.assertIn("MekaSuit", mekanism["configuration.mekanism.gear.meka_suit.capacity.energy.tooltip"])
+        self.assertIn("mB/t", mekanism["configuration.mekanism.gear.meka_suit.jetpack.transfer_rate.tooltip"])
+        self.assertIn("mekanism:mekasuit_absorption", mekanism["configuration.mekanism.gear.meka_suit.damage_absorption.unspecified.tooltip"])
         immersive = json.loads((COMPAT / "assets/immersiveengineering/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(immersive["block.minecraft.banner.immersiveengineering.hammer.black"],
                          "Молот (чёрный)")
