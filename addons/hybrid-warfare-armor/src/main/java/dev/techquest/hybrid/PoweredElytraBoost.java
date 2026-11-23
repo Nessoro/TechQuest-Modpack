@@ -48,6 +48,7 @@ public final class PoweredElytraBoost {
         if (!(wearer instanceof ServerPlayer player)
                 || !HELD.contains(player.getUUID()) || !player.isFallFlying()
                 || !PoweredElytra.canFly(chest, player)) return;
+        if (!PoweredElytraEnergy.spendExtra(chest, EXTRA_COST_PER_TICK)) return;
         applyAcceleration(player);
     }
 
@@ -61,7 +62,6 @@ public final class PoweredElytraBoost {
         Vec3 look = player.getLookAngle();
         Vec3 direction = new Vec3(look.x, 0, look.z);
         if (direction.lengthSqr() < 1.0E-6D) return;
-        if (!PoweredElytraEnergy.spendExtra(chest, EXTRA_COST_PER_TICK)) return;
         direction = direction.normalize();
 
         Vec3 old = player.getDeltaMovement();
