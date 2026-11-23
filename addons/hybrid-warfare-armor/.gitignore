@@ -1,0 +1,6 @@
+# Recipes and tooltip translations are generated at build time; no new textures or 3D models.
+src/main/resources/data/techquest_hybrid/
+src/main/resources/data/minecraft/
+src/main/resources/assets/techquest_hybrid/lang/
+.gradle/
+build/
