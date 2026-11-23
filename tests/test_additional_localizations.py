@@ -33,7 +33,7 @@ LOCALE_COUNTS = {
     "mowziesmobs": 440,
     "guideme": 36,
     "oritech": 1,
-    "openpartiesandclaims": 349,
+    "openpartiesandclaims": 470,
     "refinedstorage": 10,
     "xaeroworldmap": 303,
     "waystones": 268,
@@ -104,6 +104,10 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("%3$s", open_claims["gui.xaero_claims_anchored_at"])
         self.assertIn("%7$s", open_claims["gui.xaero_claims_claim_command_area_start"])
         self.assertIn("/oclaims anchor", open_claims["gui.xaero_claims_claim_not_within_anchor_range"])
+        self.assertIn("%6$s", open_claims["gui.xaero_claims_forceload_command_area_start"])
+        self.assertIn("%3$s", open_claims["gui.xaero_claims_transfer_target_message"])
+        self.assertIn("%1$d", open_claims["gui.xaero_pac_config_create_sub_id_rules"])
+        self.assertIn("confirm", open_claims["gui.xaero_pac_config_delete_group_confirmation_request"])
         bookshelf = json.loads((COMPAT / "assets/bookshelf/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(bookshelf["day.bookshelf.monday"], "Понедельник")
         xaero = json.loads((COMPAT / "assets/xaeroworldmap/lang/ru_ru.json").read_text(encoding="utf-8"))
