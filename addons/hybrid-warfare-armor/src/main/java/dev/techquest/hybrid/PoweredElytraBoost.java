@@ -66,6 +66,7 @@ public final class PoweredElytraBoost {
 
         Vec3 old = player.getDeltaMovement();
         Vec3 horizontal = new Vec3(old.x, 0, old.z);
+        if (horizontal.length() >= MAX_SPEED) return;
         // Preserve existing high-speed dives instead of slowing the player.
         double targetSpeed = Math.max(CRUISE_SPEED, Math.min(MAX_SPEED, horizontal.length()));
         Vec3 change = direction.scale(targetSpeed).subtract(horizontal);
