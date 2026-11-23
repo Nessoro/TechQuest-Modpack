@@ -27,13 +27,14 @@ LOCALE_COUNTS = {
     "ic2": 1336,
     "immersiveengineering": 894,
     "jei": 625,
-    "mekanism": 2139,
+    "mekanism": 2211,
     "mekanismgenerators": 364,
     "modern_industrialization": 49,
     "mowziesmobs": 440,
     "guideme": 36,
     "oritech": 1,
-    "openpartiesandclaims": 470,
+    "openpartiesandclaims": 703,
+    "prettypipes": 41,
     "refinedstorage": 10,
     "xaeroworldmap": 303,
     "waystones": 268,
@@ -92,6 +93,10 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("mB/t", generators["configuration.mekanismgenerators.server.hohlraum.fill_rate.tooltip"])
         self.assertIn("%2$s", generators["death.attack.mekanismgenerators.fusion.player"])
         self.assertIn("Mekanism: Generators", generators["mekanismgenerators.configuration.title"])
+        self.assertIn("Extended Vein Mining", mekanism["configuration.mekanism.gear.meka_tool.extended_vein.tooltip"])
+        self.assertIn("mB/t", mekanism["configuration.mekanism.gear.scuba_tank.fill_rate.tooltip"])
+        self.assertEqual(mekanism["configuration.mekanism.gear.meka_tool.energy_usage.silk"],
+                         "Шёлковое касание")
         immersive = json.loads((COMPAT / "assets/immersiveengineering/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(immersive["block.minecraft.banner.immersiveengineering.hammer.black"],
                          "Молот (чёрный)")
@@ -117,6 +122,15 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("%3$s", open_claims["gui.xaero_claims_transfer_target_message"])
         self.assertIn("%1$d", open_claims["gui.xaero_pac_config_create_sub_id_rules"])
         self.assertIn("confirm", open_claims["gui.xaero_pac_config_delete_group_confirmation_request"])
+        self.assertIn("%3$s", open_claims["gui.xaero_claims_transfer_target_anchor_limit"])
+        self.assertIn("%1$s", open_claims["gui.xaero_pac_player_config_playerConfig.claims.protection.exceptions.groups.entity.entityAttackAccess"])
+        self.assertEqual(open_claims["gui.xaero_pac_ui_player_config_player_groups_group_id_allowed_chars2"],
+                         "a-z, A-Z, 0-9, - или _, без пробелов")
+        pipes = json.loads((COMPAT / "assets/prettypipes/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(pipes["dir.prettypipes.all"], "Все стороны")
+        self.assertIn("§o", pipes["info.prettypipes.insert_unstacked.description"])
+        self.assertEqual(pipes["info.prettypipes.million"], "%sM")
+        self.assertEqual(pipes["item_group.prettypipes.tab"], "Pretty Pipes")
         bookshelf = json.loads((COMPAT / "assets/bookshelf/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(bookshelf["day.bookshelf.monday"], "Понедельник")
         xaero = json.loads((COMPAT / "assets/xaeroworldmap/lang/ru_ru.json").read_text(encoding="utf-8"))
