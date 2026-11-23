@@ -14,9 +14,11 @@ public final class PoweredElytraBoost {
     public static final int TOTAL_COST_PER_TICK = 500;
     public static final int EXTRA_COST_PER_TICK =
             TOTAL_COST_PER_TICK - PoweredElytraEnergy.COST_PER_TICK;
-    private static final double CRUISE_SPEED = 1.4D;
-    private static final double MAX_SPEED = 1.6D;
-    private static final double ACCELERATION = 0.12D;
+    // Approximately 2x normal level-flight speed. 1.4 blocks/tick may be
+    // imperceptible while diving. Local client prediction is also essential.
+    private static final double CRUISE_SPEED = 2.2D;
+    private static final double MAX_SPEED = 2.4D;
+    private static final double ACCELERATION = 0.18D;
     private static final Set<UUID> HELD = new HashSet<>();
 
     private PoweredElytraBoost() {}
@@ -46,6 +48,16 @@ public final class PoweredElytraBoost {
         if (!(wearer instanceof ServerPlayer player)
                 || !HELD.contains(player.getUUID()) || !player.isFallFlying()
                 || !PoweredElytra.canFly(chest, player)) return;
+        applyAcceleration(player);
+    }
+
+    /**
+     * Shared motion math for server and owning client. The client predicts
+     * velocity for responsive movement; only the server spends energy.
+     * No energy, position or velocity is trusted from the network packet.
+     */
+    public static void applyAcceleration(LivingEntity player) {
+        if (!player.isFallFlying()) return;
         Vec3 look = player.getLookAngle();
         Vec3 direction = new Vec3(look.x, 0, look.z);
         if (direction.lengthSqr() < 1.0E-6D) return;
@@ -54,12 +66,14 @@ public final class PoweredElytraBoost {
 
         Vec3 old = player.getDeltaMovement();
         Vec3 horizontal = new Vec3(old.x, 0, old.z);
-        Vec3 change = direction.scale(CRUISE_SPEED).subtract(horizontal);
+        // Preserve existing high-speed dives instead of slowing the player.
+        double targetSpeed = Math.max(CRUISE_SPEED, Math.min(MAX_SPEED, horizontal.length()));
+        Vec3 change = direction.scale(targetSpeed).subtract(horizontal);
         if (change.length() > ACCELERATION) change = change.normalize().scale(ACCELERATION);
         Vec3 next = horizontal.add(change);
         if (next.length() > MAX_SPEED) next = next.normalize().scale(MAX_SPEED);
         player.setDeltaMovement(next.x, old.y, next.z);
         player.hasImpulse = true;
-        player.hurtMarked = true;
+        if (!player.level().isClientSide()) player.hurtMarked = true;
     }
 }
