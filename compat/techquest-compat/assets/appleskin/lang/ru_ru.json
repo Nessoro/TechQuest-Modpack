@@ -1,0 +1,12 @@
+{
+  "appleskin.configuration.maxHudOverlayFlashAlpha.tooltip": "Прозрачность мигающих значков в самой яркой фазе (1,0 — непрозрачно; 0,0 — полностью прозрачно)",
+  "appleskin.configuration.showFoodExhaustionHudUnderlay.tooltip": "Если включено, расход сытости показывается полосой прогресса под индикатором голода.",
+  "appleskin.configuration.showFoodHealthHudOverlay.tooltip": "Если включено, на полосе здоровья показывается ожидаемое восстановление здоровья от пищи.",
+  "appleskin.configuration.showFoodStatsInDebugOverlay.tooltip": "Если включено, на экране отладки показываются голод, насыщение и истощение.",
+  "appleskin.configuration.showFoodValuesHudOverlay.tooltip": "Если включено, при удержании пищи показывается, сколько голода (и насыщения при включённом соответствующем параметре) она восстановит.",
+  "appleskin.configuration.showFoodValuesHudOverlayWhenOffhand.tooltip": "Если включено, подсказки о голоде, насыщении и здоровье также работают для пищи во второй руке.",
+  "appleskin.configuration.showFoodValuesInTooltip.tooltip": "Если включено, при удержании SHIFT в подсказке к пище показываются восстанавливаемые голод и насыщение.",
+  "appleskin.configuration.showFoodValuesInTooltipAlways.tooltip": "Если включено, восстанавливаемые голод и насыщение всегда показываются в подсказке к пище, без удержания SHIFT.",
+  "appleskin.configuration.showSaturationHudOverlay.tooltip": "Если включено, текущий уровень насыщения отображается поверх полосы голода.",
+  "appleskin.configuration.showVanillaAnimationsOverlay.tooltip": "Если включено, подсказки к полосам здоровья и голода покачиваются синхронно с анимацией значков Minecraft."
+}

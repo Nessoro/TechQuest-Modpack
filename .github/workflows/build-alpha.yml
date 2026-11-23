@@ -23,6 +23,7 @@ on:
       - scripts/security_audit.py
       - scripts/audit_jar_metadata.py
       - scripts/audit_keybinds.py
+      - scripts/audit_localizations.py
       - scripts/KeymapAudit.java
       - scripts/guide_assets.py
       - tests/**
@@ -70,6 +71,8 @@ jobs:
           PY
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
+      - name: Audit Russian localization coverage (no game launch)
+        run: python scripts/audit_localizations.py --mods output/client/mods --output output/localization-coverage.json
       - name: Verify new JEI integration and pinned foundation in client/server
         run: |
           python - <<'PY'
@@ -429,6 +432,8 @@ jobs:
               z.write("scripts/mi_guide_config.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
+              if Path("scripts/boss_checklist.py").is_file():
+                  z.write("scripts/boss_checklist.py")
               z.write(out/"TechQuest_0.3.3.1.mrpack",arcname="TechQuest_0.3.3.1.mrpack")
               z.writestr("SERVER_INSTALL_README.txt",readme)
           print("Created",p,p.stat().st_size,"bytes")
@@ -460,6 +465,8 @@ jobs:
               z.write("scripts/mi_guide_config.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
+              if Path("scripts/boss_checklist.py").is_file():
+                  z.write("scripts/boss_checklist.py")
               z.write(out/"TechQuest_0.3.3.1.mrpack",arcname="TechQuest_0.3.3.1.mrpack")
               z.writestr("OFFICIAL_LAUNCHER_INSTALL.txt", readme)
           PY
@@ -499,6 +506,7 @@ jobs:
             output/jar-metadata-audit.json
             output/keybindings-audit.json
             output/keybindings-audit.md
+            output/localization-coverage.json
           if-no-files-found: warn
           retention-days: 30
       - name: Summarize build

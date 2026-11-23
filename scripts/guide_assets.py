@@ -185,12 +185,12 @@ def guide_overrides():
                 for page_title, text in pages]
         })
     files["TECHQUEST_INGAME_GUIDE.txt"] = (
-        "TechQuest 0.3.2: Open Creative > Tools and Utilities and find Путеводитель TechQuest.\n"
-        "In survival, Open Loader datapack attempts to give the book on first join.\n"
-        "Map and waypoints: Xaero's Minimap/World Map (check controls, M often opens map).\n"
-        "Health Indicator TXF and Jade show mob health, JEI recipes via R/U, Create Ponder.\n"
-        "If the book is missing, verify Patchouli and openloader in the log.\n"
-        "The guide is pack-authored and untested in a running Minecraft client.\n"
+        "TechQuest: откройте творческий режим, вкладку «Инструменты и приспособления» и найдите «Путеводитель TechQuest».\n"
+        "В режиме выживания набор данных Open Loader должен выдать книгу при первом входе в мир.\n"
+        "Карта и метки: Xaero's Minimap/World Map (проверьте управление; M часто открывает карту).\n"
+        "Health Indicator TXF и Jade показывают здоровье мобов; рецепты JEI — R/U, подсказки Create — Ponder.\n"
+        "Если книга не появилась, проверьте сообщения Patchouli и Open Loader в журнале игры.\n"
+        "Руководство создано для TechQuest; его работа не проверена запуском Minecraft.\n"
     ).encode("utf-8")
     files["config/openloader/packs/techquest_starter_guide.zip"] = starter_datapack()
     # A separate named pack is additive, so upgrades preserve an existing
@@ -202,7 +202,7 @@ def guide_overrides():
 def starter_datapack():
     """Vanilla 1.21.1 datapack: once-per-player guide and replacement recipe."""
     pack = {
-        "pack": {"pack_format": 48, "description": "TechQuest: first-join Patchouli guide"}
+        "pack": {"pack_format": 48, "description": "TechQuest: руководство Patchouli при первом входе"}
     }
     advancement = {
         "criteria": {"first_join": {"trigger": "minecraft:tick"}},
@@ -249,7 +249,7 @@ def micro_patch_datapack():
     not require overwriting any existing starter guide or player config.
     """
     data = {"pack.mcmeta": _json({
-        "pack": {"pack_format": 48, "description": "TechQuest micro2: shared Apotheosis tiers"}
+        "pack": {"pack_format": 48, "description": "TechQuest micro2: общие уровни Apotheosis"}
     })}
     # PMMO removed in micro2: World Tier remains, no PMMO server configuration.
     # Server-global World Tier: scoreboard persists across world restarts.
