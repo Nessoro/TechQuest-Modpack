@@ -1,0 +1,204 @@
+name: Horizon native tools and dedicated resource preparation
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/horizon-native-runtime.yml"
+      - "horizon/tools/server_preflight.py"
+      - "horizon/tests/test_server_preflight.py"
+      - "horizon/tools/probe_mojang_metadata.py"
+      - "horizon/tests/test_mojang_metadata_probe.py"
+      - "horizon/tools/fetch_official_server.py"
+      - "horizon/tests/test_fetch_official_server.py"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  official-resource-metadata:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'experiment/horizon-port-lab')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify exact official game metadata (no JAR or login)
+        run: python horizon/tools/probe_mojang_metadata.py --version 26.3 --report horizon/out/mojang-metadata.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TechQuest-Horizon-Mojang-METADATA-ONLY
+          path: horizon/out/mojang-metadata.json
+          if-no-files-found: error
+          retention-days: 14
+  native-tools:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'experiment/horizon-port-lab')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m unittest discover -s horizon/tests -v
+      - name: Checkout pinned official Horizon source
+        uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build headless engine, resource preparer, supervisor and control tool
+        working-directory: upstream-horizon
+        run: |
+          cargo build --profile fast --locked --no-default-features \
+            -p horizon-client --bin horizon-client \
+            -p horizon-prepare --bin horizon-prepare \
+            -p horizon-server --bin horizon-server \
+            -p horizon-client-lib --bin horizon-ctl
+      - name: Check executable startup without loading game resources
+        run: |
+          set -euo pipefail
+          mkdir native-tools
+          cp upstream-horizon/target/fast/horizon-client native-tools/horizon-engine
+          for tool in horizon-prepare horizon-server horizon-ctl; do
+            cp "upstream-horizon/target/fast/$tool" native-tools/
+          done
+          for tool in horizon-engine horizon-prepare horizon-server horizon-ctl; do
+            "native-tools/$tool" --help > "native-tools/$tool-help.txt"
+          done
+          native-tools/horizon-engine --launch-api > native-tools/launch-api.json
+          for tool in horizon-prepare horizon-server horizon-ctl; do
+            echo "=== $tool CLI ==="
+            cat "native-tools/$tool-help.txt"
+          done
+          cp upstream-horizon/research-lock.json upstream-horizon/LICENSE native-tools/
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          base = Path('native-tools')
+          json.loads((base/'launch-api.json').read_text())
+          report = {
+              'schema': 1,
+              'upstream_commit': 'c78187dffffb60f31517eadcb87413386e8ce729',
+              'minecraft': '26.3',
+              'platform': 'linux-x86_64',
+              'profile': 'fast',
+              'default_features': False,
+              'executable_startup_tested': True,
+              'server_boot_tested': False,
+              'world_save_reopen_tested': False,
+              'combined_mod_load_tested': False,
+              'multiplayer_tested': False,
+              'minecraft_resources_included': False,
+              'sha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                         for p in base.iterdir() if p.name in
+                         ('horizon-engine', 'horizon-prepare', 'horizon-server', 'horizon-ctl')},
+          }
+          (base/'build-result.json').write_text(json.dumps(report, indent=2)+'\n')
+          PY
+          tar -czf TechQuest-Horizon-native-tools-Linux-BUILD-ONLY.tar.gz native-tools
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-native-tools-Linux-BUILD-ONLY
+          path: TechQuest-Horizon-native-tools-Linux-BUILD-ONLY.tar.gz
+          if-no-files-found: error
+          retention-days: 14
+
+  server-resource-preparation:
+    needs: [native-tools, official-resource-metadata]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Checkout same official Horizon revision for exporters
+        uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: TechQuest-Horizon-native-tools-Linux-BUILD-ONLY
+          path: native-build
+      - name: Verify native tools and inspect official launch interface
+        run: |
+          set -euo pipefail
+          tar -xzf native-build/TechQuest-Horizon-native-tools-Linux-BUILD-ONLY.tar.gz
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path("native-tools")
+          report = json.loads((root/"build-result.json").read_text())
+          assert report["upstream_commit"] == "c78187dffffb60f31517eadcb87413386e8ce729"
+          for name in ("horizon-engine", "horizon-prepare", "horizon-server", "horizon-ctl"):
+              assert hashlib.sha256((root/name).read_bytes()).hexdigest() == report["sha256"][name], name
+          PY
+          cat native-tools/horizon-engine-help.txt
+          cat native-tools/launch-api.json
+          native-tools/horizon-prepare --launch-api --root "$GITHUB_WORKSPACE/upstream-horizon"
+      - name: Fetch verified official dedicated-server JAR (runner only)
+        run: |
+          python horizon/tools/fetch_official_server.py \
+            --output "$RUNNER_TEMP/horizon-input/server.jar" \
+            --report horizon/out/server-download.json
+      - name: Attempt resource preparation from dedicated server only
+        id: prepare
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/horizon-isolated-minecraft"
+          set +e
+          timeout 600 native-tools/horizon-prepare --prepare \
+            --root "$GITHUB_WORKSPACE/upstream-horizon" \
+            --server-jar "$RUNNER_TEMP/horizon-input/server.jar" \
+            --minecraft-dir "$RUNNER_TEMP/horizon-isolated-minecraft" \
+            --java-home "$JAVA_HOME" \
+            --output "$RUNNER_TEMP/horizon-prepared"
+          prepare_rc=$?
+          timeout 60 native-tools/horizon-prepare --check \
+            --root "$GITHUB_WORKSPACE/upstream-horizon" \
+            --output "$RUNNER_TEMP/horizon-prepared"
+          check_rc=$?
+          set -e
+          python - "$prepare_rc" "$check_rc" <<'PY'
+          import json, sys
+          from pathlib import Path
+          prepare, check = map(int, sys.argv[1:])
+          report = {"schema": 1, "minecraft": "26.3", "prepare_exit": prepare,
+                    "check_exit": check, "resources_prepared": prepare == check == 0,
+                    "client_jar_downloaded": False, "client_authentication_attempted": False,
+                    "server_boot_tested": False, "combined_mod_load_tested": False}
+          Path("horizon/out/resource-preparation.json").write_text(json.dumps(report, indent=2)+"\n")
+          print(json.dumps(report, indent=2))
+          PY
+          test "$prepare_rc" -eq 0 && test "$check_rc" -eq 0
+      - name: Upload status only (never Minecraft files or derived resources)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-Horizon-Resource-Preparation-METADATA-ONLY
+          path: |
+            horizon/out/server-download.json
+            horizon/out/resource-preparation.json
+          if-no-files-found: warn
+          retention-days: 14

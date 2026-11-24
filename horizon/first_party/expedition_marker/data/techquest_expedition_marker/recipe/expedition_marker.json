@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": ["minecraft:amethyst_block", "minecraft:glowstone_dust"],
+  "result": { "id": "techquest_expedition_marker:expedition_marker" }
+}

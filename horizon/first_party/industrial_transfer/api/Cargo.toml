@@ -1,0 +1,7 @@
+[package]
+name = "mod-techquest_industrial_transfer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+horizon-client = { git = "https://github.com/horizon-rust/horizon", rev = "c78187dffffb60f31517eadcb87413386e8ce729", default-features = false }

@@ -1,0 +1,74 @@
+name: Horizon industrial native mechanics (Rust and SDK)
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "horizon/first_party/industrial_*/**"
+      - ".github/workflows/horizon-industrial-native.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native-mechanic:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'experiment/horizon-port-lab')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      CARGO_BUILD_JOBS: "2"
+      CARGO_INCREMENTAL: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Test original Rust scheduling and topology without game files
+        run: |
+          rustc --edition=2024 --test horizon/first_party/industrial_transfer/api/src/logic.rs -o "$RUNNER_TEMP/transfer-tests"
+          "$RUNNER_TEMP/transfer-tests"
+      - uses: actions/checkout@v4
+        with:
+          repository: horizon-rust/horizon
+          ref: c78187dffffb60f31517eadcb87413386e8ce729
+          path: upstream-horizon
+          persist-credentials: false
+      - name: Stage native trait crate in pinned workspace (CI only)
+        run: |
+          set -euo pipefail
+          cp -R horizon/first_party/industrial_transfer/api upstream-horizon/techquest-industrial-transfer
+          python - <<'PY'
+          from pathlib import Path
+          base = Path("upstream-horizon")
+          manifest = base / "Cargo.toml"
+          raw = manifest.read_text()
+          assert raw.count("members = [") == 1
+          manifest.write_text(raw.replace("members = [", 'members = [\n    "techquest-industrial-transfer",', 1))
+          mod = base / "techquest-industrial-transfer/Cargo.toml"
+          raw = mod.read_text()
+          assert 'git = "https://github.com/horizon-rust/horizon"' in raw
+          mod.write_text(raw.replace('git = "https://github.com/horizon-rust/horizon", rev = "c78187dffffb60f31517eadcb87413386e8ce729"', 'path = "../crates/horizon-client"'))
+          PY
+          cp upstream-horizon/Cargo.lock "$RUNNER_TEMP/horizon-original.lock"
+      - name: Compile against actual generated native hooks
+        working-directory: upstream-horizon
+        run: cargo check -p mod-techquest_industrial_transfer --tests
+      - name: Assert existing upstream dependency locks are preserved
+        run: |
+          python - <<'PY'
+          import os, tomllib
+          from pathlib import Path
+          old = tomllib.loads((Path(os.environ["RUNNER_TEMP"])/"horizon-original.lock").read_text())
+          new = tomllib.loads(Path("upstream-horizon/Cargo.lock").read_text())
+          def keys(lock):
+              return {(p["name"], p["version"], p.get("source"), p.get("checksum")) for p in lock["package"]}
+          assert keys(old) <= keys(new), "Existing pinned dependencies changed"
+          PY
+      - name: Build official content SDK
+        working-directory: upstream-horizon
+        run: cargo build -p cargo-horizon-mod --release --locked
+      - name: Build and check original companion content
+        working-directory: horizon/first_party/industrial_content
+        run: |
+          sdk="$GITHUB_WORKSPACE/upstream-horizon/target/release/cargo-horizon-mod"
+          "$sdk" build
+          "$sdk" check target/horizon-mod/techquest_industrial_content.hmod --json
