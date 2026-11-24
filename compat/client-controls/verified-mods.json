@@ -1,0 +1,95 @@
+{
+  "minecraft": "1.21.1",
+  "neoforge": "21.1.264",
+  "runtime_verified": false,
+  "mods": [
+    {
+      "project": "better-zoom",
+      "version_id": "NwwnadOr",
+      "version": "3.1.1",
+      "license": {
+        "id": "MIT",
+        "name": "MIT License",
+        "url": null
+      },
+      "source_url": "https://github.com/AwesomeHippo/BetterZoom",
+      "published_dependencies": [],
+      "file": {
+        "id": "C4Lb9P00",
+        "hashes": {
+          "sha512": "53816cea32172548f9f1e97c4ba8864d66d25e2df08e547e4177b04578fc2dc1c1c9bc5ed77e4a872da3c9f35388f08df6480ce5f55873528c4d71315adb43c1",
+          "sha1": "4bb208a98ef0dbe32b406b8ecf5c1c3afa157a95"
+        },
+        "url": "https://cdn.modrinth.com/data/rOY9XqdO/versions/NwwnadOr/betterzoom-neoforge-1.21.1-3.1.1.jar",
+        "filename": "betterzoom-neoforge-1.21.1-3.1.1.jar",
+        "primary": true,
+        "size": 126001,
+        "file_type": null
+      },
+      "id": "rOY9XqdO",
+      "client_side": "required",
+      "server_side": "unsupported"
+    },
+    {
+      "project": "controlling",
+      "version_id": "FaNppCJJ",
+      "version": "19.0.5",
+      "license": {
+        "id": "MIT",
+        "name": "MIT License",
+        "url": null
+      },
+      "source_url": "https://github.com/jaredlll08/Controlling",
+      "published_dependencies": [
+        {
+          "version_id": null,
+          "project_id": "fuuu3xnx",
+          "file_name": null,
+          "dependency_type": "required"
+        }
+      ],
+      "file": {
+        "id": "7BTsaaDL",
+        "hashes": {
+          "sha512": "bd01b2a38a869ea38e5f2a8fcd601e67ea9b132b9883c6ae752bc35dff6e94f6d47b965e31c1ee5c2f6a1221653549680da779fcb5319d199aec261d221d179e",
+          "sha1": "8a34424fc1428778be2fdbfa4da67b21b70bcbfe"
+        },
+        "url": "https://cdn.modrinth.com/data/xv94TkTM/versions/FaNppCJJ/Controlling-neoforge-1.21.1-19.0.5.jar",
+        "filename": "Controlling-neoforge-1.21.1-19.0.5.jar",
+        "primary": true,
+        "size": 77555,
+        "file_type": null
+      },
+      "id": "xv94TkTM",
+      "client_side": "required",
+      "server_side": "unsupported"
+    },
+    {
+      "project": "searchables",
+      "version_id": "iEE85X0w",
+      "version": "1.0.2",
+      "license": {
+        "id": "MIT",
+        "name": "MIT License",
+        "url": null
+      },
+      "source_url": "https://github.com/jaredlll08/searchables",
+      "published_dependencies": [],
+      "file": {
+        "id": "ngN4Hjqv",
+        "hashes": {
+          "sha1": "5b8a0b43a474c066371b2e16f9bfb88622552a74",
+          "sha512": "d0824bac1900142ac9a53e68f7ec3b4c0d33d9366bbd3f1d0d93eed860e5eb6b5e6f5a215a69bfffa70bcb48573ff49b5a12bbaa96096ceac6636000d506027a"
+        },
+        "url": "https://cdn.modrinth.com/data/fuuu3xnx/versions/iEE85X0w/Searchables-neoforge-1.21.1-1.0.2.jar",
+        "filename": "Searchables-neoforge-1.21.1-1.0.2.jar",
+        "primary": true,
+        "size": 77326,
+        "file_type": null
+      },
+      "id": "fuuu3xnx",
+      "client_side": "required",
+      "server_side": "unsupported"
+    }
+  ]
+}

@@ -7,13 +7,17 @@ The destination should be a NEW dedicated game directory, not a shared .minecraf
 """
 import argparse
 import json
+import shutil
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import build_pack
+from scripts.mods_transaction import activate_staged_mods
+from scripts.mi_guide_config import patch_existing_mi_worlds
 
 def client_records(index):
     if index.get("game") != "minecraft":
@@ -24,9 +28,11 @@ def client_records(index):
     seen = set()
     result = []
     for entry in index.get("files", []):
+        path = entry.get("path", "")
+        if build_pack.is_removed_mod_jar(path.removeprefix("mods/")):
+            raise build_pack.BuildError("Removed mod in client manifest: " + path)
         if entry.get("env", {}).get("client") == "unsupported":
             continue
-        path = entry.get("path", "")
         if not path.startswith("mods/"):
             raise build_pack.BuildError("Unexpected entry in package: " + path)
         filename = build_pack.safe_filename(path[5:])
@@ -48,7 +54,10 @@ def client_records(index):
 def install_guide_overrides(archive, game_dir):
     """Extract first-party guide data only, never arbitrary archive paths."""
     allowed_prefix = "patchouli_books/techquest_guide/"
-    allowed_datapack = "config/openloader/packs/techquest_starter_guide.zip"
+    allowed_datapacks = {
+        "config/openloader/packs/techquest_starter_guide.zip",
+        "config/openloader/packs/techquest_micropatch_033.zip",
+    }
     for info in archive.infolist():
         if not info.filename.startswith("overrides/"):
             continue
@@ -56,7 +65,20 @@ def install_guide_overrides(archive, game_dir):
         if relative.endswith("/"):
             continue
         if not (relative.startswith(allowed_prefix)
-                or relative in (allowed_datapack, "TECHQUEST_INGAME_GUIDE.txt")):
+                or relative in (*allowed_datapacks, "mods/techquest-compat-1.0.0.jar",
+                                "options.txt", "TECHQUEST_OPTIMIZED.txt",
+                                "config/physicsmod/physics_client_config.json",
+                                "config/physicsmod/physics_server_config.json",
+                                "config/betterzoom-client.toml",
+                                "config/incoming-client.toml",
+                                "config/explosionoverhaul/explosionoverhaul-client.toml",
+                                "config/jade/plugins.json",
+                                "config/healthindicatortxf.json5",
+                                "defaultconfigs/openpartiesandclaims-server.toml",
+                                "defaultconfigs/modern_industrialization-server.toml",
+                                "TECHQUEST_INGAME_GUIDE.txt",
+                                "TECHQUEST_OPTIONAL_LOCAL_MODS.json",
+                                 "TECHQUEST_TACZ_OFFICIAL_GUNPACKS.json")):
             continue
         parts = Path(relative).parts
         if ".." in parts or any(x in relative for x in ("\\", "\x00", ":")):
@@ -73,33 +95,50 @@ def install(pack: Path, game_dir: Path, dry_run=False):
     records = client_records(index)
     destination = game_dir.expanduser().resolve()
     mods = destination / "mods"
-    if mods.is_dir() and any(mods.glob("*.jar")):
+    has_old_mods = mods.is_dir() and any(mods.iterdir())
+    managed = any((destination / marker).is_file() for marker in
+                  ("TECHQUEST_LAUNCHER_README.txt", "TechQuest_НАСТРОЙКА.txt",
+                   "TECHQUEST_OPTIMIZED.txt"))
+    if has_old_mods and not managed:
         raise build_pack.BuildError(
-            "Existing mods found. Use a NEW dedicated game directory to prevent conflicts: " +
-            str(mods))
+            "Existing mods are not a managed TechQuest profile: " + str(mods))
     if dry_run:
         print("Will download", len(records), "client JARs to", mods)
         for item in records:
             print("  ", item["file"]["filename"])
         return len(records)
-    mods.mkdir(parents=True, exist_ok=True)
-    for i, item in enumerate(records, 1):
-        print(f"[{i}/{len(records)}] {item['file']['filename']}", flush=True)
-        build_pack.download_checked(item, mods)
     with zipfile.ZipFile(pack) as archive:
-        install_guide_overrides(archive, destination)
-    (destination / "TECHQUEST_LAUNCHER_README.txt").write_text(
-        "Client mods installed with SHA-1/SHA-512 verification.\n"
-        "Install Minecraft Java 1.21.1 and NeoForge 21.1.264 in the OFFICIAL launcher.\n"
-        "Create/edit a NeoForge installation; set Game Directory to this folder.\n"
-        "Use Java 21. Allocate about 6-8 GiB if the PC has enough RAM.\n"
-        "Find Путеводитель TechQuest in creative Tools & Utilities.\n"
-        "Open Loader gives the book on first join if datapack loads.\n"
-        "Do NOT run the vanilla Minecraft profile: it cannot load NeoForge mods.\n"
-        "Test a new world first; TechQuest remains an experimental modpack.\n",
-        encoding="utf-8")
-    print("Success. Set official Launcher -> Installations -> NeoForge -> Game Directory:")
-    print(destination)
+        compat_entry = "overrides/mods/" + build_pack.COMPAT_JAR_NAME
+        if compat_entry not in archive.namelist():
+            raise build_pack.BuildError("Missing TechQuest Compatibility in .mrpack")
+        if any(build_pack.is_removed_mod_jar(name.removeprefix("overrides/mods/"))
+               for name in archive.namelist() if name.startswith("overrides/mods/")):
+            raise build_pack.BuildError("Removed mod in .mrpack overrides")
+        compat_data = archive.read(compat_entry)
+    destination.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=".techquest-download-", dir=destination))
+    try:
+        for i, item in enumerate(records, 1):
+            print(f"[{i}/{len(records)}] {item['file']['filename']}", flush=True)
+            build_pack.download_checked(item, staging)
+        (staging / build_pack.COMPAT_JAR_NAME).write_bytes(compat_data)
+
+        def finish():
+            with zipfile.ZipFile(pack) as archive:
+                install_guide_overrides(archive, destination)
+            patch_existing_mi_worlds(destination)
+            (destination / "TECHQUEST_LAUNCHER_README.txt").write_text(
+                "TechQuest " + index["versionId"] + ": client mods installed with SHA verification.\n"
+                "TechQuest Compatibility (Create-IC2 and Better Zoom Mixin) installed.\n"
+                "Use Minecraft Java 1.21.1, official NeoForge 21.1.264 and Java 21.\n"
+                "Official Launcher -> Installations -> NeoForge -> Game Directory: " +
+                str(destination) + "\nPreserve worlds and player settings.\n",
+                encoding="utf-8")
+        activate_staged_mods(destination, staging, finish)
+    finally:
+        if staging.exists():
+            shutil.rmtree(staging)
+    print("Success. Official Launcher -> NeoForge -> Game Directory:", destination)
     return len(records)
 
 def main():

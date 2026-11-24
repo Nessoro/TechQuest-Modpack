@@ -1,0 +1,6 @@
+{
+  "minecraft": {
+    "entity_health": false,
+    "entity_armor": false
+  }
+}

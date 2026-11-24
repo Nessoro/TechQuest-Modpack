@@ -1,10 +1,53 @@
 # TechQuest: Industrial Frontier
 
+## 🌐 [Открыть сайт TechQuest →](https://nessoro.github.io/TechQuest-Modpack/)
+
+**[Журнал решений и изменений 0.3.3](docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md)** · **Технические задания для Codex (EN):** [micro3](docs/technical-specs/TZ_TechQuest_micro3.md) · [micro4](docs/technical-specs/TZ_TechQuest_micro4.md) · [micro5](docs/technical-specs/TZ_TechQuest_micro5.md) · [micro6 (архив эксперимента)](docs/technical-specs/TZ_TechQuest_micro6.md)
+
+**[Установка и скачивание](https://nessoro.github.io/TechQuest-Modpack/#download) · [Каталог модов](https://nessoro.github.io/TechQuest-Modpack/#mods) · [Ошибки и предложения](https://nessoro.github.io/TechQuest-Modpack/#feedback)**
+
 > **Minecraft Java 1.21.1 • NeoForge 21.1.x • Java 21 • сервер с друзьями**
 
 TechQuest — большая комплексная сборка вокруг **BuildCraft Community Edition** и **Industrial Craft 2: Nostalgia**. Дополнительно в план включены Create, Mekanism, Modern Industrialization, AE2, магия, развитие, новые мобы и миры.
 
-**Статус: `0.3.2-alpha` — единый профиль Optimized / исходники и сайт опубликованы в GitHub. Готовая игровая сборка НЕ проверена запуском клиента/сервера.** Не переносите старый мир без резервной копии. Перечисленные моды — кандидаты, а не подтверждённый полностью совместимый набор.
+**Версия: `0.3.3.1` — единый тестовый профиль Optimized.** 07.11.2026 владелец подтвердил одиночный мир и игру на `535de72`. Выделенный сервер, весь набор механик и производительность этой версии ещё не подтверждены. Подробности: [проверки 0.3.3](QA_0.3.3_RU.md). Не переносите старый мир без резервной копии.
+
+**Единая тестовая сборка 0.3.3 — изменения PR #5 и #15.** В неё объединены PR #10/#11/#19/#20: Physics Mod Lite с ограниченными обломками, резерв установки NeoForge, зум **Z + колесо**, Controlling, Aquamirae из PR #15. Отдельные ветки этих PR — сохранённые этапы работы, а не разные редакции модпака.
+
+**Воспроизводимый состав и настройки:** версии, SHA-512 и стороны используемых проектов Modrinth закреплены, автоматическая подмена последними релизами отключена. Исправлен заголовок `options.txt` (`version:3955`), чтобы Minecraft загружал современные клавиши и Fast/6/5/60. Существующие пользовательские файлы сохраняются: для новых стартовых настроек используйте новую папку или настройте прежнюю через меню. [Как проверяется сборка](docs/REPRODUCIBLE_BUILDS_RU.md).
+
+**HP и взрывы:** в новой установке числовое текущее/максимальное HP находится сверху по центру, дубль HP/брони Jade выключен. Множитель длительности контузии Explosion Overhaul — 0.25; экранный эффект и тряска Incoming — 0.35, затяжное повреждение слуха выключено. Настройки прочитаны настоящим клиентом до меню; взрывы в мире ещё требуют испытаний. [Подробности и применение к прежнему профилю](compat/client-hud/README.md).
+
+**Камера Incoming:** по умолчанию **N** — камера своего снаряда / следующий; **Shift** — выход, **F5** — смена вида. При переназначении ищите «Камера снаряда» в управлении мода.
+
+**micro3 — PR #30 объединён 15.11.2026 в целевую ветку:** `TechQuest RPG Core 0.1.0` исключён, `TechQuest Compatibility 1.0.0` сохранён (Create ↔ IC2 и исправление Better Zoom); PMMO не возвращается. Актуальный `main` также не включает RPG Core. Это не доказательство полной игровой проверки. [Инструкция micro3](docs/MICROPATCH_MICRO3_RU.md).
+
+**micro4 — PR #31 объединён 15.11.2026 в ветку micro3:** Trash Cans (предметы/жидкости/энергия) и Pretty Pipes (только транспорт предметов) присутствуют в текущем `modlist.json` ветки `main`. Colossal Reactors, Iskandert’s Library, Fusion и FTB Industrial Contraptions не добавлялись. Реальные маршруты труб, совместимость с машинами и нагрузка сервера не считаются подтверждёнными без игровых тестов. [Проверки micro4](docs/MICROPATCH_MICRO4_RU.md).
+
+**micro5 — PR #34 объединён 15.11.2026 в ветку micro4:** Iskander Rocket Mod 2.0.1 включён в актуальный `modlist.json` на обе стороны (ID версии `M1b2lYax`). Это не Iskandert's Library и не реактор. Избирательная проверка в игре не заменяет повторную проверку полного клиентского/серверного профиля, сохранения и производительности. [Проверки micro5](docs/MICROPATCH_MICRO5_ISKANDER_RU.md).
+
+**micro6 — экспериментальный PR #35 закрыт 19.11.2026 без слияния:** перенос Advanced Solar Panels на IC2 Nostalgia не включён в `main` и не является готовой функцией. [Историческое ТЗ](docs/technical-specs/TZ_TechQuest_micro6.md) сохранено для справки; [issue #32](https://github.com/Nessoro/TechQuest-Modpack/issues/32) всё ещё открыта и не означает одобренного релиза.
+
+**Авиация:** Superb Warfare и Incoming остаются в составе. MCHeli Modern Port, TaCZ и ParCool исключены по решению владельца («не нужен»). Геймпад для самолёта пока не реализован. [Состояние авиации](docs/AIRCRAFT_0.3.3_RU.md) · [Как работает SAM Incoming](docs/INCOMING_SAM_RU.md) · [Физика](docs/PHYSICS_TESTING_RU.md) · [NeoForge через GUI](docs/NEOFORGE_FALLBACK_RU.md) · [Клавиши и зум](docs/CONTROLS_RU.md).
+
+**Дополнение для тестирования 0.3.3:** AcceleratedMcWarfare 1.0.4 Alpha (NeoForge 1.21.1) доступен через кнопку ручного импорта в экспериментальном Windows Installer; основной JAR скачивается пользователем с официальной страницы CurseForge. Файл не распространяется в TechQuest из-за ограничений CDN и лицензии. Подробности: [AMW — установка и тесты](docs/AMW_TESTING_RU.md).
+
+> **Новый экспериментальный курс TechQuest 0.3.3:** больше приключений и исследования без удаления BuildCraft, IC2, Create и Mekanism. В PR #5 добавлены The Aether, Deeper and Darker, When Dungeons Arise, Artifacts, Wyrmroost (драконы), Legendary Monsters и Twisted Mobs (крупные монстры), Forgematica (схемы), Explorer's Compass и крепости YUNG's. Подробности в [плане Adventure & Exploration](docs/ADVENTURE_EXPLORATION_RU.md). Это тестовая ветка, не стабильный релиз.
+
+> **Схемы, другие драконы, гиганты:** в тестовый PR #5 добавлены Wyrmroost 1.4.1, Legendary Monsters 2.2.4, Twisted Mobs и клиентские Forgematica/MaFgLib 0.4.3. IceAndFire CE удалён. Инструкция: [план и риски](docs/SCHEMATICS_DRAGONS_GIANTS_RU.md). Ben's Titans остаётся неподтверждённым кандидатом и в сборку не добавлен.
+
+### Тестовая версия TechQuest 0.3.3 для Windows 11
+
+Альфа 0.3.3 собирается в [GitHub Actions — Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml) для актуальной ревизии исходников. Найдите **успешный запуск последнего коммита**, артефакт `TechQuest-Windows-GUI-Installer` → `TechQuestInstaller.exe`. Сверяйте версию и commit выбранного артефакта. Отчёт `TechQuest-Security-Audit` должен относиться к тому же commit SHA.
+
+GUI устанавливает единый Optimized-профиль без Python/консоли. В кандидате micro3 `TechQuest Compatibility` по-прежнему входит в пакет для работы Create–IC2 и исправления запуска Better Zoom, а `TechQuest RPG Core` исключён; запуск обновлённой сборки всё ещё необходимо проверить. Для новой установки выбирайте отдельную пустую папку; существующий профиль **TechQuest** можно обновить через тот же GUI с подтверждением. Установщик предварительно проверяет JAR, заменяет только `mods` и хранит одну предыдущую версию в `.techquest-previous-mods` (при сбое — автоматический откат). До обновления сохраните копию ценного мира и закройте Minecraft; общую `.minecraft` использовать нельзя. Установите Java 21 и NeoForge 21.1.264 и укажите Game Directory в официальном Launcher. Подробности: [Установка тестовой 0.3.3](docs/INSTALL_0.3.3_PC_RU.md) и [micro3](docs/MICROPATCH_MICRO3_RU.md). На сервере Superb Warfare локально исправляется после проверки оригинального SHA. Самостоятельного фонового автообновления нет.
+
+Перед выдачей EXE CI проверяет обязательные библиотеки и диапазоны Minecraft/NeoForge внутри JAR,
+включая штатную матрицу совместимости FML 4.0.45. Исправлена установка Lithostitched на клиент
+для Terralith. Все способы установки используют одинаковые настройки Fast/6/5/60 FPS;
+существующий `options.txt` сохраняется. Подробности и ограничения: [проверка совместимости](compat/README.md).
+
+> **Исключены из сборки:** MCHeli Modern Port, TaCZ и ParCool. Причина: «не нужен». Их JAR и оружейные паки не входят в актуальный профиль.
 
 ## Навигация
 
@@ -38,19 +81,19 @@ TechQuest — большая комплексная сборка вокруг **
 
 Для локального отчёта: `python scripts/audit_modlist.py`.
 
-## Скачать TechQuest 0.3.2 Optimized (экспериментальная альфа)
+## Скачать TechQuest 0.3.3 Optimized (экспериментальная альфа этой ветки)
 
 Теперь **только ОДНА версия клиента**: Full и Lite объединены в TechQuest Optimized. Сохранены BuildCraft, IC2: Nostalgia, Create, Mekanism, Modern Industrialization, AE2, магия, техника, мир и приключения. По умолчанию установлены клиентские Sodium, ImmediatelyFast, More Culling, BadOptimizations, Dynamic FPS, Entity Culling, FerriteCore и ModernFix; Iris исключён, шейдеры отключены.
 
 На странице [Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml) откройте самый новый **успешный** запуск и скачайте из Artifacts:
 
-- **TechQuest-Windows-GUI-Installer** — обычным игрокам на Windows 10/11: скачайте архив, извлеките `TechQuestInstaller.exe`, запустите двойным щелчком. **Без Python, PowerShell и консоли.**
-- **TechQuest-1.21.1-alpha-build** — один `TechQuest_1.21.1_0.3.2_OPTIMIZED.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap и диагностические данные.
+- **TechQuest-Windows-GUI-Installer** — обычным игрокам на Windows 10/11: скачайте архив, извлеките `TechQuest_0.3.3.1.exe`, запустите двойным щелчком. **Без Python, PowerShell и консоли.**
+- **TechQuest-1.21.1-alpha-build** — один `TechQuest_0.3.3.1.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap, `jar-metadata-audit.json` и диагностические данные.
 - **TechQuest-Security-Audit** — отчёт проверки хешей, ZIP и ClamAV, если этап безопасности завершился успешно. Проверка антивирусом не гарантирует отсутствие всех угроз.
 
 ### Установка через официальный Minecraft Launcher (без Prism)
 
-1. Запустите графический `TechQuestInstaller.exe`; отдельного выбора Full/Lite больше нет.
+1. Запустите графический `TechQuest_0.3.3.1.exe`; отдельного выбора Full/Lite больше нет.
 2. Выберите **НОВУЮ пустую папку**, например `C:\\Games\\TechQuest-Optimized`, и нажмите «Установить моды». Старые `mods` не смешивайте с новыми.
 3. Установите **Java 21** и **NeoForge 21.1.264** для Minecraft Java 1.21.1. В GUI есть кнопка запуска официального NeoForge Installer. Для установки NeoForge требуется соединение с Maven.
 4. В Minecraft Launcher: **Установки → NeoForge 21.1.264 → Изменить → Папка игры**; укажите ту же папку, затем запустите NeoForge.
@@ -64,7 +107,7 @@ TechQuest — большая комплексная сборка вокруг **
 
 Для серверного TPS требуется отдельное профилирование сервера. Автоматически выключать Superb Warfare, Burnt, Explosion Overhaul или Create мы не стали: это изменило бы геймплей/совместимость, а не только оптимизировало графику.
 
-**Предупреждение:** Minecraft с модами пока не проверен на реальной машине в этом выпуске. Снижение лагов вероятно, но конкретный FPS/совместимость не гарантированы. Для первого запуска используйте новый мир и резервные копии.
+**Проверка игроком:** одиночный мир и игра на `535de72` подтверждены владельцем; воспроизводимых замеров FPS/TPS пока нет. Для первого запуска используйте новый мир и резервные копии. После [исследования](experiments/destruction/README_RU.md) в этой экспериментальной ветке включён Physics Mod Lite; эта добавка требует отдельного игрового теста.
 
 ## Incoming: Air Strikes & Nukes — включён в TechQuest 0.3.2
 
@@ -89,6 +132,12 @@ TechQuest — большая комплексная сборка вокруг **
 В список обязательных библиотек также добавлены `lithostitched` (1.8.0, для Terralith) и `irons-lib` (1.21.1-2.x, для Iron's Spells) после ошибки загрузки NeoForge 18 октября 2026 г.
 
 **Важно:** сборка после этого изменения ещё не прошла полноценный тест запуска. Superb Warfare уже имеет разрушение блоков, а Burnt и Explosion Overhaul тоже изменяют мир. На тестовом сервере сначала отключите разрушение мира в Superb Warfare через `/sbw config explosionDestroy false`, сделайте отдельный мир/бэкап и оцените TPS/FPS. Explosion Overhaul для 1.21.1 — alpha; если установлен Create Aeronautics или Valkyrien Skies, автор рекомендует отключить async в конфиге Explosion Overhaul.
+
+## Aquamirae в общей тестовой 0.3.3
+
+[**Aquamirae 7.2.13**](https://modrinth.com/mod/aquamirae/version/lKu7coya) и **Fragmentum 5.4.0** включены в общий состав после объединения PR #15. Они обязательны на клиенте и сервере; GeckoLib 4.9.3 сохранён. Кандидат больше не является отдельной редакцией сборки. [Источники и игровой маршрут](docs/AQUAMIRAE_TESTING_RU.md).
+
+Мод добавляет океанские структуры, существ и босса. Проверка их генерации, боя, сохранения, сервера и FPS/TPS остаётся в QA. По приоритету владельца сначала испытывается авиация, затем геймпад.
 
 ## Новое в 0.3 — карта, здоровье и руководства в Minecraft
 
@@ -134,7 +183,7 @@ python scripts/sync_site_mods.py       # Обновить каталог сай�
 python -m unittest discover -s tests -v
 ```
 
-Нужны интернет, Python 3.9+ и отдельно установленная Java 21 для Minecraft. IndustrialCraft 2: Nostalgia уже лежит в `manual-mods/` и включается в клиент/сервер через зафиксированный GitHub URL; оригинальная [страница автора на CurseForge](https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244). При распространении важно самостоятельно проверить соблюдение прав на порт и оригинальный IC2. **Не загружайте чужие JAR, файлы сервера или миры в git:** в `.gitignore` есть соответствующие исключения.
+Для сборщика/bootstrap нужны интернет и Python 3.9+; для автотестов и аудита метаданных — Python 3.11+ (CI использует 3.12). Для Minecraft отдельно нужна Java 21. IndustrialCraft 2: Nostalgia уже лежит в `manual-mods/` и включается в клиент/сервер через зафиксированный GitHub URL; оригинальная [страница автора на CurseForge](https://www.curseforge.com/minecraft/mc-mods/industrial-craft-2-nostalgia/files/9217244). При распространении важно самостоятельно проверить соблюдение прав на порт и оригинальный IC2. **Не загружайте чужие JAR, файлы сервера или миры в git:** в `.gitignore` есть соответствующие исключения.
 
 ### Важные ссылки
 

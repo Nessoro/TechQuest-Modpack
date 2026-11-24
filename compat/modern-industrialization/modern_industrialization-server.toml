@@ -1,0 +1,5 @@
+# TechQuest 0.3.3 MI book behavior for NEW NeoForge worlds.
+# Preserve the first-join guide, but do not grant a replacement after death.
+# Do not change MI's energy, recipes or machines.
+spawnWithGuideBook = true
+respawnWithGuideBook = false

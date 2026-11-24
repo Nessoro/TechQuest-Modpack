@@ -1,0 +1,82 @@
+# AGENTS.md — TechQuest: Industrial Frontier
+
+These are persistent instructions for Codex and other coding agents working in this repository. Follow them for every task. Respond to the project owner in **Russian**, while preserving established names of files, symbols, and commands.
+
+## 1. Project identity and source of truth
+
+- Repository: `Nessoro/TechQuest-Modpack`. **Continue the existing project; do not recreate or replace it.**
+- Current candidate (verify against `modlist.json`): **TechQuest 0.3.3.1 Optimized**, Minecraft Java **1.21.1**, NeoForge **21.1.264**, Java **21**.
+- **Patch-version rule:** every change to the distributed modpack must use a unique four-part version `0.3.3.N`, where `N` increments and is never reused for a different build. Check existing release names/tags and the current manifest before choosing the next number. Keep `modlist.json.version`, `.mrpack` manifest `versionId`, the .NET executable file/product version, installer UI text and website in sync. Distributed filenames must be exactly `TechQuest_0.3.3.N.exe` and `TechQuest_0.3.3.N.mrpack`; a ZIP containing the installer must be `TechQuest_0.3.3.N.zip`. Never append mod names, platform/channel or TEST/PREVIEW labels to these filenames. `TechQuestInstaller.exe` is an internal .NET build intermediate only; the distributed file is renamed by CI.
+
+- There is **one unified Optimized client profile**, not separate Lite and Full releases. Preserve gameplay content while improving performance for weaker and stronger PCs.
+- `modrinth_lock` freezes the selected versions, filenames, SHA-512 and sides. Review coordinated lock changes before changing the selected dependency graph; never bypass a lock failure with an unreviewed upgrade.
+- Treat `modlist.json` as the configuration source of truth for the pack, its exact version pins, required/optional mods, client-only mods, and download records. The README may describe intentions or unverified functionality; do not treat descriptions as proof of a successful game launch.
+- Read before relevant work: `README.md`, `MODPACK_README_RU.md`, `CONTRIBUTING.md`, `modlist.json`, `build_pack.py`, the affected `scripts/`, `windows-installer/`, `tests/`, and `.github/workflows/`.
+- Start each task by checking the current branch, recent changes, and affected files. Avoid overwriting unrelated user or contributor changes.
+
+## Language policy for Codex and external AI handoffs
+
+- **Write all AI-facing prompts, technical specifications (ТЗ), implementation task briefs, acceptance criteria, handoff instructions, and documentation intended for Codex or another AI chat entirely in English.** This applies to new documents and revisions, including Markdown files in `docs/technical-specs/`.
+- Keep technical terminology, paths, mod IDs, version pins and commands unchanged. Do not silently translate source identifiers.
+- **Conversation with the project owner may remain in Russian**, as can Russian in-game localization, player-facing guides and the historical development journal. The language of a response is distinct from the language of reusable AI task instructions.
+- If an existing AI-facing specification is in Russian, translate and maintain it in English instead of adding mixed-language instructions.
+
+## Shared development journal — mandatory after each TechQuest change
+
+- **Single decision and status log:** `docs/TECHQUEST_033_DEVELOPMENT_JOURNAL_RU.md`. **Four patch specifications:** `docs/technical-specs/TZ_TechQuest_micro3.md`, `TZ_TechQuest_micro4.md`, `TZ_TechQuest_micro5.md`, `TZ_TechQuest_micro6.md`.
+- Before starting a task, inspect the journal, the relevant spec, the actual code/branches, and current PR/CI states. Historical journal entries must not be treated as fresher evidence than current code.
+- **At the end of any meaningful change**, update the journal in the same branch/PR (or a dedicated documentation PR) with the exact date, decision, affected paths/commits/PRs, tests actually executed and their results, open risks, and next step. Update the relevant spec when scope, acceptance criteria, or an owner decision changes.
+- Never erase an abandoned direction: add a **superseded/cancelled** dated entry and the replacement decision. Avoid duplicating source-of-truth data: keep exact current versions and checksums in `modlist.json`, with the journal linking to them.
+- Do not merge a PR, publish a release, update user worlds, or modify the default branch only to keep this journal synchronized. Use reviewable documentation commits. Do not assert that an unmerged PR is part of a published release.
+- Record confidential information **never**: secrets, personal details, private IPs, cookies and raw user saves do not belong in this journal.
+
+## 2. Product requirements — do not regress
+
+- Core industrial progression: **BuildCraft Community Edition**, **Industrial Craft 2: Nostalgia**, **Create**, **Mekanism**, **Modern Industrialization**, and **Applied Energistics 2**. Preserve the rest of the intended technology, adventure, magic, and exploration experience unless the owner explicitly requests changes.
+- Preserve **Incoming: Air Strikes & Nukes 3.10.4**, **Xaero's Minimap / World Map**, **Health Indicator TXF** (numeric health), the Russian **Patchouli** in-game guide and **Open Loader** integration where compatible. Inspect `modlist.json` for precise pins rather than assuming every candidate is resolved.
+- The game is intended for multiplayer with friends. Keep client and server mod sets compatible and respect `client_only` entries. Do not put client-only UI mods into dedicated server installations.
+- The supported normal-player path on Windows 10/11 is a **graphical `TechQuestInstaller.exe` + official Minecraft Launcher**. Ordinary users must not need to install Python or run PowerShell/terminal commands. Developer-side Python scripts and CI are acceptable.
+- Keep `.mrpack` export as an additional supported path, not as a replacement for the official Launcher installation flow. Do not require Prism Launcher.
+- Do not silently change game version, NeoForge or Java pin, uninstall core mods, switch loader, split the unified profile, enable shaders by default, or remove GUI support.
+- Performance is a product requirement: minimize unnecessary startup/memory/render overhead; distinguish client FPS from server TPS and world-generation load. Prefer profiling, reproducible benchmarks, and low-risk configuration changes over removing gameplay features.
+
+## 3. Change procedure
+
+1. **Inspect first.** Establish the current implementation and the exact issue; reproduce it when possible. Read existing tests and workflow definitions.
+2. **Plan small, reviewable changes.** Make only requested or necessary modifications; state significant dependencies, compatibility risks, and assumptions.
+3. **Verify source and licenses.** For each new/updated mod verify official origin, Minecraft 1.21.1/NeoForge support, dependencies, client/server side, release version, license/distribution restrictions, and checksums if available. A matching Modrinth tag alone does not prove runtime interoperability.
+4. **Preserve integrity.** Keep pinned URLs/checksums and lockfiles coherent. Never replace a hash with an unverified value or quietly weaken download verification. Never insert arbitrary third-party executable binaries or JARs into the repo.
+5. **Special case: IC2.** The repository already contains a pinned IC2: Nostalgia JAR in `manual-mods/` and references it from `modlist.json`. Do not duplicate, remove, move, re-upload, or relicense it without reviewing current usage and distribution rights. `scripts/include_industrialcraft.py` is a legacy helper; current builds already refer to IC2.
+6. **Protect user data.** Do not overwrite users' existing `.minecraft`, `mods`, `saves`, `config`, or worlds by default. Install into a separate folder; document backups and rollback. Never commit access tokens, cookies, player data, private IPs, or unredacted logs.
+7. **Document material changes.** Keep README/user installation instructions, `modlist.json`, tests, and workflows consistent with actual behavior. For new behavior add or adapt relevant automated tests.
+
+## 4. Validation and CI
+
+Use the checks appropriate to the files changed. The existing CI is the baseline:
+
+```bash
+python -m unittest discover -s tests -v
+python build_pack.py --help
+```
+
+Relevant workflows:
+- `.github/workflows/validate.yml` — repository validation and unit tests.
+- `.github/workflows/audit-mods.yml` — remote mod availability / metadata audit; **not** a runtime compatibility test.
+- `.github/workflows/build-alpha.yml` — build artifacts, manifest/download checks, Windows installer; **not** proof Minecraft actually starts.
+- `.github/workflows/smoke-client.yml` — real client to the main menu with a temporary CI-only observer, screenshot and settings checks; **not** world, flight, multiplayer or performance validation.
+- `.github/workflows/smoke-server.yml` — opt-in NeoForge dedicated-server boot check; requires the invoking user to explicitly accept the Minecraft EULA through workflow input. **Do not bypass that consent gate or assert success without a successful run.**
+
+When needed and network/environment permits, run `python scripts/audit_modlist.py` and `python build_pack.py`; explain network dependencies and failures. Avoid massive downloads/builds when the task only changes instructions.
+
+Before calling the pack playable or stable, seek evidence of: client reaching the main menu, dedicated server reaching `Done`, player joining with matching client/server versions, and a basic BuildCraft/IC2/Create integration and world-save test. Use logs, lock data, and profiling measurements. If these checks were not performed, explicitly say **"не проверено запуском Minecraft"**.
+
+Do not claim antivirus/hash checks guarantee malware-free binaries or that dependency resolution guarantees mod compatibility. Treat failures as actionable, not as evidence of success.
+
+## 5. Workflows, publishing, and agent behavior
+
+- Prefer a focused branch/PR for substantive code changes; follow the owner's explicit direction for where to commit. Do not rewrite published history or force-push.
+- **Do not publish releases, merge PRs, change repository settings, or mark the pack stable without the owner's explicit request.** Routine changes must never silently ship a new public release.
+- Do not use external ChatGPT shared-chat links as a required source of project context: these may return HTTP 403 in cloud environments. This file and the actual repository are the persistent context.
+- If the environment blocks a service or a command, report the exact blocker and continue with safe checks available locally; do not invent tool access or pretend tests ran.
+- At the end of each task report in Russian: **what changed**, **which files**, **tests actually run and their results**, **remaining risks/blockers**, and **the next practical step**.
+- Respect `CONTRIBUTING.md` and keep changes reproducible, minimally invasive, and easy to review.

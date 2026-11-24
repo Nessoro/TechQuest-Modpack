@@ -1,0 +1,72 @@
+name: Real client menu smoke (no world or server)
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - modlist.json
+      - tests/test_interdimensional_wireless_transmitter.py
+      - tests/test_quartz_arsenal.py
+      - tests/test_betterblockz.py
+      - .github/workflows/smoke-client.yml
+  push:
+    paths:
+      - modlist.json
+      - build_pack.py
+      - compat/**
+      - scripts/smoke_client_runtime.py
+      - tests/test_dimstorage.py
+      - tests/runtime-client-probe/**
+      - .github/workflows/smoke-client.yml
+permissions:
+  contents: read
+jobs:
+  client-menu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      LIBGL_ALWAYS_SOFTWARE: 'true'
+      ALSOFT_DRIVERS: 'null'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install headless display and software OpenGL
+        run: sudo apt-get update && sudo apt-get install -y xvfb imagemagick libgl1-mesa-dri libasound2t64
+      - name: Build and audit exact client and server mod sets
+        run: |
+          python -m unittest discover -s tests -v
+          python build_pack.py
+          python scripts/audit_jar_metadata.py
+      - name: Verify retained mod systems, DimStorage, EdivadLib and exact client/server JARs
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          cfg = json.loads(Path("modlist.json").read_text(encoding="utf-8"))
+          for project in ("KDvYkUg3", "u6dRKJwZ", "VzR5wiLo", "gF3BGWvG", "4sYI62kA", "b1ZV3DIJ", "yAyrQXJ6", "8lnmIJH7", "a8Jk9kpK", "nQR8XALE", "gnwGOmBf", "oPU4euBQ"):
+              lock = cfg["modrinth_lock"][project]
+              for side in ("client", "server"):
+                  jar = Path("output") / side / "mods" / lock["filename"]
+                  if lock["environment"][side] == "unsupported":
+                      assert not jar.exists(), ("unsupported-side JAR", jar)
+                      continue
+                  assert jar.is_file(), (side, lock["filename"])
+                  assert hashlib.sha512(jar.read_bytes()).hexdigest() == lock["sha512"], jar
+              print("Verified both sides:", lock["title"], lock["version"])
+          PY
+      - name: Boot real client and observe title screen (offline development identity)
+        run: xvfb-run -a -s '-screen 0 1280x800x24' python scripts/smoke_client_runtime.py
+      - name: Upload logs and screenshot only (no Minecraft or mod binaries)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechQuest-real-client-menu
+          path: output/runtime-client/
+          if-no-files-found: warn
+          retention-days: 14

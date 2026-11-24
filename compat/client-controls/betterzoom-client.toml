@@ -1,0 +1,16 @@
+# Better Zoom 3.1.1, NeoForge 1.21.1. Initial defaults only; preserve player edits.
+zoomStep = 2
+zoomSensitivity = 0.1
+autoAdjustSensitivity = true
+holdToZoom = true
+smoothEasingFactor = 0.2
+smoothZoom = true
+zoomMode = "WHEEL"
+disableBobbing = true
+cinematicCamera = false
+zoomSound = false
+hideGui = false
+hideHand = false
+cinematicBars = false
+zoomLevel = false
+settingsHint = false

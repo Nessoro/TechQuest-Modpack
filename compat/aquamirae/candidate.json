@@ -1,0 +1,75 @@
+{
+  "minecraft": "1.21.1",
+  "neoforge": "21.1.264",
+  "runtime_verified": false,
+  "scope": "Separate PR #15; not integrated into the common 0.3.3 branch",
+  "license_review": {
+    "url": "https://obscurialithium.github.io/license/",
+    "section": "OML 1.3 section 1.1 permits inclusion in modpacks through official platforms; no third-party binaries redistributed by TechQuest"
+  },
+  "mods": [
+    {
+      "project": "aquamirae",
+      "id": "k23mNPhZ",
+      "version_id": "lKu7coya",
+      "version": "7.2.13",
+      "license": {
+        "id": "LicenseRef-Obscuria-Modding-License",
+        "name": "",
+        "url": "https://obscurialithium.github.io/license/"
+      },
+      "source_url": "https://github.com/ObscuriaLithium/Aquamirae",
+      "dependencies": [
+        {
+          "version_id": null,
+          "project_id": "49C5QgTK",
+          "file_name": null,
+          "dependency_type": "required"
+        },
+        {
+          "version_id": null,
+          "project_id": "8BmcQJ2H",
+          "file_name": null,
+          "dependency_type": "required"
+        }
+      ],
+      "file": {
+        "id": "6SU2ac12",
+        "hashes": {
+          "sha1": "9ecfe49fcdc9266d4e2d3c6a05b7374ebc5f6f45",
+          "sha512": "90fe46c41a0f44b1cdc64cf59e4000b7e20af3edbde8695b5c1350fe044123f02f6ba1f2b50f435bd1e12c5587a21be3cf77f078060a2029a943f8da6d9f9395"
+        },
+        "url": "https://cdn.modrinth.com/data/k23mNPhZ/versions/lKu7coya/aquamirae-neoforge-1.21.1-7.2.13.jar",
+        "filename": "aquamirae-neoforge-1.21.1-7.2.13.jar",
+        "primary": true,
+        "size": 26105694,
+        "file_type": null
+      }
+    },
+    {
+      "project": "fragmentum",
+      "id": "49C5QgTK",
+      "version_id": "kCXNhuIV",
+      "version": "5.4.0",
+      "license": {
+        "id": "LicenseRef-Obscuria-Ecosystem",
+        "name": "",
+        "url": "https://obscurialithium.github.io/license/"
+      },
+      "source_url": "https://github.com/ObscuriaLithium/Fragmentum",
+      "dependencies": [],
+      "file": {
+        "id": "XRj2bIqY",
+        "hashes": {
+          "sha1": "711f46b591cbee203e68cf023277dae9060725f8",
+          "sha512": "426b3a7f2085266ae231d7ef81092baabb0409bbf222b9220472dd3ba482840a0850047aabc4b59d20fd65170ec9920559d29df6527d8119ecf02c69cfa78e53"
+        },
+        "url": "https://cdn.modrinth.com/data/49C5QgTK/versions/kCXNhuIV/fragmentum-5.4.0%2B1.21.1-neoforge.jar",
+        "filename": "fragmentum-5.4.0+1.21.1-neoforge.jar",
+        "primary": true,
+        "size": 7815344,
+        "file_type": null
+      }
+    }
+  ]
+}

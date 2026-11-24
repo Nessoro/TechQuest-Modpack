@@ -1,0 +1,3 @@
+# Shorter concussion; retain the effect and the mod's damage/destruction defaults.
+["Wind System".Concussion]
+concussionDurationMultiplier = 0.25

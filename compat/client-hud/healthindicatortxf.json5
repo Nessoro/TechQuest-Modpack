@@ -1,0 +1,11 @@
+{
+  "enableMod": true,
+  "showHud": true,
+  "showHealth": true,
+  "healthTextFormat": "BOTH",
+  "showHealthDecimals": false,
+  "position": "TOP_CENTER",
+  "xValue": 0.0,
+  "yValue": 36.0,
+  "scale": 0.85
+}
