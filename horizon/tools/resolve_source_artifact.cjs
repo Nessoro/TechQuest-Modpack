@@ -21,6 +21,7 @@ module.exports = async ({ github, context, core }) => {
       });
       const matches = artifacts.filter(a => a.name === source.artifact_name && a.expired === false);
       if (matches.length !== 1) continue;
+      core.setOutput("mode", "verified-ci-artifact");
       core.setOutput("run_id", String(run.id));
       core.setOutput("build_sha", sha);
       core.setOutput("artifact_name", source.artifact_name);
@@ -28,5 +29,7 @@ module.exports = async ({ github, context, core }) => {
       return;
     }
   }
-  throw new Error("No non-expired successful build for either pinned source commit. Build the exact synced revision before retrying; never fall back to historical coverage.");
+  core.setOutput("mode", "pinned-source-resolution");
+  core.setOutput("build_sha", source.main_commit);
+  core.notice("No exact successful artifact; resolve the original pinned source with its own builder (not a full build or runtime test).");
 };

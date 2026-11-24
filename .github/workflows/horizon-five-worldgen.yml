@@ -1,8 +1,8 @@
 name: Horizon worldgen and shared tags (SDK validation)
 
 on:
-  push:
-    branches: ["experiment/horizon-port-lab"]
+  pull_request:
+    branches: ["main"]
     paths:
       - ".github/workflows/horizon-five-worldgen.yml"
       - "horizon/tools/assemble_shared_yung_tags.py"
@@ -12,12 +12,17 @@ on:
       - "horizon/tools/verify_source_pack.py"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: read
 
 jobs:
   validate-five-together:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'experiment/horizon-port-lab')
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
@@ -38,19 +43,40 @@ jobs:
             const resolve = require('./horizon/tools/resolve_source_artifact.cjs');
             await resolve({ github, context, core });
       - name: Fetch verified source mrpack
+        if: steps.source.outputs.mode == 'verified-ci-artifact'
         uses: actions/download-artifact@v4
         with:
           name: ${{ steps.source.outputs.artifact_name }}
           run-id: ${{ steps.source.outputs.run_id }}
           path: source-artifact
           github-token: ${{ github.token }}
-      - name: Validate source mrpack identity
+      - name: Checkout exact pinned NeoForge source if artifact is unavailable
+        if: steps.source.outputs.mode == 'pinned-source-resolution'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.source.outputs.build_sha }}
+          path: pinned-neoforge-source
+          persist-credentials: false
+      - name: Resolve pinned original manifest without full client/server build
+        if: steps.source.outputs.mode == 'pinned-source-resolution'
+        run: |
+          set -euo pipefail
+          cmp pinned-neoforge-source/modlist.json horizon/source/current-main.json
+          (cd pinned-neoforge-source && python build_pack.py --resolve-only)
+          mkdir -p source-artifact
+          cp pinned-neoforge-source/output/*.mrpack source-artifact/
+      - name: Validate source mrpack identity and record provenance
+        env:
+          SOURCE_MODE: ${{ steps.source.outputs.mode }}
+          SOURCE_BUILD_RUN: ${{ steps.source.outputs.run_id }}
+          SOURCE_BUILD_SHA: ${{ steps.source.outputs.build_sha }}
         run: |
           set -euo pipefail
           pack="$(python horizon/tools/verify_source_pack.py source-artifact horizon/source/current-main.json)"
           echo "PACK_PATH=$pack" >> "$GITHUB_ENV"
-          echo "SOURCE_BUILD_RUN=${{ steps.source.outputs.run_id }}" >> "$GITHUB_ENV"
-          echo "SOURCE_BUILD_SHA=${{ steps.source.outputs.build_sha }}" >> "$GITHUB_ENV"
+          echo "SOURCE_MODE=$SOURCE_MODE" >> "$GITHUB_ENV"
+          echo "SOURCE_BUILD_RUN=$SOURCE_BUILD_RUN" >> "$GITHUB_ENV"
+          echo "SOURCE_BUILD_SHA=$SOURCE_BUILD_SHA" >> "$GITHUB_ENV"
       - name: Checkout pinned official Horizon source
         uses: actions/checkout@v4
         with:
@@ -115,7 +141,8 @@ jobs:
             "upstream_commit":"c78187dffffb60f31517eadcb87413386e8ce729",
             "source_main_commit":"02d4dc3bc0864ba7dc231cf0e703cf196220e55c",
             "source_build_sha":os.environ["SOURCE_BUILD_SHA"],
-            "source_build_run":int(os.environ["SOURCE_BUILD_RUN"]),
+            "source_mode":os.environ["SOURCE_MODE"],
+            "source_build_run":int(os.environ["SOURCE_BUILD_RUN"]) if os.environ["SOURCE_BUILD_RUN"] else None,
             "validated_modules":["betterdungeons","betterstrongholds","bettermineshafts","betterfortresses","terralith","techquest_yungs_shared"],
             "individual_official_sdk_checks_passed":6,
             "combined_runtime_load_tested":False,

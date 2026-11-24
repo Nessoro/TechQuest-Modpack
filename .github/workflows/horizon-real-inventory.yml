@@ -1,8 +1,8 @@
 name: Horizon real modpack inventory (official upstream)
 
 on:
-  push:
-    branches: ["experiment/horizon-port-lab"]
+  pull_request:
+    branches: ["main"]
     paths:
       - ".github/workflows/horizon-real-inventory.yml"
       - "horizon/source/current-main*"
@@ -10,12 +10,17 @@ on:
       - "horizon/tools/verify_source_pack.py"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: read
 
 jobs:
   import-mrpack-metadata:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'experiment/horizon-port-lab')
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
@@ -25,6 +30,9 @@ jobs:
     steps:
       - name: Checkout TechQuest
         uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - name: Select verified source build by exact commit
         id: source
         uses: actions/github-script@v7
@@ -33,19 +41,40 @@ jobs:
             const resolve = require('./horizon/tools/resolve_source_artifact.cjs');
             await resolve({ github, context, core });
       - name: Fetch verified source mrpack
+        if: steps.source.outputs.mode == 'verified-ci-artifact'
         uses: actions/download-artifact@v4
         with:
           name: ${{ steps.source.outputs.artifact_name }}
           run-id: ${{ steps.source.outputs.run_id }}
           path: source-artifact
           github-token: ${{ github.token }}
-      - name: Validate source mrpack identity
+      - name: Checkout exact pinned NeoForge source if artifact is unavailable
+        if: steps.source.outputs.mode == 'pinned-source-resolution'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.source.outputs.build_sha }}
+          path: pinned-neoforge-source
+          persist-credentials: false
+      - name: Resolve pinned original manifest without full client/server build
+        if: steps.source.outputs.mode == 'pinned-source-resolution'
+        run: |
+          set -euo pipefail
+          cmp pinned-neoforge-source/modlist.json horizon/source/current-main.json
+          (cd pinned-neoforge-source && python build_pack.py --resolve-only)
+          mkdir -p source-artifact
+          cp pinned-neoforge-source/output/*.mrpack source-artifact/
+      - name: Validate source mrpack identity and record provenance
+        env:
+          SOURCE_MODE: ${{ steps.source.outputs.mode }}
+          SOURCE_BUILD_RUN: ${{ steps.source.outputs.run_id }}
+          SOURCE_BUILD_SHA: ${{ steps.source.outputs.build_sha }}
         run: |
           set -euo pipefail
           pack="$(python horizon/tools/verify_source_pack.py source-artifact horizon/source/current-main.json)"
           echo "PACK_PATH=$pack" >> "$GITHUB_ENV"
-          echo "SOURCE_BUILD_RUN=${{ steps.source.outputs.run_id }}" >> "$GITHUB_ENV"
-          echo "SOURCE_BUILD_SHA=${{ steps.source.outputs.build_sha }}" >> "$GITHUB_ENV"
+          echo "SOURCE_MODE=$SOURCE_MODE" >> "$GITHUB_ENV"
+          echo "SOURCE_BUILD_RUN=$SOURCE_BUILD_RUN" >> "$GITHUB_ENV"
+          echo "SOURCE_BUILD_SHA=$SOURCE_BUILD_SHA" >> "$GITHUB_ENV"
       - name: Checkout official Horizon source at fixed revision
         uses: actions/checkout@v4
         with:
@@ -69,6 +98,14 @@ jobs:
           "$tool" report "$work"
           test -s "$work/coverage.json"
           test -s "$work/coverage.md"
+          python - "$work" <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          data = {"source_mode": os.environ["SOURCE_MODE"], "source_sha": os.environ["SOURCE_BUILD_SHA"],
+                  "source_build_run": int(os.environ["SOURCE_BUILD_RUN"]) if os.environ["SOURCE_BUILD_RUN"] else None,
+                  "runtime_tested": False}
+          (Path(sys.argv[1]) / "source-provenance.json").write_text(json.dumps(data, indent=2)+"\n")
+          PY
           echo "Official coverage generated without fetching/carrying third-party Java files."
           sed -n "1,125p" "$work/coverage.md"
       - name: Publish analysis ONLY - no JAR or third-party converted content
@@ -77,6 +114,7 @@ jobs:
         with:
           name: TechQuest-Horizon-Official-Coverage-Report-ONLY
           path: |
+            horizon/out/official-coverage/source-provenance.json
             horizon/out/official-coverage/coverage.json
             horizon/out/official-coverage/coverage.md
             horizon/out/official-coverage/inventory.json
