@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "techquest_industrial_content:block/transfer_node"
+  }
+}

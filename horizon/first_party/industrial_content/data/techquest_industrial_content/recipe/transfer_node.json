@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:iron_block",
+    "minecraft:redstone",
+    "minecraft:copper_ingot"
+  ],
+  "result": {
+    "id": "techquest_industrial_content:transfer_node",
+    "count": 1
+  }
+}

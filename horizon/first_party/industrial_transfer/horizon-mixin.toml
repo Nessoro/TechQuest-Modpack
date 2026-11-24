@@ -1,0 +1,9 @@
+[mod]
+id = "techquest_industrial_transfer"
+version = "0.1.0"
+
+[compatibility]
+horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
+
+[api]
+path = "api"

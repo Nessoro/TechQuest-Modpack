@@ -89,3 +89,7 @@ GitHub Actions [#42382390837](https://github.com/Nessoro/TechQuest-Modpack/actio
 ## Совместная проверка пяти портированных наборов данных
 
 [GitHub Actions #42385201713](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/42385201713): пять модов (4 YUNG's + Terralith) успешно обработаны в одном `horizon-port-pack` workspace, получили `partial` и прошли индивидуальную SDK-проверку. Общее покрытие 86 компонентов: **5 partial / 44 not yet / 37 not needed / 0 ported**. Это не подтверждённый игровой запуск; см. [COMBINED_WORLDGEN_RU.md](COMBINED_WORLDGEN_RU.md).
+
+## 24 ноября — первая нативная промышленная механика
+
+Добавлены [Industrial Transfer](first_party/industrial_transfer/) и оригинальный [content-мод](first_party/industrial_content/): узел перемещения предметов сверху вниз по редстоуну, Rust trait hooks, NBT cooldown и штатное атомарное перемещение через Host. Это не полный порт BuildCraft/IC2. Код и тесты требуют подтверждения CI; игровой запуск не проверен. Следующий этап — энергобуфер и машина обработки руды.

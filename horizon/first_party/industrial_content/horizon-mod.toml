@@ -1,0 +1,8 @@
+id = "techquest_industrial_content"
+name = "TechQuest Industrial Content"
+version = "0.1.0"
+description = "Original industrial transfer node content; native companion required for behavior."
+authors = ["TechQuest contributors"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
