@@ -1,19 +1,44 @@
 name: Horizon native server tools (build only)
 
 on:
-  push:
-    branches: ["experiment/horizon-port-lab"]
+  pull_request:
+    branches: ["main"]
     paths:
       - ".github/workflows/horizon-native-runtime.yml"
       - "horizon/tools/server_preflight.py"
       - "horizon/tests/test_server_preflight.py"
+      - "horizon/tools/probe_mojang_metadata.py"
+      - "horizon/tests/test_mojang_metadata_probe.py"
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
+  official-resource-metadata:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'experiment/horizon-port-lab')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify exact official game metadata (no JAR or login)
+        run: python horizon/tools/probe_mojang_metadata.py --version 26.3 --report horizon/out/mojang-metadata.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TechQuest-Horizon-Mojang-METADATA-ONLY
+          path: horizon/out/mojang-metadata.json
+          if-no-files-found: error
+          retention-days: 14
   native-tools:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'experiment/horizon-port-lab')
     runs-on: ubuntu-24.04
     timeout-minutes: 50
     env:
@@ -53,6 +78,10 @@ jobs:
             "native-tools/$tool" --help > "native-tools/$tool-help.txt"
           done
           native-tools/horizon-engine --launch-api > native-tools/launch-api.json
+          for tool in horizon-prepare horizon-server horizon-ctl; do
+            echo "=== $tool CLI ==="
+            cat "native-tools/$tool-help.txt"
+          done
           cp upstream-horizon/research-lock.json upstream-horizon/LICENSE native-tools/
           python - <<'PY'
           import hashlib, json
