@@ -8,6 +8,8 @@ on:
       - "horizon/tools/assemble_shared_yung_tags.py"
       - "horizon/tests/test_shared_yung_tags.py"
       - "horizon/source/**"
+      - "horizon/tools/resolve_source_artifact.cjs"
+      - "horizon/tools/verify_source_pack.py"
   workflow_dispatch:
 
 permissions:
@@ -28,19 +30,27 @@ jobs:
           python-version: "3.12"
       - name: Test assembly and inventory before SDK compilation
         run: python -m unittest discover -s horizon/tests -v
-      - name: Fetch original NeoForge TechQuest mrpack
+      - name: Select verified source build by exact commit
+        id: source
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const resolve = require('./horizon/tools/resolve_source_artifact.cjs');
+            await resolve({ github, context, core });
+      - name: Fetch verified source mrpack
         uses: actions/download-artifact@v4
         with:
-          name: TechQuest-1.21.1-alpha-build
-          run-id: 42597702544
+          name: ${{ steps.source.outputs.artifact_name }}
+          run-id: ${{ steps.source.outputs.run_id }}
           path: source-artifact
           github-token: ${{ github.token }}
-      - name: Find source modpack
+      - name: Validate source mrpack identity
         run: |
           set -euo pipefail
-          pack="$(find source-artifact -type f -name '*.mrpack' -print -quit)"
-          test -n "$pack"
-          echo "PACK_PATH=$GITHUB_WORKSPACE/$pack" >> "$GITHUB_ENV"
+          pack="$(python horizon/tools/verify_source_pack.py source-artifact horizon/source/current-main.json)"
+          echo "PACK_PATH=$pack" >> "$GITHUB_ENV"
+          echo "SOURCE_BUILD_RUN=${{ steps.source.outputs.run_id }}" >> "$GITHUB_ENV"
+          echo "SOURCE_BUILD_SHA=${{ steps.source.outputs.build_sha }}" >> "$GITHUB_ENV"
       - name: Checkout pinned official Horizon source
         uses: actions/checkout@v4
         with:
@@ -90,7 +100,7 @@ jobs:
           shared="$work/mods/techquest_yungs_shared/carry"
           (cd "$shared" && "$sdk" build && "$sdk" check target/horizon-mod/techquest_yungs_shared.hmod --json > "$work/shared-tags-sdk-check.json")
           python - "$work" <<'PY'
-          import json, sys
+          import json, os, sys
           from pathlib import Path
           base=Path(sys.argv[1])
           y=json.loads((base/"yung-sdk-validation.json").read_text())
@@ -103,8 +113,9 @@ jobs:
             "schema":1,
             "purpose":"five-carried-content-modules-in-one-Horizon-conversion-workdir",
             "upstream_commit":"c78187dffffb60f31517eadcb87413386e8ce729",
-            "source_main_commit":"918b4bf9ecd133a18eb8a7f57ad2d5da47b2fcb2",
-            "source_build_run":42597702544,
+            "source_main_commit":"02d4dc3bc0864ba7dc231cf0e703cf196220e55c",
+            "source_build_sha":os.environ["SOURCE_BUILD_SHA"],
+            "source_build_run":int(os.environ["SOURCE_BUILD_RUN"]),
             "validated_modules":["betterdungeons","betterstrongholds","bettermineshafts","betterfortresses","terralith","techquest_yungs_shared"],
             "individual_official_sdk_checks_passed":6,
             "combined_runtime_load_tested":False,
