@@ -106,6 +106,29 @@ class BossTrackingTests(unittest.TestCase):
                                  "[mobs.ender_golem.cap_config]\nrange_cap = 256.0\n")
                 self.assertEqual((config.with_name(config.name + ".techquest-before-0334.bak")).read_text(), old)
 
+    def test_mixin_retained_in_classfile_not_runtime_visible(self):
+        # Sponge Mixin scans RuntimeInvisibleAnnotations for @Mixin.
+        # A RUNTIME-retained @Mixin stub compiles but fails the real client.
+        stub = (STUBS / "org/spongepowered/asm/mixin/Mixin.java").read_text()
+        self.assertIn("RetentionPolicy.CLASS", stub)
+        self.assertNotIn("RetentionPolicy.RUNTIME", stub)
+        javap = shutil.which("javap")
+        if javap:
+            with tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / CLASS
+                target.parent.mkdir(parents=True)
+                target.write_bytes(BINARY.read_bytes())
+                output = subprocess.check_output(
+                    [javap, "-v", "-p", str(target)], text=True)
+                invisible = output.split("RuntimeInvisibleAnnotations:")
+                self.assertGreaterEqual(len(invisible), 2)
+                self.assertIn("org.spongepowered.asm.mixin.Mixin", invisible[-1])
+
+    def test_bootstrap_zips_copy_migration_helper(self):
+        workflow = (ROOT / ".github/workflows/build-alpha.yml").read_text()
+        self.assertEqual(
+            workflow.count('z.write("scripts/cataclysm_range.py")'), 2)
+
     def test_gui_applies_migration_to_only_defaults(self):
         gui = (ROOT / "windows-installer/Program.cs").read_text()
         self.assertIn("MigrateCataclysmBossRangeCaps(gameDirectory)", gui)
