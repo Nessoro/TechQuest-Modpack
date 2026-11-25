@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'net.neoforged.moddev' version '2.0.147'
+}
+group = 'dev.techquest'
+version = '0.2.9-SNAPSHOT'
+base.archivesName = 'techquest-hybrid-warfare'
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+neoForge {
+    version = '21.1.264'
+    mods { techquest_hybrid { sourceSet sourceSets.main } }
+}
+tasks.register('generateAssets', Exec) {
+    commandLine 'python', 'scripts/generate_assets.py'
+}
+tasks.named('processResources') { dependsOn tasks.named('generateAssets') }
+
+// Use the repository-pinned IC2: Nostalgia API only at compile time.
+// Nothing from its copyrighted JAR is embedded into the distributed addon.
+// JEI is optional in gameplay. Its APIs are used only to make the dynamic
+// energy-powered Elytra crafting recipe visible in the crafting category.
+repositories {
+    maven {
+        name = 'BlameJaredJEI'
+        url = 'https://maven.blamejared.com/'
+        content { includeGroup 'mezz.jei' }
+    }
+}
+dependencies {
+    compileOnly 'mezz.jei:jei-1.21.1-common-api:19.64.0.455'
+    compileOnly 'mezz.jei:jei-1.21.1-neoforge-api:19.64.0.455'
+    compileOnly files('../../manual-mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar')
+}
