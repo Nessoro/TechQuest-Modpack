@@ -19,7 +19,6 @@ import build_pack
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "compat/hotfix-src/techquest/compat/mixin/IncomingLethalCapMixin.java"
 CLASS = "techquest/compat/mixin/IncomingLethalCapMixin.class"
-BINARY = ROOT / "compat/techquest-compat" / CLASS
 STUBS = ROOT / "compat/hotfix-stubs"
 TAG = ROOT / "compat/techquest-compat/data/cataclysm/tags/damage_type/bypasses_hurt_time.json"
 INCOMING = {
@@ -61,6 +60,15 @@ public final class IncomingLethalHarness {
           source("incoming",id),Float.MAX_VALUE),id+" fatal");
       eq(5f, (float)clamp.invoke(mixin,22f,5f,source("incoming",id),5f),id+" weak");
     }
+    Method range = IncomingLethalCapMixin.class.getDeclaredMethod("techquest$incomingNoAttackerRangeCap",
+        double.class, DamageSource.class, float.class);
+    range.setAccessible(true);
+    for (String id : names) {
+      double distance = (double)range.invoke(mixin, 2000000.0, source("incoming", id), 15.0f);
+      if (distance != -1.0) throw new AssertionError(id+" attacker distance must not reject valid airstrike");
+    }
+    double vanillaDistance = (double)range.invoke(mixin, 2000000.0, source("minecraft", "explosion"), 15.0f);
+    if (vanillaDistance != 2000000.0) throw new AssertionError("Non-Incoming range was modified");
     for (String other : new String[]{"minecraft","cataclysm","superbwarfare","custom"}) {
       eq(22f, (float)clamp.invoke(mixin,22f,Float.MAX_VALUE,
           source(other,"shockwave"),Float.MAX_VALUE),other+" unchanged");
@@ -77,6 +85,8 @@ class IncomingLethalityTests(unittest.TestCase):
         self.assertIn('com.github.L_Ender.cataclysm.entity.AnimationMonster.BossMonsters.LLibrary_Boss_Monster',src)
         self.assertIn('target = "Ljava/lang/Math;min(FF)F"',src)
         self.assertIn("return Math.min(perHitCap, damage)",src)
+        self.assertIn('@ModifyVariable(method = "hurt(', src)
+        self.assertIn('at = @At("STORE"), ordinal = 0', src)
         self.assertEqual(set(re.findall(r'type\("([a-z_]+)"\)',src)),INCOMING)
         for forbidden in ("setHealth(", "kill(", "bypasses_invulnerability",
                           "DamageTypeTags.BYPASSES_INVULNERABILITY", "LivingEntity.class"):
@@ -100,23 +110,25 @@ class IncomingLethalityTests(unittest.TestCase):
             harness=dest/"IncomingLethalHarness.java"
             harness.write_text(HARNESS)
             sources=sorted(STUBS.rglob("*.java"))
-            self.assertEqual(len(sources),13)
+            self.assertEqual(len(sources),14)
             subprocess.run([javac,"--release","21","-g:none","-d",tmp,
                             *(str(p) for p in sources),str(SOURCE),str(harness)],
                            check=True,capture_output=True,text=True)
             compiled=dest/CLASS
-            self.assertEqual(compiled.read_bytes(),BINARY.read_bytes())
+            with zipfile.ZipFile(io.BytesIO(build_pack.compatibility_jar())) as z:
+                self.assertEqual(compiled.read_bytes(), z.read(CLASS))
             inspection=subprocess.check_output([javap,"-v","-p",str(compiled)],text=True)
             self.assertIn("RuntimeInvisibleAnnotations:",inspection)
             self.assertIn("org.spongepowered.asm.mixin.Mixin",inspection)
             self.assertIn("org.spongepowered.asm.mixin.injection.Redirect",inspection)
+            self.assertIn("org.spongepowered.asm.mixin.injection.ModifyVariable",inspection)
             subprocess.run([java,"-cp",tmp,"techquest.compat.mixin.IncomingLethalHarness"],
                            check=True,capture_output=True,text=True)
 
     def test_client_and_server_packaging_has_one_identical_mixin(self):
         jar = build_pack.compatibility_jar()
         with zipfile.ZipFile(io.BytesIO(jar)) as z:
-            self.assertEqual(z.read(CLASS),BINARY.read_bytes())
+            self.assertTrue(z.read(CLASS).startswith(bytes.fromhex("cafebabe")))
             self.assertEqual(z.namelist().count(CLASS),1)
         with tempfile.TemporaryDirectory() as tmp:
             pack=Path(tmp)/"test.mrpack"

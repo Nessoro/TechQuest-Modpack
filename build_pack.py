@@ -7,6 +7,7 @@ JAR is read from manual-mods/ and referenced through its immutable GitHub URL.
 The .mrpack contains only a URL and verified hashes, not the third-party JAR.
 """
 import argparse
+import functools
 import hashlib
 import io
 import json
@@ -365,8 +366,33 @@ def hybrid_from_pack(archive, required=False):
     return validate_hybrid_jar(data)
 
 
+@functools.lru_cache(maxsize=1)
+def _compiled_incoming_lethal_mixin():
+    """Deterministically build our first-party Java21 Mixin; no redistributed upstream code."""
+    import subprocess
+    import tempfile
+    javac = shutil.which("javac")
+    if not javac:
+        raise BuildError("JDK 21 javac is required to build the TechQuest compatibility JAR")
+    source = ROOT / "compat/hotfix-src/techquest/compat/mixin/IncomingLethalCapMixin.java"
+    stubs = sorted((ROOT / "compat/hotfix-stubs").rglob("*.java"))
+    if len(stubs) != 14 or not source.is_file():
+        raise BuildError("Missing first-party Incoming Mixin source or type-only Java stubs")
+    with tempfile.TemporaryDirectory(prefix="techquest-incoming-mixin-") as out:
+        cmd = [javac, "--release", "21", "-g:none", "-d", out,
+               *(str(p) for p in stubs), str(source)]
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        if result.returncode:
+            raise BuildError("First-party Mixin compilation failed: " + result.stderr[-3000:])
+        compiled = Path(out) / "techquest/compat/mixin/IncomingLethalCapMixin.class"
+        content = compiled.read_bytes()
+        if not content.startswith(bytes.fromhex("cafebabe")):
+            raise BuildError("Invalid compiled Incoming Mixin classfile")
+        return content
+
+
 def compatibility_jar():
-    """Package our data-only NeoForge mod; no third-party binary is embedded."""
+    """Package our first-party NeoForge compatibility mod and compiled Mixin."""
     import io
     source = ROOT / "compat" / "techquest-compat"
     if not (source / "META-INF" / "neoforge.mods.toml").is_file():
@@ -379,6 +405,12 @@ def compatibility_jar():
                 info = zipfile.ZipInfo(path.relative_to(source).as_posix(), (2026, 1, 1, 0, 0, 0))
                 info.compress_type = zipfile.ZIP_DEFLATED
                 archive.writestr(info, path.read_bytes())
+        # Java 21 source is the source of truth; build inside CI/developer tools,
+        # never ask normal players to compile or install Python.
+        name = "techquest/compat/mixin/IncomingLethalCapMixin.class"
+        info = zipfile.ZipInfo(name, (2026, 1, 1, 0, 0, 0))
+        info.compress_type = zipfile.ZIP_DEFLATED
+        archive.writestr(info, _compiled_incoming_lethal_mixin())
     return buffer.getvalue()
 
 

@@ -9,6 +9,7 @@ import net.minecraft.world.damagesource.DamageType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 /**
  * Cataclysm only: never turn a physically lethal Incoming strike into 22 HP.
@@ -30,6 +31,22 @@ public abstract class IncomingLethalCapMixin {
         return ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("incoming", id));
     }
 
+    private static boolean techquest$isIncoming(DamageSource source) {
+        for (ResourceKey<DamageType> type : TECHQUEST$INCOMING) {
+            if (source.is(type)) return true;
+        }
+        return false;
+    }
+
+    // Incoming projectiles determine hit distance with their own physical model.
+    // -1 is Cataclysm's existing sentinel to skip attacker-distance checks.
+    @ModifyVariable(method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
+            at = @At("STORE"), ordinal = 0)
+    private double techquest$incomingNoAttackerRangeCap(double squaredDistance,
+                                                         DamageSource source, float initialDamage) {
+        return techquest$isIncoming(source) ? -1.0 : squaredDistance;
+    }
+
     // Only redirects the clamp in LLibrary_Boss_Monster.hurt, not the boss' own
     // hurt guard or the vanilla LivingEntity.hurt damage pipeline.
     @Redirect(
@@ -37,11 +54,7 @@ public abstract class IncomingLethalCapMixin {
             at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(FF)F"))
     private float techquest$incomingOriginalDamage(float perHitCap, float damage,
                                                     DamageSource source, float initialDamage) {
-        if (damage > perHitCap) {
-            for (ResourceKey<DamageType> type : TECHQUEST$INCOMING) {
-                if (source.is(type)) return damage;
-            }
-        }
+        if (damage > perHitCap && techquest$isIncoming(source)) return damage;
         return Math.min(perHitCap, damage);
     }
 }
