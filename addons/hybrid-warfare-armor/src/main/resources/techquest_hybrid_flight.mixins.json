@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.techquest.hybrid.flightmixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "PoweredElytraPlayerMixin",
+    "PoweredElytraLivingMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
