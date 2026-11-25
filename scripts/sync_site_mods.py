@@ -169,6 +169,17 @@ for row in reversed(cfg.get("external_mods", [])):
                         "Библиотека или инструмент FTB Ultimine для NeoForge 1.21.1."),
         "url": row["source"],
     })
+# User-imported mods are listed, but never advertised as bundled.
+for row in cfg.get("optional_local_mods", []):
+    mods.append({
+        "name": row["name"],
+        "group": row.get("group", "Военная техника"),
+        "required": False,
+        "description": ("Необязательный аддон " + row["version"] +
+                        "; импорт оригинального JAR через установщик. Не входит в автоматический .mrpack. "
+                        "Совместимость требует игрового теста."),
+        "url": row["source"],
+    })
 index = ROOT / "docs" / "index.html"
 source = index.read_text(encoding="utf-8")
 marker = "window.TQ_MODS = "

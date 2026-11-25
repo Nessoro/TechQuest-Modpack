@@ -30,7 +30,6 @@ TechQuest — большая комплексная сборка вокруг **
 
 **Авиация:** Superb Warfare и Incoming остаются в составе. MCHeli Modern Port, TaCZ и ParCool исключены по решению владельца («не нужен»). Геймпад для самолёта пока не реализован. [Состояние авиации](docs/AIRCRAFT_0.3.3_RU.md) · [Как работает SAM Incoming](docs/INCOMING_SAM_RU.md) · [Физика](docs/PHYSICS_TESTING_RU.md) · [NeoForge через GUI](docs/NEOFORGE_FALLBACK_RU.md) · [Клавиши и зум](docs/CONTROLS_RU.md).
 
-**Дополнение для тестирования 0.3.3:** AcceleratedMcWarfare 1.0.4 Alpha (NeoForge 1.21.1) доступен через кнопку ручного импорта в экспериментальном Windows Installer; основной JAR скачивается пользователем с официальной страницы CurseForge. Файл не распространяется в TechQuest из-за ограничений CDN и лицензии. Подробности: [AMW — установка и тесты](docs/AMW_TESTING_RU.md).
 
 > **Новый экспериментальный курс TechQuest 0.3.3:** больше приключений и исследования без удаления BuildCraft, IC2, Create и Mekanism. В PR #5 добавлены The Aether, Deeper and Darker, When Dungeons Arise, Artifacts, Wyrmroost (драконы), Legendary Monsters и Twisted Mobs (крупные монстры), Forgematica (схемы), Explorer's Compass и крепости YUNG's. Подробности в [плане Adventure & Exploration](docs/ADVENTURE_EXPLORATION_RU.md). Это тестовая ветка, не стабильный релиз.
 
@@ -194,3 +193,5 @@ python -m unittest discover -s tests -v
 Этот проект не связан с Mojang/Microsoft. Все моды принадлежат их авторам; лицензии каждого проекта соблюдаются отдельно. Код сайта и собственные скрипты можно использовать по условиям `LICENSE`.
 
 Кандидат 0.3.3.4 не опубликован: клиент 16 чанков, сервер 14, увеличен только range_cap боссов Cataclysm до 256. Фазы и условия уязвимости не изменены. Не проверено запуском Minecraft. Подробнее: docs/BOSS_WEAPON_DAMAGE_RU.md.
+
+- [DragonRise: Reforge](https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025) — аддон военной техники к Superb Warfare, файл `dragonrise_reforge-1.5.1-release.jar`. **Экспериментальный импорт через Windows Installer**: скачайте оригинальный JAR с CurseForge, нажмите «3. Добавить DragonRise» и скопируйте тот же JAR на сервер. В .mrpack включается только описание, не сам JAR. [Установка и проверка](docs/DRAGONRISE_TESTING_RU.md).
