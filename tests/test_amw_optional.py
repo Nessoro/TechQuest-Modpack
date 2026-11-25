@@ -19,8 +19,9 @@ class OptionalAMWTests(unittest.TestCase):
 
     def test_amw_is_optional_and_sources_are_pinned(self):
         mods = self.cfg.get("optional_local_mods", [])
-        self.assertEqual(len(mods), 1)
-        mod = mods[0]
+        matches = [m for m in mods if m["id"] == "acceleratedmcwarfare"]
+        self.assertEqual(len(matches), 1)
+        mod = matches[0]
         self.assertEqual(mod["id"], "acceleratedmcwarfare")
         self.assertEqual(mod["file_name"], "acceleratedMcWarfare-1.0.4..jar")
         self.assertFalse(mod["required"])
@@ -42,7 +43,8 @@ class OptionalAMWTests(unittest.TestCase):
             with zipfile.ZipFile(archive_path) as archive:
                 self.assertIn("overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json", archive.namelist())
                 metadata = json.loads(archive.read("overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json"))
-                self.assertEqual(metadata[0]["curseforge_file_id"], 9298161)
+                amw = next(m for m in metadata if m["id"] == "acceleratedmcwarfare")
+                self.assertEqual(amw["curseforge_file_id"], 9298161)
                 self.assertFalse(any("acceleratedMcWarfare" in name for name in archive.namelist()))
                 index = json.loads(archive.read("modrinth.index.json"))
                 self.assertFalse(any("acceleratedMcWarfare" in m["path"] for m in index["files"]))

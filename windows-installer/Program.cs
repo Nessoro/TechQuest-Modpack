@@ -35,6 +35,7 @@ internal sealed class InstallerForm : Form
     private readonly Button openFolder = new() { Text = "Открыть папку", Width = 150, Height = 37 };
     private readonly Button help = new() { Text = "Инструкция", Width = 130, Height = 37 };
     private readonly Button importAmw = new() { Text = "3. Добавить AMW", Width = 205, Height = 37 };
+    private readonly Button importDragonRise = new() { Text = "4. Добавить DragonRise", Width = 245, Height = 45 };
     private readonly Button cancel = new() { Text = "Отмена", Width = 100, Height = 37, Enabled = false };
     private readonly ProgressBar progress = new() { Width = 695, Height = 19 };
     private readonly Label status = new() { Text = "Готово к установке. Minecraft Launcher и Java 21 устанавливаются отдельно.", AutoSize = false, Width = 710, Height = 45 };
@@ -92,6 +93,7 @@ internal sealed class InstallerForm : Form
 
         install.Location = new Point(32, 421);
         neoforge.Location = new Point(246, 421);
+        importDragonRise.Location = new Point(460, 421);
         openFolder.Location = new Point(32, 488);
         help.Location = new Point(190, 488);
         cancel.Location = new Point(330, 488);
@@ -102,7 +104,7 @@ internal sealed class InstallerForm : Form
         install.ForeColor = Color.FromArgb(18, 33, 18);
         neoforge.BackColor = Color.FromArgb(41, 56, 79);
         neoforge.ForeColor = Color.White;
-        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importAmw })
+        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importAmw, importDragonRise })
         {
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
@@ -118,9 +120,10 @@ internal sealed class InstallerForm : Form
         cancel.Click += (_, _) => cancellation?.Cancel();
         help.Click += (_, _) => ShowInstructions();
         importAmw.Click += (_, _) => ImportAcceleratedMcWarfare();
+        importDragonRise.Click += (_, _) => ImportDragonRise();
         Controls.AddRange(new Control[] {
             title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
-            browse, safety, install, neoforge, openFolder, help, cancel, importAmw, progress, status
+            browse, safety, install, neoforge, openFolder, help, cancel, importAmw, importDragonRise, progress, status
         });
         location.Text = Path.Combine(baseDir, "TechQuest");
     }
@@ -130,6 +133,7 @@ internal sealed class InstallerForm : Form
         install.Enabled = !busy;
         neoforge.Enabled = !busy;
         importAmw.Enabled = !busy;
+        importDragonRise.Enabled = !busy;
         browse.Enabled = !busy;
         location.ReadOnly = busy;
         cancel.Enabled = busy && cancellable;
@@ -142,7 +146,7 @@ internal sealed class InstallerForm : Form
             "1. Выберите одну папку TechQuest и нажмите «Установить / обновить»; Python не нужен.\n" +
             "2. При обновлении существующего TechQuest сохранения и настройки остаются;\n" +
             "   предыдущие JAR сохраняются в .techquest-previous-mods (одна копия).\n" +
-            "   Дополнительные сторонние JAR (например AMW) нужно импортировать повторно.\n" +
+            "   Дополнительные сторонние JAR (AMW, DragonRise) нужно импортировать повторно.\n" +
             "3. Установите Java 21, если её нет на компьютере.\n" +
             "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
             "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
@@ -150,6 +154,8 @@ internal sealed class InstallerForm : Form
             "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
             "7. AMW (необязательно): скачайте официальный JAR с CurseForge, затем нажмите «3. Добавить AMW».\n" +
             "   Для сервера положите тот же JAR в mods и проверьте совместимость с Incoming.\n" +
+            "8. DragonRise (необязательно): скачайте официальный JAR 1.5.1 и нажмите «4. Добавить DragonRise».\n" +
+            "   Проверьте самолёты на новом мире; серверу нужен тот же JAR.\n" +
             "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
             "В игре: Xaero Minimap/World Map, здоровье мобов Health Indicator TXF (HP цифрами),\n" +
@@ -609,30 +615,32 @@ internal sealed class InstallerForm : Form
         }
     }
 
-    private void ImportAcceleratedMcWarfare()
+    private void ImportAcceleratedMcWarfare() => ImportOptionalMod(
+        "AMW 1.0.4 Alpha", "acceleratedMcWarfare-1.0.4..jar",
+        "https://www.curseforge.com/minecraft/mc-mods/amw/files/9298161",
+        "geckolib", "TECHQUEST_AMW_IMPORT.txt");
+
+    private void ImportDragonRise() => ImportOptionalMod(
+        "DragonRise: Reforge 1.5.1", "dragonrise_reforge-1.5.1-release.jar",
+        "https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025",
+        "superbwarfare", "TECHQUEST_DRAGONRISE_IMPORT.txt");
+
+    private void ImportOptionalMod(string label, string expectedName, string releaseUrl,
+        string dependencyPrefix, string receiptName)
     {
-        const string expectedName = "acceleratedMcWarfare-1.0.4..jar";
-        const string releaseUrl = "https://www.curseforge.com/minecraft/mc-mods/amw/files/9298161";
         try
         {
             string gameDir = Path.GetFullPath(location.Text);
             string modsDir = Path.Combine(gameDir, "mods");
-            if (!Directory.Exists(modsDir) || !Directory.EnumerateFiles(modsDir, "*.jar").Any())
-            {
-                MessageBox.Show(this, "Сначала установите TechQuest в отдельную папку.",
-                    "Установка AMW", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            if (!IsManagedProfile(gameDir) || !Directory.Exists(modsDir) ||
+                !Directory.EnumerateFiles(modsDir, "*.jar").Any())
+                throw new InvalidDataException("Сначала установите TechQuest в отдельную папку.");
             if (!Directory.EnumerateFiles(modsDir, "*.jar").Any(f =>
-                    Path.GetFileName(f).Contains("geckolib", StringComparison.OrdinalIgnoreCase)))
-            {
-                MessageBox.Show(this, "Не найдена обязательная библиотека GeckoLib. Сначала установите полный модпак.",
-                    "AMW: не хватает GeckoLib", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+                    Path.GetFileName(f).StartsWith(dependencyPrefix, StringComparison.OrdinalIgnoreCase)))
+                throw new InvalidDataException("Не найдена обязательная зависимость: " + dependencyPrefix);
             using var dialog = new OpenFileDialog
             {
-                Title = "Выберите официальный acceleratedMcWarfare-1.0.4..jar из CurseForge",
+                Title = "Выберите официальный " + expectedName + " из CurseForge",
                 Filter = "Minecraft NeoForge мод (*.jar)|*.jar",
                 Multiselect = false
             };
@@ -640,7 +648,7 @@ internal sealed class InstallerForm : Form
                 return;
             string source = dialog.FileName;
             if (!string.Equals(Path.GetFileName(source), expectedName, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("Файл должен быть оригинальным " + expectedName);
+                throw new InvalidDataException("Ожидается файл " + expectedName);
             var file = new FileInfo(source);
             if (file.Length < 1024 * 1024 || file.Length > 100L * 1024 * 1024)
                 throw new InvalidDataException("Размер JAR не соответствует ожидаемым ограничениям.");
@@ -653,27 +661,26 @@ internal sealed class InstallerForm : Form
             }
             string destination = Path.Combine(modsDir, expectedName);
             if (File.Exists(destination))
-                throw new IOException("AMW уже установлен. Не перезаписываем существующий мод.");
+                throw new IOException(label + " уже установлен. Не перезаписываем существующий мод.");
             string fingerprint;
             using (var stream = File.OpenRead(source))
                 fingerprint = Convert.ToHexString(SHA256.HashData(stream));
             File.Copy(source, destination, overwrite: false);
-            string receipt = "AMW 1.0.4 Alpha (user imported)\n" +
+            string receipt = label + " (user imported)\n" +
                 "Official source: " + releaseUrl + "\nSHA-256 (local fingerprint, NOT independently verified): " +
                 fingerprint + "\nServer: copy the exact same JAR to server/mods.\n";
-            File.WriteAllText(Path.Combine(gameDir, "TECHQUEST_AMW_IMPORT.txt"),
-                receipt, Encoding.UTF8);
+            File.WriteAllText(Path.Combine(gameDir, receiptName), receipt, Encoding.UTF8);
             MessageBox.Show(this,
-                "AMW добавлен в этот тестовый профиль.\n" +
+                label + " добавлен в этот тестовый профиль.\n" +
                 "Для сервера скопируйте тот же JAR в mods.\n" +
-                "Требуется проверить GeckoLib, радары, ракеты и конфликт с Incoming/Superb Warfare.\n" +
-                "SHA-256 сохранён как локальный отпечаток, не как доказательство подлинности.",
-                "AMW: импорт завершён", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "Проверьте совместимость с Superb Warfare, Incoming и другими дополнениями.\n" +
+                "SHA-256 — локальный отпечаток, не доказательство подлинности.",
+                label + ": импорт завершён", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
             MessageBox.Show(this, ex.Message,
-                "AMW: ошибка импорта", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                label + ": ошибка импорта", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -781,7 +788,7 @@ internal sealed class InstallerForm : Form
                 "Миры, карты, конфиги и настройки управления останутся на месте.\n" +
                 "Предыдущие JAR перейдут в одну резервную папку .techquest-previous-mods.\n" +
                 "Предыдущая резервная папка (если есть) будет заменена.\n" +
-                "Неофициальные дополнительные JAR (например AMW) потребуется добавить снова.\n\n" +
+                "Дополнительные JAR (AMW, DragonRise) потребуется добавить снова.\n\n" +
                 "Перед обновлением закройте Minecraft и сделайте копию важного мира.",
                 "Обновление TechQuest", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 != DialogResult.Yes) return;

@@ -523,7 +523,7 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
             archive.writestr("overrides/" + relative, data)
         for relative, data in mi_guide_config_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
-        # CurseForge-only, All Rights Reserved additions stay user-supplied.
+        # Optional CurseForge additions stay user-supplied regardless of license.
         # Include metadata for the GUI and server operator, never the author JAR.
         local_mods = cfg.get("optional_local_mods", [])
         if local_mods:

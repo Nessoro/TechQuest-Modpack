@@ -127,7 +127,7 @@ GUI устанавливает единый Optimized-профиль без Pyth
 - [Superb Warfare](https://modrinth.com/mod/superb-warfare) — вооружение, военная техника, авиация; версия `0.8.9.2` (обязательный компонент следующего тестового пакета).
 - [Burnt + Additions](https://modrinth.com/mod/burnt) — пожарная система; ветка `1.10.2` (с Geckolib и Cloth Config API).
 - [Explosion Overhaul: A new level of destruction](https://modrinth.com/mod/explosion-overhaul-a-new-level-of-destruction) от Vinlanx — взрывы с кинематографическими эффектами; экспериментальный порт `0.2.3.0-neoforge`.
-- [DragonRise: Reforge](https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025) — аддон военной техники к Superb Warfare, файл `dragonrise_reforge-1.5.1-release.jar`. **Ожидает загрузки оригинального JAR и закрепления SHA-512**, поэтому пока **не входит в автоматический .mrpack**. Для локальной проверки можно добавить файл вручную в папки `mods` клиента и сервера.
+- [DragonRise: Reforge](https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025) — аддон военной техники к Superb Warfare, файл `dragonrise_reforge-1.5.1-release.jar`. **Экспериментальный импорт через Windows Installer**: скачайте оригинальный JAR с CurseForge, нажмите «4. Добавить DragonRise» и скопируйте тот же JAR на сервер. В .mrpack включается только описание, не сам JAR. [Установка и проверка](docs/DRAGONRISE_TESTING_RU.md).
 
 В список обязательных библиотек также добавлены `lithostitched` (1.8.0, для Terralith) и `irons-lib` (1.21.1-2.x, для Iron's Spells) после ошибки загрузки NeoForge 18 октября 2026 г.
 
