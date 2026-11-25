@@ -28,7 +28,7 @@ class MilitaryBossDamageTests(unittest.TestCase):
 
     def test_tag_embedded_in_mrpack_compatibility_jar(self):
         cfg = build_pack.load_cfg()
-        self.assertEqual(cfg["version"], "0.3.3.3")
+        self.assertRegex(cfg["version"], r"^0\.3\.3\.[1-9][0-9]*$")
         packed = build_pack.compatibility_jar()
         with zipfile.ZipFile(io.BytesIO(packed)) as jar:
             self.assertEqual(json.loads(jar.read(TAG))["replace"], False)

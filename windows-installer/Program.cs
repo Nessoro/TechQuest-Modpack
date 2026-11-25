@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using System.IO.Compression;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -25,7 +27,7 @@ internal static class Program
 internal sealed class InstallerForm : Form
 {
     private const string NeoForgeVersion = "21.1.264";
-    private const string PackVersion = "0.3.3.3";
+    private const string PackVersion = "0.3.3.4";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
 
     private readonly TextBox location = new() { Width = 540 };
@@ -34,7 +36,7 @@ internal sealed class InstallerForm : Form
     private readonly Button neoforge = new() { Text = "2. Установить NeoForge", Width = 205, Height = 45 };
     private readonly Button openFolder = new() { Text = "Открыть папку", Width = 150, Height = 37 };
     private readonly Button help = new() { Text = "Инструкция", Width = 130, Height = 37 };
-    private readonly Button importAmw = new() { Text = "3. Добавить AMW", Width = 205, Height = 37 };
+    private readonly Button importDragonRise = new() { Text = "3. Добавить DragonRise", Width = 205, Height = 37 };
     private readonly Button cancel = new() { Text = "Отмена", Width = 100, Height = 37, Enabled = false };
     private readonly ProgressBar progress = new() { Width = 695, Height = 19 };
     private readonly Label status = new() { Text = "Готово к установке. Minecraft Launcher и Java 21 устанавливаются отдельно.", AutoSize = false, Width = 710, Height = 45 };
@@ -95,14 +97,14 @@ internal sealed class InstallerForm : Form
         openFolder.Location = new Point(32, 488);
         help.Location = new Point(190, 488);
         cancel.Location = new Point(330, 488);
-        importAmw.Location = new Point(462, 488);
+        importDragonRise.Location = new Point(462, 488);
         progress.Location = new Point(32, 535);
         status.Location = new Point(32, 557);
         install.BackColor = Color.FromArgb(168, 227, 117);
         install.ForeColor = Color.FromArgb(18, 33, 18);
         neoforge.BackColor = Color.FromArgb(41, 56, 79);
         neoforge.ForeColor = Color.White;
-        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importAmw })
+        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importDragonRise })
         {
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
@@ -117,10 +119,10 @@ internal sealed class InstallerForm : Form
         };
         cancel.Click += (_, _) => cancellation?.Cancel();
         help.Click += (_, _) => ShowInstructions();
-        importAmw.Click += (_, _) => ImportAcceleratedMcWarfare();
+        importDragonRise.Click += (_, _) => ImportDragonRise();
         Controls.AddRange(new Control[] {
             title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
-            browse, safety, install, neoforge, openFolder, help, cancel, importAmw, progress, status
+            browse, safety, install, neoforge, openFolder, help, cancel, importDragonRise, progress, status
         });
         location.Text = Path.Combine(baseDir, "TechQuest");
     }
@@ -129,7 +131,7 @@ internal sealed class InstallerForm : Form
     {
         install.Enabled = !busy;
         neoforge.Enabled = !busy;
-        importAmw.Enabled = !busy;
+        importDragonRise.Enabled = !busy;
         browse.Enabled = !busy;
         location.ReadOnly = busy;
         cancel.Enabled = busy && cancellable;
@@ -142,14 +144,14 @@ internal sealed class InstallerForm : Form
             "1. Выберите одну папку TechQuest и нажмите «Установить / обновить»; Python не нужен.\n" +
             "2. При обновлении существующего TechQuest сохранения и настройки остаются;\n" +
             "   предыдущие JAR сохраняются в .techquest-previous-mods (одна копия).\n" +
-            "   Дополнительные сторонние JAR (например AMW) нужно импортировать повторно.\n" +
+            "   Дополнительные сторонние JAR (DragonRise) нужно импортировать повторно.\n" +
             "3. Установите Java 21, если её нет на компьютере.\n" +
             "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
             "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
             "5. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
             "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
-            "7. AMW (необязательно): скачайте официальный JAR с CurseForge, затем нажмите «3. Добавить AMW».\n" +
-            "   Для сервера положите тот же JAR в mods и проверьте совместимость с Incoming.\n" +
+            "7. DragonRise (необязательно): скачайте официальный JAR 1.5.1 и нажмите «3. Добавить DragonRise».\n" +
+            "   Проверьте самолёты на новом мире; серверу нужен тот же JAR.\n" +
             "Оптимизированный профиль: графика Fast, 16 чанков (сервер — 14), без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
             "В игре: Xaero Minimap/World Map, здоровье мобов Health Indicator TXF (HP цифрами),\n" +
@@ -239,6 +241,23 @@ internal sealed class InstallerForm : Form
                 string bossPreset = File.ReadAllText(Path.Combine(probe, "config", "cataclysm-common.toml"));
                 if (!bossPreset.Contains("[mobs.ender_guardian.cap_config]") ||
                     !bossPreset.Contains("range_cap = 256.0")) return 34;
+                // Test the EXE's conservative migration on an existing profile.
+                string rangeProbe = Path.Combine(probe, "boss-range-upgrade");
+                string rangeFolder = Path.Combine(rangeProbe, "config");
+                Directory.CreateDirectory(rangeFolder);
+                string rangePath = Path.Combine(rangeFolder, "cataclysm-common.toml");
+                const string oldRange = "[mobs.ender_golem.cap_config]\nrange_cap = 8.0\ndamage_cap = 333.0\n" +
+                                        "[mobs.ender_guardian.cap_config]\nrange_cap = 12.0\n" +
+                                        "[mobs.ignis.cap_config]\nrange_cap = 123.0\n";
+                File.WriteAllText(rangePath, oldRange);
+                MigrateCataclysmBossRangeCaps(rangeProbe);
+                string newRange = File.ReadAllText(rangePath);
+                if (!newRange.Contains("range_cap = 256.0") ||
+                    !newRange.Contains("damage_cap = 333.0") ||
+                    !newRange.Contains("range_cap = 123.0")) return 37;
+                if (File.ReadAllText(rangePath + ".techquest-before-0334.bak") != oldRange) return 38;
+                MigrateCataclysmBossRangeCaps(rangeProbe);
+                if (File.ReadAllText(rangePath + ".techquest-before-0334.bak") != oldRange) return 39;
                 File.WriteAllText(Path.Combine(probe, "options.txt"), "existing-player-settings");
                 InstallGuideOverrides(probe);
                 if (File.ReadAllText(Path.Combine(probe, "options.txt")) != "existing-player-settings") return 9;
@@ -550,6 +569,7 @@ internal sealed class InstallerForm : Form
             using var output = File.Create(destination);
             source.CopyTo(output);
         }
+        MigrateCataclysmBossRangeCaps(gameDirectory);
         DisableMiRespawnGuideInExistingWorlds(gameDirectory);
     }
 
@@ -617,30 +637,27 @@ internal sealed class InstallerForm : Form
         }
     }
 
-    private void ImportAcceleratedMcWarfare()
+    private void ImportDragonRise() => ImportOptionalMod(
+        "DragonRise: Reforge 1.5.1", "dragonrise_reforge-1.5.1-release.jar",
+        "https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025",
+        "superbwarfare", "TECHQUEST_DRAGONRISE_IMPORT.txt");
+
+    private void ImportOptionalMod(string label, string expectedName, string releaseUrl,
+        string dependencyPrefix, string receiptName)
     {
-        const string expectedName = "acceleratedMcWarfare-1.0.4..jar";
-        const string releaseUrl = "https://www.curseforge.com/minecraft/mc-mods/amw/files/9298161";
         try
         {
             string gameDir = Path.GetFullPath(location.Text);
             string modsDir = Path.Combine(gameDir, "mods");
-            if (!Directory.Exists(modsDir) || !Directory.EnumerateFiles(modsDir, "*.jar").Any())
-            {
-                MessageBox.Show(this, "Сначала установите TechQuest в отдельную папку.",
-                    "Установка AMW", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            if (!IsManagedProfile(gameDir) || !Directory.Exists(modsDir) ||
+                !Directory.EnumerateFiles(modsDir, "*.jar").Any())
+                throw new InvalidDataException("Сначала установите TechQuest в отдельную папку.");
             if (!Directory.EnumerateFiles(modsDir, "*.jar").Any(f =>
-                    Path.GetFileName(f).Contains("geckolib", StringComparison.OrdinalIgnoreCase)))
-            {
-                MessageBox.Show(this, "Не найдена обязательная библиотека GeckoLib. Сначала установите полный модпак.",
-                    "AMW: не хватает GeckoLib", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+                    Path.GetFileName(f).StartsWith(dependencyPrefix, StringComparison.OrdinalIgnoreCase)))
+                throw new InvalidDataException("Не найдена обязательная зависимость: " + dependencyPrefix);
             using var dialog = new OpenFileDialog
             {
-                Title = "Выберите официальный acceleratedMcWarfare-1.0.4..jar из CurseForge",
+                Title = "Выберите официальный " + expectedName + " из CurseForge",
                 Filter = "Minecraft NeoForge мод (*.jar)|*.jar",
                 Multiselect = false
             };
@@ -648,7 +665,7 @@ internal sealed class InstallerForm : Form
                 return;
             string source = dialog.FileName;
             if (!string.Equals(Path.GetFileName(source), expectedName, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("Файл должен быть оригинальным " + expectedName);
+                throw new InvalidDataException("Ожидается файл " + expectedName);
             var file = new FileInfo(source);
             if (file.Length < 1024 * 1024 || file.Length > 100L * 1024 * 1024)
                 throw new InvalidDataException("Размер JAR не соответствует ожидаемым ограничениям.");
@@ -661,27 +678,26 @@ internal sealed class InstallerForm : Form
             }
             string destination = Path.Combine(modsDir, expectedName);
             if (File.Exists(destination))
-                throw new IOException("AMW уже установлен. Не перезаписываем существующий мод.");
+                throw new IOException(label + " уже установлен. Не перезаписываем существующий мод.");
             string fingerprint;
             using (var stream = File.OpenRead(source))
                 fingerprint = Convert.ToHexString(SHA256.HashData(stream));
             File.Copy(source, destination, overwrite: false);
-            string receipt = "AMW 1.0.4 Alpha (user imported)\n" +
+            string receipt = label + " (user imported)\n" +
                 "Official source: " + releaseUrl + "\nSHA-256 (local fingerprint, NOT independently verified): " +
                 fingerprint + "\nServer: copy the exact same JAR to server/mods.\n";
-            File.WriteAllText(Path.Combine(gameDir, "TECHQUEST_AMW_IMPORT.txt"),
-                receipt, Encoding.UTF8);
+            File.WriteAllText(Path.Combine(gameDir, receiptName), receipt, Encoding.UTF8);
             MessageBox.Show(this,
-                "AMW добавлен в этот тестовый профиль.\n" +
+                label + " добавлен в этот тестовый профиль.\n" +
                 "Для сервера скопируйте тот же JAR в mods.\n" +
-                "Требуется проверить GeckoLib, радары, ракеты и конфликт с Incoming/Superb Warfare.\n" +
-                "SHA-256 сохранён как локальный отпечаток, не как доказательство подлинности.",
-                "AMW: импорт завершён", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "Проверьте совместимость с Superb Warfare, Incoming и другими дополнениями.\n" +
+                "SHA-256 — локальный отпечаток, не доказательство подлинности.",
+                label + ": импорт завершён", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
             MessageBox.Show(this, ex.Message,
-                "AMW: ошибка импорта", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                label + ": ошибка импорта", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -742,6 +758,65 @@ internal sealed class InstallerForm : Form
             try { Directory.Delete(rotation, recursive: true); }
             catch (IOException) { }
             catch (UnauthorizedAccessException) { }
+        }
+    }
+
+    // Only migrate original Cataclysm defaults on a managed TechQuest profile.
+    // Other values and all other TOML sections remain unchanged; never change symlinks.
+    private static void MigrateCataclysmBossRangeCaps(string gameDirectory)
+    {
+        string configPath = Path.Combine(gameDirectory, "config", "cataclysm-common.toml");
+        if (!File.Exists(configPath) ||
+            (File.GetAttributes(configPath) & FileAttributes.ReparsePoint) != 0) return;
+        string backup = configPath + ".techquest-before-0334.bak";
+        if (File.Exists(backup)) return; // Migration already attempted; preserve that backup.
+        var defaults = new Dictionary<string, double>(StringComparer.Ordinal)
+        {
+            ["mobs.ender_golem.cap_config"] = 8.0,
+            ["mobs.ender_guardian.cap_config"] = 12.0,
+            ["mobs.netherite_monstrosity.cap_config"] = 18.0,
+            ["mobs.ignis.cap_config"] = 15.0,
+            ["mobs.harbinger.cap_config"] = 35.0,
+            ["mobs.leviathan.cap_config"] = 38.0,
+            ["mobs.ancient_remnant.cap_config"] = 14.0,
+            ["mobs.scylla.cap_config"] = 12.0,
+            ["mobs.clawdian.cap_config"] = 12.0,
+            ["mobs.maledictus.cap_config"] = 14.0,
+            ["mobs.prowler"] = 15.0
+        };
+        string original = File.ReadAllText(configPath);
+        string[] lines = original.Split('\n');
+        var rangeLine = new Regex(@"^(?<prefix>[ \t]*range_cap[ \t]*=[ \t]*)(?<value>[0-9]+(?:\.[0-9]+)?)(?<suffix>[ \t]*(?:#[^\r\n]*)?\r?)$");
+        string section = "";
+        bool changed = false;
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string trimmed = lines[i].Trim();
+            if (trimmed.StartsWith('[') && trimmed.EndsWith(']'))
+            {
+                section = trimmed[1..^1];
+                continue;
+            }
+            if (!defaults.TryGetValue(section, out double expected)) continue;
+            var match = rangeLine.Match(lines[i]);
+            if (!match.Success ||
+                !double.TryParse(match.Groups["value"].Value, NumberStyles.Float,
+                                 CultureInfo.InvariantCulture, out double actual) || actual != expected)
+                continue;
+            lines[i] = match.Groups["prefix"].Value + "256.0" + match.Groups["suffix"].Value;
+            changed = true;
+        }
+        if (!changed) return;
+        File.Copy(configPath, backup, overwrite: false);
+        string tempFile = configPath + ".techquest-tmp-" + Guid.NewGuid().ToString("N");
+        try
+        {
+            File.WriteAllText(tempFile, string.Join("\n", lines), new UTF8Encoding(false));
+            File.Move(tempFile, configPath, overwrite: true);
+        }
+        finally
+        {
+            if (File.Exists(tempFile)) File.Delete(tempFile);
         }
     }
 
@@ -806,10 +881,10 @@ internal sealed class InstallerForm : Form
         }
         if (updating && MessageBox.Show(this,
                 "Обновить существующий TechQuest в этой же папке?\n\n" +
-                "Миры, карты, конфиги и настройки управления останутся на месте.\n" +
+                "Миры и настройки сохраняются; стандартные ограничения дальности боссов Cataclysm обновятся с резервной копией.\n" +
                 "Предыдущие JAR перейдут в одну резервную папку .techquest-previous-mods.\n" +
                 "Предыдущая резервная папка (если есть) будет заменена.\n" +
-                "Неофициальные дополнительные JAR (например AMW) потребуется добавить снова.\n\n" +
+                "Неофициальные дополнительные JAR (DragonRise) потребуется добавить снова.\n\n" +
                 "Перед обновлением закройте Minecraft и сделайте копию важного мира.",
                 "Обновление TechQuest", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 != DialogResult.Yes) return;
@@ -859,7 +934,7 @@ internal sealed class InstallerForm : Form
             cancellation.Token.ThrowIfCancellationRequested();
             ActivateStagedMods(target, staging, () =>
             {
-                InstallGuideOverrides(target); // existing saves/config/options are untouched
+                InstallGuideOverrides(target); // preserve user settings; migrate only default Cataclysm range caps with backup
                 File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
                     "TechQuest " + PackVersion + "\n" +
                     "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +

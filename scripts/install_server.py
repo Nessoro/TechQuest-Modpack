@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT))
 import build_pack as packbuilder
 from scripts.mods_transaction import activate_staged_mods
 from scripts.mi_guide_config import patch_existing_mi_worlds
+from scripts.cataclysm_range import migrate_default_boss_ranges
 
 NEOFORGE_MAVEN = "https://maven.neoforged.net/releases/net/neoforged/neoforge"
 
@@ -107,6 +108,7 @@ def install_guide_overrides(pack_path, target):
             destination.parent.mkdir(parents=True, exist_ok=True)
             if not destination.exists():
                 destination.write_bytes(archive.read(entry))
+    migrate_default_boss_ranges(target / "config" / "cataclysm-common.toml")
 
 def install_neoforge(target, version):
     if not shutil.which("java"):
