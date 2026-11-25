@@ -73,6 +73,15 @@ def main():
             assert page.locator(".mod-card").count() == count
             page.locator("#mod-search").fill("Aquamirae")
             assert "Aquamirae" in page.locator(".mod-card h3").all_text_contents()
+            for query, name in (
+                ("DragonRise", "[SBW] DragonRise: Reforge"),
+                ("AcceleratedMcWarfare", "AcceleratedMcWarfare (AMW)"),
+            ):
+                page.locator("#mod-search").fill(query)
+                assert name in page.locator(".mod-card h3").all_text_contents()
+                row = page.evaluate("(name) => window.TQ_MODS.find(m => m.name === name)", name)
+                assert row["required"] is False
+                assert "Не входит в автоматический .mrpack" in row["description"]
             page.locator("#mod-search").fill("not-a-real-mod-0")
             assert page.locator(".mod-card").count() == 0
             assert "Ничего не найдено" in page.locator("#mods-grid").inner_text()
