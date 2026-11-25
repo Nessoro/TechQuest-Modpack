@@ -1,0 +1,9 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "dev.techquest.hybrid.client",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "client": ["SuperbWarfareArmorTintMixin"],
+  "injectors": { "defaultRequire": 0 }
+}

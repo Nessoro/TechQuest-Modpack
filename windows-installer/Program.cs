@@ -203,6 +203,8 @@ internal sealed class InstallerForm : Form
                 archive.GetEntry("overrides/defaultconfigs/modern_industrialization-server.toml") is null ||
                  fileNames.Any(n => n.StartsWith("pmmo-", StringComparison.OrdinalIgnoreCase)) ||
                  archive.GetEntry("overrides/mods/techquest-compat-1.0.0.jar") is null ||
+                 archive.GetEntry("overrides/mods/techquest-hybrid-warfare-0.2.9-SNAPSHOT.jar") is null ||
+                 archive.GetEntry("overrides/TECHQUEST_HYBRID_SHA256.txt") is null ||
                  archive.Entries.Any(e =>
                      e.FullName.StartsWith("overrides/mods/techquest-rpg-core", StringComparison.OrdinalIgnoreCase) ||
                      e.FullName.StartsWith("overrides/mods/pmmo-", StringComparison.OrdinalIgnoreCase) ||
@@ -307,6 +309,7 @@ internal sealed class InstallerForm : Form
                 File.Exists(Path.Combine(updateProbe, "mods", "old.jar")) ||
                 !File.Exists(Path.Combine(updateProbe, ".techquest-previous-mods", "old.jar")) ||
                 !File.Exists(Path.Combine(updateProbe, "mods", "techquest-compat-1.0.0.jar")) ||
+                !File.Exists(Path.Combine(updateProbe, "mods", "techquest-hybrid-warfare-0.2.9-SNAPSHOT.jar")) ||
                 File.Exists(Path.Combine(updateProbe, "mods", "techquest-rpg-core-0.1.0.jar")) ||
                 File.Exists(Path.Combine(updateProbe, "mods", "pmmo-legacy.jar"))) return 20;
             if (File.ReadAllText(Path.Combine(updateProbe, "options.txt")) != "controls" ||
@@ -756,6 +759,26 @@ internal sealed class InstallerForm : Form
         using var input = item.Open();
         using var output = File.Create(Path.Combine(staging, filename));
         input.CopyTo(output);
+        const string hybridName = "techquest-hybrid-warfare-0.2.9-SNAPSHOT.jar";
+        var hybridEntry = archive.GetEntry("overrides/mods/" + hybridName)
+            ?? throw new InvalidDataException("Hybrid Warfare JAR отсутствует.");
+        var digestEntry = archive.GetEntry("overrides/TECHQUEST_HYBRID_SHA256.txt")
+            ?? throw new InvalidDataException("Hybrid Warfare SHA-256 отсутствует.");
+        if (hybridEntry.Length < 64 || hybridEntry.Length > 8 * 1024 * 1024 ||
+            digestEntry.Length > 128 ||
+            archive.Entries.Count(e => e.FullName == "overrides/TECHQUEST_HYBRID_SHA256.txt") != 1 ||
+            archive.Entries.Count(e => e.FullName.StartsWith("overrides/mods/techquest-hybrid-warfare",
+                StringComparison.OrdinalIgnoreCase) && e.FullName.EndsWith(".jar", StringComparison.OrdinalIgnoreCase)) != 1)
+            throw new InvalidDataException("Некорректный или дублированный Hybrid Warfare JAR.");
+        using var digestReader = new StreamReader(digestEntry.Open());
+        string expected = digestReader.ReadToEnd().Trim();
+        using var hybridInput = hybridEntry.Open();
+        using var buffer = new MemoryStream();
+        hybridInput.CopyTo(buffer);
+        byte[] bytes = buffer.ToArray();
+        if (!Convert.ToHexString(SHA256.HashData(bytes)).Equals(expected, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("Hybrid Warfare SHA-256 не совпадает.");
+        File.WriteAllBytes(Path.Combine(staging, hybridName), bytes);
     }
 
     private async Task InstallAsync()
@@ -831,7 +854,7 @@ internal sealed class InstallerForm : Form
                 }
                 updates.Report((Interlocked.Increment(ref completed), mod.Name, fromCache));
             });
-            // Retain TechQuest Compatibility only; do not stage RPG Core.
+            // Stage both verified first-party mods; do not stage RPG Core.
             StageFirstPartyCompatibilityJar(staging);
             cancellation.Token.ThrowIfCancellationRequested();
             ActivateStagedMods(target, staging, () =>

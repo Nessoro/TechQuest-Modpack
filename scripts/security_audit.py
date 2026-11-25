@@ -16,6 +16,10 @@ import urllib.request
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import build_pack
 
 USER_AGENT = "TechQuest-SecurityAudit/0.1"
 HOSTS = {"cdn.modrinth.com", "raw.githubusercontent.com", "github.com", "maven.ftb.dev"}
@@ -162,11 +166,20 @@ def audit(pack, directory, report_dir):
     for i, item in enumerate(items.values(), 1):
         print(f"[{i}/{len(items)}] Verifying {item['path']}", flush=True)
         checked.append(download_and_verify(item, directory))
+    # Extract the exact first-party JAR for the independent ClamAV scan.
+    with zipfile.ZipFile(pack) as archive:
+        hybrid = build_pack.hybrid_from_pack(archive, required=True)
+    hybrid_path = directory / build_pack.HYBRID_JAR_NAME
+    hybrid_path.write_bytes(hybrid)
+    checked.append({"file": "mods/" + hybrid_path.name, "size": len(hybrid),
+                    "sha256": hashlib.sha256(hybrid).hexdigest(),
+                    "source": "first-party embedded Hybrid Warfare",
+                    "status": "HASH_AND_ARCHIVE_OK"})
     result = {
         "checked_at_utc": datetime.now(timezone.utc).isoformat(),
         "source_commit_audit": "Sources restricted to Modrinth, pinned IC2 commit, Incoming release, exact FTB Maven assets",
         "pack_mods": len(packs[pack.name]),
-        "unique_jar_files": len(items),
+        "unique_jar_files": len(checked),
         "result": "HASH_AND_ARCHIVE_OK",
         "antivirus_result": "NOT_SCANNED_BY_THIS_SCRIPT",
         "caveat": "Hash verification and ZIP integrity DO NOT establish that code is safe.",
