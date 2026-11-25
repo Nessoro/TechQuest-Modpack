@@ -174,7 +174,7 @@ def install_pack(pack, target, dry_run=False, skip_neoforge=False):
                         dest.write_bytes(archive.read(entry))
             prepare_properties(target)
             (target / "TECHQUEST_README.txt").write_text(
-                "TechQuest 0.3.3.1: server JARs installed with hash checks.\n"
+                "TechQuest " + index["versionId"] + ": server JARs installed with hash checks.\n"
                 "TechQuest Compatibility retained; RPG Core and PMMO excluded.\n"
                 "Superb Warfare client mixin patched only in the server copy.\n"
                 "Existing worlds, config, properties and eula.txt are preserved.\n"
