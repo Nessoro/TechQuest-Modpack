@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT))
 import build_pack
 from scripts.mods_transaction import activate_staged_mods
 from scripts.mi_guide_config import patch_existing_mi_worlds
+from scripts.cataclysm_range import migrate_default_boss_ranges
 
 def client_records(index):
     if index.get("game") != "minecraft":
@@ -88,6 +89,7 @@ def install_guide_overrides(archive, game_dir):
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.exists():
             target.write_bytes(archive.read(info.filename))
+    migrate_default_boss_ranges(game_dir / "config" / "cataclysm-common.toml")
 
 
 def install(pack: Path, game_dir: Path, dry_run=False):

@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using System.IO.Compression;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -547,6 +549,7 @@ internal sealed class InstallerForm : Form
             using var output = File.Create(destination);
             source.CopyTo(output);
         }
+        MigrateCataclysmBossRangeCaps(gameDirectory);
         DisableMiRespawnGuideInExistingWorlds(gameDirectory);
     }
 
@@ -742,6 +745,65 @@ internal sealed class InstallerForm : Form
         }
     }
 
+    // Only migrate original Cataclysm defaults on a managed TechQuest profile.
+    // Other values and all other TOML sections remain unchanged; never change symlinks.
+    private static void MigrateCataclysmBossRangeCaps(string gameDirectory)
+    {
+        string configPath = Path.Combine(gameDirectory, "config", "cataclysm-common.toml");
+        if (!File.Exists(configPath) ||
+            (File.GetAttributes(configPath) & FileAttributes.ReparsePoint) != 0) return;
+        string backup = configPath + ".techquest-before-0334.bak";
+        if (File.Exists(backup)) return; // Migration already attempted; preserve that backup.
+        var defaults = new Dictionary<string, double>(StringComparer.Ordinal)
+        {
+            ["mobs.ender_golem.cap_config"] = 8.0,
+            ["mobs.ender_guardian.cap_config"] = 12.0,
+            ["mobs.netherite_monstrosity.cap_config"] = 18.0,
+            ["mobs.ignis.cap_config"] = 15.0,
+            ["mobs.harbinger.cap_config"] = 35.0,
+            ["mobs.leviathan.cap_config"] = 38.0,
+            ["mobs.ancient_remnant.cap_config"] = 14.0,
+            ["mobs.scylla.cap_config"] = 12.0,
+            ["mobs.clawdian.cap_config"] = 12.0,
+            ["mobs.maledictus.cap_config"] = 14.0,
+            ["mobs.prowler"] = 15.0
+        };
+        string original = File.ReadAllText(configPath);
+        string[] lines = original.Split('\n');
+        var rangeLine = new Regex(@"^(?<prefix>[ \t]*range_cap[ \t]*=[ \t]*)(?<value>[0-9]+(?:\.[0-9]+)?)(?<suffix>[ \t]*(?:#[^\r\n]*)?\r?)$");
+        string section = "";
+        bool changed = false;
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string trimmed = lines[i].Trim();
+            if (trimmed.StartsWith('[') && trimmed.EndsWith(']'))
+            {
+                section = trimmed[1..^1];
+                continue;
+            }
+            if (!defaults.TryGetValue(section, out double expected)) continue;
+            var match = rangeLine.Match(lines[i]);
+            if (!match.Success ||
+                !double.TryParse(match.Groups["value"].Value, NumberStyles.Float,
+                                 CultureInfo.InvariantCulture, out double actual) || actual != expected)
+                continue;
+            lines[i] = match.Groups["prefix"].Value + "256.0" + match.Groups["suffix"].Value;
+            changed = true;
+        }
+        if (!changed) return;
+        File.Copy(configPath, backup, overwrite: false);
+        string tempFile = configPath + ".techquest-tmp-" + Guid.NewGuid().ToString("N");
+        try
+        {
+            File.WriteAllText(tempFile, string.Join("\n", lines), new UTF8Encoding(false));
+            File.Move(tempFile, configPath, overwrite: true);
+        }
+        finally
+        {
+            if (File.Exists(tempFile)) File.Delete(tempFile);
+        }
+    }
+
     private static void StageFirstPartyCompatibilityJar(string staging)
     {
         // Preserve the existing Create-IC2 recipes and Better Zoom startup Mixin.
@@ -783,7 +845,7 @@ internal sealed class InstallerForm : Form
         }
         if (updating && MessageBox.Show(this,
                 "Обновить существующий TechQuest в этой же папке?\n\n" +
-                "Миры, карты, конфиги и настройки управления останутся на месте.\n" +
+                "Миры и настройки сохраняются; стандартные ограничения дальности боссов Cataclysm обновятся с резервной копией.\n" +
                 "Предыдущие JAR перейдут в одну резервную папку .techquest-previous-mods.\n" +
                 "Предыдущая резервная папка (если есть) будет заменена.\n" +
                 "Неофициальные дополнительные JAR (например AMW) потребуется добавить снова.\n\n" +
@@ -836,7 +898,7 @@ internal sealed class InstallerForm : Form
             cancellation.Token.ThrowIfCancellationRequested();
             ActivateStagedMods(target, staging, () =>
             {
-                InstallGuideOverrides(target); // existing saves/config/options are untouched
+                InstallGuideOverrides(target); // preserve user settings; migrate only default Cataclysm range caps with backup
                 File.WriteAllText(Path.Combine(target, "TechQuest_НАСТРОЙКА.txt"),
                     "TechQuest " + PackVersion + "\n" +
                     "Minecraft Java 1.21.1, NeoForge 21.1.264.\n" +
