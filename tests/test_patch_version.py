@@ -23,7 +23,7 @@ class TechQuestPatchVersionTests(unittest.TestCase):
 
     def test_patch_version_is_numeric_and_unique_for_this_candidate(self):
         self.assertRegex(self.version, r"^0\.3\.3\.[1-9][0-9]*$")
-        self.assertEqual("0.3.3.3", self.version)
+        self.assertEqual("0.3.3.4", self.version)
 
     def test_pack_manifest_uses_matching_patch_version(self):
         with tempfile.TemporaryDirectory() as folder:

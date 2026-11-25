@@ -25,7 +25,7 @@ internal static class Program
 internal sealed class InstallerForm : Form
 {
     private const string NeoForgeVersion = "21.1.264";
-    private const string PackVersion = "0.3.3.3";
+    private const string PackVersion = "0.3.3.4";
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
 
     private readonly TextBox location = new() { Width = 540 };
