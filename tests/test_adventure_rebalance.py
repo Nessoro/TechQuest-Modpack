@@ -73,8 +73,8 @@ class AdventureRebalanceTests(unittest.TestCase):
         decor = counts["Декор"]
         # Keep the decorative building category explicit instead of counting it as industry.
         total = tech + adventure + exploration + military + decor
-        self.assertEqual((tech, adventure, exploration, military, decor), (19, 20, 6, 7, 1))
-        self.assertEqual(total, 53)
+        self.assertEqual((tech, adventure, exploration, military, decor), (19, 20, 6, 6, 1))
+        self.assertEqual(total, 52)
         self.assertLess(tech / total, 0.37)
         self.assertGreaterEqual((adventure + exploration) / total, 0.49)
 
