@@ -80,6 +80,9 @@ def install_compatibility(pack_path, mods):
         if entry not in archive.namelist():
             raise packbuilder.BuildError("Missing TechQuest Compatibility JAR: " + name)
         (mods / name).write_bytes(archive.read(entry))
+        hybrid_data = packbuilder.hybrid_from_pack(archive)
+        if hybrid_data is not None:
+            (mods / packbuilder.HYBRID_JAR_NAME).write_bytes(hybrid_data)
     for path in mods.glob("superbwarfare-*.jar"):
         packbuilder.patch_superb_server_jar(path)
 

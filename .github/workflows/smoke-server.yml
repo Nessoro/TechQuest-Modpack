@@ -23,6 +23,15 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Build first-party Hybrid Warfare from source
+        working-directory: addons/hybrid-warfare-armor
+        run: |
+          python scripts/generate_assets.py
+          python -m unittest discover -s scripts -p 'test_*.py' -v
+          gradle build --no-daemon --stacktrace
       - name: Prepare server mods including IndustrialCraft 2
         run: |
           python build_pack.py
