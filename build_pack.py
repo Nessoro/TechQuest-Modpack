@@ -26,6 +26,8 @@ API = "https://api.modrinth.com/v2"
 UA = "TechQuest-Modpack/0.1 (modpack installer)"
 MAX_DOWNLOAD = 256 * 1024 * 1024
 COMPAT_JAR_NAME = "techquest-compat-1.0.0.jar"
+HYBRID_JAR_NAME = "techquest-hybrid-warfare-0.2.9-SNAPSHOT.jar"
+HYBRID_DIGEST_ENTRY = "overrides/TECHQUEST_HYBRID_SHA256.txt"
 _REMOVED_JAR_PREFIXES = ("techquest-rpg-core", "pmmo-", "project-mmo")
 
 def is_removed_mod_jar(filename):
@@ -319,6 +321,50 @@ def external_records(cfg):
     return records
 
 
+def validate_hybrid_jar(data):
+    """Require the compiled first-party runtime JAR, not sources."""
+    import io
+    if not 64 <= len(data) <= 8 * 1024 * 1024:
+        raise BuildError("Invalid Hybrid Warfare JAR size")
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as jar:
+            if jar.testzip() is not None:
+                raise BuildError("Corrupt Hybrid Warfare JAR")
+            metadata = jar.read("META-INF/neoforge.mods.toml")
+            if b'modId="techquest_hybrid"' not in metadata or b'version="0.2.9-SNAPSHOT"' not in metadata:
+                raise BuildError("Unexpected Hybrid Warfare identity/version")
+            if "dev/techquest/hybrid/HybridWarfareMod.class" not in jar.namelist():
+                raise BuildError("Hybrid Warfare runtime class missing")
+    except (zipfile.BadZipFile, KeyError) as err:
+        raise BuildError("Invalid Hybrid Warfare runtime JAR") from err
+    return data
+
+
+def compiled_hybrid_jar():
+    path = ROOT / "addons/hybrid-warfare-armor/build/libs" / HYBRID_JAR_NAME
+    if not path.is_file():
+        raise BuildError("Build Hybrid Warfare first: gradle -p addons/hybrid-warfare-armor build --no-daemon")
+    return validate_hybrid_jar(path.read_bytes())
+
+
+def hybrid_from_pack(archive, required=False):
+    """Verify the embedded first-party payload before staging or scanning."""
+    entry = "overrides/mods/" + HYBRID_JAR_NAME
+    names = archive.namelist()
+    hybrid_entries = [name for name in names if name.lower().startswith(
+        "overrides/mods/techquest-hybrid-warfare") and name.lower().endswith(".jar")]
+    if not hybrid_entries and HYBRID_DIGEST_ENTRY not in names and not required:
+        return None  # legacy packages
+    if hybrid_entries != [entry] or names.count(HYBRID_DIGEST_ENTRY) != 1:
+        raise BuildError("Missing or duplicate Hybrid Warfare payload/checksum")
+    if archive.getinfo(entry).file_size > 8 * 1024 * 1024 or archive.getinfo(HYBRID_DIGEST_ENTRY).file_size > 128:
+        raise BuildError("Oversized Hybrid Warfare payload/checksum")
+    data = archive.read(entry)
+    if archive.read(HYBRID_DIGEST_ENTRY).strip() != hashlib.sha256(data).hexdigest().encode("ascii"):
+        raise BuildError("Hybrid Warfare SHA-256 mismatch")
+    return validate_hybrid_jar(data)
+
+
 def compatibility_jar():
     """Package our data-only NeoForge mod; no third-party binary is embedded."""
     import io
@@ -428,6 +474,18 @@ def client_config_overrides(cfg):
     return result
 
 
+def boss_damage_overrides(cfg):
+    """Cataclysm range-only compatibility without bypassing boss mechanics."""
+    if not any(m.get("project") == "l_enders-cataclysm" for m in cfg.get("mods", [])):
+        return {}
+    if cfg.get("minecraft") != "1.21.1" or cfg.get("loader") != "neoforge":
+        raise BuildError("Review Cataclysm range preset for this game version/loader")
+    preset = ROOT / "compat/boss-damage/conditions-preserved.toml"
+    if not preset.is_file():
+        raise BuildError("Missing Cataclysm boss range preset")
+    return {"config/cataclysm-common.toml": preset.read_bytes()}
+
+
 def opac_config_overrides(cfg):
     """Seed a safe Open Parties and Claims config for NEW NeoForge worlds only.
 
@@ -470,7 +528,7 @@ def mi_guide_config_overrides(cfg):
     return {"defaultconfigs/modern_industrialization-server.toml": data}
 
 
-def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
+def make_mrpack(cfg, mods, output, manual_files=(), external_files=(), hybrid_data=None):
     files = []
     for rec in mods:
         f = rec["file"]
@@ -513,11 +571,13 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
             archive.writestr("overrides/options.txt", settings)
             archive.writestr("overrides/TECHQUEST_OPTIMIZED.txt",
                 "Unified optimized TechQuest client. Iris shaders are not included. "
-                "Gameplay mods are preserved. Set graphics Fast, view distance 4-6, "
+                "Gameplay mods are preserved. Set graphics Fast, view distance 16, "
                 "particles minimal. The settings are not a guarantee of FPS gains.\n")
         for relative, data in guide_overrides().items():
             archive.writestr("overrides/" + relative, data)
         for relative, data in client_config_overrides(cfg).items():
+            archive.writestr("overrides/" + relative, data)
+        for relative, data in boss_damage_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
         for relative, data in opac_config_overrides(cfg).items():
             archive.writestr("overrides/" + relative, data)
@@ -538,6 +598,10 @@ def make_mrpack(cfg, mods, output, manual_files=(), external_files=()):
             archive.writestr("overrides/TECHQUEST_OPTIONAL_LOCAL_MODS.json",
                              json.dumps(local_mods, ensure_ascii=False, indent=2) + "\n")
         archive.writestr("overrides/mods/" + COMPAT_JAR_NAME, compatibility_jar())
+        if hybrid_data is not None:
+            validate_hybrid_jar(hybrid_data)
+            archive.writestr("overrides/mods/" + HYBRID_JAR_NAME, hybrid_data)
+            archive.writestr(HYBRID_DIGEST_ENTRY, hashlib.sha256(hybrid_data).hexdigest() + "\n")
     return len(files)
 
 
@@ -570,6 +634,7 @@ def main():
     resolved, optional = resolve_manifest(cfg)
     manual = manual_records(cfg)
     external = external_records(cfg)
+    hybrid_data = None if args.resolve_only and args.no_mrpack else compiled_hybrid_jar()
     write_json(out / "versions-lock.json", {
         "minecraft": cfg["minecraft"], "loader_version": cfg["loader_version"],
         "mods": [{k:m[k] for k in ("requested","title","version","version_id","filename","environment")}
@@ -582,7 +647,7 @@ def main():
                            "hashes": row["hashes"]}
                           for row in external]})
     if not args.no_mrpack:
-        n = make_mrpack(cfg, resolved, out / ("TechQuest_" + cfg["version"] + ".mrpack"), manual, external)
+        n = make_mrpack(cfg, resolved, out / ("TechQuest_" + cfg["version"] + ".mrpack"), manual, external, hybrid_data=hybrid_data)
         print("Generated Modrinth manifest:", n, "files")
     if args.resolve_only:
         print("Version resolution done. Minecraft startup is NOT verified.")
@@ -595,7 +660,7 @@ def main():
         expected = {rec["filename"] for rec in resolved if rec["environment"][side] != "unsupported"}
         expected.update(local["filename"] for local in manual)
         expected.update(extra["filename"] for extra in external)
-        expected.add(COMPAT_JAR_NAME)
+        expected.update((COMPAT_JAR_NAME, HYBRID_JAR_NAME))
         remove_stale_generated_jars(directory, expected)
     for rec in resolved:
         env = rec["environment"]
@@ -615,6 +680,7 @@ def main():
     compat_bytes = compatibility_jar()
     for directory in (client, server):
         (directory / COMPAT_JAR_NAME).write_bytes(compat_bytes)
+        (directory / HYBRID_JAR_NAME).write_bytes(hybrid_data)
     for jar in server.glob("superbwarfare-*.jar"):
         patch_superb_server_jar(jar)
     if client_options(cfg):
@@ -623,6 +689,11 @@ def main():
         target = out / "client" / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
+    for relative, data in boss_damage_overrides(cfg).items():
+        for side in ("client", "server"):
+            target = out / side / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
     for relative, data in opac_config_overrides(cfg).items():
         for side in ("client", "server"):
             target = out / side / relative
@@ -644,7 +715,7 @@ def main():
     (out / "server" / "server.properties").write_text(
         "motd=TechQuest Industrial Frontier\nmax-players=8\nonline-mode=true\n"
         "white-list=true\nenforce-whitelist=true\nenable-rcon=false\n"
-        "view-distance=6\nsimulation-distance=5\nallow-flight=true\n", encoding="utf-8")
+        "view-distance=14\nsimulation-distance=5\nallow-flight=true\n", encoding="utf-8")
     (out / "server" / "START_HERE.txt").write_text(
         "Install official NeoForge %s for Minecraft %s with Java 21; then "
         "review Mojang EULA and set eula=true only if you agree. Enable whitelist "

@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - modlist.json
+      - addons/hybrid-warfare-armor/**
+      - build_pack.py
+      - tests/test_hybrid_pack.py
       - tests/test_interdimensional_wireless_transmitter.py
       - tests/test_quartz_arsenal.py
       - tests/test_betterblockz.py
@@ -12,6 +15,7 @@ on:
     paths:
       - modlist.json
       - build_pack.py
+      - addons/hybrid-warfare-armor/**
       - compat/**
       - scripts/smoke_client_runtime.py
       - tests/test_dimstorage.py
@@ -37,6 +41,15 @@ jobs:
           java-version: '21'
       - name: Install headless display and software OpenGL
         run: sudo apt-get update && sudo apt-get install -y xvfb imagemagick libgl1-mesa-dri libasound2t64
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Build first-party Hybrid Warfare from source
+        working-directory: addons/hybrid-warfare-armor
+        run: |
+          python scripts/generate_assets.py
+          python -m unittest discover -s scripts -p 'test_*.py' -v
+          gradle build --no-daemon --stacktrace
       - name: Build and audit exact client and server mod sets
         run: |
           python -m unittest discover -s tests -v

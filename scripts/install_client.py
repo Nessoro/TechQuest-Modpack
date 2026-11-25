@@ -71,6 +71,7 @@ def install_guide_overrides(archive, game_dir):
                                 "config/physicsmod/physics_server_config.json",
                                 "config/betterzoom-client.toml",
                                 "config/incoming-client.toml",
+                                "config/cataclysm-common.toml",
                                 "config/explosionoverhaul/explosionoverhaul-client.toml",
                                 "config/jade/plugins.json",
                                 "config/healthindicatortxf.json5",
@@ -115,6 +116,7 @@ def install(pack: Path, game_dir: Path, dry_run=False):
                for name in archive.namelist() if name.startswith("overrides/mods/")):
             raise build_pack.BuildError("Removed mod in .mrpack overrides")
         compat_data = archive.read(compat_entry)
+        hybrid_data = build_pack.hybrid_from_pack(archive)
     destination.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=".techquest-download-", dir=destination))
     try:
@@ -122,6 +124,8 @@ def install(pack: Path, game_dir: Path, dry_run=False):
             print(f"[{i}/{len(records)}] {item['file']['filename']}", flush=True)
             build_pack.download_checked(item, staging)
         (staging / build_pack.COMPAT_JAR_NAME).write_bytes(compat_data)
+        if hybrid_data is not None:
+            (staging / build_pack.HYBRID_JAR_NAME).write_bytes(hybrid_data)
 
         def finish():
             with zipfile.ZipFile(pack) as archive:

@@ -10,11 +10,11 @@
 
 TechQuest — большая комплексная сборка вокруг **BuildCraft Community Edition** и **Industrial Craft 2: Nostalgia**. Дополнительно в план включены Create, Mekanism, Modern Industrialization, AE2, магия, развитие, новые мобы и миры.
 
-**Версия: `0.3.3.1` — единый тестовый профиль Optimized.** 07.11.2026 владелец подтвердил одиночный мир и игру на `535de72`. Выделенный сервер, весь набор механик и производительность этой версии ещё не подтверждены. Подробности: [проверки 0.3.3](QA_0.3.3_RU.md). Не переносите старый мир без резервной копии.
+**Версия: `0.3.3.2` — кандидат единого профиля Optimized.** 07.11.2026 владелец подтвердил одиночный мир и игру на `535de72`. Выделенный сервер, весь набор механик и производительность этой версии ещё не подтверждены. Подробности: [проверки 0.3.3](QA_0.3.3_RU.md). Не переносите старый мир без резервной копии.
 
 **Единая тестовая сборка 0.3.3 — изменения PR #5 и #15.** В неё объединены PR #10/#11/#19/#20: Physics Mod Lite с ограниченными обломками, резерв установки NeoForge, зум **Z + колесо**, Controlling, Aquamirae из PR #15. Отдельные ветки этих PR — сохранённые этапы работы, а не разные редакции модпака.
 
-**Воспроизводимый состав и настройки:** версии, SHA-512 и стороны используемых проектов Modrinth закреплены, автоматическая подмена последними релизами отключена. Исправлен заголовок `options.txt` (`version:3955`), чтобы Minecraft загружал современные клавиши и Fast/6/5/60. Существующие пользовательские файлы сохраняются: для новых стартовых настроек используйте новую папку или настройте прежнюю через меню. [Как проверяется сборка](docs/REPRODUCIBLE_BUILDS_RU.md).
+**Воспроизводимый состав и настройки:** версии, SHA-512 и стороны используемых проектов Modrinth закреплены, автоматическая подмена последними релизами отключена. Исправлен заголовок `options.txt` (`version:3955`), чтобы Minecraft загружал современные клавиши и Fast/16/5/60. Существующие пользовательские файлы сохраняются: для новых стартовых настроек используйте новую папку или настройте прежнюю через меню. [Как проверяется сборка](docs/REPRODUCIBLE_BUILDS_RU.md).
 
 **HP и взрывы:** в новой установке числовое текущее/максимальное HP находится сверху по центру, дубль HP/брони Jade выключен. Множитель длительности контузии Explosion Overhaul — 0.25; экранный эффект и тряска Incoming — 0.35, затяжное повреждение слуха выключено. Настройки прочитаны настоящим клиентом до меню; взрывы в мире ещё требуют испытаний. [Подробности и применение к прежнему профилю](compat/client-hud/README.md).
 
@@ -30,7 +30,6 @@ TechQuest — большая комплексная сборка вокруг **
 
 **Авиация:** Superb Warfare и Incoming остаются в составе. MCHeli Modern Port, TaCZ и ParCool исключены по решению владельца («не нужен»). Геймпад для самолёта пока не реализован. [Состояние авиации](docs/AIRCRAFT_0.3.3_RU.md) · [Как работает SAM Incoming](docs/INCOMING_SAM_RU.md) · [Физика](docs/PHYSICS_TESTING_RU.md) · [NeoForge через GUI](docs/NEOFORGE_FALLBACK_RU.md) · [Клавиши и зум](docs/CONTROLS_RU.md).
 
-**Дополнение для тестирования 0.3.3:** AcceleratedMcWarfare 1.0.4 Alpha (NeoForge 1.21.1) доступен через кнопку ручного импорта в экспериментальном Windows Installer; основной JAR скачивается пользователем с официальной страницы CurseForge. Файл не распространяется в TechQuest из-за ограничений CDN и лицензии. Подробности: [AMW — установка и тесты](docs/AMW_TESTING_RU.md).
 
 > **Новый экспериментальный курс TechQuest 0.3.3:** больше приключений и исследования без удаления BuildCraft, IC2, Create и Mekanism. В PR #5 добавлены The Aether, Deeper and Darker, When Dungeons Arise, Artifacts, Wyrmroost (драконы), Legendary Monsters и Twisted Mobs (крупные монстры), Forgematica (схемы), Explorer's Compass и крепости YUNG's. Подробности в [плане Adventure & Exploration](docs/ADVENTURE_EXPLORATION_RU.md). Это тестовая ветка, не стабильный релиз.
 
@@ -87,13 +86,13 @@ GUI устанавливает единый Optimized-профиль без Pyth
 
 На странице [Build TechQuest alpha](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/build-alpha.yml) откройте самый новый **успешный** запуск и скачайте из Artifacts:
 
-- **TechQuest-Windows-GUI-Installer** — обычным игрокам на Windows 10/11: скачайте архив, извлеките `TechQuest_0.3.3.1.exe`, запустите двойным щелчком. **Без Python, PowerShell и консоли.**
-- **TechQuest-1.21.1-alpha-build** — один `TechQuest_0.3.3.1.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap, `jar-metadata-audit.json` и диагностические данные.
+- **TechQuest-Windows-GUI-Installer** — обычным игрокам на Windows 10/11: скачайте архив, извлеките `TechQuest_0.3.3.2.exe`, запустите двойным щелчком. **Без Python, PowerShell и консоли.**
+- **TechQuest-1.21.1-alpha-build** — один `TechQuest_0.3.3.2.mrpack` для Prism/Modrinth-совместимых лаунчеров, общий серверный bootstrap, `jar-metadata-audit.json` и диагностические данные.
 - **TechQuest-Security-Audit** — отчёт проверки хешей, ZIP и ClamAV, если этап безопасности завершился успешно. Проверка антивирусом не гарантирует отсутствие всех угроз.
 
 ### Установка через официальный Minecraft Launcher (без Prism)
 
-1. Запустите графический `TechQuest_0.3.3.1.exe`; отдельного выбора Full/Lite больше нет.
+1. Запустите графический `TechQuest_0.3.3.2.exe`; отдельного выбора Full/Lite больше нет.
 2. Выберите **НОВУЮ пустую папку**, например `C:\\Games\\TechQuest-Optimized`, и нажмите «Установить моды». Старые `mods` не смешивайте с новыми.
 3. Установите **Java 21** и **NeoForge 21.1.264** для Minecraft Java 1.21.1. В GUI есть кнопка запуска официального NeoForge Installer. Для установки NeoForge требуется соединение с Maven.
 4. В Minecraft Launcher: **Установки → NeoForge 21.1.264 → Изменить → Папка игры**; укажите ту же папку, затем запустите NeoForge.
@@ -192,3 +191,7 @@ python -m unittest discover -s tests -v
 - [GitHub Pages: publication source](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
 
 Этот проект не связан с Mojang/Microsoft. Все моды принадлежат их авторам; лицензии каждого проекта соблюдаются отдельно. Код сайта и собственные скрипты можно использовать по условиям `LICENSE`.
+
+Кандидат 0.3.3.2 не опубликован: клиент 16 чанков, сервер 14, увеличен только range_cap боссов Cataclysm до 256. Фазы и условия уязвимости не изменены. Не проверено запуском Minecraft. Подробнее: docs/BOSS_WEAPON_DAMAGE_RU.md.
+
+- [DragonRise: Reforge](https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025) — аддон военной техники к Superb Warfare, файл `dragonrise_reforge-1.5.1-release.jar`. **Экспериментальный импорт через Windows Installer**: скачайте оригинальный JAR с CurseForge, нажмите «3. Добавить DragonRise» и скопируйте тот же JAR на сервер. В .mrpack включается только описание, не сам JAR. [Установка и проверка](docs/DRAGONRISE_TESTING_RU.md).

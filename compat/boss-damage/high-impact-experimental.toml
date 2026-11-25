@@ -1,0 +1,56 @@
+# Cataclysm NeoForge COMMON config — TechQuest 0.3.3.2
+# Preserves boss phase immunity, tool requirements and all other mod mechanics.
+# EXPERIMENTAL: increased range/hit/DPS caps, not true always-damage or phase bypass.
+
+[mobs.ender_guardian.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.ender_golem.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.netherite_monstrosity.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.ignis.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.harbinger.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.leviathan.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.ancient_remnant.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.scylla.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.clawdian.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.maledictus.cap_config]
+range_cap = 1000000.0
+damage_cap = 1000000.0
+dps_cap = 1000000.0
+
+[mobs.prowler]
+range_cap = 1000000.0
