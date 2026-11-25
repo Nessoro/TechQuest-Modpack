@@ -239,6 +239,23 @@ internal sealed class InstallerForm : Form
                 string bossPreset = File.ReadAllText(Path.Combine(probe, "config", "cataclysm-common.toml"));
                 if (!bossPreset.Contains("[mobs.ender_guardian.cap_config]") ||
                     !bossPreset.Contains("range_cap = 256.0")) return 34;
+                // Test the EXE's conservative migration on an existing profile.
+                string rangeProbe = Path.Combine(probe, "boss-range-upgrade");
+                string rangeFolder = Path.Combine(rangeProbe, "config");
+                Directory.CreateDirectory(rangeFolder);
+                string rangePath = Path.Combine(rangeFolder, "cataclysm-common.toml");
+                const string oldRange = "[mobs.ender_golem.cap_config]\nrange_cap = 8.0\ndamage_cap = 333.0\n" +
+                                        "[mobs.ender_guardian.cap_config]\nrange_cap = 12.0\n" +
+                                        "[mobs.ignis.cap_config]\nrange_cap = 123.0\n";
+                File.WriteAllText(rangePath, oldRange);
+                MigrateCataclysmBossRangeCaps(rangeProbe);
+                string newRange = File.ReadAllText(rangePath);
+                if (!newRange.Contains("range_cap = 256.0") ||
+                    !newRange.Contains("damage_cap = 333.0") ||
+                    !newRange.Contains("range_cap = 123.0")) return 37;
+                if (File.ReadAllText(rangePath + ".techquest-before-0334.bak") != oldRange) return 38;
+                MigrateCataclysmBossRangeCaps(rangeProbe);
+                if (File.ReadAllText(rangePath + ".techquest-before-0334.bak") != oldRange) return 39;
                 File.WriteAllText(Path.Combine(probe, "options.txt"), "existing-player-settings");
                 InstallGuideOverrides(probe);
                 if (File.ReadAllText(Path.Combine(probe, "options.txt")) != "existing-player-settings") return 9;
