@@ -10,6 +10,10 @@ The Cataclysm base boss class `LLibrary_Boss_Monster.hurt()` clamps incoming dam
 
 The original `cataclysm:bypasses_hurt_time` additive tag already included seven Incoming damage types; this patch adds five remaining Incoming types so Cataclysm's **own** damage bucket does not turn these hits into 0.1 HP. No vanilla `bypasses_invulnerability`, health setter, unconditional boss kill, generic damage cap change, Iskander alteration, or damage changes for Superb Warfare / other mods.
 
+## Legendary Monsters: separate damage caps
+
+In the pinned Legendary Monsters boss hierarchy, `IAnimatedBoss.hurt()` caps damage, and an event listener calls `IAnimatedBoss.addDamage()`, which **caps it a second time** before updating its own accumulated-health counter. The first cap alone would not make a GBU-57 lethal. Two additional Mixin classes now selectively restore original Incoming damage in both places, plus the miniboss `IAnimatedMiniBoss.hurt()` cap. They do **not** remove The Obliterator's parry, attack-state invulnerability, teleport rules, target anti-cheese range or phase transition checks. Those deliberate special mechanics may still cause a lethal hit to be rejected. No other source is affected.
+
 ## What counts as lethal and what does not
 
 - **Lethal**: the original Incoming code sends `Float.MAX_VALUE` for a verified physical hit, such as GBU-57 direct bore contact or a live target in the bomb's approximately 10-block crushing zone. If the target is legitimately damageable, generic Cataclysm per-hit caps may no longer stop it dying.
@@ -17,7 +21,7 @@ The original `cataclysm:bypasses_hurt_time` additive tag already included seven 
 - **Not a hit**: merely seeing terrain damage or a nearby explosion does not prove the target received a damage event. If the bomb missed, the target was behind intact cover, or damage wasn't registered, this Mixin cannot fabricate it.
 - **Special boss mechanics**: invulnerability requiring a particular tool, opened ritual, crystal/weak-point sequence or a scripted vulnerability window remains in force; number of health phases **alone is not a reason for immunity**. The Aether Slider and Legendary Monsters Obliterator implementations remain untouched. Cataclysm's own scripted immunity checks execute before the base class's damage cap.
 
-**Known limit:** this Mixin fixes Cataclysm's base damage cap; bosses implemented by other mods may have separate caps or scripted filters. No universal compatibility claim without real-world acceptance tests for the complete boss roster.
+**Known limit:** these Mixins address Cataclysm and Legendary Monsters' generic damage caps; bosses from other mods (e.g. Aether and Bosses of Mass Destruction) may have different caps or scripted filters. No universal compatibility claim without real-world acceptance tests for the complete boss roster.
 
 ## Acceptance test: GBU-57 on bedrock
 

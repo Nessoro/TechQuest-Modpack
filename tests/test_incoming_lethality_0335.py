@@ -95,6 +95,23 @@ class IncomingLethalityTests(unittest.TestCase):
         self.assertIn("IncomingLethalCapMixin",cfg["mixins"])
         self.assertNotIn("IncomingLethalCapMixin",cfg["client"])
 
+    def test_legendary_boss_and_miniboss_caps_preserve_incoming_damage(self):
+        source_dir = SOURCE.parent
+        boss = (source_dir / "IncomingLegendaryBossMixin.java").read_text()
+        mini = (source_dir / "IncomingLegendaryMiniBossMixin.java").read_text()
+        self.assertIn("IAnimatedBoss", boss)
+        self.assertIn("IAnimatedMiniBoss", mini)
+        self.assertIn("addDamage(", boss)
+        self.assertIn("Ljava/lang/Math;min(FF)F", boss)
+        for content in (boss,mini):
+            self.assertIn("Ljava/lang/Math;min(DD)D", content)
+            self.assertEqual(set(re.findall(r'type\("([a-z_]+)"\)', content)),INCOMING)
+            self.assertNotIn("setHealth(",content)
+            self.assertNotIn("bypasses_invulnerability",content)
+        cfg = json.loads((ROOT / "compat/techquest-compat/techquest-compat.mixins.json").read_text())
+        self.assertIn("IncomingLegendaryBossMixin",cfg["mixins"])
+        self.assertIn("IncomingLegendaryMiniBossMixin",cfg["mixins"])
+
     def test_incoming_damage_types_bypass_only_cataclysm_internal_damage_bucket(self):
         data=json.loads(TAG.read_text())
         self.assertFalse(data["replace"])
@@ -111,12 +128,18 @@ class IncomingLethalityTests(unittest.TestCase):
             harness.write_text(HARNESS)
             sources=sorted(STUBS.rglob("*.java"))
             self.assertEqual(len(sources),14)
+            extra = sorted((SOURCE.parent).glob("IncomingLegendary*Mixin.java"))
+            self.assertEqual(len(extra), 2)
             subprocess.run([javac,"--release","21","-g:none","-d",tmp,
-                            *(str(p) for p in sources),str(SOURCE),str(harness)],
+                            *(str(p) for p in sources),str(SOURCE),
+                            *(str(path) for path in extra),str(harness)],
                            check=True,capture_output=True,text=True)
             compiled=dest/CLASS
             with zipfile.ZipFile(io.BytesIO(build_pack.compatibility_jar())) as z:
                 self.assertEqual(compiled.read_bytes(), z.read(CLASS))
+                for stem in ("IncomingLegendaryBossMixin", "IncomingLegendaryMiniBossMixin"):
+                    other = "techquest/compat/mixin/" + stem + ".class"
+                    self.assertEqual((dest / other).read_bytes(), z.read(other))
             inspection=subprocess.check_output([javap,"-v","-p",str(compiled)],text=True)
             self.assertIn("RuntimeInvisibleAnnotations:",inspection)
             self.assertIn("org.spongepowered.asm.mixin.Mixin",inspection)
@@ -130,6 +153,10 @@ class IncomingLethalityTests(unittest.TestCase):
         with zipfile.ZipFile(io.BytesIO(jar)) as z:
             self.assertTrue(z.read(CLASS).startswith(bytes.fromhex("cafebabe")))
             self.assertEqual(z.namelist().count(CLASS),1)
+            for stem in ("IncomingLegendaryBossMixin", "IncomingLegendaryMiniBossMixin"):
+                name = "techquest/compat/mixin/" + stem + ".class"
+                self.assertEqual(z.namelist().count(name), 1)
+                self.assertTrue(z.read(name).startswith(bytes.fromhex("cafebabe")))
         with tempfile.TemporaryDirectory() as tmp:
             pack=Path(tmp)/"test.mrpack"
             build_pack.make_mrpack(build_pack.load_cfg(),[],pack)

@@ -19,6 +19,10 @@ Add a source-scoped Mixin to `LLibrary_Boss_Monster.hurt` to keep original submi
 
 Retain all native `hurt()` guards executed by individual bosses and vanilla armor/mitigation. The term 'lethal' in this spec means damage designed lethal by Incoming, not an absolute kill of targets without a legal hurt event.
 
+## Legendary Monsters generic cap integration
+
+Review of upstream `Miauczel/Legendary-Monsters-1.21.1-NeoForge` shows two independent caps: `IAnimatedBoss.hurt()` uses `Math.min(DD)`, and `IAnimatedBoss.addDamage()` uses `Math.min(FF)` inside an event-driven damage accounting method. `IAnimatedMiniBoss.hurt()` also uses `Math.min(DD)`. Intercept each only for pinned Incoming damage IDs, without changing special checks in `TheObliteratorEntity.hurt` (parry, teleportation, genuine attack-state invulnerability, and anti-cheese). Test GBU-57 against another Legendary boss and The Obliterator's allowed vs protected windows. This is not a claim that all bosses can be instantly killed during scripted invulnerability.
+
 ## Verification
 
 CI: source-scope and tag tests; rebuild committed Java 21 Mixin bytecode from checked-in stubs; Java behavioral unit harness verifies all 12 Incoming sources vs non-Incoming source and low-damage controls; pack and Windows EXE self-test; real client main-menu startup; security audit.
