@@ -34,8 +34,7 @@ internal sealed class InstallerForm : Form
     private readonly Button neoforge = new() { Text = "2. Установить NeoForge", Width = 205, Height = 45 };
     private readonly Button openFolder = new() { Text = "Открыть папку", Width = 150, Height = 37 };
     private readonly Button help = new() { Text = "Инструкция", Width = 130, Height = 37 };
-    private readonly Button importAmw = new() { Text = "3. Добавить AMW", Width = 205, Height = 37 };
-    private readonly Button importDragonRise = new() { Text = "4. Добавить DragonRise", Width = 245, Height = 45 };
+    private readonly Button importDragonRise = new() { Text = "3. Добавить DragonRise", Width = 245, Height = 45 };
     private readonly Button cancel = new() { Text = "Отмена", Width = 100, Height = 37, Enabled = false };
     private readonly ProgressBar progress = new() { Width = 695, Height = 19 };
     private readonly Label status = new() { Text = "Готово к установке. Minecraft Launcher и Java 21 устанавливаются отдельно.", AutoSize = false, Width = 710, Height = 45 };
@@ -97,14 +96,13 @@ internal sealed class InstallerForm : Form
         openFolder.Location = new Point(32, 488);
         help.Location = new Point(190, 488);
         cancel.Location = new Point(330, 488);
-        importAmw.Location = new Point(462, 488);
         progress.Location = new Point(32, 535);
         status.Location = new Point(32, 557);
         install.BackColor = Color.FromArgb(168, 227, 117);
         install.ForeColor = Color.FromArgb(18, 33, 18);
         neoforge.BackColor = Color.FromArgb(41, 56, 79);
         neoforge.ForeColor = Color.White;
-        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importAmw, importDragonRise })
+        foreach (var button in new[] { install, neoforge, openFolder, browse, cancel, help, importDragonRise })
         {
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
@@ -119,11 +117,10 @@ internal sealed class InstallerForm : Form
         };
         cancel.Click += (_, _) => cancellation?.Cancel();
         help.Click += (_, _) => ShowInstructions();
-        importAmw.Click += (_, _) => ImportAcceleratedMcWarfare();
         importDragonRise.Click += (_, _) => ImportDragonRise();
         Controls.AddRange(new Control[] {
             title, subtitle, heading, liteDesc, moreDesc, pathHeading, location,
-            browse, safety, install, neoforge, openFolder, help, cancel, importAmw, importDragonRise, progress, status
+            browse, safety, install, neoforge, openFolder, help, cancel, importDragonRise, progress, status
         });
         location.Text = Path.Combine(baseDir, "TechQuest");
     }
@@ -132,7 +129,6 @@ internal sealed class InstallerForm : Form
     {
         install.Enabled = !busy;
         neoforge.Enabled = !busy;
-        importAmw.Enabled = !busy;
         importDragonRise.Enabled = !busy;
         browse.Enabled = !busy;
         location.ReadOnly = busy;
@@ -146,15 +142,13 @@ internal sealed class InstallerForm : Form
             "1. Выберите одну папку TechQuest и нажмите «Установить / обновить»; Python не нужен.\n" +
             "2. При обновлении существующего TechQuest сохранения и настройки остаются;\n" +
             "   предыдущие JAR сохраняются в .techquest-previous-mods (одна копия).\n" +
-            "   Дополнительные сторонние JAR (AMW, DragonRise) нужно импортировать повторно.\n" +
+            "   Дополнительные сторонние JAR (DragonRise) нужно импортировать повторно.\n" +
             "3. Установите Java 21, если её нет на компьютере.\n" +
             "3. Нажмите «Установить NeoForge», в его окне выберите Install client.\n" +
             "4. Откройте официальный Minecraft Launcher → Установки → NeoForge 21.1.264 → Изменить.\n" +
             "5. В «Папка игры / Game Directory» укажите выбранный здесь путь.\n" +
             "6. Запускайте профиль NeoForge, НЕ обычную ванильную Minecraft 1.21.1.\n" +
-            "7. AMW (необязательно): скачайте официальный JAR с CurseForge, затем нажмите «3. Добавить AMW».\n" +
-            "   Для сервера положите тот же JAR в mods и проверьте совместимость с Incoming.\n" +
-            "8. DragonRise (необязательно): скачайте официальный JAR 1.5.1 и нажмите «4. Добавить DragonRise».\n" +
+            "7. DragonRise (необязательно): скачайте официальный JAR 1.5.1 и нажмите «3. Добавить DragonRise».\n" +
             "   Проверьте самолёты на новом мире; серверу нужен тот же JAR.\n" +
             "Оптимизированный профиль: графика Fast, 4–6 чанков, без шейдеров,\n" +
             "6 ГБ RAM при наличии 16 ГБ системной памяти.\n\n" +
@@ -618,11 +612,6 @@ internal sealed class InstallerForm : Form
         }
     }
 
-    private void ImportAcceleratedMcWarfare() => ImportOptionalMod(
-        "AMW 1.0.4 Alpha", "acceleratedMcWarfare-1.0.4..jar",
-        "https://www.curseforge.com/minecraft/mc-mods/amw/files/9298161",
-        "geckolib", "TECHQUEST_AMW_IMPORT.txt");
-
     private void ImportDragonRise() => ImportOptionalMod(
         "DragonRise: Reforge 1.5.1", "dragonrise_reforge-1.5.1-release.jar",
         "https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025",
@@ -811,7 +800,7 @@ internal sealed class InstallerForm : Form
                 "Миры, карты, конфиги и настройки управления останутся на месте.\n" +
                 "Предыдущие JAR перейдут в одну резервную папку .techquest-previous-mods.\n" +
                 "Предыдущая резервная папка (если есть) будет заменена.\n" +
-                "Дополнительные JAR (AMW, DragonRise) потребуется добавить снова.\n\n" +
+                "Дополнительные JAR (DragonRise) потребуется добавить снова.\n\n" +
                 "Перед обновлением закройте Minecraft и сделайте копию важного мира.",
                 "Обновление TechQuest", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 != DialogResult.Yes) return;

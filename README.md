@@ -30,7 +30,6 @@ TechQuest — большая комплексная сборка вокруг **
 
 **Авиация:** Superb Warfare и Incoming остаются в составе. MCHeli Modern Port, TaCZ и ParCool исключены по решению владельца («не нужен»). Геймпад для самолёта пока не реализован. [Состояние авиации](docs/AIRCRAFT_0.3.3_RU.md) · [Как работает SAM Incoming](docs/INCOMING_SAM_RU.md) · [Физика](docs/PHYSICS_TESTING_RU.md) · [NeoForge через GUI](docs/NEOFORGE_FALLBACK_RU.md) · [Клавиши и зум](docs/CONTROLS_RU.md).
 
-**Дополнение для тестирования 0.3.3:** AcceleratedMcWarfare 1.0.4 Alpha (NeoForge 1.21.1) доступен через кнопку ручного импорта в экспериментальном Windows Installer; основной JAR скачивается пользователем с официальной страницы CurseForge. Файл не распространяется в TechQuest из-за ограничений CDN и лицензии. Подробности: [AMW — установка и тесты](docs/AMW_TESTING_RU.md).
 
 > **Новый экспериментальный курс TechQuest 0.3.3:** больше приключений и исследования без удаления BuildCraft, IC2, Create и Mekanism. В PR #5 добавлены The Aether, Deeper and Darker, When Dungeons Arise, Artifacts, Wyrmroost (драконы), Legendary Monsters и Twisted Mobs (крупные монстры), Forgematica (схемы), Explorer's Compass и крепости YUNG's. Подробности в [плане Adventure & Exploration](docs/ADVENTURE_EXPLORATION_RU.md). Это тестовая ветка, не стабильный релиз.
 
@@ -127,7 +126,7 @@ GUI устанавливает единый Optimized-профиль без Pyth
 - [Superb Warfare](https://modrinth.com/mod/superb-warfare) — вооружение, военная техника, авиация; версия `0.8.9.2` (обязательный компонент следующего тестового пакета).
 - [Burnt + Additions](https://modrinth.com/mod/burnt) — пожарная система; ветка `1.10.2` (с Geckolib и Cloth Config API).
 - [Explosion Overhaul: A new level of destruction](https://modrinth.com/mod/explosion-overhaul-a-new-level-of-destruction) от Vinlanx — взрывы с кинематографическими эффектами; экспериментальный порт `0.2.3.0-neoforge`.
-- [DragonRise: Reforge](https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025) — аддон военной техники к Superb Warfare, файл `dragonrise_reforge-1.5.1-release.jar`. **Экспериментальный импорт через Windows Installer**: скачайте оригинальный JAR с CurseForge, нажмите «4. Добавить DragonRise» и скопируйте тот же JAR на сервер. В .mrpack включается только описание, не сам JAR. [Установка и проверка](docs/DRAGONRISE_TESTING_RU.md).
+- [DragonRise: Reforge](https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025) — аддон военной техники к Superb Warfare, файл `dragonrise_reforge-1.5.1-release.jar`. **Экспериментальный импорт через Windows Installer**: скачайте оригинальный JAR с CurseForge, нажмите «3. Добавить DragonRise» и скопируйте тот же JAR на сервер. В .mrpack включается только описание, не сам JAR. [Установка и проверка](docs/DRAGONRISE_TESTING_RU.md).
 
 В список обязательных библиотек также добавлены `lithostitched` (1.8.0, для Terralith) и `irons-lib` (1.21.1-2.x, для Iron's Spells) после ошибки загрузки NeoForge 18 октября 2026 г.
 
