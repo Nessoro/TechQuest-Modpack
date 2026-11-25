@@ -126,7 +126,7 @@ jobs:
               "u6dRKJwZ": ("iv3KiVkE", "jei-1.21.1-neoforge-19.64.0.455.jar"),
               "gF3BGWvG": ("yWmXD7GW", "open-parties-and-claims-neoforge-1.21.1-0.33.0.jar"),
           }
-          with zipfile.ZipFile("output/TechQuest_0.3.3.4.mrpack") as archive:
+          with zipfile.ZipFile("output/TechQuest_0.3.3.5.mrpack") as archive:
               rows = json.loads(archive.read("modrinth.index.json"))["files"]
               for project, (version, filename) in expected.items():
                   lock = cfg["modrinth_lock"][project]
@@ -160,7 +160,7 @@ jobs:
               "yAyrQXJ6": ("991No08g", "fluidic_tanks-1.1.1.jar",
                            {"client":"required","server":"required"}),
           }
-          with zipfile.ZipFile("output/TechQuest_0.3.3.4.mrpack") as archive:
+          with zipfile.ZipFile("output/TechQuest_0.3.3.5.mrpack") as archive:
               index=json.loads(archive.read("modrinth.index.json"))
               for project,(version,filename,sides) in expected.items():
                   lock=cfg["modrinth_lock"][project]
@@ -193,7 +193,7 @@ jobs:
               "8lnmIJH7": ("R7rQFgQh","DimStorage-1.21.1-9.1.1.jar"),
               "a8Jk9kpK": ("exl6hgWJ","EdivadLib-1.21-3.0.0.jar"),
           }
-          with zipfile.ZipFile("output/TechQuest_0.3.3.4.mrpack") as archive:
+          with zipfile.ZipFile("output/TechQuest_0.3.3.5.mrpack") as archive:
               rows=json.loads(archive.read("modrinth.index.json"))["files"]
               for project,(vid,filename) in expected.items():
                   lock=cfg["modrinth_lock"][project]
@@ -238,7 +238,7 @@ jobs:
               assert hashlib.sha512(jar.read_bytes()).hexdigest() == sha, jar
               with zipfile.ZipFile(jar) as zf:
                   assert zf.testzip() is None, jar
-          with zipfile.ZipFile('output/TechQuest_0.3.3.4.mrpack') as zf:
+          with zipfile.ZipFile('output/TechQuest_0.3.3.5.mrpack') as zf:
               assert zf.testzip() is None
               rows = json.loads(zf.read('modrinth.index.json'))['files']
               matches = [row for row in rows if row['path'] == 'mods/' + name]
@@ -278,7 +278,7 @@ jobs:
               assert hashlib.sha512(jar.read_bytes()).hexdigest() == sha, jar
               with zipfile.ZipFile(jar) as zf:
                   assert zf.testzip() is None, jar
-          with zipfile.ZipFile("output/TechQuest_0.3.3.4.mrpack") as zf:
+          with zipfile.ZipFile("output/TechQuest_0.3.3.5.mrpack") as zf:
               assert zf.testzip() is None
               records = json.loads(zf.read("modrinth.index.json"))["files"]
               matches = [r for r in records if r["path"] == "mods/" + filename]
@@ -320,7 +320,7 @@ jobs:
                   assert zf.testzip() is None
                   assert "META-INF/neoforge.mods.toml" in zf.namelist()
               print("BetterBlockZ verified:",side,len(data),sha)
-          with zipfile.ZipFile("output/TechQuest_0.3.3.4.mrpack") as zf:
+          with zipfile.ZipFile("output/TechQuest_0.3.3.5.mrpack") as zf:
               assert zf.testzip() is None
               records=json.loads(zf.read("modrinth.index.json"))["files"]
               rows=[r for r in records if r["path"]=="mods/"+name]
@@ -353,7 +353,7 @@ jobs:
               label = (meta.get("title", "") + " " + meta.get("filename", "")).lower()
               assert not any(name in label for name in excluded_names), label
 
-          with zipfile.ZipFile("output/TechQuest_0.3.3.4.mrpack") as archive:
+          with zipfile.ZipFile("output/TechQuest_0.3.3.5.mrpack") as archive:
               assert archive.testzip() is None, "damaged mrpack ZIP"
               index = json.loads(archive.read("modrinth.index.json"))
               files = {row["path"]: row for row in index["files"]}
@@ -421,7 +421,7 @@ jobs:
               assert hashlib.sha512(jar.read_bytes()).hexdigest() == lock["sha512"], jar
               with zipfile.ZipFile(jar) as archive:
                   assert archive.testzip() is None, (side, "corrupted jar")
-          with zipfile.ZipFile("output/TechQuest_0.3.3.4.mrpack") as archive:
+          with zipfile.ZipFile("output/TechQuest_0.3.3.5.mrpack") as archive:
               assert archive.testzip() is None
               index = json.loads(archive.read("modrinth.index.json"))
               path = "mods/" + lock["filename"]
@@ -454,7 +454,7 @@ jobs:
 
           1. Install Java 21 (64-bit) and Python 3.9+.
           2. In this extracted folder, run:
-               python scripts/install_server.py --pack TechQuest_0.3.3.4.mrpack --target server
+               python scripts/install_server.py --pack TechQuest_0.3.3.5.mrpack --target server
           3. Industrial Craft 2: Nostalgia is included automatically in TechQuest.mrpack
              as a pinned GitHub download with SHA-512/SHA-1 verification.
              You do NOT need to add its JAR manually. The same mod goes to client/server.
@@ -472,7 +472,7 @@ jobs:
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
               z.write("scripts/boss_checklist.py")
-              z.write(out/"TechQuest_0.3.3.4.mrpack",arcname="TechQuest_0.3.3.4.mrpack")
+              z.write(out/"TechQuest_0.3.3.5.mrpack",arcname="TechQuest_0.3.3.5.mrpack")
               z.writestr("SERVER_INSTALL_README.txt",readme)
           print("Created",p,p.stat().st_size,"bytes")
           PY
@@ -483,15 +483,15 @@ jobs:
           from pathlib import Path
           import zipfile
           out=Path("output")
-          readme="""TECHQUEST 0.3.3.4 — Minecraft Official Launcher
+          readme="""TECHQUEST 0.3.3.5 — Minecraft Official Launcher
 
-          Non-technical Windows players should use TechQuest_0.3.3.4.exe GUI
+          Non-technical Windows players should use TechQuest_0.3.3.5.exe GUI
           from the Windows GUI artifact instead. This ZIP is an optional
           backup for developers using Python, not needed by ordinary players.
 
           Needs Minecraft Java 1.21.1, NeoForge 21.1.264, Java 21.
           From this folder:
-            python scripts/install_client.py --pack TechQuest_0.3.3.4.mrpack --game-dir C:\\Minecraft\\TechQuestOptimized
+            python scripts/install_client.py --pack TechQuest_0.3.3.5.mrpack --game-dir C:\\Minecraft\\TechQuestOptimized
 
           Then set Official Minecraft Launcher -> NeoForge -> Game Directory
           to the same dedicated game folder. Never mix with vanilla/Fabric mods.
@@ -505,7 +505,7 @@ jobs:
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
               z.write("scripts/boss_checklist.py")
-              z.write(out/"TechQuest_0.3.3.4.mrpack",arcname="TechQuest_0.3.3.4.mrpack")
+              z.write(out/"TechQuest_0.3.3.5.mrpack",arcname="TechQuest_0.3.3.5.mrpack")
               z.writestr("OFFICIAL_LAUNCHER_INSTALL.txt", readme)
           PY
       - name: Test both extracted bootstrap archives in isolation
@@ -596,7 +596,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force windows-installer/assets | Out-Null
-          Copy-Item client-packages/TechQuest_0.3.3.4.mrpack windows-installer/assets/TechQuest_Optimized.mrpack
+          Copy-Item client-packages/TechQuest_0.3.3.5.mrpack windows-installer/assets/TechQuest_Optimized.mrpack
           Add-Type -AssemblyName System.IO.Compression
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           $zip = [IO.Compression.ZipFile]::OpenRead("$PWD/windows-installer/assets/TechQuest_Optimized.mrpack")
@@ -616,7 +616,7 @@ jobs:
               if(-not ($paths | Where-Object { $_ -match $mustHave })) { throw "Missing required mod: $mustHave" }
             }
             if($paths | Where-Object { $_ -match '^mods/iris-' }) { throw 'Optimized pack contains Iris unexpectedly' }
-            if($index.versionId -ne '0.3.3.4') { throw "Unexpected version $($index.versionId)" }
+            if($index.versionId -ne '0.3.3.5') { throw "Unexpected version $($index.versionId)" }
             if(-not ($zip.Entries | Where-Object FullName -EQ 'overrides/options.txt')) { throw 'Missing low-lag video settings' }
             foreach ($required in @(
               'overrides/patchouli_books/techquest_guide/book.json',
@@ -635,12 +635,12 @@ jobs:
           dotnet publish windows-installer/TechQuestInstaller.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:PublishTrimmed=false --output dist
           if($LASTEXITCODE -ne 0) { throw 'dotnet publish failed' }
           if(-not (Test-Path dist/TechQuestInstaller.exe)) { throw 'Missing GUI executable' }
-          Move-Item dist/TechQuestInstaller.exe dist/TechQuest_0.3.3.4.exe
-          Get-Item dist/TechQuest_0.3.3.4.exe | Select-Object Name,Length
+          Move-Item dist/TechQuestInstaller.exe dist/TechQuest_0.3.3.5.exe
+          Get-Item dist/TechQuest_0.3.3.5.exe | Select-Object Name,Length
       - name: Smoke-test compiled GUI EXE and optimized pack
         shell: pwsh
         run: |
-          $exe = (Resolve-Path dist/TechQuest_0.3.3.4.exe).Path
+          $exe = (Resolve-Path dist/TechQuest_0.3.3.5.exe).Path
           $run = Start-Process -FilePath $exe -ArgumentList '--self-test' -Wait -PassThru
           if($run.ExitCode -ne 0) { throw "GUI packaged resource self-test failed: $($run.ExitCode)" }
           Write-Host "Native installer unified optimized manifest verified"
@@ -648,7 +648,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TechQuest-Windows-GUI-Installer
-          path: dist/TechQuest_0.3.3.4.exe
+          path: dist/TechQuest_0.3.3.5.exe
           if-no-files-found: error
           retention-days: 30
 
@@ -679,10 +679,10 @@ jobs:
       - name: Verify source, JAR integrity and every checksum
         run: |
           python scripts/security_audit.py \
-            --pack security-work/manifests/TechQuest_0.3.3.4.mrpack \
+            --pack security-work/manifests/TechQuest_0.3.3.5.mrpack \
             --mods-dir security-work/mods --reports security-work/reports
-          test -s security-work/installer/TechQuest_0.3.3.4.exe
-          sha256sum security-work/installer/TechQuest_0.3.3.4.exe | tee security-work/reports/windows-installer-sha256.txt
+          test -s security-work/installer/TechQuest_0.3.3.5.exe
+          sha256sum security-work/installer/TechQuest_0.3.3.5.exe | tee security-work/reports/windows-installer-sha256.txt
       - name: Install ClamAV antivirus and update signatures
         run: |
           sudo apt-get update -qq
@@ -698,7 +698,7 @@ jobs:
           clamscan --recursive --infected \
             --max-filesize=512M --max-scansize=2048M --max-recursion=20 \
             --max-files=10000 --log=security-work/reports/clamav-results.txt \
-            security-work/mods security-work/installer/TechQuest_0.3.3.4.exe
+            security-work/mods security-work/installer/TechQuest_0.3.3.5.exe
           code=$?
           set -e
           printf 'ClamAV exit code: %s\n' "$code" | tee security-work/reports/clamav-exit-code.txt
@@ -778,10 +778,10 @@ jobs:
             echo "Skipping outdated candidate $GITHUB_SHA; branch moved to $CURRENT" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          test -s public/TechQuest_0.3.3.4.exe
-          test -s public/pack/TechQuest_0.3.3.4.mrpack
-          cp public/pack/TechQuest_0.3.3.4.mrpack public/TechQuest_Optimized.mrpack
-          sha256sum public/TechQuest_0.3.3.4.exe public/TechQuest_Optimized.mrpack > public/SHA256SUMS.txt
+          test -s public/TechQuest_0.3.3.5.exe
+          test -s public/pack/TechQuest_0.3.3.5.mrpack
+          cp public/pack/TechQuest_0.3.3.5.mrpack public/TechQuest_Optimized.mrpack
+          sha256sum public/TechQuest_0.3.3.5.exe public/TechQuest_Optimized.mrpack > public/SHA256SUMS.txt
           cat > public/NOTES.md <<EOF
           # TechQuest 0.3.3-micro2 preview
 
@@ -802,9 +802,9 @@ jobs:
           EOF
           TAG="v0.3.3-micro2-preview"
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
-            gh release upload "$TAG" public/TechQuest_0.3.3.4.exe public/TechQuest_Optimized.mrpack public/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
+            gh release upload "$TAG" public/TechQuest_0.3.3.5.exe public/TechQuest_Optimized.mrpack public/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
             gh release edit "$TAG" --title "TechQuest 0.3.3-micro2 (preview)" --notes-file public/NOTES.md --prerelease --repo "$GITHUB_REPOSITORY"
           else
-            gh release create "$TAG" public/TechQuest_0.3.3.4.exe public/TechQuest_Optimized.mrpack public/SHA256SUMS.txt --target "$GITHUB_SHA" --title "TechQuest 0.3.3-micro2 (preview)" --notes-file public/NOTES.md --prerelease --repo "$GITHUB_REPOSITORY"
+            gh release create "$TAG" public/TechQuest_0.3.3.5.exe public/TechQuest_Optimized.mrpack public/SHA256SUMS.txt --target "$GITHUB_SHA" --title "TechQuest 0.3.3-micro2 (preview)" --notes-file public/NOTES.md --prerelease --repo "$GITHUB_REPOSITORY"
           fi
-          echo "Public download (no account): https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/TechQuest_0.3.3.4.exe" >> "$GITHUB_STEP_SUMMARY"
+          echo "Public download (no account): https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/TechQuest_0.3.3.5.exe" >> "$GITHUB_STEP_SUMMARY"
