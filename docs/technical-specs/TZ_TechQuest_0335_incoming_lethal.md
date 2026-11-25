@@ -15,7 +15,7 @@ Do not classify every nearby Incoming explosion as lethal. Preserve damage calcu
 
 ## Initial implementation
 
-Add a source-scoped Mixin to `LLibrary_Boss_Monster.hurt` to keep original submitted damage when the source is one of the 12 pinned Incoming damage IDs. Normal damage stays clamped. Add remaining Incoming damage types to the *additive Cataclysm-only* `bypasses_hurt_time` tag so its internal damage bucket cannot silently cap an otherwise lethal hit. No boss `setHealth`, broad bypass tag, damage override for Superb Warfare, changes to Incoming mod JAR or global entity properties.
+Add a source-scoped Mixin to `LLibrary_Boss_Monster.hurt` to keep original submitted damage when the source is one of the 12 pinned Incoming damage IDs. Normal damage stays clamped. Add remaining Incoming damage types to the *additive Cataclysm-only* `bypasses_hurt_time` tag so its internal damage bucket cannot silently cap an otherwise lethal hit. An Incoming-only `@ModifyVariable` at Cataclysm's stored attacker distance removes an unrelated remote-operator range rejection, returning the class's existing `-1` sentinel; Incoming still controls the physics and actual blast reach. No boss `setHealth`, broad bypass tag, damage override for Superb Warfare, changes to Incoming mod JAR or global entity properties.
 
 Retain all native `hurt()` guards executed by individual bosses and vanilla armor/mitigation. The term 'lethal' in this spec means damage designed lethal by Incoming, not an absolute kill of targets without a legal hurt event.
 
