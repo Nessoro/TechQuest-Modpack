@@ -29,6 +29,8 @@ class BossTrackingTests(unittest.TestCase):
         self.assertIn("BetterZoomEarlyTickMixin", config["client"])
         source = SOURCE.read_text()
         self.assertIn('method = "clientTrackingRange()I"', source)
+        self.assertIn("EntityType.getKey(type)", source)
+        self.assertNotIn("BuiltInRegistries", source)
         self.assertIn('!"cataclysm".equals(id.getNamespace())', source)
         self.assertIn("TECHQUEST_BOSS_TRACKING_CHUNKS = 14", source)
         import re
@@ -42,13 +44,23 @@ class BossTrackingTests(unittest.TestCase):
         if not javac:
             self.skipTest("JDK 21 not installed; CI installs Temurin 21")
         stubs = sorted(STUBS.rglob("*.java"))
-        self.assertEqual(8, len(stubs))
+        self.assertEqual(6, len(stubs))
         with tempfile.TemporaryDirectory() as tmp:
             subprocess.run([javac, "--release", "21", "-d", tmp,
                             *(str(path) for path in stubs), str(SOURCE)],
                            check=True, capture_output=True, text=True)
             compiled = Path(tmp) / CLASS
             self.assertEqual(BINARY.read_bytes(), compiled.read_bytes())
+
+    def test_no_incorrect_registry_field_linkage(self):
+        # 1.21.1 EntityType.getKey(EntityType<?>) is a public static method.
+        # BuiltInRegistries.ENTITY_TYPE is DefaultedRegistry, not Registry.
+        # Check the committed class constant pool, independently of stub recompilation.
+        data = BINARY.read_bytes()
+        self.assertNotIn(b"net/minecraft/core/registries/BuiltInRegistries", data)
+        self.assertNotIn(b"Lnet/minecraft/core/Registry;", data)
+        self.assertIn(b"getKey", data)
+        self.assertIn(b"(Lnet/minecraft/world/entity/EntityType;)Lnet/minecraft/resources/ResourceLocation;", data)
 
     def test_packaged_for_client_and_server(self):
         data = BINARY.read_bytes()
