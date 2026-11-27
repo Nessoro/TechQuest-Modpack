@@ -1,6 +1,5 @@
 package techquest.compat.mixin;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +19,7 @@ public abstract class BossTrackingRangeMixin {
     @Inject(method = "clientTrackingRange()I", at = @At("RETURN"), cancellable = true)
     private void techquest$bossTrackingRange(CallbackInfoReturnable<Integer> cir) {
         EntityType<?> type = (EntityType<?>) (Object) this;
-        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+        ResourceLocation id = EntityType.getKey(type);
         if (id == null || !"cataclysm".equals(id.getNamespace())) {
             return;
         }
