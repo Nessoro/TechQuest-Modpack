@@ -376,7 +376,7 @@ def _compiled_incoming_lethal_mixin():
         raise BuildError("JDK 21 javac is required to build the TechQuest compatibility JAR")
     sources = sorted((ROOT / "compat/hotfix-src/techquest/compat/mixin").glob("Incoming*Mixin.java"))
     stubs = sorted((ROOT / "compat/hotfix-stubs").rglob("*.java"))
-    if len(stubs) != 12 or len(sources) != 3:
+    if len(stubs) != 12 or len(sources) != 4:
         raise BuildError("Missing first-party Incoming Mixin sources or type-only Java stubs")
     with tempfile.TemporaryDirectory(prefix="techquest-incoming-mixin-") as out:
         cmd = [javac, "--release", "21", "-g:none", "-d", out,
