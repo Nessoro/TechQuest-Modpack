@@ -1,0 +1,16 @@
+{
+  "advancement.dungeons_arise.find_kisegi_sanctuary.desc": "Найдите святилище Кисеги",
+  "advancement.dungeons_arise.find_kisegi_sanctuary.title": "Сочувствие дьяволу",
+  "advancement.dungeons_arise.find_mining_complex.desc": "Найдите шахтёрский комплекс",
+  "advancement.dungeons_arise.find_mining_complex.title": "Накорми машину",
+  "enchantment.dungeons_arise.discharge": "Разрядка",
+  "enchantment.dungeons_arise.discharge.desc": "При ударах по врагам растёт ваша скорость, однако высокий уровень скорости высвобождается мощным взрывом, раня и жертву, и атакующего.",
+  "enchantment.dungeons_arise.ensnaring": "Опутывание",
+  "enchantment.dungeons_arise.ensnaring.desc": "Даёт шанс сильнее замедлить противника при ударе и призывает клыки, атакующие всех монстров вокруг.",
+  "enchantment.dungeons_arise.lolths_curse": "Проклятие Лолс",
+  "enchantment.dungeons_arise.lolths_curse.desc": "При ударе по врагу появляется шанс восстановить здоровье, но из тела могут вырваться пауки. При атаке членистоногого часть урона отражается обратно владельцу.",
+  "enchantment.dungeons_arise.purification": "Очищение",
+  "enchantment.dungeons_arise.purification.desc": "Даёт шанс полностью отразить эффекты отравления и иссушения, выпуская импульс энергии, наносящий урон ближайшим врагам.",
+  "enchantment.dungeons_arise.voltaic_shot": "Электрический выстрел",
+  "enchantment.dungeons_arise.voltaic_shot.desc": "Заряжает стрелы электричеством, позволяя им лететь по прямой и взрываться при попадании."
+}
