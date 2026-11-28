@@ -44,7 +44,7 @@ class BossTrackingTests(unittest.TestCase):
         if not javac:
             self.skipTest("JDK 21 not installed; CI installs Temurin 21")
         stubs = sorted(STUBS.rglob("*.java"))
-        self.assertEqual(6, len(stubs))
+        self.assertEqual(12, len(stubs))
         with tempfile.TemporaryDirectory() as tmp:
             subprocess.run([javac, "--release", "21", "-d", tmp,
                             *(str(path) for path in stubs), str(SOURCE)],
