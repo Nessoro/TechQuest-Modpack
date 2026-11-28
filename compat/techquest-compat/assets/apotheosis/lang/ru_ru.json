@@ -59,6 +59,7 @@
   "misc.apotheosis.attribute_toggle.state": "[%s]",
   "misc.apotheosis.attribute_toggle.updated": "Бонусы %s теперь %s",
   "text.apotheosis.malice_notice_final": "Злоба переплетается с %s и полностью поглощает ваш предмет!",
+  "text.apotheosis.touched_by_malice": "Злоба коснулась %s",
   "tier_augment.apotheosis.damage_reduction": "+%s%% сопротивление: %s",
   "title.apotheosis.stoneforming": "Преобразование камня"
 }
