@@ -11,6 +11,8 @@ on:
       - "horizon/tests/test_mojang_metadata_probe.py"
       - "horizon/tools/fetch_official_server.py"
       - "horizon/tests/test_fetch_official_server.py"
+      - "horizon/source/upstream-build-sources.json"
+      - "horizon/tools/checkout_horizon_source.py"
   workflow_dispatch:
 
 concurrency:
@@ -52,14 +54,11 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m unittest discover -s horizon/tests -v
-      - name: Checkout pinned official Horizon source
-        uses: actions/checkout@v4
+      - name: Checkout and verify pinned Horizon source
+        run: python3 horizon/tools/checkout_horizon_source.py horizon upstream-horizon
+      - uses: dtolnay/rust-toolchain@df2a88e9fe4098bad09cb42c3dec7187f15861fc
         with:
-          repository: horizon-rust/horizon
-          ref: c78187dffffb60f31517eadcb87413386e8ce729
-          path: upstream-horizon
-          persist-credentials: false
-      - uses: dtolnay/rust-toolchain@stable
+          toolchain: '1.99.1'
       - name: Build headless engine, resource preparer, supervisor and control tool
         working-directory: upstream-horizon
         run: |
@@ -85,7 +84,15 @@ jobs:
             echo "=== $tool CLI ==="
             cat "native-tools/$tool-help.txt"
           done
-          cp upstream-horizon/research-lock.json upstream-horizon/LICENSE native-tools/
+          cp upstream-horizon/{research-lock.json,LICENSE,THIRD_PARTY_NOTICES.md} native-tools/
+          (
+            cd upstream-horizon
+            git ls-files -z | while IFS= read -r -d '' path; do
+              case "${path##*/}" in
+                LICENSE*|COPYING*|NOTICE*) cp --parents "$path" ../native-tools/ ;;
+              esac
+            done
+          )
           python - <<'PY'
           import hashlib, json
           from pathlib import Path
@@ -132,13 +139,8 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
-      - name: Checkout same official Horizon revision for exporters
-        uses: actions/checkout@v4
-        with:
-          repository: horizon-rust/horizon
-          ref: c78187dffffb60f31517eadcb87413386e8ce729
-          path: upstream-horizon
-          persist-credentials: false
+      - name: Checkout and verify pinned Horizon source
+        run: python3 horizon/tools/checkout_horizon_source.py horizon upstream-horizon
       - uses: actions/download-artifact@v4
         with:
           name: TechQuest-Horizon-native-tools-Linux-BUILD-ONLY

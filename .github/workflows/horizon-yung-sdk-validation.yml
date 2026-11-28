@@ -6,6 +6,8 @@ on:
     paths:
       - ".github/workflows/horizon-yung-sdk-validation.yml"
       - "horizon/tools/validate_yung_sdk.py"
+      - "horizon/source/upstream-build-sources.json"
+      - "horizon/tools/checkout_horizon_source.py"
   workflow_dispatch:
 
 permissions:
@@ -35,14 +37,11 @@ jobs:
           source_pack="$(find source-artifact -type f -name '*.mrpack' -print -quit)"
           test -n "$source_pack"
           echo "PACK_PATH=$GITHUB_WORKSPACE/$source_pack" >> "$GITHUB_ENV"
-      - name: Checkout official Horizon at audited revision
-        uses: actions/checkout@v4
+      - name: Checkout and verify pinned Horizon source
+        run: python3 horizon/tools/checkout_horizon_source.py horizon upstream-horizon
+      - uses: dtolnay/rust-toolchain@df2a88e9fe4098bad09cb42c3dec7187f15861fc
         with:
-          repository: horizon-rust/horizon
-          ref: c78187dffffb60f31517eadcb87413386e8ce729
-          path: upstream-horizon
-          persist-credentials: false
-      - uses: dtolnay/rust-toolchain@stable
+          toolchain: '1.99.1'
       - name: Build official Horizon port-pack and content SDK
         run: |
           cargo build --manifest-path upstream-horizon/Cargo.toml -p horizon-port-pack -p cargo-horizon-mod --release --locked

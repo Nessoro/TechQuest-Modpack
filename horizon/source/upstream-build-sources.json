@@ -1,0 +1,17 @@
+{
+  "horizon": {
+    "upstream": "https://github.com/horizon-rust/horizon",
+    "mirror": "https://github.com/rdbtCVS/horizon.git",
+    "commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+    "tree": "16cfda3ed3b1674d3f51c2fdc6c9a93237b7d275",
+    "cargo_lock_sha256": "0f4fe7de576dbec180eb501ba7687145e7b51aa04f53abb15774227d9b66e154",
+    "license_sha256": "b4b374ae9d0f2d8f7be35c6783e41327431da3b5662605da9ba31493630621df"
+  },
+  "mixins": {
+    "upstream": "https://github.com/horizon-rust/horizon-mixins",
+    "commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+    "tree": "1aa65935448bae72719c7a02b503a4216593fbd1",
+    "cargo_lock_sha256": "35846f4a621cf8e1e54f6f0f7e13ac848db590d4ec401620501c107954eae6ca",
+    "license_sha256": "27f6e319fa95b7f939b5fd2154fd2568fa35e1aac8d784940ecb3838e09c60ae"
+  }
+}

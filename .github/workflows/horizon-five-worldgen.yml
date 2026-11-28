@@ -10,6 +10,8 @@ on:
       - "horizon/source/**"
       - "horizon/tools/resolve_source_artifact.cjs"
       - "horizon/tools/verify_source_pack.py"
+      - "horizon/source/upstream-build-sources.json"
+      - "horizon/tools/checkout_horizon_source.py"
   workflow_dispatch:
 
 concurrency:
@@ -77,14 +79,11 @@ jobs:
           echo "SOURCE_MODE=$SOURCE_MODE" >> "$GITHUB_ENV"
           echo "SOURCE_BUILD_RUN=$SOURCE_BUILD_RUN" >> "$GITHUB_ENV"
           echo "SOURCE_BUILD_SHA=$SOURCE_BUILD_SHA" >> "$GITHUB_ENV"
-      - name: Checkout pinned official Horizon source
-        uses: actions/checkout@v4
+      - name: Checkout and verify pinned Horizon source
+        run: python3 horizon/tools/checkout_horizon_source.py horizon upstream-horizon
+      - uses: dtolnay/rust-toolchain@df2a88e9fe4098bad09cb42c3dec7187f15861fc
         with:
-          repository: horizon-rust/horizon
-          ref: c78187dffffb60f31517eadcb87413386e8ce729
-          path: upstream-horizon
-          persist-credentials: false
-      - uses: dtolnay/rust-toolchain@stable
+          toolchain: '1.99.1'
       - name: Compile official Horizon port-pack and cargo-horizon-mod
         run: cargo build --manifest-path upstream-horizon/Cargo.toml -p horizon-port-pack -p cargo-horizon-mod --release --locked
       - name: Carry YUNG four and Terralith in one source inventory

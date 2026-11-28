@@ -6,6 +6,8 @@ on:
     paths:
       - "horizon/first_party/**"
       - ".github/workflows/horizon-sdk-check.yml"
+      - "horizon/source/upstream-build-sources.json"
+      - "horizon/tools/checkout_horizon_source.py"
   workflow_dispatch:
 
 permissions:
@@ -16,21 +18,24 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
-      HORIZON_REV: c78187dffffb60f31517eadcb87413386e8ce729
       CARGO_BUILD_JOBS: "2"
       CARGO_INCREMENTAL: "0"
     steps:
       - name: Checkout TechQuest
         uses: actions/checkout@v4
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@df2a88e9fe4098bad09cb42c3dec7187f15861fc
+        with:
+          toolchain: '1.99.1'
       - name: Rust versions
         run: |
           rustc --version
           cargo --version
+      - name: Checkout and verify pinned Horizon source
+        run: python3 horizon/tools/checkout_horizon_source.py horizon upstream-horizon
       - name: Compile official Horizon SDK at pinned revision
         run: |
-          cargo install --git https://github.com/horizon-rust/horizon --rev "$HORIZON_REV" cargo-horizon-mod --locked
+          cargo install --path upstream-horizon/crates/cargo-horizon-mod --locked
       - name: Official Horizon content build and check
         working-directory: horizon/first_party/expedition_marker
         run: |
