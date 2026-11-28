@@ -23,10 +23,13 @@ LOCALE_COUNTS = {
     "create": 20,
     "critical_strike": 18,
     "ftbultimine": 20,
+    "fragmentum": 17,
     "fluidic_tanks": 24,
     "ic2": 1336,
+    "irons_lib": 77,
     "immersiveengineering": 894,
     "jei": 625,
+    "lionfishapi": 4,
     "mekanism": 2279,
     "mekanismgenerators": 364,
     "modern_industrialization": 49,
@@ -38,6 +41,7 @@ LOCALE_COUNTS = {
     "refinedstorage": 10,
     "xaeroworldmap": 303,
     "waystones": 268,
+    "twisted_mobs": 113,
 }
 
 
@@ -148,6 +152,21 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("BlueMap", waystones["waystones.configuration.blueMap.enabled.tooltip"])
         self.assertEqual(waystones["chat.waystones.teleport_failed"],
                          "Телепортация не удалась.")
+        irons = json.loads((COMPAT / "assets/irons_lib/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(irons["attribute.name.irons_lib.crit_damage"], "Критический урон")
+        self.assertIn("%s", irons["tooltip.irons_lib.transmog_title"])
+        self.assertIn("Patreon", irons["block.irons_lib.transmog_table"])
+        twisted = json.loads((COMPAT / "assets/twisted_mobs/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(twisted["entity.twisted_mobs.goliath"], "Голиаф")
+        self.assertEqual(twisted["item.twisted_mobs.goliath_egg"], "Яйцо призыва: Голиаф")
+        self.assertEqual(twisted["block.twisted_mobs.infested_tnt"], "Заражённый динамит")
+        fragmentum = json.loads((COMPAT / "assets/fragmentum/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(fragmentum["config.fragmentum.format.percentage"], "%s%%")
+        self.assertIn("/reload", fragmentum["config.fragmentum.anyReloadWrapper"])
+        self.assertEqual(fragmentum["config.fragmentum.format.potency.3"], "VI")
+        lionfish = json.loads((COMPAT / "assets/lionfishapi/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("OptiFine", lionfish["gui.lionfishapi.optifine.message"])
+        self.assertIn("Oculus", lionfish["gui.lionfishapi.optifine.oculussuggestions"])
         mowzie = json.loads((COMPAT / "assets/mowziesmobs/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(mowzie["itemGroup.mowziesmobs.creativeTab"], "Mowzie's Mobs")
 
