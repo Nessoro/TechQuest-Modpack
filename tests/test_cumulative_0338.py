@@ -19,7 +19,7 @@ class DamageIntegration0337(unittest.TestCase):
                 entry="techquest/compat/mixin/"+name+".class"
                 self.assertEqual(jar.namelist().count(entry),1)
                 self.assertTrue(jar.read(entry).startswith(bytes.fromhex("cafebabe")))
-        self.assertEqual(build_pack.load_cfg()["version"],"0.3.3.10")
+        self.assertEqual(build_pack.load_cfg()["version"],"0.3.3.11")
     def test_incoming_damage_types_not_lost(self):
         with zipfile.ZipFile(io.BytesIO(build_pack.compatibility_jar())) as jar:
             tag=json.loads(jar.read("data/cataclysm/tags/damage_type/bypasses_hurt_time.json"))
