@@ -15,11 +15,11 @@ SPEC.loader.exec_module(builder)
 
 LOCALE_COUNTS = {
     "ae2": 1,
-    "apotheosis": 62,
+    "apotheosis": 63,
     "apothic_attributes": 6,
     "aquamirae": 30,
     "appleskin": 10,
-    "artifacts": 55,
+    "artifacts": 59,
     "balm": 36,
     "betterzoom": 49,
     "betterstrongholds": 5,
@@ -40,7 +40,7 @@ LOCALE_COUNTS = {
     "ic2": 1336,
     "irons_lib": 77,
     "immersiveengineering": 894,
-    "irons_spellbooks": 167,
+    "irons_spellbooks": 171,
     "jade": 129,
     "jei": 625,
     "lionfishapi": 4,
@@ -50,12 +50,13 @@ LOCALE_COUNTS = {
     "moreculling": 4,
     "modern_industrialization": 49,
     "mowziesmobs": 440,
+    "legendary_monsters": 149,
     "naturalist": 5,
     "guideme": 36,
     "oritech": 1,
     "openpartiesandclaims": 703,
     "physicsmod": 10,
-    "puffish_skills": 8,
+    "puffish_skills": 9,
     "prettypipes": 41,
     "refinedstorage": 10,
     "sophisticatedcore": 30,
@@ -243,6 +244,18 @@ class AdditionalTranslationTests(unittest.TestCase):
         curios = json.loads((COMPAT / "assets/curios/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(curios["gui.curios.page"], "Страница %d / %d")
         self.assertIn("§6", aquamirae["config.aquamirae.descWithWorldReload"])
+        legendary = json.loads((COMPAT / "assets/legendary_monsters/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(legendary["entity.legendary_monsters.the_obliterator"], "Уничтожитель")
+        self.assertIn("§7", legendary["item.legendary_monsters.atom_splitter1"])
+        self.assertIn("%s", legendary["death.attack.legendary_monsters.shadow"])
+        self.assertEqual(iron_spells["death.attack.blood_magic"],
+                         "%1$s был убит магией крови %2$s")
+        self.assertEqual(iron_spells["death.attack.irons_spellbooks.divine_smite"],
+                         "%1$s был поражён божественной карой %2$s")
+        self.assertIn("%s", apotheosis["text.apotheosis.touched_by_malice"])
+        self.assertIn("%s", artifacts["artifacts.tooltip.ability.retaliation_effects.thorns.chance"])
+        self.assertIn("%s", skills["command.puffish_skills.no_experience"])
+
 
 
 
