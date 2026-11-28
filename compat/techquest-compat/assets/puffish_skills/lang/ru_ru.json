@@ -2,7 +2,7 @@
   "command.puffish_skills.level.add.success.multiple": "Добавлено %s уровней в категории %s для %s игроков",
   "command.puffish_skills.level.add.success.single": "Добавлено %s уровней в категории %s игроку %s",
   "command.puffish_skills.level.get.success": "Уровень игрока %3$s в категории %2$s: %1$s",
-  "command.puffish_skills.level.set.success.multiple": "Для %s игроков установлен уровень %s в категории %s",
+  "command.puffish_skills.level.set.success.multiple": "Установлен уровень %s в категории %s для %s игроков",
   "command.puffish_skills.level.set.success.single": "Уровень %s в категории %s установлен для %s",
   "command.puffish_skills.no_level": "Уровни отключены для категории с идентификатором %s",
   "text.puffish_skills.buy_point": "Купить очко",
