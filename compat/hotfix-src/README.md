@@ -27,3 +27,11 @@ smoke test cannot prove in-game zoom behavior or keyboard conflict freedom.
 `RetentionPolicy.RUNTIME`. An earlier stub compile accidentally used RUNTIME
 for `@Mixin`, leading to the observable “missing an @Mixin annotation”
 error at launch. The checked-in class uses the correct invisible annotation.
+
+
+## Incoming 3.10.4 lethal-hit bridge (TechQuest 0.3.3.7)
+
+The new `IncomingLethalCapMixin.java` targets only the Cataclysm `LLibrary_Boss_Monster.hurt` `Math.min(DamageCap(), amount)` expression. It leaves all upstream special boss guards and downstream LivingEntity combat handling intact. It does not set health directly or inject bypass-invulnerability tags. The compiled Java21 class is included in `techquest-compat-1.0.0.jar` and built deterministically from its source by the pack builder using 12 first-party type-only stubs. Unlike the client-only zoom mixin, this is a common client/server mixin. Real-game and multiplayer lethal-hit acceptance still required.
+
+
+0.3.3.7 inherits the `BossTrackingRangeMixin` fix from 0.3.3.6: `EntityType.getKey(type)` replaces invalid direct `BuiltInRegistries.ENTITY_TYPE` field linkage. The first-party Incoming Mixins use the resulting 12 (not 14) type-only compilation stubs. Do not restore the two incorrect registry stubs.
