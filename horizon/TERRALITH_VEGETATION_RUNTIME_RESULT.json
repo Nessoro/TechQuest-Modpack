@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-14",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "source_minecraft": "1.21.1",
+  "minecraft": "26.3",
+  "terralith": "2.6.2",
+  "normalized_nether_vegetation": 1,
+  "weighted_state_selection_before_air_check_preserved": true,
+  "origin_height_and_target_height_checks_preserved": true,
+  "supported_conversion_spread_width": [
+    1,
+    32
+  ],
+  "supported_conversion_spread_height": [
+    1,
+    4
+  ],
+  "canonicalized_block_tag_entries": 3,
+  "canonicalized_block_tag_files": [
+    "data/minecraft/tags/block/nylium.json",
+    "data/terralith/tags/block/island_blocks.json",
+    "data/terralith/tags/block/volcano_barrier.json"
+  ],
+  "source_block_tag_sha256": {
+    "data/minecraft/tags/block/nylium.json": "6b6811872dc15a382f092ddb09831e29b04ff17506193979c57cfdd2440ee43f",
+    "data/terralith/tags/block/island_blocks.json": "c68872d906da3a65c38d40537014230ebf1daeab6849692549c65306e939c592",
+    "data/terralith/tags/block/volcano_barrier.json": "cedfcd3c19003738e0995bdd3cb10416d927b43fe01b495361bc490495531b4a"
+  },
+  "restored_nylium_moss_block": true,
+  "original_probe": {
+    "cases": 450,
+    "ordered_writes_compared": 6890,
+    "mismatches": 0,
+    "result_and_next_random_draw_compared": true,
+    "support_types": 6,
+    "air_masks": [
+      "all",
+      "mixed",
+      "none"
+    ],
+    "origin_y": [
+      80,
+      -64,
+      -63,
+      318,
+      319
+    ],
+    "world_is_recording_stub": true,
+    "synthetic_six_block_palette_with_original_weights": true,
+    "survival_in_stub_always_true_for_solid_palette": true,
+    "original_is_air_default_block_types": [
+      "minecraft:air",
+      "minecraft:void_air",
+      "minecraft:cave_air"
+    ],
+    "whole_plant_physics_parity_claimed": false
+  },
+  "source_files_hashed": 1867,
+  "source_hashes_rechecked": true,
+  "source_files_modified": false,
+  "derived_hmod_sdk_validated": true,
+  "derived_hmod_sha256": "95630e9b454945db8167d2eb807db36a73137f0d6e54874fc94548985e3d302a",
+  "namespace_ownership_changed": false,
+  "world_datapack_still_required": true,
+  "server_boot_tested": true,
+  "loaded_hmod_modules": 6,
+  "world_checks": {
+    "schema": 1,
+    "world": "horizon-vegetation-test",
+    "seed": 263,
+    "online_mode": true,
+    "whitelist": true,
+    "bind": "127.0.0.1",
+    "port": 25599,
+    "loaded_hmod_modules": 6,
+    "feature": "terralith:flower/blue/flowers",
+    "features": [
+      {
+        "support": "minecraft:crimson_nylium",
+        "attempts_to_observe_plant": 1,
+        "position": [
+          131,
+          220,
+          132
+        ],
+        "block": "minecraft:nether_sprouts",
+        "all_states_after_reopen": true
+      },
+      {
+        "support": "minecraft:warped_nylium",
+        "attempts_to_observe_plant": 1,
+        "position": [
+          161,
+          220,
+          122
+        ],
+        "block": "minecraft:warped_roots",
+        "all_states_after_reopen": true
+      },
+      {
+        "support": "minecraft:grass_block",
+        "attempts_to_observe_plant": 1,
+        "position": [
+          191,
+          220,
+          129
+        ],
+        "block": "minecraft:cornflower",
+        "all_states_after_reopen": true
+      },
+      {
+        "support": "minecraft:mycelium",
+        "attempts_to_observe_plant": 1,
+        "position": [
+          224,
+          220,
+          127
+        ],
+        "block": "minecraft:cornflower",
+        "all_states_after_reopen": true
+      },
+      {
+        "support": "minecraft:moss_block",
+        "attempts_to_observe_plant": 1,
+        "position": [
+          255,
+          220,
+          130
+        ],
+        "block": "minecraft:fern",
+        "all_states_after_reopen": true
+      }
+    ],
+    "non_nylium_stone_rejected": true,
+    "save_all_flushed": true,
+    "non_nylium_stone_rejected_after_reopen": true,
+    "reopen_checks_passed": true,
+    "final_status": {
+      "phase": "stopped"
+    }
+  },
+  "initial_placed_features_skipped": 246,
+  "previous_placed_features_skipped": 1,
+  "placed_features_skipped": 0,
+  "restored_feature_decodes_this_step": 1,
+  "remaining_unsupported_features": [],
+  "all_natural_biomes_or_visual_parity_verified": false,
+  "all_terralith_outside_files_ported": false,
+  "client_boot_tested": false,
+  "multiplayer_tested": false,
+  "industrial_java_mechanics_ported": false,
+  "gameplay_ported": false
+}

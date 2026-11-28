@@ -1,0 +1,304 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-21T14:05:15.651021+00:00",
+  "minecraft": "26.3",
+  "scope": "Guided survival gathering, smelting, crafting and operating the platinum-alternative Oritech starter chain in one continued world save",
+  "content_version": "0.2.0",
+  "native_machine_version": "0.1.0",
+  "engine_or_content_changed": false,
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "profile": "techquest-oritech-02b-server",
+  "prior_runtime_result": "ORITECH_WORLDPACK_RESULT.json",
+  "raw_inventory_after_gathering": {
+    "minecraft:acacia_log": 4,
+    "minecraft:coal": 16,
+    "minecraft:cobblestone": 16,
+    "minecraft:iron_pickaxe": 1,
+    "minecraft:raw_copper": 8,
+    "minecraft:raw_gold": 2,
+    "minecraft:raw_iron": 8,
+    "minecraft:redstone": 4,
+    "oritech:raw_nickel": 11,
+    "oritech:raw_platinum": 2
+  },
+  "required_recipe_resources": {
+    "oritech:raw_nickel": 11,
+    "oritech:raw_platinum": 2,
+    "minecraft:raw_iron": 8,
+    "minecraft:raw_gold": 2,
+    "minecraft:redstone": 2,
+    "minecraft:raw_copper": 4,
+    "minecraft:coal": 16,
+    "minecraft:cobblestone": 16,
+    "minecraft:acacia_log": 4
+  },
+  "recorded_natural_mining_drops": {
+    "oritech:raw_nickel": 11,
+    "oritech:raw_platinum": 2,
+    "minecraft:raw_iron": 8,
+    "minecraft:raw_gold": 3,
+    "minecraft:redstone": 4,
+    "minecraft:raw_copper": 8,
+    "minecraft:coal": 16,
+    "minecraft:cobblestone": 16,
+    "minecraft:acacia_log": 4
+  },
+  "craft_operations": [
+    {
+      "output": "minecraft:acacia_planks",
+      "count": 4,
+      "consumed": {
+        "minecraft:acacia_log": 1
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:acacia_planks",
+      "count": 4,
+      "consumed": {
+        "minecraft:acacia_log": 1
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:acacia_planks",
+      "count": 4,
+      "consumed": {
+        "minecraft:acacia_log": 1
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:acacia_planks",
+      "count": 4,
+      "consumed": {
+        "minecraft:acacia_log": 1
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:crafting_table",
+      "count": 1,
+      "consumed": {
+        "minecraft:acacia_planks": 4
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:crafting_table",
+      "count": 1,
+      "consumed": {
+        "minecraft:acacia_planks": 4
+      },
+      "inventory_grid": true
+    },
+    {
+      "output": "minecraft:furnace",
+      "count": 1,
+      "consumed": {
+        "minecraft:cobblestone": 8
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "minecraft:furnace",
+      "count": 1,
+      "consumed": {
+        "minecraft:cobblestone": 8
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:steel_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:iron_ingot": 2,
+        "minecraft:coal": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:electrum_ingot",
+      "count": 1,
+      "consumed": {
+        "minecraft:gold_ingot": 2,
+        "minecraft:redstone": 2
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:magnetic_coil",
+      "count": 4,
+      "consumed": {
+        "oritech:nickel_ingot": 6,
+        "oritech:steel_ingot": 3
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:basic_generator_block",
+      "count": 1,
+      "consumed": {
+        "oritech:nickel_ingot": 5,
+        "minecraft:copper_ingot": 1,
+        "oritech:magnetic_coil": 2,
+        "minecraft:furnace": 1
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:powered_furnace_block",
+      "count": 1,
+      "consumed": {
+        "minecraft:copper_ingot": 3,
+        "oritech:platinum_ingot": 2,
+        "oritech:electrum_ingot": 1,
+        "oritech:magnetic_coil": 2,
+        "minecraft:furnace": 1
+      },
+      "inventory_grid": false
+    },
+    {
+      "output": "oritech:machine_core_1",
+      "count": 1,
+      "consumed": {
+        "minecraft:acacia_planks": 8,
+        "minecraft:crafting_table": 1
+      },
+      "inventory_grid": false
+    }
+  ],
+  "smelting_operations": [
+    {
+      "input": "oritech:raw_nickel",
+      "count": 11,
+      "output": "oritech:nickel_ingot",
+      "coal_inserted": 2
+    },
+    {
+      "input": "oritech:raw_platinum",
+      "count": 2,
+      "output": "oritech:platinum_ingot",
+      "coal_inserted": 1
+    },
+    {
+      "input": "minecraft:raw_iron",
+      "count": 6,
+      "output": "minecraft:iron_ingot",
+      "coal_inserted": 1
+    },
+    {
+      "input": "minecraft:raw_gold",
+      "count": 2,
+      "output": "minecraft:gold_ingot",
+      "coal_inserted": 1
+    },
+    {
+      "input": "minecraft:raw_copper",
+      "count": 4,
+      "output": "minecraft:copper_ingot",
+      "coal_inserted": 1
+    }
+  ],
+  "same_saved_world_for_all_phases": true,
+  "gather_save_resumed_with_cumulative_action_provenance": true,
+  "only_given_item": "minecraft:iron_pickaxe",
+  "vanilla_resources_raw_items_ingots_workstations_or_machines_given": false,
+  "source_recipe_ingredient_deltas_checked": true,
+  "raw_inventory_physically_reopened_exactly": true,
+  "active_pair_physically_reopened_exactly": true,
+  "final_inventory_and_pair_physically_reopened_exactly": true,
+  "crafted_and_player_placed_generator_furnace_and_core": true,
+  "core_assembled_by_interaction": true,
+  "two_iron_ingots_produced_from_naturally_mined_raw_iron_and_coal": true,
+  "energy_progress_or_output_injected": false,
+  "fixtures": [
+    "one iron pickaxe",
+    "teleports and spectator travel",
+    "peaceful difficulty",
+    "carved access",
+    "glass access floors/roofs and work platform",
+    "tick freeze/step/sprint"
+  ],
+  "proofs": {
+    "graphical_result": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-chain-gui-v6/checked-result.json",
+      "sha256": "08c75b8459d902ece8b892c4ce30bd4b05e3ac24e187b62ff53f0a997c2ad680"
+    },
+    "cumulative_actions": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-chain-gui-v6/actions.json",
+      "sha256": "9002c58b340198e78d1b39f02fcbec2de2ad7d5941ec50247a3d28e45a826ee4"
+    },
+    "raw_checkpoint_actions": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-chain-gui-v6/raw-checkpoint/actions.json",
+      "sha256": "97577fa9212053b23d26ff60dbb12ca26473d611432269bda03de4cc5210d2f3"
+    },
+    "probe_source": {
+      "path": "/workspace/TechQuest-Modpack/horizon/probes/live_oritech_gathered_gui.py",
+      "sha256": "9971001052809e857317016c7927da71af7e73e3ac76d5c1546c5cd9f924a138"
+    },
+    "sealed_install_lock": {
+      "path": "/workspace/horizon-runtime/techquest-oritech-02b-server/techquest-local-install.json",
+      "sha256": "ec098e3ddef69f2f9b4d4ea1b709fa770919cd2c5dd49de36bda481b68baab98"
+    },
+    "console_gather": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-chain-gui-v6/gather-console.log",
+      "sha256": "034971e6b4bdecb8c608da17dec4dc360d42f8d4ede54ed28b32b6ed25cfcb1c"
+    },
+    "console_craft": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-chain-gui-v6/craft-console.log",
+      "sha256": "a7b0250c355cd0d0f297ec80091b214bd8a576ebef0a378ba088c2bf6092d4c8"
+    },
+    "console_complete": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-chain-gui-v6/complete-console.log",
+      "sha256": "2ad038c0cdd4de138fa7531b7eea10f611473ed092b9f4936098002fc627cff3"
+    },
+    "console_final-reopen": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-chain-gui-v6/final-reopen-console.log",
+      "sha256": "a6af649f51ddab8e8568c1960131f5c9665e276369eaefc8162fd711325e6e89"
+    },
+    "gathered-active-pair.png": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-chain-gui-v6/gathered-active-pair.png",
+      "sha256": "5baeffe5bb5351ab0660b3f96bae18a42fc78f2f8a53ab2766678bf9436e1b4d"
+    },
+    "gathered-chain-output.png": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-chain-gui-v6/gathered-chain-output.png",
+      "sha256": "2d53840a963ef81865e30a581a7d856e8c9499acdc8da3f5db84426b25769d97"
+    },
+    "python_tests": {
+      "path": "/workspace/horizon-runtime/oritech-gathered-python-tests-v1.log",
+      "sha256": "946cb539df4593ff960dc9d50f879a8acb8c0a983564ea31896a28c3f7b2c5ab"
+    }
+  },
+  "limitations": [
+    "Guided resource-gathering test with explicit tools/travel/access fixtures; not an unassisted survival run from spawn.",
+    "World save resumed after probe failures involving dropped items, redstone state changes and falling gravel; all cumulative actions are retained.",
+    "Uses the original platinum alternative furnace recipe; quartz dust/silicon processing is not ported.",
+    "No new automated Oritech/Pretty Pipes endpoint, licensed dedicated join, whole-world RNG or full-modpack validation.",
+    "Other Oritech machines, cables, fluids, upgrades and exact geometry/animations remain incomplete."
+  ],
+  "full_mod_ported": false,
+  "full_modpack_ported": false,
+  "goal_complete": false,
+  "main_modified": false,
+  "published": false,
+  "python_tests": 121
+}

@@ -1,0 +1,519 @@
+{
+  "schema": 1,
+  "source_minecraft": "1.21.1",
+  "source_loader": "neoforge",
+  "declared_direct_modrinth_projects": 77,
+  "resolved_direct_modrinth_projects": 76,
+  "locked_modrinth_projects": 101,
+  "unresolved_optional_direct_projects": [
+    "iron-chests"
+  ],
+  "required_dependency_edges": 54,
+  "dependencies": [
+    {
+      "from": "46KJle7n",
+      "to": "FoVacERa",
+      "version_id": null
+    },
+    {
+      "from": "46KJle7n",
+      "to": "vvuO3ImH",
+      "version_id": null
+    },
+    {
+      "from": "51shyZVL",
+      "to": "9s6osm5g",
+      "version_id": null
+    },
+    {
+      "from": "8oi3bsk5",
+      "to": "XaDC71GB",
+      "version_id": null
+    },
+    {
+      "from": "BFbX9xcm",
+      "to": "8BmcQJ2H",
+      "version_id": null
+    },
+    {
+      "from": "Cd3DYqzn",
+      "to": "ordsPcFz",
+      "version_id": null
+    },
+    {
+      "from": "DGaH8Rh0",
+      "to": "tCkE8p2N",
+      "version_id": null
+    },
+    {
+      "from": "DfxVkOAO",
+      "to": "tCkE8p2N",
+      "version_id": null
+    },
+    {
+      "from": "GkIc6rRo",
+      "to": "GkIc6rRo",
+      "version_id": null
+    },
+    {
+      "from": "Gov5Dboq",
+      "to": "Ck4E7v7R",
+      "version_id": null
+    },
+    {
+      "from": "HjmxVlSr",
+      "to": "Ua7DFN59",
+      "version_id": null
+    },
+    {
+      "from": "KwWsINvD",
+      "to": "aaRl8GiW",
+      "version_id": null
+    },
+    {
+      "from": "KwWsINvD",
+      "to": "uy4Cnpcm",
+      "version_id": null
+    },
+    {
+      "from": "LOpKHB2A",
+      "to": "MBAkmtvl",
+      "version_id": null
+    },
+    {
+      "from": "OFVYKsAk",
+      "to": "Ce6I4WUE",
+      "version_id": "5KzzycBT"
+    },
+    {
+      "from": "PjDhruSC",
+      "to": "XvoWJaA2",
+      "version_id": null
+    },
+    {
+      "from": "PjDhruSC",
+      "to": "ilvNBzFn",
+      "version_id": null
+    },
+    {
+      "from": "PjDhruSC",
+      "to": "AqaIIO6D",
+      "version_id": null
+    },
+    {
+      "from": "PjDhruSC",
+      "to": "hqQqvaa4",
+      "version_id": null
+    },
+    {
+      "from": "TyCTlI4b",
+      "to": "nmoqTijg",
+      "version_id": null
+    },
+    {
+      "from": "XvoWJaA2",
+      "to": "gedNE4y2",
+      "version_id": null
+    },
+    {
+      "from": "XvoWJaA2",
+      "to": "vvuO3ImH",
+      "version_id": null
+    },
+    {
+      "from": "XvoWJaA2",
+      "to": "9s6osm5g",
+      "version_id": null
+    },
+    {
+      "from": "XvoWJaA2",
+      "to": "8ooWzSQP",
+      "version_id": null
+    },
+    {
+      "from": "XxWD5pD3",
+      "to": "Ck4E7v7R",
+      "version_id": null
+    },
+    {
+      "from": "YhmgMVyu",
+      "to": "ccKDOlHs",
+      "version_id": null
+    },
+    {
+      "from": "Z2mXHnxP",
+      "to": "Ua7DFN59",
+      "version_id": null
+    },
+    {
+      "from": "dCKRaeBC",
+      "to": "SKI34J7B",
+      "version_id": null
+    },
+    {
+      "from": "hFUzfDsn",
+      "to": "8BmcQJ2H",
+      "version_id": null
+    },
+    {
+      "from": "hFUzfDsn",
+      "to": "GkIc6rRo",
+      "version_id": null
+    },
+    {
+      "from": "hFUzfDsn",
+      "to": "9s6osm5g",
+      "version_id": null
+    },
+    {
+      "from": "k23mNPhZ",
+      "to": "49C5QgTK",
+      "version_id": null
+    },
+    {
+      "from": "k23mNPhZ",
+      "to": "8BmcQJ2H",
+      "version_id": null
+    },
+    {
+      "from": "kidLKymU",
+      "to": "Ua7DFN59",
+      "version_id": null
+    },
+    {
+      "from": "o1C1Dkj5",
+      "to": "Ua7DFN59",
+      "version_id": null
+    },
+    {
+      "from": "pL8MtgqY",
+      "to": "DGaH8Rh0",
+      "version_id": null
+    },
+    {
+      "from": "pL8MtgqY",
+      "to": "tCkE8p2N",
+      "version_id": null
+    },
+    {
+      "from": "rqFWfVlz",
+      "to": "tCkE8p2N",
+      "version_id": null
+    },
+    {
+      "from": "rqFWfVlz",
+      "to": "nU0bVIaL",
+      "version_id": null
+    },
+    {
+      "from": "rqFWfVlz",
+      "to": "DGaH8Rh0",
+      "version_id": null
+    },
+    {
+      "from": "rqFWfVlz",
+      "to": "DfxVkOAO",
+      "version_id": null
+    },
+    {
+      "from": "rqFWfVlz",
+      "to": "pL8MtgqY",
+      "version_id": null
+    },
+    {
+      "from": "tsc9D2wh",
+      "to": "9s6osm5g",
+      "version_id": null
+    },
+    {
+      "from": "tsc9D2wh",
+      "to": "8BmcQJ2H",
+      "version_id": null
+    },
+    {
+      "from": "u6dRKJwZ",
+      "to": "7tEfOcA7",
+      "version_id": null
+    },
+    {
+      "from": "xv94TkTM",
+      "to": "fuuu3xnx",
+      "version_id": null
+    },
+    {
+      "from": "hMlaZH8f",
+      "to": "nmoqTijg",
+      "version_id": null
+    },
+    {
+      "from": "4QrnfueM",
+      "to": "rOUBggPv",
+      "version_id": null
+    },
+    {
+      "from": "4QrnfueM",
+      "to": "LN9BxssP",
+      "version_id": null
+    },
+    {
+      "from": "VzR5wiLo",
+      "to": "KDvYkUg3",
+      "version_id": null
+    },
+    {
+      "from": "VzR5wiLo",
+      "to": "u6dRKJwZ",
+      "version_id": null
+    },
+    {
+      "from": "4sYI62kA",
+      "to": "lhGA9TYQ",
+      "version_id": null
+    },
+    {
+      "from": "4sYI62kA",
+      "to": "8BmcQJ2H",
+      "version_id": null
+    },
+    {
+      "from": "4sYI62kA",
+      "to": "b1ZV3DIJ",
+      "version_id": null
+    }
+  ],
+  "source_environment_preserved": true,
+  "mutable_side_label_differences": [
+    {
+      "id": "8DfbfASn",
+      "source": {
+        "client": "required",
+        "server": "required"
+      },
+      "published": {
+        "client": "unsupported",
+        "server": "required"
+      }
+    },
+    {
+      "id": "HjmxVlSr",
+      "source": {
+        "client": "required",
+        "server": "required"
+      },
+      "published": {
+        "client": "unsupported",
+        "server": "required"
+      }
+    },
+    {
+      "id": "XaDC71GB",
+      "source": {
+        "client": "required",
+        "server": "required"
+      },
+      "published": {
+        "client": "unsupported",
+        "server": "required"
+      }
+    },
+    {
+      "id": "Z2mXHnxP",
+      "source": {
+        "client": "required",
+        "server": "required"
+      },
+      "published": {
+        "client": "unsupported",
+        "server": "required"
+      }
+    },
+    {
+      "id": "kidLKymU",
+      "source": {
+        "client": "required",
+        "server": "required"
+      },
+      "published": {
+        "client": "unsupported",
+        "server": "required"
+      }
+    },
+    {
+      "id": "o1C1Dkj5",
+      "source": {
+        "client": "required",
+        "server": "required"
+      },
+      "published": {
+        "client": "unsupported",
+        "server": "required"
+      }
+    },
+    {
+      "id": "gF3BGWvG",
+      "source": {
+        "client": "required",
+        "server": "required"
+      },
+      "published": {
+        "client": "optional",
+        "server": "required"
+      }
+    }
+  ],
+  "excluded_mods_present": false,
+  "all_file_hashes_match_metadata": true,
+  "jar_bytes_verified": false,
+  "horizon_gameplay_verified": false,
+  "source_sha256": "3fed6bbcc4662631619035ba6378cc0c345441cbdb341779965246aa23e39005",
+  "origin": {
+    "repository": "Nessoro/TechQuest-Modpack",
+    "path": "modlist.json",
+    "commit": "f5d779750c56762dcfa6ea0c4c76e088a8782759",
+    "github_blob_sha": "40f023abd859a0e9530a74da8b9130af6055022d",
+    "sha256": "3fed6bbcc4662631619035ba6378cc0c345441cbdb341779965246aa23e39005"
+  },
+  "previous_snapshot": "techquest-0.3.3-candidate.json",
+  "unchanged_previous_lock_projects": 88,
+  "new_projects": [
+    {
+      "id": "hMlaZH8f",
+      "title": "Sophisticated Storage",
+      "version": "1.21.1-1.6.16.2222",
+      "version_id": "hC4LaBhJ"
+    },
+    {
+      "id": "lhGA9TYQ",
+      "title": "Architectury API",
+      "version": "13.0.11+neoforge",
+      "version_id": "1IiqEQGl"
+    },
+    {
+      "id": "4QrnfueM",
+      "title": "Trash Cans",
+      "version": "1.1.0-neoforge-mc1.21",
+      "version_id": "lSKYKJdm"
+    },
+    {
+      "id": "LN9BxssP",
+      "title": "SuperMartijn642's Config Lib",
+      "version": "1.1.8-neoforge-mc1.21",
+      "version_id": "qKL9jM75"
+    },
+    {
+      "id": "rOUBggPv",
+      "title": "SuperMartijn642's Core Lib",
+      "version": "1.1.26a-neoforge-mc1.21",
+      "version_id": "sLRKmslC"
+    },
+    {
+      "id": "XExdLWCQ",
+      "title": "Pretty Pipes",
+      "version": "1.22.0",
+      "version_id": "lrhbGGSe"
+    },
+    {
+      "id": "XUogRnhj",
+      "title": "Iskander Rocket Mod",
+      "version": "2.0.1+mc1.21-1.21.1-neoforge",
+      "version_id": "M1b2lYax"
+    },
+    {
+      "id": "KDvYkUg3",
+      "title": "Refined Storage",
+      "version": "2.0.9",
+      "version_id": "lHHiI26k"
+    },
+    {
+      "id": "gF3BGWvG",
+      "title": "Open Parties and Claims",
+      "version": "neoforge-1.21.1-0.33.0",
+      "version_id": "yWmXD7GW"
+    },
+    {
+      "id": "VzR5wiLo",
+      "title": "Refined Storage - JEI Integration",
+      "version": "1.0.0",
+      "version_id": "BYZmHubv"
+    },
+    {
+      "id": "4sYI62kA",
+      "title": "Oritech",
+      "version": "1.2.13",
+      "version_id": "BR0KKypH"
+    },
+    {
+      "id": "b1ZV3DIJ",
+      "title": "Athena",
+      "version": "4.0.6",
+      "version_id": "dJgL278E"
+    },
+    {
+      "id": "yAyrQXJ6",
+      "title": "Fluidic Tanks",
+      "version": "1.1.1",
+      "version_id": "991No08g"
+    }
+  ],
+  "removed_projects": [
+    {
+      "id": "KFQYC1Uy",
+      "title": "Project MMO"
+    }
+  ],
+  "existing_worldgen_source_checks": [
+    {
+      "project_id": "Z2mXHnxP",
+      "slug": "yungs-better-nether-fortresses",
+      "version_id": "oNRbcwIE",
+      "filename": "YungsBetterNetherFortresses-1.21.1-NeoForge-3.1.4.jar",
+      "sha512": "6741fa2810b1f11e875e538752cf5c68682ba015254fce3a33bd6262895a56efb2c5725b9df92ee9f028539a807839105b202e3658b51801d72029f995109bfd",
+      "existing_worldgen_jar_bytes_verified": true
+    },
+    {
+      "project_id": "o1C1Dkj5",
+      "slug": "yungs-better-dungeons",
+      "version_id": "D6aZn0Em",
+      "filename": "YungsBetterDungeons-1.21.1-NeoForge-5.1.4.jar",
+      "sha512": "40513bacd13fa9860abcab507b1fc09dc51649af4b615ce466e0ec361557f02d35e6e44bea1cc17cb4120805f862aad01394eb185f46611e7be63dfd97f272df",
+      "existing_worldgen_jar_bytes_verified": true
+    },
+    {
+      "project_id": "kidLKymU",
+      "slug": "yungs-better-strongholds",
+      "version_id": "8U0dIfSM",
+      "filename": "YungsBetterStrongholds-1.21.1-NeoForge-5.1.3.jar",
+      "sha512": "385d67e07f2c67af5ea387d92d92949d8f671e8f99204457b6396dbe987ac3b14c2bff765df5fcbaa68016604f82a1fc6ec5a69c012ca22ad088d1a7c9bc135d",
+      "existing_worldgen_jar_bytes_verified": true
+    },
+    {
+      "project_id": "HjmxVlSr",
+      "slug": "yungs-better-mineshafts",
+      "version_id": "Go3nbneL",
+      "filename": "YungsBetterMineshafts-1.21.1-NeoForge-5.1.1.jar",
+      "sha512": "8b01b386f53feeaa55f0c62697578b82e00501e45e428b2a68df6bda34efb6a4b3b4e3582abf13fe767ebcb61aef9368186f53c03999958bef38f31c41a7f8b2",
+      "existing_worldgen_jar_bytes_verified": true
+    },
+    {
+      "project_id": "8oi3bsk5",
+      "slug": "terralith",
+      "version_id": "IY93YaEe",
+      "filename": "Terralith_1.21.1_v2.6.2_Neoforge.jar",
+      "sha512": "35298f1682567f63dc16658b04cee5498b30819f1c05f9712b4480d7f5eb17059db3b13ab14f81a05fe257149d11ced2cce2030d3727c1747edd8657c53e2a85",
+      "existing_worldgen_jar_bytes_verified": true
+    }
+  ],
+  "horizon_worldgen_test_results_preserved": true,
+  "non_modrinth_sources_require_separate_validation": {
+    "manual_mods": 2,
+    "external_mods": 3,
+    "optional_local_mods": 1
+  },
+  "local_metadata_root": "/workspace/horizon-runtime/post-pr48-validation",
+  "metadata_sha256": {
+    "projects.json": "aa1020693592889a892ef72c41f87c2ae72e286ad43a424414f6253b7a1548f7",
+    "versions.json": "65337923b9947679049a48500a6f922382cc1c42223caa347ab09880561b9add"
+  },
+  "horizon_runtime_modules_changed": false,
+  "published": false
+}

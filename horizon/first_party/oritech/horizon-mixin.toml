@@ -1,0 +1,279 @@
+[mod]
+id = "techquest_oritech"
+version = "0.8.0"
+
+[compatibility]
+horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
+
+[[injection]]
+id = "create"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity"
+kind = "HEAD"
+helper = "create.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "entity", ty = "&mut Option<(String, horizon_world::nbt::Compound)>", value = "entity" },
+]
+
+[[injection]]
+id = "ticking"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_ticks"
+kind = "HEAD"
+helper = "ticking.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "ticks", ty = "&mut bool", value = "ticks" },
+]
+
+[[injection]]
+id = "container"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_container"
+kind = "HEAD"
+helper = "container.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "value", ty = "&mut Option<horizon_client_lib::containers::ModContainer>", value = "container" },
+]
+
+[[injection]]
+id = "energy"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_energy"
+kind = "HEAD"
+helper = "energy.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "value", ty = "&mut Option<horizon_client_lib::containers::ModEnergyBuffer>", value = "energy" },
+]
+
+[[injection]]
+id = "tick"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_tick"
+kind = "HEAD"
+helper = "tick.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "entity", ty = "&mut horizon_client_lib::containers::ModBlockEntity", value = "entity" },
+]
+
+[[injection]]
+id = "screen"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen"
+kind = "HEAD"
+helper = "screen.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "screen", ty = "&mut Option<crate::mod_api::NativeScreen>", value = "screen" },
+]
+
+[[injection]]
+id = "draw"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_draw"
+kind = "HEAD"
+helper = "draw.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "block", ty = "&str", value = "block" },
+  { name = "data", ty = "&[i32]", value = "data" },
+  { name = "batch", ty = "&mut crate::hud::HudBatch", value = "batch" },
+  { name = "origin", ty = "[f32; 2]", value = "origin" },
+]
+
+[[injection]]
+id = "interact"
+target = "horizon_client::game::Game<'_>::use_hand"
+kind = "HEAD"
+helper = "interact.rs"
+cancellable = true
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "hit", ty = "Option<&crate::game::Hit>", value = "block_hit" },
+]
+
+[[module]]
+id = "energy_processing"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_oritech"
+source = "logic.rs"
+visibility = "pub(crate)"
+
+[[injection]]
+id = "foundry_facing_placement"
+target = "horizon_client::game::native_hooks::GameLevel<'_>::native_state_for_placement"
+kind = "HEAD"
+helper = "placement.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::GameLevel<'_>", value = "&*self" },
+  { name = "state", ty = "horizon_world::registry::BlockStateId", value = "state" },
+  { name = "context", ty = "&horizon_world::level::PlacementContext", value = "context" },
+  { name = "answer", ty = "&mut Option<Option<horizon_world::registry::BlockStateId>>", value = "answer" },
+]
+
+[[injection]]
+id = "foundry_core_removal"
+target = "horizon_client::game::spill::GameLevel<'_>::remove_entity"
+kind = "HEAD"
+helper = "core_remove.rs"
+bindings = [
+  { name = "level", ty = "&mut crate::game::GameLevel<'_>", value = "&mut *self" },
+  { name = "pos", ty = "horizon_core::position::BlockPos", value = "pos" },
+]
+
+[[injection]]
+id = "foundry_core_replacement"
+target = "horizon_client::game::commands::Game<'_>::place_state"
+kind = "HEAD"
+helper = "core_replace.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "state", ty = "horizon_world::registry::BlockStateId", value = "state" },
+]
+
+[[module]]
+id = "basic_energy_cables"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_oritech_cables"
+source = "cables.rs"
+visibility = "pub(crate)"
+
+[[injection]]
+id = "cable_changes"
+target = "horizon_client::game::native_hooks::GameLevel<'_>::native_block_changed"
+kind = "HEAD"
+helper = "cable_changed.rs"
+bindings = [
+  { name = "level", ty = "&crate::game::GameLevel<'_>", value = "&*self" },
+  { name = "pos", ty = "horizon_core::position::BlockPos", value = "pos" },
+  { name = "old", ty = "horizon_world::registry::BlockStateId", value = "old" },
+  { name = "new", ty = "horizon_world::registry::BlockStateId", value = "new" },
+]
+
+[[injection]]
+id = "cable_command_boundary"
+target = "horizon_client::game::commands::execute::Game<'_>::run_chain"
+kind = "HEAD"
+helper = "cable_flush.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[injection]]
+id = "cable_tick_post"
+target = "horizon_client::game::native_hooks::Game<'_>::native_level_tick_post"
+kind = "HEAD"
+helper = "cable_flush.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[injection]]
+id = "cable_player_placement"
+target = "horizon_client::game::native_hooks::Game<'_>::native_place_block"
+kind = "HEAD"
+helper = "cable_flush.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[injection]]
+id = "cable_tick_pre"
+target = "horizon_client::game::native_hooks::Game<'_>::native_level_tick_pre"
+kind = "HEAD"
+helper = "cable_flush.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[injection]]
+id = "cable_chunk_load"
+target = "horizon_client::game::native_hooks::Game<'_>::native_chunk_load"
+kind = "HEAD"
+helper = "cable_load.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "dimension", ty = "&str", value = "dimension" },
+  { name = "chunk", ty = "[i32;2]", value = "chunk" },
+]
+
+[[injection]]
+id = "cable_pick"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_clone_item"
+kind = "HEAD"
+helper = "cable_clone.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "stack", ty = "&mut Option<horizon_client_lib::items::ItemStack>", value = "stack" },
+]
+
+[[module]]
+id = "cable_wrench_selection"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_oritech_cable_hit"
+source = "cable_hit.rs"
+visibility = "pub(crate)"
+
+[[module]]
+id = "cable_wrench_use"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_oritech_wrench"
+source = "wrench.rs"
+visibility = "pub(crate)"
+
+[[injection]]
+id = "wrench_turn"
+target = "horizon_client::game::Game<'_>::use_hand"
+kind = "HEAD"
+helper = "wrench_interact.rs"
+cancellable = true
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "hit", ty = "Option<&crate::game::Hit>", value = "block_hit" },
+]
+
+[[injection]]
+id = "machine_client_prediction"
+target = "horizon_client::game::remote::Game<'_>::remote_block_reacts"
+kind = "HEAD"
+helper = "machine_prediction.rs"
+cancellable = true
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "hit", ty = "&crate::game::Hit", value = "hit" },
+]
+
+[[injection]]
+id = "wrench_use_on"
+target = "horizon_client::game::native_hooks::Game<'_>::native_use_item_on"
+kind = "HEAD"
+helper = "wrench_item.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "stack", ty = "&horizon_client_lib::items::ItemStack", value = "stack" },
+  { name = "claimed", ty = "&mut bool", value = "claimed" },
+]
+
+[[injection]]
+id = "wrench_use"
+target = "horizon_client::game::native_hooks::Game<'_>::native_use_item"
+kind = "HEAD"
+helper = "wrench_item.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "stack", ty = "&horizon_client_lib::items::ItemStack", value = "stack" },
+  { name = "claimed", ty = "&mut bool", value = "claimed" },
+]
+
+[[injection]]
+id = "inventory_component_limit"
+target = "horizon_client::game::inventory_add"
+kind = "HEAD"
+helper = "inventory_limit.rs"
+cancellable = true
+bindings = [
+  { name = "inventory", ty = "&mut [Option<horizon_client_lib::items::ItemStack>]", value = "&mut *inventory" },
+  { name = "offhand", ty = "&mut Option<horizon_client_lib::items::ItemStack>", value = "&mut *offhand" },
+  { name = "selected", ty = "usize", value = "selected" },
+  { name = "maximum", ty = "u32", value = "max" },
+  { name = "stack", ty = "&mut horizon_client_lib::items::ItemStack", value = "&mut *stack" },
+]

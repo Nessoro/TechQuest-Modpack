@@ -13,7 +13,7 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "source" / "techquest-0.3.3-candidate.json"
+SOURCE = ROOT / "source" / "techquest-post-pr48-candidate.json"
 OUTPUT = ROOT / "out"
 
 # Only possible data carry-over candidates; Java structure generators may still block porting.

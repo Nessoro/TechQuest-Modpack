@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-16T11:02:25.170309+00:00",
+  "minecraft": "26.3",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "working_base_commit": "0154bea",
+  "source": {
+    "betterdungeons": "1.21.1-NeoForge-5.1.4",
+    "jar_sha1": "73a660c13063450e555e5e2c015ae24d606b32b4",
+    "public_json_only": true,
+    "lgpl_java_source_read_or_decompiled": false,
+    "reference_minecraft": "1.21.1",
+    "reference_loader": "NeoForge 21.1.264"
+  },
+  "audit": {
+    "tables": 27,
+    "mods": {
+      "betterdungeons": 8,
+      "betterstrongholds": 10,
+      "bettermineshafts": 0,
+      "betterfortresses": 9
+    },
+    "legacy_condition_function_discriminators": 0,
+    "schema_rewrite_reapplied": false,
+    "baseline_typed_nodes": {
+      "minecraft:chest": 27,
+      "minecraft:item": 354,
+      "minecraft:enchant_randomly": 11,
+      "minecraft:set_count": 149,
+      "minecraft:uniform": 236,
+      "minecraft:set_components": 18,
+      "minecraft:enchant_with_levels": 47,
+      "minecraft:set_name": 1,
+      "minecraft:set_damage": 36,
+      "minecraft:constant": 1
+    }
+  },
+  "adaptation": {
+    "qualified_enchantment_ids": 9,
+    "potion_component_modifiers_to_supported_set_potion": 18,
+    "changed_files": [
+      "data/betterdungeons/loot_table/skeleton_dungeon/chests/common.json",
+      "data/betterdungeons/loot_table/spider_dungeon/chests/egg_room.json",
+      "data/betterdungeons/loot_table/zombie_dungeon/chests/common.json",
+      "data/betterdungeons/loot_table/zombie_dungeon/chests/special.json",
+      "data/betterdungeons/loot_table/zombie_dungeon/chests/tombstone.json"
+    ],
+    "all_other_archive_members_identical": true,
+    "carried_tables_checked_against_pinned_original_json": 8,
+    "old_source_inputs_and_profiles_modified": false,
+    "spawner_and_chest_processors_unchanged": true,
+    "native_engine_rebuilt": false
+  },
+  "original_modifier_oracle": {
+    "actual_original_loot_codec_and_functions": true,
+    "isolated_source_entries": 23,
+    "seeds": [
+      1,
+      263,
+      987654321
+    ],
+    "rolls": 69,
+    "baseline_mismatches": 69,
+    "fixed_mismatches": 0,
+    "item_count_damage_enchantments_and_potion_compared": true,
+    "shutdown_exit_code": 0,
+    "real_client_tested": false,
+    "full_table_rng_parity_tested": false
+  },
+  "graphical_client": {
+    "minecraft": "26.3",
+    "source_tables_audited": 27,
+    "legacy_condition_function_discriminators": 0,
+    "graphical_client_opened_tables": 27,
+    "saved_reopened_tables": 27,
+    "exact_menu_contents_preserved": true,
+    "lazy_loot_consumed_on_open": true,
+    "unknown_table_empty_control_each_phase": true,
+    "protocol_decode_errors": 0,
+    "runtime": "local integrated graphical client",
+    "device_type": "cpu",
+    "fixtures_injected": true,
+    "original_version_rng_parity_tested": false,
+    "generated_structure_loot_tested": false,
+    "licensed_account_or_dedicated_join_tested": false,
+    "full_mods_ported": false,
+    "published": false
+  },
+  "observed_contents": {
+    "container_stack_count": 266,
+    "stack_item_count": 325,
+    "potion_stacks": 4,
+    "enchanted_stacks": 9
+  },
+  "dedicated_server": {
+    "new_isolated_profile": true,
+    "loopback_only": true,
+    "online_mode": true,
+    "whitelist": true,
+    "content_modules": 7,
+    "native_modules": 3,
+    "started_and_answered_commands": true,
+    "human_players": 0,
+    "status": "stopped",
+    "lock_verified": true
+  },
+  "artifacts_sha256": {
+    "baseline_hmod": "bb671e34be1283aadc7aa62c76094e4c1e33bd36ad1979d2859f86cf212324b5",
+    "fixed_hmod": "911c11c492ac8b260d94fdc14407024dc3e8d6610c8c2a957b37075fb6df55c2",
+    "original_probe_java": "39f7188bec419ca8008cede0ef3a40d5f8cf19c0c4b40017993a4df65055c352",
+    "original_probe_jar": "9262e18765d90cc54b46120b56b1586d3eaee9c9ee68a769711ab67e74b4bc55",
+    "original_result": "bad9db7375094cc8495687f1eb905f4d8368e4cd7b2141efc70e59ca5c611538",
+    "native_probe_source": "fe5fa36b077a1aae2c1ff3527581b7cfa2c11c5fbf526168232d44c677d99b4c",
+    "baseline_result": "c699584cb4825fa28381f3a5f4846bc479ec7c1bae65c8577c27eb38212e2645",
+    "fixed_result": "2a827873a290914ee947ff47b4bd702fe32eac6db38dee8efbb3a67ce64bbd73",
+    "graphical_result": "48c5c8968f67be3b79525bf02082f07841e58a8b0c7ee2210794e8b2006ff59e",
+    "graphical_actions": "70de3820feec202e9d0b9995c31578f145e2e87e0c66e2db4b867fdbfcb19e1a",
+    "graphical_probe_source": "d5d476284616c31d9c1716b017f8f2e86c95d0f4957097d9d0f45202c8c454d7",
+    "installation_lock": "22c88e4b2fe4ea680d68c108f2fab0a3e2400889dd3a1700ec3b05f10244b0a6",
+    "prepare-skeleton-loot.png": "ee037121d68f88b00f370959b887670811230e8f1387b10a4820a1117d6e6d14",
+    "reopen-skeleton-loot.png": "24fe06ea8946ba7d4914dde02ba69e7ae2309c3a7f48ca0e22c0d50c8d2bd1c4"
+  },
+  "verification": {
+    "python_tests_passed": 112,
+    "sdk_validated": true,
+    "original_profile_lock_still_valid": true,
+    "new_server_stopped": true
+  },
+  "known_gaps": [
+    "Full-table original RNG/enchantment parity across Minecraft versions",
+    "Lazy loot opening in naturally generated structures and double chests",
+    "Natural structure generation, remaining 16 structure definitions and 27 dropped processors",
+    "Licensed online-mode client join, hardware GPU and sound",
+    "Spawner activation and full modpack industrial mechanics"
+  ],
+  "full_mods_ported": false,
+  "full_modpack_ported": false,
+  "published": false
+}

@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-14",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "source_minecraft": "1.21.1",
+  "minecraft": "26.3",
+  "terralith": "2.6.2",
+  "normalized_forest_rocks": 1,
+  "preserved_state": "minecraft:mossy_cobblestone",
+  "original_ground_rule_preserved": true,
+  "dynamic_dirt_and_base_stone_tags_retained": true,
+  "original_probe": {
+    "block_types_checked": 1060,
+    "accepted_ground": [
+      "minecraft:stone",
+      "minecraft:granite",
+      "minecraft:diorite",
+      "minecraft:andesite",
+      "minecraft:grass_block",
+      "minecraft:dirt",
+      "minecraft:coarse_dirt",
+      "minecraft:podzol",
+      "minecraft:muddy_mangrove_roots",
+      "minecraft:mycelium",
+      "minecraft:blackstone",
+      "minecraft:tuff",
+      "minecraft:moss_block",
+      "minecraft:rooted_dirt",
+      "minecraft:mud",
+      "minecraft:deepslate"
+    ],
+    "cases": 1124,
+    "ordered_writes_compared": 688,
+    "mismatches": 0,
+    "result_and_next_random_draw_compared": true,
+    "native_probe_id_remaps": {
+      "minecraft:chain": "minecraft:iron_chain"
+    },
+    "world_is_recording_stub": true,
+    "all_block_states_checked": false,
+    "whole_world_parity_claimed": false
+  },
+  "source_files_hashed": 1867,
+  "source_hashes_rechecked": true,
+  "source_files_modified": false,
+  "derived_hmod_sdk_validated": true,
+  "derived_hmod_sha256": "e944b5668e88f010058d7e53c2cb76f7764ba173507b05516649abef16a8d6ac",
+  "namespace_ownership_changed": false,
+  "world_datapack_still_required": true,
+  "server_boot_tested": true,
+  "loaded_hmod_modules": 6,
+  "world_checks": {
+    "schema": 1,
+    "world": "horizon-rock-test",
+    "seed": 263,
+    "online_mode": true,
+    "whitelist": true,
+    "bind": "127.0.0.1",
+    "port": 25598,
+    "loaded_hmod_modules": 6,
+    "feature": "terralith:cherry/rock",
+    "features": [
+      {
+        "support": "minecraft:grass_block",
+        "position": [
+          128,
+          220,
+          128
+        ],
+        "mossy_cobblestone": true,
+        "outside_soil_preserved": true,
+        "all_states_after_reopen": true
+      },
+      {
+        "support": "minecraft:mycelium",
+        "position": [
+          160,
+          220,
+          128
+        ],
+        "mossy_cobblestone": true,
+        "outside_soil_preserved": true,
+        "all_states_after_reopen": true
+      },
+      {
+        "support": "minecraft:muddy_mangrove_roots",
+        "position": [
+          192,
+          220,
+          128
+        ],
+        "mossy_cobblestone": true,
+        "outside_soil_preserved": true,
+        "all_states_after_reopen": true
+      },
+      {
+        "support": "minecraft:blackstone",
+        "position": [
+          224,
+          220,
+          128
+        ],
+        "mossy_cobblestone": true,
+        "outside_soil_preserved": true,
+        "all_states_after_reopen": true
+      }
+    ],
+    "unsupported_column_rejected": true,
+    "save_all_flushed": true,
+    "unsupported_column_rejected_after_reopen": true,
+    "reopen_checks_passed": true,
+    "final_status": {
+      "phase": "stopped"
+    }
+  },
+  "previous_placed_features_skipped": 2,
+  "placed_features_skipped": 1,
+  "restored_feature_decodes": 1,
+  "remaining_unsupported_features": [
+    [
+      "terralith:flower/blue/flowers",
+      "invalid world generation field: basic feature type"
+    ]
+  ],
+  "natural_cherry_rocks_verified": false,
+  "client_boot_tested": false,
+  "multiplayer_tested": false,
+  "gameplay_ported": false
+}

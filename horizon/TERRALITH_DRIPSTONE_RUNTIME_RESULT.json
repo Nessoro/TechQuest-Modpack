@@ -1,0 +1,200 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-14",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "source_minecraft": "1.21.1",
+  "minecraft": "26.3",
+  "terralith": "2.6.2",
+  "normalized_dripstone_clusters": 4,
+  "normalized_large_dripstone": 2,
+  "hardcoded_materials_materialized": [
+    "minecraft:dripstone_block",
+    "minecraft:pointed_dripstone"
+  ],
+  "replacement_tag": "minecraft:dripstone_replaceable_blocks",
+  "replacement_tag_proof": {
+    "schema": 1,
+    "legacy_server_sha1": "59353fb40c36d304f2035d51e7d6e6baa98dc05c",
+    "source_tag_sha256": {
+      "data/minecraft/tags/block/dripstone_replaceable_blocks.json": "07c217af0b27c19ed8cd9afd2a3e61dff67b8ef25768acde57af82e839dd6144",
+      "data/minecraft/tags/block/base_stone_overworld.json": "bc5e06bc82b8aba3ba9374b83416ed98eb6977432c2acaf42f4a7c665f400861"
+    },
+    "original_modded_members": 10,
+    "effective_members": 10,
+    "membership_equal": true,
+    "includes_terralith_additions": true,
+    "block_state_parity_claimed": false
+  },
+  "distribution_parameters_changed": false,
+  "source_files_hashed": 1867,
+  "source_hashes_rechecked": true,
+  "source_files_modified": false,
+  "derived_hmod_sdk_validated": true,
+  "derived_hmod_sha256": "82bf3186948ca279339e29581c6796891d702f4724e1a298e924e78967d0892f",
+  "namespace_ownership_changed": false,
+  "world_datapack_still_required": true,
+  "server_boot_tested": true,
+  "production_loaded_hmod_modules": 6,
+  "production_boot_done": true,
+  "command_probe_test_only": true,
+  "command_probe_sha256": "71ec82c832c45c72eca242817a40048f65bf306e619e950137a16f6dba463413",
+  "command_probe_module_count": 7,
+  "command_probe_skips_outer_placed_modifiers": true,
+  "world_checks": {
+    "schema": 1,
+    "world": "horizon-dripstone-test",
+    "seed": 263,
+    "online_mode": true,
+    "whitelist": true,
+    "bind": "127.0.0.1",
+    "port": 25594,
+    "command_probe_module_count": 7,
+    "outer_placed_modifiers_tested": false,
+    "features": [
+      {
+        "feature": "terralith:savanna/dripstone",
+        "test_alias": false,
+        "block": "minecraft:pointed_dripstone",
+        "position": [
+          136,
+          200,
+          136
+        ],
+        "attempts_to_observe_block": 2,
+        "properties_before": {
+          "vertical_direction": "up",
+          "thickness": "tip",
+          "waterlogged": "false"
+        },
+        "properties_after": {
+          "vertical_direction": "up",
+          "thickness": "tip",
+          "waterlogged": "false"
+        },
+        "state_after_reopen": true
+      },
+      {
+        "feature": "terralith:savanna/shattered/teeth",
+        "test_alias": false,
+        "block": "minecraft:pointed_dripstone",
+        "position": [
+          184,
+          200,
+          136
+        ],
+        "attempts_to_observe_block": 1,
+        "properties_before": {
+          "vertical_direction": "up",
+          "thickness": "base",
+          "waterlogged": "false"
+        },
+        "properties_after": {
+          "vertical_direction": "up",
+          "thickness": "base",
+          "waterlogged": "false"
+        },
+        "state_after_reopen": true
+      },
+      {
+        "feature": "techquest_dripstone_probe:spires",
+        "test_alias": true,
+        "block": "minecraft:pointed_dripstone",
+        "position": [
+          232,
+          200,
+          136
+        ],
+        "attempts_to_observe_block": 1,
+        "properties_before": {
+          "vertical_direction": "up",
+          "thickness": "frustum",
+          "waterlogged": "false"
+        },
+        "properties_after": {
+          "vertical_direction": "up",
+          "thickness": "frustum",
+          "waterlogged": "false"
+        },
+        "state_after_reopen": true
+      },
+      {
+        "feature": "techquest_dripstone_probe:thermal",
+        "test_alias": true,
+        "block": "minecraft:pointed_dripstone",
+        "position": [
+          280,
+          240,
+          136
+        ],
+        "attempts_to_observe_block": 1,
+        "properties_before": {
+          "vertical_direction": "down",
+          "thickness": "tip",
+          "waterlogged": "false"
+        },
+        "properties_after": {
+          "vertical_direction": "down",
+          "thickness": "tip",
+          "waterlogged": "false"
+        },
+        "state_after_reopen": true
+      },
+      {
+        "feature": "terralith:cave/frostfire/pillar",
+        "test_alias": false,
+        "block": "minecraft:dripstone_block",
+        "position": [
+          328,
+          201,
+          141
+        ],
+        "attempts_to_observe_block": 3,
+        "state_after_reopen": true
+      },
+      {
+        "feature": "terralith:cave/frostfire/pillar_huge",
+        "test_alias": false,
+        "block": "minecraft:dripstone_block",
+        "position": [
+          376,
+          220,
+          136
+        ],
+        "attempts_to_observe_block": 1,
+        "state_after_reopen": true
+      }
+    ],
+    "save_all_flushed": true,
+    "reopen_checks_passed": true,
+    "final_status": {
+      "phase": "stopped"
+    }
+  },
+  "previous_placed_features_skipped": 9,
+  "placed_features_skipped": 4,
+  "restored_feature_decodes": 5,
+  "new_unsupported_features": [],
+  "remaining_unsupported_features": [
+    [
+      "terralith:cliffs/basalt/seed",
+      "missing block identifier"
+    ],
+    [
+      "terralith:snowy/fix_snow",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:flower/blue/flowers",
+      "invalid world generation field: basic feature type"
+    ],
+    [
+      "terralith:cherry/rock",
+      "invalid world generation field: basic feature type"
+    ]
+  ],
+  "whole_dripstone_visual_or_random_parity_claimed": false,
+  "natural_dripstone_verified": false,
+  "client_boot_tested": false,
+  "multiplayer_tested": false,
+  "gameplay_ported": false
+}

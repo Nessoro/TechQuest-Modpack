@@ -1,0 +1,51 @@
+--- a/crates/horizon-client/src/mod_content.rs
++++ b/crates/horizon-client/src/mod_content.rs
+@@ -2649,6 +2649,8 @@
+         }
+     }
+     if !modifiers.is_empty() {
++        let before = fs::read(out_path(&overlay, BIOMES))?;
++        overlay.write("worldgen/biomes_before_modifiers.json", &before)?;
+         place_in_biomes(
+             base,
+             &overlay,
+@@ -2912,3 +2914,7 @@
+ #[cfg(test)]
+ #[path = "mod_content_tests.rs"]
+ mod tests;
++
++#[path = "techquest_worldpack_features.rs"]
++mod techquest_worldpack_features;
++pub use techquest_worldpack_features::reapply_worldpack_features;
+--- a/crates/horizon-client/src/game/world_loading.rs
++++ b/crates/horizon-client/src/game/world_loading.rs
+@@ -563,8 +563,13 @@
+         .iter()
+         .filter_map(|id| packs.iter().find(|p| &p.id == id))
+         .collect();
+-    let (overrides, _) =
++    let (mut overrides, _) =
+         horizon_client::datapack::worldgen_overrides(&enabled, |b| biomes.contains(b));
++    if let Err(error) =
++        horizon_client::mod_content::reapply_worldpack_features(resources, &mut overrides)
++    {
++        log::warn!("Horizon: creation feature modifiers: {error}");
++    }
+     overrides
+ }
+ /// The worldgen entries of the world's enabled data packs, logging what
+@@ -600,7 +605,13 @@
+         .iter()
+         .filter_map(|id| packs.iter().find(|p| &p.id == id))
+         .collect();
+-    horizon_client::datapack::worldgen_overrides(&enabled, |b| biomes.contains(b))
++    let (mut overrides, mut warnings) =
++        horizon_client::datapack::worldgen_overrides(&enabled, |b| biomes.contains(b));
++    match horizon_client::mod_content::reapply_worldpack_features(resources, &mut overrides) {
++        Ok(extra) => warnings.extend(extra),
++        Err(error) => warnings.push(format!("world-pack feature modifiers: {error}")),
++    }
++    (overrides, warnings)
+ }
+ 
+ /// The shapes of the world's levels: their dimension types, the world's

@@ -1,0 +1,742 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-22T00:09:33.026505+00:00",
+  "minecraft": "26.3",
+  "scope": "Pretty Pipes redstone module, mutual compatibility with extractors, power-gated new work and continued in-flight delivery",
+  "pretty_pipes_content_and_native_version": "0.8.0",
+  "oritech_content_version": "0.3.0",
+  "oritech_native_version": "0.2.0",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "original_source": {
+    "commit": "1f8ac61c6de5b191f3b28da2c23d8040a231047f",
+    "license": "MIT, Copyright (c) 2020-2021 Ellpeck",
+    "consulted_own_classes": [
+      "RedstoneModuleItem",
+      "ModuleItem",
+      "ExtractionModuleItem",
+      "PipeBlockEntity",
+      "PipeItem",
+      "AbstractPipeContainer",
+      "MainPipeContainer",
+      "PipeBlock"
+    ],
+    "dependency_java_source_read_or_decompiled": false,
+    "original_signal_fixture_levels": [
+      0,
+      15
+    ],
+    "module_menu_cases": 66,
+    "signal_destination_store_cases": 48,
+    "destination_force_flag_used_to_isolate_power_gate": true
+  },
+  "behavior": {
+    "one_redstone_and_one_supported_extractor_compatible_in_either_order": true,
+    "duplicate_redstone_or_extractors_rejected": true,
+    "powered_source_stops_new_extraction": true,
+    "powered_pipe_not_selected_as_new_destination": true,
+    "powered_pipe_still_traversable": true,
+    "already_routed_items_still_stored_after_destination_becomes_powered": true,
+    "physical_slots_3_queue_slots_64_and_schema_3_unchanged": true,
+    "menu_slots_67_data_slots_21_unchanged": true,
+    "content_native_pair_required": true
+  },
+  "native_comparisons": {
+    "module_compatibility_and_menu_cases": 66,
+    "prior_menu_steps": 20,
+    "hidden_slot_packet_controls": 5,
+    "visible_slot_positive_controls": 5,
+    "six_direction_source_gate_cases": 24,
+    "module_codec_ownership_tests": 8,
+    "original_vanilla_capacity_cases": 126,
+    "ordinary_crafting_cases": 69,
+    "pipe_loot_table_checked": true,
+    "mismatches": 0,
+    "original_tier_independent_gate_observed_using_native_medium_batch": true
+  },
+  "dedicated": {
+    "prepare": {
+      "powered_source_blocks_extraction": {
+        "source": 8,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "129 200 176": true,
+          "130 200 176": true,
+          "131 200 176": true
+        }
+      },
+      "powered_destinations_block_new_route": {
+        "source": 8,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "129 200 176": false,
+          "130 200 176": true,
+          "131 200 176": true
+        }
+      },
+      "powered_intermediate_allows_transit": {
+        "source": 0,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 8,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "129 200 176": false,
+          "130 200 176": true,
+          "131 200 176": false
+        }
+      },
+      "saved_in_flight_with_source_and_destination_powered": {
+        "source": 0,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 8,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "129 200 176": true,
+          "130 200 176": true,
+          "131 200 176": true
+        }
+      }
+    },
+    "verify": {
+      "immediately_after_reopen": {
+        "source": 0,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 8,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "129 200 176": true,
+          "130 200 176": true,
+          "131 200 176": true
+        }
+      },
+      "already_routed_delivery_ignores_power": {
+        "source": 0,
+        "destination": 8,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "129 200 176": true,
+          "130 200 176": true,
+          "131 200 176": true
+        }
+      },
+      "new_route_still_blocked_while_powered": {
+        "source": 8,
+        "destination": 8,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "129 200 176": false,
+          "130 200 176": true,
+          "131 200 176": true
+        }
+      },
+      "final": {
+        "source": 0,
+        "destination": 16,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "129 200 176": false,
+          "130 200 176": true,
+          "131 200 176": false
+        }
+      }
+    },
+    "final": {
+      "final": {
+        "source": 0,
+        "destination": 16,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "129 200 176": false,
+          "130 200 176": true,
+          "131 200 176": false
+        }
+      }
+    }
+  },
+  "oritech_industrial_regression": {
+    "sixteen_ingots_processed_and_delivered": true,
+    "input_slot_protection_and_full_destination_backpressure_checked": true,
+    "physical_reopens_checked": true,
+    "final": {
+      "final": {
+        "raw_source": 0,
+        "fuel_source": 0,
+        "generator_coal": 0,
+        "furnace_raw": 0,
+        "furnace_iron": 0,
+        "output_chest": 8,
+        "output_in_flight": 0,
+        "generator_energy": 0,
+        "furnace_energy": 0,
+        "generator_progress": 0,
+        "furnace_progress": 0
+      },
+      "barrel": {
+        "minecraft:iron_ingot": 8,
+        "minecraft:stone": 1664
+      }
+    }
+  },
+  "graphical": {
+    "crafting_operations": 18,
+    "crafts": [
+      {
+        "output": "minecraft:redstone_torch",
+        "count": 1,
+        "consumed": {
+          "minecraft:redstone": 1,
+          "minecraft:stick": 1
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "minecraft:redstone_torch",
+        "count": 1,
+        "consumed": {
+          "minecraft:redstone": 1,
+          "minecraft:stick": 1
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "minecraft:redstone_torch",
+        "count": 1,
+        "consumed": {
+          "minecraft:redstone": 1,
+          "minecraft:stick": 1
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "minecraft:redstone_torch",
+        "count": 1,
+        "consumed": {
+          "minecraft:redstone": 1,
+          "minecraft:stick": 1
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "prettypipes:pipe",
+        "count": 4,
+        "consumed": {
+          "minecraft:redstone": 1,
+          "minecraft:iron_bars": 2,
+          "minecraft:glass": 1,
+          "minecraft:copper_ingot": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:pipe",
+        "count": 4,
+        "consumed": {
+          "minecraft:redstone": 1,
+          "minecraft:iron_bars": 2,
+          "minecraft:glass": 1,
+          "minecraft:copper_ingot": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:blank_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:quartz": 4,
+          "minecraft:redstone": 2,
+          "minecraft:stone_slab": 2,
+          "prettypipes:pipe": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:blank_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:quartz": 4,
+          "minecraft:redstone": 2,
+          "minecraft:stone_slab": 2,
+          "prettypipes:pipe": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:blank_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:quartz": 4,
+          "minecraft:redstone": 2,
+          "minecraft:stone_slab": 2,
+          "prettypipes:pipe": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:blank_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:quartz": 4,
+          "minecraft:redstone": 2,
+          "minecraft:stone_slab": 2,
+          "prettypipes:pipe": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:blank_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:quartz": 4,
+          "minecraft:redstone": 2,
+          "minecraft:stone_slab": 2,
+          "prettypipes:pipe": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:low_extraction_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:piston": 1,
+          "minecraft:redstone": 3,
+          "prettypipes:blank_module": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:medium_extraction_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:iron_ingot": 4,
+          "prettypipes:low_extraction_module": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:high_extraction_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:gold_ingot": 7,
+          "minecraft:diamond": 1,
+          "prettypipes:medium_extraction_module": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:redstone_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:redstone_torch": 1,
+          "minecraft:redstone": 3,
+          "prettypipes:blank_module": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:redstone_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:redstone_torch": 1,
+          "minecraft:redstone": 3,
+          "prettypipes:blank_module": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:redstone_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:redstone_torch": 1,
+          "minecraft:redstone": 3,
+          "prettypipes:blank_module": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "prettypipes:redstone_module",
+        "count": 1,
+        "consumed": {
+          "minecraft:redstone_torch": 1,
+          "minecraft:redstone": 3,
+          "prettypipes:blank_module": 1
+        },
+        "inventory_grid": false
+      }
+    ],
+    "all_six_pp_source_recipes_crafted": true,
+    "pipes_and_modules_crafted_and_player_placed": true,
+    "installed_modules": [
+      {
+        "pos": "-2269 200 2272",
+        "item": "prettypipes:redstone_module"
+      },
+      {
+        "pos": "-2269 200 2272",
+        "item": "prettypipes:high_extraction_module"
+      },
+      {
+        "pos": "-2268 200 2272",
+        "item": "prettypipes:redstone_module"
+      },
+      {
+        "pos": "-2267 200 2272",
+        "item": "prettypipes:redstone_module"
+      }
+    ],
+    "extractor_filter_in_second_slot_configured": true,
+    "duplicate_redstone_rejected": true,
+    "shift_remove_reinstall_preserves_filter": true,
+    "ghost_sample_not_real_cargo": true,
+    "power_toggled_by_actual_lever_interaction": true,
+    "prepared": {
+      "powered_source_blocks_extraction": {
+        "source": 8,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "-2269 200 2272": true,
+          "-2268 200 2272": true,
+          "-2267 200 2272": true
+        }
+      },
+      "powered_destinations_block_new_route": {
+        "source": 8,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "-2269 200 2272": false,
+          "-2268 200 2272": true,
+          "-2267 200 2272": true
+        }
+      },
+      "powered_intermediate_allows_transit": {
+        "source": 0,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 8,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "-2269 200 2272": false,
+          "-2268 200 2272": true,
+          "-2267 200 2272": false
+        }
+      },
+      "saved_in_flight_with_source_and_destination_powered": {
+        "source": 0,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 8,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "-2269 200 2272": true,
+          "-2268 200 2272": true,
+          "-2267 200 2272": true
+        }
+      }
+    },
+    "completed": {
+      "immediately_after_reopen": {
+        "source": 0,
+        "destination": 0,
+        "side_destination": 0,
+        "cargo": 8,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "-2269 200 2272": true,
+          "-2268 200 2272": true,
+          "-2267 200 2272": true
+        }
+      },
+      "already_routed_delivery_ignores_power": {
+        "source": 0,
+        "destination": 8,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "-2269 200 2272": true,
+          "-2268 200 2272": true,
+          "-2267 200 2272": true
+        }
+      },
+      "new_route_still_blocked_while_powered": {
+        "source": 8,
+        "destination": 8,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "-2269 200 2272": false,
+          "-2268 200 2272": true,
+          "-2267 200 2272": true
+        }
+      },
+      "final": {
+        "source": 0,
+        "destination": 16,
+        "side_destination": 0,
+        "cargo": 0,
+        "redstone_modules": 3,
+        "extractors": 1,
+        "powered": {
+          "-2269 200 2272": false,
+          "-2268 200 2272": true,
+          "-2267 200 2272": false
+        }
+      }
+    },
+    "physical_reopens": 2,
+    "final_inventory": {
+      "prettypipes:redstone_module": 1
+    },
+    "protocol_decode_errors": 0,
+    "all_recorded_status_snapshots_checked": true,
+    "basic_ingredient_fixtures": {
+      "minecraft:redstone": 31,
+      "minecraft:iron_bars": 4,
+      "minecraft:glass": 2,
+      "minecraft:copper_ingot": 2,
+      "minecraft:quartz": 20,
+      "minecraft:stone_slab": 10,
+      "minecraft:piston": 1,
+      "minecraft:iron_ingot": 20,
+      "minecraft:gold_ingot": 7,
+      "minecraft:diamond": 1,
+      "minecraft:stick": 4
+    },
+    "bench_chest_lever_platform_travel_and_tick_fixtures": true,
+    "transport_cargo_seeded": false,
+    "licensed_join_tested": false
+  },
+  "diagnostics": {
+    "initial_placement_ray_intercepted_by_levers": "Place pipes before floor controls and approach each target directly; independent diagnostic confirmed ordinary pipe placement works.",
+    "initial_fixture_counter_included_ghost_iron": "Root inventory predicates now exclude filter components from physical cargo counts; native ownership was unchanged."
+  },
+  "installation": {
+    "profile": "/workspace/horizon-runtime/techquest-pipes-08a-server",
+    "port": 25647,
+    "bind": "127.0.0.1",
+    "online_mode": true,
+    "whitelist": true,
+    "eula_previously_accepted": true,
+    "hmod_count": 8,
+    "native_bundles": 4,
+    "core_corrections": 2,
+    "lock_verified": true,
+    "server_stopped": true,
+    "prior_profiles_tools_and_locks_unchanged": true,
+    "native_bundle_matches_public_rust": true
+  },
+  "python_tests": 123,
+  "proofs": {
+    "original_oracle": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-redstone-reference-v1/result.json",
+      "sha256": "0f21ca7447d9f5257bfd9ca48c5a71377040eb8056084c6cfc84e5091c9f623b"
+    },
+    "original_oracle_inputs": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-redstone-reference-v1/inputs.json",
+      "sha256": "4efd909e42466d9cf9fe1f4661f42ae363804c6dd13cf44dc35c4a452a7748b5"
+    },
+    "native_source_signals": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-parity-v1/checked-result.json",
+      "sha256": "d3c257b3f8eeb13eb6d97cc3a644dc58ae0cf3b780b126f6de6c94709658f4db"
+    },
+    "native_source_signal_actions": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-parity-v1/result.jsonl",
+      "sha256": "e8fb3eeddf569caa60e84546b48a4bfa679ed5b4871872d6762b00eff1a89998"
+    },
+    "native_menu_66": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-menu-redstone-v2.json",
+      "sha256": "fb8cbafd99816d6271df5ff5fcd33ef3f8281cdbcf299dc5e9958781c07febad"
+    },
+    "native_old_menu_20": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-menu-regression-v2.json",
+      "sha256": "d15bb00c6667c9bf6f8f3321859620cb5bc1da32d2c830d3eedc6eaad6765fbf"
+    },
+    "menu_compile_command": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-menu-compile-command-v2.json",
+      "sha256": "8cc943719e73d880a055bbaa81f037cba1b0f65db6d2716ada3897b0c6f37dd0"
+    },
+    "module_tests": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-module-tests-v1.log",
+      "sha256": "84a8da9d3e57ca7746b0879deb841b0c1c2e8a998ab30eedae1fdcaf96c8b891"
+    },
+    "original_crafting_and_interaction": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-content-reference-v1/result.json",
+      "sha256": "d7bf0aa89cdf7a55d3b30c656e8afd14ca077ee28d40fe42cf5641a1d340eff2"
+    },
+    "crafting_inputs": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-crafting-cases-v1.json",
+      "sha256": "d7e53fa009209a9c4702260939f97a98a21671bd6bef8eaa35bcfffacd0cdf28"
+    },
+    "native_crafting": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-crafting-parity-v1.json",
+      "sha256": "1fdad5d2f9172e55e593d938bd59107d2cf87c310f2c7ea4f3f5a04653a6bf20"
+    },
+    "capacity_regression": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-capacity-parity-v1/checked-result.json",
+      "sha256": "aa10dd9a44f7e8c807a412e7c69ae182b47dcabb58f46f9e07a8f29ce4e62cd4"
+    },
+    "staged_content": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-content-08-v1.json",
+      "sha256": "92249b9e353bb3e853b6c47838021114f2141930b2cd85fa06904e0b48c2cf77"
+    },
+    "native_sdk": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-native-sdk-v1.json",
+      "sha256": "9cb8992bdca0d0dbfce5acb5e9b6019f061ab065820fefb095f020e6548e097b"
+    },
+    "mixins": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-mixins-v1.json",
+      "sha256": "376208d54a9b7093227308a65251bc4dcb5ab37a0411a702c38ac76beb027d94"
+    },
+    "core_corrections": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-core-patches-v1.json",
+      "sha256": "32a9ca6daf5c9c640844852a3d7a6c136af411270511396a01b58f87849e434d"
+    },
+    "incremental_sync": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-stage-sync-v1.json",
+      "sha256": "d6ddc040f6a73e89b8448c49f1f0d951fb45ee5e2a99314a8b7d97d21c92a493"
+    },
+    "engine_build": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-native-build-v1.log",
+      "sha256": "ffb21a68d057b55a06fae39bc45baa3f1c57fa19cdac11c2d07e872cfec3fd77"
+    },
+    "compiler": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-rustc-version.txt",
+      "sha256": "55cd0529c005d3f62869ea6e2271bfa9d5196f56dc65a8be00a371af114a4a98"
+    },
+    "tools_build": {
+      "path": "/workspace/horizon-runtime/native-tools-pipes-08a/build-result.json",
+      "sha256": "cd58bb8d88af6d767a94e1930ca92d88e6ff7c66556a696072bdf7c75f72f00c"
+    },
+    "installation": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-install-v1.json",
+      "sha256": "07f3549e4a622fb54e9d43434bf2d53f83da3aa304aeba5db5360e4f506166d9"
+    },
+    "graphical": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-gui-v3/checked-result.json",
+      "sha256": "b8b8da5e455bd2f22dc9a26a9b48c5323b618b661099cb9c957f55fe8b84ab32"
+    },
+    "graphical_actions": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-gui-v3/actions.json",
+      "sha256": "31b8caabe7658412ab9736b531931e81e2bf91419f361ce3fa53324d7687a913"
+    },
+    "coinstalled_filter_menu": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-gui-v3/redstone-extractor-filter-menu.png",
+      "sha256": "c74071d8e23b7a3a6e9b1e1056c7766e88f648f82064d3cf26accff7b77234f2"
+    },
+    "saved_routed_items": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-gui-v3/powered-route-saved.png",
+      "sha256": "84be2eb39b7d2c722e8f94cc983376a55d5cf7cfb855443dd22f5878f0ad4da2"
+    },
+    "two_delivered_batches": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-gui-v3/redstone-two-batches-delivered.png",
+      "sha256": "57852d03d24f82811837522e6d4794b0b325d0b30a17879e760eeb7dd3cdd8b0"
+    },
+    "placement_diagnostic": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-placement-diagnostic-v1.log",
+      "sha256": "dfe7984e5ce2cb09679600c8cf30572f2becc18b080437aff25df3ee70466b01"
+    },
+    "ghost_counter_diagnostic": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-gui-v2.log",
+      "sha256": "881b417382eaaef978891a9c8b538f868b66a6bc7f95ebffaf35223930979407"
+    },
+    "python_tests": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08-python-tests-final.log",
+      "sha256": "d59211310616bf088038c0503604fb901da23470ec14fdf59d337c46fa9fb4fc"
+    },
+    "dedicated_prepare": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-prepare-v1.json",
+      "sha256": "5ed19f6882a9e59bbbf6b926a926e98258077cd8df7ddf46d36a48c2f73ac163"
+    },
+    "dedicated_prepare_commands": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-prepare-v1.commands.json",
+      "sha256": "d83c8ca4940c9869149b7142cdbf48ea9833218078a9b574dcc1c216268dcbcd"
+    },
+    "dedicated_verify": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-verify-v1.json",
+      "sha256": "90f4fa9d3a454628cb55638d9aa44988bc4b11581fe14b2a39ec4656467b2a88"
+    },
+    "dedicated_verify_commands": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-verify-v1.commands.json",
+      "sha256": "0441bdaaacfe399a1bc17d72da10f9e750af1b44519468779977a74b81a1d4f3"
+    },
+    "dedicated_final": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-final-v1.json",
+      "sha256": "4bf8751382f261f0ff947bd3495590062fa1462637dd0579025a015320912f3d"
+    },
+    "dedicated_final_commands": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-redstone-final-v1.commands.json",
+      "sha256": "96c471cbb15bc738575908648383d92b4e3e01c55ea343f5bd436fb2fea7d708"
+    },
+    "oritech_regression_prepare": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-oritech-prepare-v1.json",
+      "sha256": "2ef01487c8ae87ce1d60a484613493bd37930c591067bb9a05be4e06f82236a4"
+    },
+    "oritech_regression_prepare_commands": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-oritech-prepare-v1.commands.json",
+      "sha256": "888348c3bbe9632b76f0c7d6709c4078eb2be48bf5630ab76bcf9927b789b035"
+    },
+    "oritech_regression_verify": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-oritech-verify-v1.json",
+      "sha256": "c1464ae7aba3533ea1f22cf79d815dd7f73fb0b3a3b8ae05a43ce17c6f330d06"
+    },
+    "oritech_regression_verify_commands": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-oritech-verify-v1.commands.json",
+      "sha256": "b3bbd57341b69ee2430dca0c7756c23172693722e2c40e1095788e3ef93b2d49"
+    },
+    "oritech_regression_final": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-oritech-final-v1.json",
+      "sha256": "c7459b9c527ca976180563a3300e6a20ffc548b19c879ee1d26ba59f39a5775c"
+    },
+    "oritech_regression_final_commands": {
+      "path": "/workspace/horizon-runtime/pretty-pipes-08a-oritech-final-v1.commands.json",
+      "sha256": "8c7e202f769bb27f59af7829a7f76896f6471403ee68f3e2fd01dee15f27812a"
+    }
+  },
+  "limitations": [
+    "Equality/filter-increase/priority/insertion-limit modules, full original routing/overflow/rerouting and exact travel timing remain incomplete.",
+    "Signal comparison covers levels 0/15 and GUI levers; it does not establish all vanilla redstone circuit behavior.",
+    "Graphical ingredients and work area are fixtures; this is not unassisted survival from spawn.",
+    "Synthetic integrated client and console probes do not establish licensed-client join or multiplayer."
+  ],
+  "full_modpack_ported": false,
+  "published": false
+}

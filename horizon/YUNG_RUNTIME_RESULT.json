@@ -1,0 +1,672 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-15",
+  "working_base_commit": "1766205",
+  "minecraft": "26.3",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "source_minecraft": "1.21.1",
+  "source_loader": "NeoForge 21.1.264",
+  "seed": 263,
+  "bind": "127.0.0.1",
+  "online_mode": true,
+  "whitelist": true,
+  "players_connected": 0,
+  "content_modules": 6,
+  "native_modules": [
+    {
+      "id": "techquest_terralith_wolves",
+      "version": "0.1.0",
+      "sha256": "243f1bb11cd5e09bc955c38423c57fda0856018bef6cb42bb070056be96ed140",
+      "api": "native-1/c78187dffffb60f31517eadcb87413386e8ce729/5a64af938ec86b00d53d16a408aabc0038fb3e57"
+    }
+  ],
+  "decoder_audit": {
+    "definitions": 20,
+    "supported_kinds": 4,
+    "classification_uses_stub_biome_resolver": true,
+    "layouts_use_real_generator": true,
+    "structures": [
+      {
+        "decoder_supported": true,
+        "id": "betterdungeons:skeleton_dungeon",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": 20,
+        "source_type": "yungsapi:yung_jigsaw",
+        "unsupported_kind": null
+      },
+      {
+        "decoder_supported": true,
+        "id": "betterdungeons:small_dungeon",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": 10,
+        "source_type": "yungsapi:yung_jigsaw",
+        "unsupported_kind": null
+      },
+      {
+        "decoder_supported": false,
+        "id": "betterdungeons:small_nether_dungeon",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": 10,
+        "source_type": "betterdungeons:small_nether_dungeon",
+        "unsupported_kind": "betterdungeons:small_nether_dungeon"
+      },
+      {
+        "decoder_supported": false,
+        "id": "betterdungeons:spider_dungeon",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "betterdungeons:spider_dungeon",
+        "unsupported_kind": "betterdungeons:spider_dungeon"
+      },
+      {
+        "decoder_supported": true,
+        "id": "betterdungeons:zombie_dungeon",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": 20,
+        "source_type": "yungsapi:yung_jigsaw",
+        "unsupported_kind": null
+      },
+      {
+        "decoder_supported": false,
+        "id": "betterfortresses:fortress",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": true,
+        "source_depth": 46,
+        "source_type": "yungsapi:yung_jigsaw",
+        "unsupported_kind": "minecraft:jigsaw"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_acacia",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_desert",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_dripstone",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_ice",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_jungle",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_lush",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_mesa",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_mushroom",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_oak",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_overgrown",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_red_desert",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_spruce",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": false,
+        "id": "bettermineshafts:mineshaft_spruce_snowy",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": false,
+        "source_depth": null,
+        "source_type": "bettermineshafts:mineshaft",
+        "unsupported_kind": "bettermineshafts:mineshaft"
+      },
+      {
+        "decoder_supported": true,
+        "id": "betterstrongholds:stronghold",
+        "native_enhanced_terrain_present": false,
+        "raw_enhanced_terrain_present": true,
+        "source_depth": 15,
+        "source_type": "yungsapi:yung_jigsaw",
+        "unsupported_kind": null
+      }
+    ]
+  },
+  "manual_structure_placement": {
+    "structures": [
+      {
+        "id": "betterdungeons:small_dungeon",
+        "chunk": [
+          8,
+          8
+        ],
+        "pieces": 5,
+        "candidate_count": 10,
+        "present_candidate_blocks": 10,
+        "observed_spawners": 1,
+        "observed_loot_references": 9,
+        "spawner_mobs": [
+          "minecraft:pig"
+        ],
+        "save_reopen_observations_unchanged": true
+      },
+      {
+        "id": "betterdungeons:zombie_dungeon",
+        "chunk": [
+          32,
+          8
+        ],
+        "pieces": 781,
+        "candidate_count": 27,
+        "present_candidate_blocks": 27,
+        "observed_spawners": 9,
+        "observed_loot_references": 18,
+        "spawner_mobs": [
+          "minecraft:pig",
+          "minecraft:zombie"
+        ],
+        "save_reopen_observations_unchanged": true
+      },
+      {
+        "id": "betterdungeons:skeleton_dungeon",
+        "chunk": [
+          56,
+          8
+        ],
+        "pieces": 43,
+        "candidate_count": 20,
+        "present_candidate_blocks": 20,
+        "observed_spawners": 5,
+        "observed_loot_references": 15,
+        "spawner_mobs": [
+          "minecraft:pig"
+        ],
+        "save_reopen_observations_unchanged": true
+      },
+      {
+        "id": "betterstrongholds:stronghold",
+        "chunk": [
+          80,
+          8
+        ],
+        "pieces": 854,
+        "candidate_count": 168,
+        "present_candidate_blocks": 151,
+        "observed_spawners": 9,
+        "observed_loot_references": 137,
+        "spawner_mobs": [
+          "minecraft:silverfish",
+          "minecraft:spider",
+          "minecraft:zombie"
+        ],
+        "save_reopen_observations_unchanged": true
+      }
+    ],
+    "total_candidate_blocks": 225,
+    "total_present_candidate_blocks": 208,
+    "observed_spawners": 24,
+    "observed_loot_references": 179,
+    "save_reopen_verified": true
+  },
+  "small_dungeon_spawner_fix": {
+    "adapter": "tools/stage_yung_dungeons.py",
+    "source_jar_sha1": "73a660c13063450e555e5e2c015ae24d606b32b4",
+    "source_json_sha256": {
+      "data/betterdungeons/worldgen/processor_list/small_dungeon/small_dungeon_skeleton.json": "8f560481177889e96fdc598ca3802f4634eb2b292ffba829514c14644d800ff1",
+      "data/betterdungeons/worldgen/processor_list/small_dungeon/small_dungeon_spider.json": "85aedc8c44dc5ff24491d2f3089b124f110c364597de86dbd7981efb02295a20",
+      "data/betterdungeons/worldgen/processor_list/small_dungeon/small_dungeon_zombie.json": "0585767da2135ba6e35609e4b4d58d15e700760515e2096018e0817f4fdd2420"
+    },
+    "derived_hmod_sha256": "2df54276309bf40f7c98b6eabdfb8c77ee1bf416c67b0c95406bd19e0714610a",
+    "sdk_validated": true,
+    "restored_processors": 3,
+    "native_block_entity_id_restored": true,
+    "other_dropped_processors_in_selected_lists": 30,
+    "original_oracle_reproduced": true,
+    "before_reopen_comparison_mismatches": 0,
+    "after_reopen_comparison": {
+      "cases": 17,
+      "numeric_fields_compared": 119,
+      "source_mobs": [
+        "minecraft:skeleton",
+        "minecraft:spider",
+        "minecraft:zombie"
+      ],
+      "mismatch_positions": []
+    },
+    "save_reopen_observations_unchanged": true,
+    "cases": [
+      {
+        "position": [
+          128,
+          -7,
+          128
+        ],
+        "expected_mob": "minecraft:skeleton",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          128,
+          27,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          256,
+          -5,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          384,
+          0,
+          512
+        ],
+        "expected_mob": "minecraft:spider",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          512,
+          13,
+          512
+        ],
+        "expected_mob": "minecraft:spider",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          640,
+          -25,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          768,
+          48,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          896,
+          9,
+          512
+        ],
+        "expected_mob": "minecraft:spider",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          1024,
+          30,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          1152,
+          -2,
+          512
+        ],
+        "expected_mob": "minecraft:spider",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          1280,
+          -43,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          1408,
+          -10,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          1536,
+          -38,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          1664,
+          28,
+          512
+        ],
+        "expected_mob": "minecraft:spider",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          1792,
+          3,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          1920,
+          -52,
+          512
+        ],
+        "expected_mob": "minecraft:zombie",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      },
+      {
+        "position": [
+          2048,
+          9,
+          512
+        ],
+        "expected_mob": "minecraft:spider",
+        "numeric_fields": {
+          "Delay": 20,
+          "MinSpawnDelay": 200,
+          "MaxSpawnDelay": 800,
+          "SpawnCount": 4,
+          "MaxNearbyEntities": 6,
+          "RequiredPlayerRange": 16,
+          "SpawnRange": 4
+        },
+        "spawn_potential_matches": true
+      }
+    ]
+  },
+  "original_container_control": {
+    "candidate_positions": 9,
+    "native_still_present": 9,
+    "original_still_present": 3,
+    "chest_count_processors_ported": false
+  },
+  "original_reference": {
+    "boot_reached_done": true,
+    "worldgen_mods_only": true,
+    "top_level_jars": 7,
+    "embedded_apollib_loaded": true,
+    "no_java_source_read_or_decompiled": true,
+    "stopped_gracefully": true,
+    "exit_code": 0,
+    "account_login_tested": false
+  },
+  "final_install_lock_verification_passed": true,
+  "server_statuses": {
+    "techquest-yung-server": "stopped",
+    "techquest-yung-fixed-server": "stopped",
+    "techquest-yung-fixed-v2-server": "stopped"
+  },
+  "python_tests_passed": 96,
+  "source_game_assets_committed": false,
+  "main_changed": false,
+  "published": false,
+  "unverified": [
+    "Natural structure generation and biome eligibility",
+    "Chest opening, lazy loot rolls and actual item delivery",
+    "Spawner activation and natural entity spawning with a player",
+    "Complete RNG trace and layout parity",
+    "Small dungeon chest limits and other dropped processors",
+    "Large zombie/skeleton dungeon spawner processors",
+    "YUNG pool conditions and enhanced terrain adaptation",
+    "The 16 unsupported structure definitions",
+    "Industrial gameplay ports and licensed client/multiplayer"
+  ],
+  "full_modpack_ported": false,
+  "local_evidence_root": "/workspace/horizon-runtime",
+  "local_evidence_sha256": {
+    "yung-structure-audit-v1.json": "b2c29f82ead344509ae635101b8dfcde8bde926d2bd19a802ab2d74a18784672",
+    "yung-live-blocks-baseline-v1.json": "80fc845428220dce9d249f17c1b36bf839d84a74b945e36e88028f090b06a8e5",
+    "yung-live-blocks-reopened-v1.json": "80fc845428220dce9d249f17c1b36bf839d84a74b945e36e88028f090b06a8e5",
+    "yung-small-original-oracle-v2.json": "80090f270b7cfe59428f2209c7d9835418b4e5cdf2d91a3d53c03dbd962c0ad5",
+    "yung-small-original-reproduced.json": "80090f270b7cfe59428f2209c7d9835418b4e5cdf2d91a3d53c03dbd962c0ad5",
+    "yung-fixed-v2-live.json": "98e959466bcd997ad046435c2df9757e7dbb646b1f1dbe2b66c794fda7a78c19",
+    "yung-fixed-v2-reopened.json": "dede34d4cd6f73d4c1828a412cac27794c6fc6eac584122f2fee0aad8eb3df92",
+    "yung-fixed-v2-comparison.json": "050025412ad0549fa22257a8c751ce3a958733ae4099319c00e3b9cdd2dd2d56",
+    "yung-fixed-v2-final-verify.json": "6c6dccce63df12cd17326085240709c1603ed1688c90845c58da2053081f5362"
+  }
+}

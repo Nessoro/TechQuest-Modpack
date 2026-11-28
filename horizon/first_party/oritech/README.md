@@ -1,0 +1,873 @@
+# Oritech native subset 0.8 / content 0.10
+
+First-party Rust implementation for Horizon 26.3 at
+`c78187dffffb60f31517eadcb87413386e8ce729`, Mixins
+`5a64af938ec86b00d53d16a408aabc0038fb3e57`.
+
+This is a limited port of **Basic Generator → quartz/coal Pulverizer, Powered
+Furnace, three-core Foundry, four-input Assembler, waterloggable basic energy cables and cable wrench**, with physical inventories, energy, fuel, processing progress, assembly,
+menus and saved state. It is not the complete Oritech mod or a survival-ready
+TechQuest industrial progression.
+
+Content 0.2 adds the first crafting route while retaining this native 0.1.0
+machine implementation. It additionally requires the separately compiled
+[merged-biome core correction](../biome_modifiers/README.md). The installer has
+an explicit content/native compatibility table and refuses 0.2 with an engine
+that does not declare the reviewed core correction. Content 0.3 requires native
+0.2 and both biome core corrections. Content 0.4 requires native 0.3 and both
+corrections. Content 0.5 requires native 0.4; content 0.6 requires native 0.5,
+both with the two core corrections. Content 0.7/0.8 requires native 0.6 and both
+corrections. Content 0.9 requires native 0.7; content 0.10 requires native 0.8,
+both with the same core corrections. Earlier sealed
+profiles keep their paired versions and artifacts.
+
+## Source and license
+
+[Rearth/Oritech v1.2.13](https://github.com/Rearth/Oritech/tree/4069b6dd14b05dfe0c80126618739b64054630ea),
+commit `4069b6dd14b05dfe0c80126618739b64054630ea`. The pinned `LICENSE.md` is
+CC0-1.0, retained in `LICENSE-ORITECH`; the pinned NeoForge JAR also declares
+CC0-1.0. Current Modrinth project metadata says CC BY 4.0. This work relies on
+the dedication at the exact pinned commit. Consulted own source file headers
+contain no separate override. See [notices](../../THIRD_PARTY_NOTICES.md).
+
+The source specifies 50,000 energy capacity, 32 energy/tick and 256 extraction
+per API call for the generator. The furnace has 10,000 capacity, accepts 256 per
+call and, without upgrades, uses 32/tick for half the ordinary smelting time.
+The original machine classes are invoked by the developer oracle rather than
+reimplemented as expected-value arithmetic. No Java runs in the Horizon port.
+
+## Native behavior
+
+- Generator fuel is consumed only when a complete production tick fits. The
+  first tick both consumes fuel and produces energy. Burning pauses with a full
+  buffer, preserving fuel remainder. Vanilla buckets are explicitly refused,
+  including lava buckets, following the source's early `BucketItem` check.
+- The furnace requires a core directly above. Empty-main-hand interaction
+  assembles it; the first successful assembly click is consumed and the next
+  opens its menu. Removing the core disables processing on the next tick.
+- Energy moves directly to adjacent buffers. This generator can also reach the
+  furnace through its linked core. The per-call limit is preserved; no aggregate
+  256-per-tick cap is invented.
+- Invalid input or blocked output resets furnace progress. Insufficient energy
+  preserves it. The original furnace override ignores its redstone-disabled
+  flag; the oracle includes this observed behavior.
+- Compact native menus expose one generator slot or furnace input/output;
+  the output is a result slot. Five data slots carry energy as two 16-bit parts,
+  progress, burn duration and assembly status.
+- `energy` is the canonical native buffer int, as required by Horizon's energy
+  API. Progress uses `oritech.machine_progress`, burn duration `storedBurn`.
+  Assembly/link flags use `techquest_assembled`/`techquest_core_used` and relative
+  `controller_x/y/z`. Original NeoForge world import is not implemented.
+
+## Build and developer checks
+
+All generated resources, bundles, worlds and logs stay outside the repository.
+The existing isolated installer accepts optional `--oritech PATH`, validates
+the fixed menus and requires the explicitly paired `techquest_oritech` version.
+Older installations and locks remain readable and unchanged.
+
+With existing pinned binaries in `$TASK_RUNTIME/oritech-reference-input`, a
+NeoForge 21.1.264 reference under `neoforge-reference/server`, and JDK25:
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-energy-reference-new" --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-energy-reference-new" --reopen
+python3 horizon/tools/stage_oritech.py \
+  --jar "$TASK_RUNTIME/oritech-reference-input/oritech-neoforge-1.21.1-1.2.13.jar" \
+  --sdk "$TASK_RUNTIME/upstream/target/fast/cargo-horizon-mod" \
+  --output "$TASK_RUNTIME/oritech-content-new"
+```
+
+Apply all `horizon/first_party` modules with pinned Mixins and rebuild Horizon.
+The current manifest adds 21 HEAD injections and four support modules. Package the
+`.rs`, manifest and both license files in `mixins/techquest_oritech/`, with
+`horizon-native.json` at the `.hnmod` root, then run the SDK checker. Content
+alone does not execute the machines.
+
+For Mixins `--mods`, each immediate mod directory must contain its own
+`horizon-mixin.toml`. When staging from an `.hnmod`, use the files inside
+`mixins/<id>/` as that directory; leaving the archive wrapper nested makes the
+transformer skip the mod. For this pinned four-bundle build, verify all four
+manifests, **40 injections and 10 support modules**, including the Oritech
+create/tick hooks, before compiling or sealing tools. SDK validation of an
+archive alone does not establish that its hooks reached the executable.
+
+Against a new sealed installation:
+
+```sh
+python3 horizon/probes/live_oritech_energy.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-native-check-new" \
+  --original "$TASK_RUNTIME/oritech-energy-reference-new/initial-result.json"
+# Requires an X11 display and Vulkan, e.g. the isolated Xvfb/software driver.
+python3 horizon/probes/live_oritech_energy_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-gui-check-new"
+```
+
+The original oracle has 63 cases and 414 snapshots: six fuel/invalid-item types,
+capacity boundaries, empty input, remaining burn, redstone flags, assembly,
+three furnace inputs, energy thresholds and blocked output. Calls run on the
+original server thread with explicit time advancement; particle RNG/working
+animations are outside the comparison. A separate real world restart resumes a
+partially working pair. The native comparison injects initial state fixtures;
+the graphical probe separately uses interaction/menu packets and real generated
+energy/output, saving and reopening its own physical world.
+
+## Remaining work
+
+Remaining original recipes/material progression, other machines, cables, fluids,
+upgrades, other core qualities, auto-placement of held cores, original shapes,
+orientation, lit-state/animation/particles, core inventory/fluid delegation and
+general energy API delegation through cores remain outside this prototype.
+The simplified models reference installed vanilla textures; only the core
+texture and translated block names are staged from the pinned CC0 JAR.
+
+The current vanilla 26.3 fuel/recipe resources are used. The tested 1.21.1 fuels
+and recipes must match the oracle; the entire cross-version registry is not
+claimed equivalent. Component-sensitive/oversized-stack cases, allocation
+among multiple receivers, exact immediate break/drop semantics, unloaded
+chunks and licensed dedicated-server join still require work. The selected
+crafting routes and Pretty Pipes endpoints have separate gameplay probes;
+general automation beyond the supported machines is not established.
+
+## Content 0.2 starter subset
+
+`stage_oritech.py --progression` adds the original `core1`, `basicgen`,
+`electricfurnacealt`, `magnet`, steel/electrum hand-alloy recipes, and nickel/
+platinum raw smelting and blasting recipes. It registers four ore blocks and
+eight material items. `biosteel_ingot` preserves the original alternate member
+of `c:ingots/steel`; its production chain is not included. The furnace route
+uses platinum; the default silicon recipe still requires unported processing.
+
+The pinned JAR supplies original ore loot, models/textures, labels and the three
+biome modifiers/placed features. Horizon's pinned Rust upgraders convert the
+recipe/loot formats and worldgen, rather than replacing the source recipes.
+Pass the pinned NeoForge universal JAR as `--neoforge-jar`, the compiled
+`oritech_content_tool.rs` probe as `--content-tool` and the pinned
+`horizon-port-pack` binary as `--port-pack`. Exact local compiler commands and
+artifact hashes are included in the runtime report. Nothing generated belongs
+in the repository.
+
+The original binary oracle `OritechContentProbe.java` runs via
+`run_oritech_reference.py --oracle content --cases CASES.json` in a fresh work
+directory. `oritech_content_cases.py` generates 38 positive and 444 mutated
+grids, including mirror/offset/tag variants. Six mutations correctly craft a
+vanilla chest; the comparison preserves that result, normalizing the implicit
+`minecraft:` namespace only. All 482 grids and 60 whole-table ore rolls
+(four ores, ordinary/Silk Touch/Fortune III, five seeds) match the native engines.
+
+`live_oritech_crafting_gui.py` actually crafts three steel ingots, electrum,
+four coils and all three machine/core blocks through menu clicks. It checks
+every ingredient delta, places the crafted blocks and produces two collected
+iron ingots. Vanilla resources and nickel/platinum ingots are fixtures; the
+test does not claim a fully gathered survival run.
+`live_oritech_ores_gui.py` separately finds/mines natural nickel with Terralith
+enabled and natural End platinum, then verifies inventory/broken blocks after
+reopen. It gives only a pickaxe, carves access cells and never injects ores,
+features or raw items. End platinum is an existing source route. The later
+[`--deepslate` check and world-pack correction](../../ORITECH_WORLDPACK_RESULT.json)
+also establish natural Overworld nickel/platinum inside Terralith biomes with
+physical save/reopen. The correction restores feature modifiers after enabled
+world packs; new installations require both reviewed core corrections.
+Full worldgen RNG parity remains unverified.
+
+[Content 0.2 results and limitations](../../ORITECH_STARTER_RESULT.json).
+
+## Guided starter chain from mined materials
+
+`live_oritech_gathered_gui.py` connects gathering, vanilla smelting, crafting,
+placement and machine operation in one continued Terralith world save. Only an
+iron pickaxe is given. Teleports, spectator travel, peaceful difficulty, carved
+access, glass access floors/roofs and a work platform, and tick control are
+explicit fixtures. All recipe inputs come from survival mining; workstations,
+alloys and machines are crafted through real menu packets.
+
+```sh
+python3 horizon/probes/live_oritech_gathered_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-gathered-new"
+```
+
+The probe checks ingredient deltas, collected drops, raw inventory after reopening,
+an active machine pair after reopening, and final items/state after another
+reopen. It handles redstone's first-hit lighting and naturally falling gravel;
+a changed block state alone does not count as collected ore. A stopped
+`raw-checkpoint` retains the gathered save and cumulative mining actions.
+`--resume-from OWN_GATHER_WORK` accepts only a gather-phase action history,
+checks content hashes against the sealed profile, and continues that saved
+world in a new scratch directory with its action provenance retained.
+
+[Guided run evidence](../../ORITECH_GATHERED_RESULT.json). This does not establish
+unassisted progression from spawn, the silicon processing route, automation or
+licensed multiplayer. The engine and content versions are unchanged.
+
+## Automated input/output with Pretty Pipes
+
+[Pretty Pipes 0.6](../../ORITECH_PIPES_RESULT.json) adds read-only destination
+capacity and visible connections for this prototype's generator/furnace. The
+Oritech native/content versions stay 0.1.0/0.2.0. A dedicated server and actual
+graphical client feed coal/raw iron, extract the genuine output, preserve cargo
+across reopening and pause/resume at a full destination. An extractor leaves
+the furnace input alone. Sixteen raw iron and one coal produce sixteen ingots
+with zero residual machine energy. Machine/assembly/source-material fixtures
+are explicit; this automation world is separate from the gathered starter run.
+Other machine handlers, general NeoForge capability parity and licensed
+dedicated join remain unverified.
+
+## Content 0.3 quartz and silicon route / native 0.2
+
+`stage_oritech.py --pulverizer` implies `--progression` and adds the original
+manual motor recipe, Pulverizer recipe, quartz processing recipe, raw-silicon
+hand alloy, raw-silicon smelting, and default silicon furnace recipe. There are
+15 ordinary recipes plus one `oritech:pulverizer` recipe, four machine/core
+blocks, four ore blocks and twelve material items. Existing platinum crafting
+remains available. Original files are taken from the same pinned CC0 JAR.
+
+Without addons the Pulverizer has a 25,000 energy buffer, accepts 256 per call,
+uses 32/tick and turns one quartz into one quartz dust in 100 ticks. It works
+without a machine core and has one input and two output slots. The source
+redstone flag pauses processing; invalid input or blocked output resets progress.
+The original cached recipe is transient: progress is saved, but after loading
+an active quartz recipe starts from zero on its next processing tick. The port
+matches this behavior using Horizon's unsaved entity data to invalidate the
+private cached recipe, without a global pointer map.
+
+`OritechPulverizerProbe.java` invokes the original server tick for 67 cases and
+536 states, including energy boundaries, primed/fresh recipes, redstone,
+invalid input, blocked outputs and a secondary-slot obstacle. A separate
+physical save/reopen compares the cache reset and subsequent production.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-pulverizer-reference-new" --oracle pulverizer --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-pulverizer-reference-new" --oracle pulverizer --reopen
+python3 horizon/probes/live_oritech_pulverizer.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-pulverizer-new" \
+  --original "$TASK_RUNTIME/oritech-pulverizer-reference-new/initial-result.json" \
+  --original-reopen "$TASK_RUNTIME/oritech-pulverizer-reference-new/reopen-result.json"
+python3 horizon/probes/live_oritech_silicon_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-silicon-gui-new"
+```
+
+The graphical probe mines natural Nether quartz and crafts both motors, the
+Pulverizer, generator, silicon and default furnace through real menus. Other
+base materials are explicit fixtures, alongside teleports, access cells and
+a work platform. It is not an unassisted survival run. The separate dedicated
+`live_oritech_pulverizer_pipes.py` uses Pretty Pipes 0.7 input/output endpoints,
+saves two genuine dust items in flight, then verifies delivery and another
+physical reopen. Run its `prepare`, `verify` and `final` phases with a server
+start before each, passing `--prior` for the latter two phases.
+
+Content 0.3 stages only the quartz Pulverizer recipe. Addons, secondary small-dust
+compaction, other Pulverizer recipes and full source geometry/animation remain
+outside this subset.
+
+## Guided silicon route with all ingredients gathered
+
+`live_oritech_gathered_silicon_gui.py` runs the content 0.3 route in a single
+continued Terralith world without the base-material gifts used by the smaller
+silicon GUI probe. Only an iron pickaxe is given. The player mines nickel,
+iron, gold, redstone, copper, coal, stone, wood, sand and Nether quartz, then
+uses real crafting/smelting menus for workstations, alloys, coils, motors,
+Pulverizer, generator, silicon, furnace and core. Four physical reopens check
+the raw inventory, active Pulverizer, active furnace and final inventory/state.
+
+```sh
+python3 horizon/probes/live_oritech_gathered_silicon_gui.py \
+  --server-dir "$TASK_SERVER" --work "$TASK_RUNTIME/oritech-gathered-silicon-new"
+# Only an own prior gather-phase save/checkpoint can be resumed:
+python3 horizon/probes/live_oritech_gathered_silicon_gui.py \
+  --server-dir "$TASK_SERVER" --work "$TASK_RUNTIME/oritech-gathered-silicon-resumed" \
+  --resume-from "$TASK_RUNTIME/oritech-gathered-silicon-new/raw-checkpoint"
+```
+
+Resume checks module hashes, preserves all earlier actions and refuses a save
+that has entered crafting. Nearby block searches use radius 16 first and the
+original radius 64 as fallback. Nickel eligibility still requires a Terralith
+biome; exhausted or ineligible search results cause scouting of nearby natural
+areas. A failed initial aim can widen the air/glass approach and retry from
+one block away without replacing the ore; mining/drop/menu assertions remain
+fatal. Teleports,
+spectator travel, carved access, glass supports/platform, peaceful difficulty,
+platform forceload and tick control are explicit fixtures. This is a guided
+material-progression check, not unassisted survival from spawn or multiplayer.
+
+[Checked gathered silicon route](../../ORITECH_GATHERED_SILICON_RESULT.json):
+138 mining actions, 34 crafts, 71 smelted ingots, two collected processing-output
+iron ingots and four verified physical reopens. Inventory comparisons cover
+item IDs/counts; native machine comparisons cover energy, progress and Items
+NBT. General item-component round trips are not established by this probe.
+
+## Content 0.4 Foundry / native 0.3
+
+`stage_oritech.py --foundry` includes `--pulverizer` and `--progression`.
+It stages 17 ordinary recipes, two Pulverizer recipes (quartz and coal), three
+Foundry alloy recipes, fourteen materials, five machine/core blocks and the
+same four ores. Coal or charcoal becomes one coal dust in 100 ticks. The
+Foundry produces steel from iron plus coal dust in 26 ticks, electrum from
+gold plus redstone in 80, and adamant from diamond plus nickel in 80.
+Both orders of the two inputs match the original. The manual alloy recipes
+remain available. Other original processing recipes are not staged.
+
+Without addons the Foundry holds 50,000 E, accepts 1,024 per insertion call
+and consumes 128 per processing tick. Slots 0/1 are inputs and slot 2 is the
+result. Three unused core1 blocks are required. Following the original
+`Geometry.rotatePosition`, the lower side core is east/south/west/north for a
+controller facing north/east/south/west; the others are above the controller
+and above that side core. Placement faces opposite the player's horizontal
+direction. Assembly preflights every core, so a missing or already-used core
+does not claim the remaining ones. The successful first click assembles;
+the next opens the menu.
+
+Breaking a core or controller frees its loaded linked cores. The Foundry
+pauses without resetting progress or its warm recipe cache. Reassembly resumes
+that work. A physical world reload loses the original transient recipe cache,
+so the next processing tick resets saved progress before continuing. The native
+implementation also invalidates links on direct block replacement. The original
+raw `Level.setBlockAndUpdate` bypasses its own destroy callback; the Java oracle
+explicitly calls the original physical destroy callback for that comparison.
+No parity is claimed for the raw-editor bypass, unloaded cross-chunk cores,
+addons, higher-quality cores or general core capability delegation.
+
+`OritechFoundryProbe.java` executes 68 cases/680 states of the original server
+tick, 20 core configurations across all four facings, physical core destruction,
+coal/charcoal processing and a physical save/reopen. The native probe assembles
+through the connected owner's normal UseItemOn packet route. Processing cache
+fixtures are primed by a real tick, never by injecting private cache fields.
+The previous generator/furnace and quartz oracles are run against the new engine.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-foundry-reference-new" --oracle foundry --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-foundry-reference-new" --oracle foundry --reopen
+python3 horizon/probes/live_oritech_foundry.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-foundry-new" \
+  --original "$TASK_RUNTIME/oritech-foundry-reference-new/initial-result.json" \
+  --original-reopen "$TASK_RUNTIME/oritech-foundry-reference-new/reopen-result.json"
+python3 horizon/probes/live_oritech_foundry_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-foundry-gui-new"
+```
+
+Pretty Pipes 0.9 adds the Foundry endpoint to 0.8's unchanged transport/module
+semantics. `live_oritech_foundry_server.py` uses an isolated dedicated server,
+linked-core/source-material fixtures, and four independent pipe networks.
+One coal fuels the generator, four more go into the Pulverizer and four iron
+ingots go into the Foundry. Only the machines create dust, energy and four
+steel. Extraction queues those genuine ingots before saving. The `prepare`,
+`verify`, `final` phases each save/stop; start the server before every phase and
+pass `--prior` to the latter two. Normal server startup can deliver cargo before
+the console freezes time, so reopening checks cargo-plus-destination conservation
+and exact unchanged machine state. A second restart checks the final state.
+With its extractor still active, an additional coal/iron source pair creates
+one more genuine dust and leaves both Foundry inputs intact at 88 E, below a
+128 E processing tick. The final restart preserves those two starved inputs
+and the four delivered steel. No output or machine inventory is seeded.
+
+The graphical run performs fourteen real crafts, places all three machines
+and cores, creates four coal dust, collects four steel/one electrum/one adamant,
+mines and reinstalls a real core, and checks two physical reopens and energy
+conservation. Base materials, the initial bench, pickaxe, glass platform,
+teleports and tick control are fixtures. In this run the physical core break
+coincides with progress zero; the separate original/native lifecycle comparison
+proves nonzero progress 13 remains paused and resumes at 14. Inventory reopen
+checks cover IDs/counts and machine energy/progress/Items, not general item
+component fidelity. A stopped hashed checkpoint precedes core destruction.
+
+[Foundry evidence and remaining scope](../../ORITECH_FOUNDRY_RESULT.json).
+
+## Content 0.5 Assembler / native 0.4
+
+`stage_oritech.py --assembler` includes the Foundry/quartz/starter content.
+The subset now has 18 ordinary recipes, seven processing recipes, fourteen
+materials, six machine/core blocks and four ores. The new ordinary Assembler
+recipe consumes three copper, two vanilla crafters, one adamant, two motors
+and one blast furnace. The two selected original processing recipes each take
+48 ticks at 128 E/tick: steel + nickel + nickel + copper yields six magnetic
+coils; nickel + steel + coil + coil yields two motors. The machine holds
+50,000 E, accepts 1,024 per call, has inputs 0–3 and result slot 4.
+
+The original accepts ingredient permutations and repeated ingredients from
+one sufficiently large stack, including an empty input slot beside that
+compacted stack. Matching consumes copies; actual consumption follows the
+source's rotating starting slot. `OritechAssemblerProbe.java` invokes the
+original for 262 cases/2,096 states, 20 assembly configurations, the physical
+core callback and a physical reload. The native comparison primes recipe
+caches by an actual tick, never by injecting private cache state.
+
+Assembler uses the same original three-core geometry as Foundry. Both now
+wait for every expected core's chunk to become resident before validating
+links or processing. Otherwise an unloaded neighbour reads as air and a
+controller that loads first loses its saved assembly. The pinned Horizon
+streamer restores a chunk's block entities before publishing it; resident
+chunks are sufficient for this check. This corrects startup at chunk borders.
+Destroying a controller while linked core chunks are unloaded, deferred orphan
+cleanup and general unloaded multiblock lifecycle remain outside the proof.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-assembler-reference-new" --oracle assembler --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-assembler-reference-new" --oracle assembler --reopen
+python3 horizon/probes/live_oritech_assembler.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-assembler-new" \
+  --original "$TASK_RUNTIME/oritech-assembler-reference-new/initial-result.json" \
+  --original-reopen "$TASK_RUNTIME/oritech-assembler-reference-new/reopen-result.json"
+python3 horizon/probes/live_oritech_assembler_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-assembler-gui-new"
+```
+
+The GUI probe crafts two manual motors, generator, Assembler and three cores
+in eleven crafts, then places/assembles them through normal interactions.
+Base metals/alloys, six initial coils, two crafters, a blast furnace, wood,
+stone, coal, a pickaxe and the initial bench are fixtures. All six initial coils
+are consumed by crafting before processing makes six new coils and two motors;
+four generated coils remain. Both distributed and compacted repeated inputs,
+result rejection, a mined/reinstalled core, cache-reset behavior, energy and
+two physical reopens are checked. Platform, teleports and tick control remain
+fixtures; this is not survival from spawn or licensed multiplayer.
+
+Pretty Pipes 0.10 adds the Assembler endpoint. The dedicated
+`live_oritech_assembler_server.py` has `prepare`, `verify`, `final` phases:
+start the server before each, pass `--prior` for the latter two, and keep output
+paths new. Two fixture Assemblers face north/east; one core group crosses a
+chunk boundary. Two coal supply 102,400 E. Raw metals produce six coils, which
+feed the second machine to make two motors, leaving four coils in its input.
+Only the result is extracted; two genuine motors are saved in flight, delivered
+after restart and checked after a second restart. Assembly, all six core flags,
+remaining coils and 90,112 E must survive. No energy, machine inventory,
+processing output or transport cargo is seeded.
+
+`live_oritech_save_upgrade.py` additionally copies the retained, checked own
+Foundry GUI world from content 0.4 and opens it with 0.5. Its source report hash
+must occur in `ORITECH_FOUNDRY_RESULT.json`, and its hmods must match the old
+sealed installation. Three old machine IDs, facing, energy/progress, the four
+collected item types and all core offsets are checked, then physically reopened.
+The source world's files are hashed before/after and left unchanged. This is
+a specific native-save regression, not NeoForge import or a general converter.
+
+[Assembler results and remaining scope](../../ORITECH_ASSEMBLER_RESULT.json).
+
+## Basic energy cable reference
+
+`OritechEnergyPipeProbe.java` runs the pinned original CC0 Oritech classes on
+NeoForge 21.1.264 / Minecraft 1.21.1. It records 504 single-target cases and
+1,512 states across all six directions and four current processing machines,
+128 insert/extract/simulation cases and six layouts. Run in a fresh work folder:
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-energy-pipe-reference-new" --oracle energy_pipe --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-energy-pipe-reference-new" --oracle energy_pipe --reopen
+```
+
+Normal `oritech:energy_pipe` has no block entity or energy API. Only
+`energy_pipe_connection`, created automatically next to an energy provider,
+has a 10,000 E buffer and 10,000 E insertion/extraction limits per call. Its
+tick transfers directly to connected machine faces; other endpoint buffers
+are not relay targets. A furnace with two connected faces receives 512 E in
+one callback, and two source interfaces can also give one furnace 512 E in
+one ordered step. A global per-machine/per-tick limit would change the source.
+
+Gap/rejoin, a loop with an alternative path, machine replacement and the
+original side-toggle callback are covered. Removing the last neighboring
+machine reverts its endpoint to ordinary wire and discards that endpoint's
+stored energy; a replacement starts empty. Assembling a furnace core turns
+its adjacent wire into an interface and delegates energy to the controller.
+Unassembled cores expose no energy API. Physical world reopen preserves all
+seven source/wire/target nodes, connection states, network targets and buffered
+energy; subsequent direct original ticks obey receiver capacity.
+
+One coal and two raw iron also run through the original generator, five
+cables and an assembled remote furnace, producing two iron ingots without
+seeding energy or outputs. After 1,600 generation ticks, 51,200 E generated
+minus 6,400 E processing leaves 44,800 E across machines/source interface.
+The driver freezes the server loop and calls callbacks in an explicit order;
+block placement and raw inputs are fixtures. Scarce multi-target energy can
+go to either receiver because the original uses unseeded `Collections.shuffle`.
+This does not claim exact RNG, normal world scheduler order, player/wrench
+interaction, survival drops, waterlogging, unload behavior or the 2,048-node
+cutoff. Framed cables, ducts, superconductors and addons remain outside scope.
+
+The reference milestone used content 0.5/native 0.4. Its sealed 05b Horizon
+profile is unchanged; the following native milestone uses a new installation.
+[Original cable evidence and native acceptance work](../../ORITECH_ENERGY_PIPE_REFERENCE_RESULT.json).
+
+## Content 0.6 energy cables / native 0.5
+
+`stage_oritech.py --energy-pipes` implies `--assembler` and adds the original
+three-electrum-to-six-cables recipe, both original cable loot tables and two
+blocks. The ordinary wire has an item and no block entity; the internal
+connection block has no item and declares a ticking 10,000 E buffer. Both
+use all eight original property names/values and simple
+vanilla copper-textured models. Selection is a full cube. The old collision
+declaration mistakenly uses model pixels as block coordinates; content 0.7
+corrects this below. Generator/furnace
+models and their earlier NBT assembly representation remain simplified.
+
+The native bundle has 18 hooks and two modules; the complete four-bundle
+engine transformation has 37 hooks and eight modules. `cables.rs` rebuilds
+loaded connectivity from saved states, deduplicating targets by machine
+position and face. It uses a separate unseeded `LegacyRandom` shuffle stream,
+leaving the world's RNG untouched. Connected machine cores resolve to their
+controller, without changing the target face or merging distinct core targets.
+The source interface transfers directly into a receiver, subtracting only the
+accepted amount. Other endpoint buffers are not network targets.
+
+Block changes queue lifecycle work, which runs at player placement, before
+and after simulation ticks and at command-chain boundaries. The latter also
+covers conditional commands; the initial leaf-only boundary let a frozen
+`execute if block` observe a stale interface type. Removing a last neighboring
+machine now converts the endpoint into ordinary wire, removing its buffer;
+replacement creates a fresh empty buffer. Persisted disabled-side properties
+stay disabled. A missing neighbor chunk postpones conversion so startup does
+not discard saved energy before the provider arrives. General partial-network
+unload behavior and the original saved network graph are outside this subset.
+
+The separate profile `techquest-oritech-06b-server`, port 25655, retains Pretty
+Pipes 0.10 and both core corrections. Profile 06a is the retained earlier
+conditional-command control and is not the canonical cable installation.
+
+```sh
+python3 horizon/probes/live_oritech_energy_pipes.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-energy-pipes-new" \
+  --original "$TASK_RUNTIME/oritech-energy-pipe-reference-new/initial-result.json"
+python3 horizon/probes/live_oritech_energy_pipes_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-energy-pipes-gui-new"
+```
+
+The first probe matches 1,512 original states and six layouts, plus gap/rejoin,
+loop, replacement, multiple target/face/source controls and actual core assembly.
+The disabled-edge test restores explicit saved properties; content 0.6 has no
+player wrench. Physical reopen preserves both endpoint buffers and the full
+cable state. With both buffers nonempty, a native tick runs both interfaces,
+so the continuation checks conservation/capacity rather than claiming the
+single-interface original callback order. `--resume-initial` is only for
+revalidating completed initial output with exactly the same operation script
+and module bytes after a checker interruption; it never repeats world actions.
+
+The GUI probe crafts six cables, places five through survival packets, assembles
+a remote furnace, inserts coal/raw iron through menus, mines/reinstalls a middle
+wire and a connection endpoint, collects two iron ingots and checks two exact
+physical reopens. Electrum, machines/core, fuel/raw input, pickaxe, bench, glass
+platform, travel and tick control are fixtures. It never seeds energy or outputs.
+
+`live_oritech_energy_pipes_server.py` has `prepare`, `verify`, `final` phases:
+start the installation before each phase and pass the previous report with
+`--prior`. Each phase stops the server. Pretty Pipes supplies one coal and two
+raw iron; energy goes through five cables and an assembled furnace core. The
+generator and its first cable lie in different chunks. Two genuine ingots are
+saved in flight, delivered after restart and retained after another restart;
+44,800 E, including 10,000 E buffered in the source interface, is conserved.
+Only fixture source chest inventories are seeded.
+
+Waterlogging interaction, tight selection boxes, player wrench controls,
+framed/duct/superconductor variants, addons, exact shuffled allocation, unloaded
+network fidelity and multiplayer remain unfinished. This is not the full mod.
+[Native cable results and regression evidence](../../ORITECH_ENERGY_PIPE_RESULT.json).
+
+## Wrench reference
+
+The pinned original `Wrench`, `ItemContent` and `OritechStartupConfig` own CC0
+sources define a one-stack tool, eight-tick cooldown and **tight cable selection
+by default**. Native content 0.6 retains a full selection cube; content 0.7
+below supplies thin selection and corrects collision coordinate units.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-wrench-reference-new" --oracle wrench --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-wrench-reference-new" --oracle wrench --reopen
+```
+
+`OritechWrenchProbe.java` records 9,600 original shape rays: 64 masks (bits
+north/east/south/west/up/down), six views and 25 perpendicular fraction pairs.
+The actual thin shape is hit 5,760 times, 960 per view; the original protected
+side selector is called for each hit. Its active **outer boxes are 5..11**,
+followed by a center box; the center is skipped once an outer box clipped.
+Do not replace this algorithm with the first block face or nearest center face.
+
+The fixture synchronizes FakePlayer head/body and previous rotation and checks
+the resulting view vector at every aim. The initial unsynchronized development
+runs are excluded. Original dependency APIs are binary-only; no dependency Java
+source or bytecode is read/decompiled.
+
+Twelve direction/hand cases execute 72 original item uses at offsets
+0, 1, 7, 8, 9, 16. Successful uses occur at 0/8/16, with the held tool retained.
+An air miss also consumes the cooldown, blocking the other hand until tick 8.
+Thirteen neighbor callbacks cover six sides, ordinary wire/interface conversion
+and an invalid target. Disconnecting an endpoint's last machine discards its
+333 E fixture buffer; reconnecting starts empty. Four Shift-removal cases
+(ordinary/interface × survival/creative) each drop one normal cable. The native
+implementation must preserve the creative drop behavior, instead of applying
+ordinary creative mining rules. The recipe consumes three steel and one nickel.
+
+A disconnected pair is physically saved/reopened, compared exactly and then
+reconnected through a fresh original wrench use. These are developer FakePlayer
+callbacks with explicit block/camera/cooldown fixtures, not real client packets.
+Waterlogging and other wrench targets are separate remaining work.
+The historical native 0.5/content 0.6 sealed profile is unchanged.
+[Original wrench contract and hashes](../../ORITECH_WRENCH_REFERENCE_RESULT.json).
+
+## Content 0.7 cable wrench / native 0.6
+
+`stage_oritech.py --wrench` includes the earlier cable/machine subsets and adds
+the original three-steel/one-nickel recipe, handheld model, texture, translations
+and one-stack tool. Both cables now declare the same thin outline/collision in
+**block units** (6/16..10/16). The old 0.6 collision declaration used pixel
+coordinates directly; its historical report's thin-collision description was
+incorrect. Earlier content/profile bytes remain preserved as controls.
+
+`cable_hit.rs` implements the original 5..11 outer-piece priority. Its exact
+native module matches 9,600 original rays/5,760 hits; resolving both staged
+content declarations checks another 19,200 rays across 128 shapes. This catches
+the content-unit error that a standalone geometry comparison cannot detect.
+
+`wrench.rs` preserves the vanilla block-use and permission/cooldown phases via
+a guarded recursive `use_hand`, capturing one custom item attempt. Native
+useOn/use are deduplicated; the tool starts an eight-player-tick cooldown even
+on a miss, shared between hands. Cable changes update both sides, retaining
+other properties and recomputing `straight`. Losing the final provider converts
+the interface to normal wire and discards its buffer; reconnecting starts at
+zero. Shift calls the drop-producing destruction path even in creative.
+The native bundle has 21 hooks/four modules; all four bundles total **40
+hooks/10 modules**, with both core corrections retained.
+
+The separate `techquest-oritech-07b-server`, port **25657**, uses the sealed
+`native-tools-oritech-07a` build, eight hmods and Pretty Pipes 0.10. Profile 07a
+retains the failed content-unit candidate; 06b and all earlier profiles remain
+sealed. No changes were pushed or published.
+
+```sh
+python3 horizon/probes/live_oritech_wrench_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-wrench-gui-new"
+python3 horizon/probes/live_oritech_energy_pipes_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-cables-wrench-gui-new" --wrench-controls
+```
+
+The graphical controls probe crafts two wrenches, checks both hands, a missed
+use blocking a rapid following cable click, and a cross-hand repeat within
+eight measured player ticks. Four Shift cases each drop/collect one normal
+wire, preserving both tools. Real clicks discard a deliberately seeded 333 E
+last-provider buffer and reconnect an empty interface. Two physical reopens
+preserve the disabled pair and inventory. The cooldown runs while the world is
+frozen; timing records bound the actual input interval, rather than claiming
+`/tick freeze` stops player cooldowns. Exact native expiry at tick 8 and all
+original neighbor-callback geometries remain unproven.
+
+The live-power GUI variant cuts a middle edge with the wrench, drains the
+furnace buffer until processing pauses, reconnects the edge and collects two
+real iron ingots. Its two physical reopens and energy balance pass: 12,480 E
+generated, 6,400 consumed, 6,080 stored. Only equipment, source materials and
+access/time controls are fixtures; no machine energy or outputs are seeded.
+
+Energy/Pulverizer/Foundry/Assembler regressions match 3,726 original states;
+the cable regression matches 1,512 states, six layouts and physical reopen.
+The native crafting/loot engines match 988 grids and 90 rolls. The dedicated
+Pretty Pipes/core-powered chain passes all three restart phases with 44,800 E
+and two genuine ingots. These use explicit fixtures, not unassisted progression
+or a licensed multiplayer join. At this milestone waterlogging was pending;
+content 0.8 below implements the basic cables. Other wrench targets, sound,
+custom hover behavior, full unload fidelity and the rest of Oritech remain open.
+[Native wrench evidence and limits](../../ORITECH_WRENCH_RESULT.json).
+
+## Content 0.8 waterlogging / native 0.6 retained
+
+`stage_oritech.py --waterlogging` includes `--wrench` and changes only the two
+cable declarations and version manifest. Both use Horizon's existing MIT
+`minecraft:heavy_core` binding: its only inherited state is `waterlogged`, and
+it supplies `SimpleWaterloggedBlock`, placement, fluid state and neighbor water
+ticks. The seven other cable properties, thin shapes and models are retained;
+sounds stay as before and the ordinary item's rarity is explicitly common.
+No new native hooks, bundle, core patch or engine rebuild is needed. The new
+`techquest-oritech-08a-server`, port **25658**, reuses the sealed
+`native-tools-oritech-07a` engine and all four bundles unchanged. Earlier
+profiles and packages remain sealed.
+
+The original oracle runs the pinned CC0 Oritech classes through 34 placements,
+16 liquid callbacks, four pickups, 24 neighbor updates, 24 bucket uses and
+eight Shift removals. Source water waterlogs a placed cable; all 15 flowing or
+falling levels leave it dry. A wet cable exposes a full still-water source.
+Only still water is accepted, and placing liquid in an already wet cable
+returns false. Both hands and survival/creative item outcomes are recorded.
+Wet Shift removal leaves the source and drops one ordinary wire, also in
+creative. Losing the last provider preserves water while discarding energy.
+Four forced chunks make real fluid ticks run: six snapshots at 0/1/4/5/6/10
+ticks cover 25 cells each. The initial unforced-chunk flow control is excluded.
+
+The materialized content has 512 cable states with the original eight
+properties and correct wet/dry fluid metadata. The standalone native binding
+probe matches **264** original comparisons, including the scheduled flow grid.
+It deliberately does not implement native graph callbacks. Running it on the
+old iron-block binding fails on wet fluid metadata, retained as a negative
+control. Separate real gameplay probes cover that integration:
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-waterlogging-original-new" --oracle waterlogging --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-waterlogging-original-new" --oracle waterlogging --reopen
+python3 horizon/probes/live_oritech_waterlogging_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-waterlogging-gui-new" \
+  --original "$TASK_RUNTIME/oritech-waterlogging-original-new/initial-result.json"
+python3 horizon/probes/live_oritech_energy_pipes_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-wet-power-gui-new" --wrench-controls --waterlogged-cables
+```
+
+The first GUI probe checks eight placements, all 24 original bucket outcomes,
+four wet Shift drops, live endpoint conversion and physical reopen/drain.
+Its 333 E endpoint buffers are deliberate scalar fixtures. The power probe
+instead waterlogs all five survival-placed cables through bucket use, cuts and
+reconnects a middle edge, pauses/resumes smelting and collects two real ingots.
+It mines the wet endpoint, follows and collects the water-carried drop, restores
+it into the remaining source and verifies two exact physical reopens. Energy
+balances at **15,680 generated − 6,400 consumed = 9,280 stored**. Equipment,
+materials, water buckets, travel, time and dry elevated access stands are
+fixtures; machine energy, processing and outputs are never seeded.
+
+The dedicated probe's `--waterlogged-cables` variant preserves all five wet
+states, 44,800 E and two genuine ingots through its three restart phases. Its
+explicit glass trough separates the energy line from Pretty Pipes' unported
+fluid interaction; this is not a flooded-factory compatibility claim.
+`live_oritech_cable_save_upgrade.py` copies the proven own 0.7 GUI world into
+0.8, checking energy/burn, core flags, cable states and item IDs/counts twice,
+without injecting anything or modifying the source world. General components
+and NeoForge save import are not covered.
+
+Machine/cable regressions retain 3,726/1,512 matched states, geometry retains
+9,600 selector rays plus 19,200 content-shape rays, and crafting/loot retains
+988 grids/90 rolls. The Python suite passes 127 tests. Twelve installation
+locks are verified stopped. Other cable variants, all bucket variants and
+dimensions, unloaded networks, machine/wrench dispatch, full industrial
+progression and licensed multiplayer remain open.
+[Original contract](../../ORITECH_WATERLOGGING_REFERENCE_RESULT.json),
+[native gameplay results and limitations](../../ORITECH_WATERLOGGING_RESULT.json).
+
+## Content 0.9 machine use / native 0.7
+
+`stage_oritech.py --machine-use` includes `--waterlogging` and pairs the
+unchanged recipes, assets and block bindings with native 0.7. Only the content
+manifest differs from 0.8. The installer rejects an older wrench engine for
+this version. Use a fresh profile; sealed 08a and earlier worlds remain intact.
+
+The five ported original machine classes are not `Wrenchable`. Their block
+interaction consumes an ordinary click before the held item runs, including
+wrench, stick, bucket or an offhand tool. An assembled machine opens its menu;
+an unsuccessful assembly attempt still consumes the click. Wrench cooldown
+does not prevent this block phase and opening a menu does not add cooldown.
+Secondary use skips the block phase only when either hand holds an item, so
+Shift with empty hands still opens the menu. To place cores against a machine
+while holding a block, use Shift. After the block phase passes, a wrench ray
+hitting a machine face can toggle the adjacent cable. This neighbor callback
+toggles even with Shift; it does not remove the cable or rotate the machine.
+
+The original oracle executes server `useItemOn` and `useItem` with a synthetic
+hand driver. NeoForge's base FakePlayer suppresses menu opening, so the accepted
+probe records the requested provider and constructs its actual original menu
+in an instrumented FakePlayer. Its 440 cases include all five machine classes,
+assembled/unassembled states, dry/wet and enabled/disabled wires, both game
+modes/hands, other held items, active cooldown, chest/stone controls and a
+physical wet-neighbor reopen. The 138 requested menus were materialized. This
+establishes the server callback contract, not a real original client window or
+packet trace. [Original contract](../../ORITECH_WRENCH_DISPATCH_REFERENCE_RESULT.json).
+
+Two server guards alone are insufficient: the Horizon client initially still
+predicted the old iron-block result and sent a following `UseItem`, toggling
+the cable after the menu opened. `machine_prediction.rs` consumes the remote
+block result under the same hand/secondary-use guard, without changing client
+inventory, energy or assembly. Native 0.7 adds this single prediction hook to
+the preceding 40 hooks; there are still ten support modules and two core
+corrections. The failed server-only 09a profile is retained as a control.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-dispatch-original-new" --oracle wrench_dispatch --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-dispatch-original-new" --oracle wrench_dispatch --reopen
+python3 horizon/probes/live_oritech_wrench_dispatch_gui.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-dispatch-gui-new" \
+  --original "$TASK_RUNTIME/oritech-dispatch-original-new/initial-result.json"
+```
+
+The GUI comparison uses real local client clicks and menu windows; machine
+assembly, inventory, world positions, time and 333 E endpoint buffers are
+explicit fixtures. `--limit` is a diagnostic prefix and cannot stand in for
+the complete acceptance matrix. This does not establish licensed multiplayer,
+other wrench targets, full machine rendering or unassisted industrial
+progression. Keep the overall [PR #8 goal](../../GOAL_PR8_RU.md) active.
+
+Accepted profile `techquest-oritech-09b-server`, port **25660**, matches all 110
+selected original GUI cases, including both hands, cooldown, unassembled
+machines and vanilla controls. The wet disabled neighbor survives a physical
+reopen and reconnects empty through a machine-face wrench click. Fresh tests
+also matched 3,726 machine states and 1,512 cable states. Bucket/Shift/lifecycle
+GUI checks passed; the wet power line produced and collected two iron ingots,
+with two exact reopens and 12,640 − 6,400 = 6,240 E retained. Its cores are now
+placed with Shift through the normal client route. Dedicated automation kept
+44,800 E and delivered two ingots through two restarts. A copied 0.8 save retained
+machines, wires, energy and inventory under 0.9 without changing the source.
+All 128 Python tests passed; fourteen sealed server profiles were verified
+and stopped. Prior crafting/loot/geometry evidence is retained by comparing
+the unchanged content payloads; those prior tests were not rerun for this
+manifest-only content change. [Native results and hashes](../../ORITECH_WRENCH_DISPATCH_RESULT.json).
+
+## Fluid tank contract and content 0.10 inventory prerequisite
+
+The original Small Tank contract is now recorded separately in
+[the fluid reference](../../ORITECH_FLUID_TANK_REFERENCE_RESULT.json). It covers
+2,560 storage operations, 768 bucket-processing cases (3,072 tick snapshots),
+80 portable-container cases (400 snapshots), 48 gravity layouts, 320 held-item
+cases, ten clone/loot/placement cases and sixteen component/stack-limit cases.
+The original tank holds 256,000 mB by default. It processes slot 0 toward an
+item, slot 1 toward the tank, then gravity into a `SimpleFluidStorage` below.
+An input moves to output slot 2 only after an operation moves zero fluid.
+Filled portable tanks retain their fluid component and have a stack limit of
+one; empty ones stack to 64. Original physical reopen and the next processing
+tick passed. These use actual original callbacks with explicit scalar fixtures
+and instrumented FakePlayer menus, not an original client or packet trace.
+
+`fluid_storage.rs` is a candidate for the next game implementation. Its insert,
+extract and simulation paths match all 2,560 original observations, including
+fluid/component mismatch. The standalone Rust probe supplies only the resource
+type, representing component patches by their original debug strings. This is
+an equality check, not proof of production NBT/network encoding. The module is
+not registered in the game. Small Tank and Fluid Pipe are not yet in the hmod.
+
+Before those items can be integrated, the game's `Inventory.add` path needed
+a fix: it always used the item prototype's stack size even when the stack had
+`minecraft:max_stack_size`. The 09b engine puts two items with limit 1 into one
+stack of 2. `inventory_limit.rs` re-enters the existing algorithm once with the
+valid component limit, retaining its slot order and overflow behavior. A
+separate original `Inventory.add` oracle covers 192 cases: stone/ender pearls,
+plain or limits 1/2/16/64/99, four input counts, selected/offhand/full inventory.
+The 10a engine matches all inventories, including a physical player-data reopen.
+The observer reads 26.3 `equipment.offhand` separately from `Inventory`; assuming
+the old offhand slot layout was a rejected checker control.
+
+`stage_oritech.py --stack-limits` includes `--machine-use`. Content 0.10 changes
+only the manifest and requires native 0.8. Profile `techquest-oritech-10a-server`,
+port **25661**, uses separate `native-tools-oritech-10a`, 42 injections, ten
+support modules, eight hmod and the same two core corrections. The other three
+native bundles are byte-identical. Previous sealed profiles are preserved.
+The wet-power GUI and copied 0.8 save were checked again; all 129 Python tests
+passed. Dedicated boot/save/reopen was checked separately; automation and
+licensed join were not rerun for this inventory-only fix.
+
+```sh
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-fluid-original-new" --oracle fluid_tank --accept-eula
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-fluid-original-new" --oracle fluid_tank --reopen
+python3 horizon/probes/run_oritech_reference.py --runtime "$TASK_RUNTIME" \
+  --work "$TASK_RUNTIME/oritech-inventory-original-new" --oracle inventory_limits --accept-eula
+python3 horizon/probes/live_oritech_inventory_limits.py --server-dir "$TASK_SERVER" \
+  --work "$TASK_RUNTIME/oritech-inventory-native-new" \
+  --original "$TASK_RUNTIME/oritech-inventory-original-new/initial-result.json"
+```
+
+Inventory comparison excludes ground overflow and item-entity merge behavior;
+portable tank gameplay, fluid component codecs, menu/bucket/loot/placement hooks
+and the fluid network remain the next work. The overall goal stays active.
+[Inventory fix evidence](../../ORITECH_INVENTORY_LIMITS_RESULT.json).

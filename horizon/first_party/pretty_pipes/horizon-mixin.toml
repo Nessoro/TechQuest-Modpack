@@ -1,0 +1,217 @@
+[mod]
+id = "techquest_pretty_pipes"
+version = "0.10.0"
+
+[compatibility]
+horizon_revision = "c78187dffffb60f31517eadcb87413386e8ce729"
+
+[[injection]]
+id = "create"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity"
+kind = "HEAD"
+helper = "create.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "entity", ty = "&mut Option<(String, horizon_world::nbt::Compound)>", value = "entity" },
+]
+
+[[injection]]
+id = "ticking"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_ticks"
+kind = "HEAD"
+helper = "ticking.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "ticks", ty = "&mut bool", value = "ticks" },
+]
+
+[[injection]]
+id = "declare_slots"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_container"
+kind = "HEAD"
+helper = "container.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "value", ty = "&mut Option<horizon_client_lib::containers::ModContainer>", value = "container" },
+]
+
+[[injection]]
+id = "tick"
+target = "horizon_client::game::native_hooks::Game<'_>::native_block_entity_tick"
+kind = "HEAD"
+helper = "tick.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "entity", ty = "&mut horizon_client_lib::containers::ModBlockEntity", value = "entity" },
+]
+
+[[module]]
+id = "routing"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_pretty_pipes"
+source = "logic.rs"
+visibility = "pub(crate)"
+
+[[injection]]
+id = "install_from_hand"
+target = "horizon_client::game::native_hooks::Game<'_>::native_use_item_on"
+kind = "HEAD"
+helper = "use.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "stack", ty = "&horizon_client_lib::items::ItemStack", value = "stack" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "claimed", ty = "&mut bool", value = "claimed" },
+]
+
+[[module]]
+id = "module_inventory"
+file = "crates/horizon-client/src/client_lib.rs"
+name = "techquest_pretty_pipes_modules"
+source = "modules.rs"
+visibility = "pub"
+
+[[injection]]
+id = "spill_pipe_contents"
+target = "horizon_client::game::spill::GameLevel<'_>::remove_entity"
+kind = "HEAD"
+helper = "remove.rs"
+bindings = [
+  { name = "level", ty = "&mut crate::game::GameLevel<'_>", value = "&mut *self" },
+  { name = "pos", ty = "horizon_core::position::BlockPos", value = "pos" },
+]
+
+[[injection]]
+id = "replace_pipe_contents"
+target = "horizon_client::game::commands::Game<'_>::place_state"
+kind = "HEAD"
+helper = "replace.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "state", ty = "horizon_world::registry::BlockStateId", value = "state" },
+]
+
+[[injection]]
+id = "module_screen"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen"
+kind = "HEAD"
+helper = "screen.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "screen", ty = "&mut Option<crate::mod_api::NativeScreen>", value = "screen" },
+]
+
+[[injection]]
+id = "open_modules"
+target = "horizon_client::game::native_hooks::Game<'_>::open_mod_menu"
+kind = "HEAD"
+cancellable = true
+helper = "open.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "key", ty = "(i32, i32, i32)", value = "key" },
+]
+
+[[injection]]
+id = "module_slot_rules"
+target = "horizon_client_lib::menu::Menu::mod_slot"
+kind = "RETURN"
+helper = "slot_rules.rs"
+bindings = [
+  { name = "menu", ty = "&crate::menu::Menu", value = "&*self" },
+  { name = "slot", ty = "usize", value = "s" },
+  { name = "stack", ty = "&horizon_items::items::ItemStack", value = "stack" },
+  { name = "value", ty = "(bool, u32)", value = "$value" },
+]
+
+[[injection]]
+id = "interact_pipe"
+target = "horizon_client::game::Game<'_>::use_hand"
+kind = "HEAD"
+cancellable = true
+helper = "interact.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "hit", ty = "Option<&crate::game::Hit>", value = "block_hit" },
+]
+
+[[injection]]
+id = "filter_draw"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_draw"
+kind = "HEAD"
+helper = "filter_draw.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "block", ty = "&str", value = "block" },
+  { name = "data", ty = "&[i32]", value = "data" },
+  { name = "batch", ty = "&mut crate::hud::HudBatch", value = "batch" },
+  { name = "origin", ty = "[f32; 2]", value = "origin" },
+]
+
+[[injection]]
+id = "filter_click"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_click"
+kind = "HEAD"
+helper = "filter_click.rs"
+bindings = [
+  { name = "block", ty = "&str", value = "block" },
+  { name = "data", ty = "&[i32]", value = "data" },
+  { name = "at", ty = "[f32; 2]", value = "at" },
+  { name = "button", ty = "&mut Option<i32>", value = "button" },
+]
+
+[[injection]]
+id = "filter_tooltip"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_tooltip"
+kind = "HEAD"
+helper = "filter_tooltip.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "block", ty = "&str", value = "block" },
+  { name = "data", ty = "&[i32]", value = "data" },
+  { name = "at", ty = "[f32; 2]", value = "at" },
+  { name = "lines", ty = "&mut Vec<String>", value = "lines" },
+]
+
+[[injection]]
+id = "filter_button"
+target = "horizon_client::game::native_hooks::Game<'_>::native_menu_button_v2"
+kind = "HEAD"
+helper = "filter_button.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "entity", ty = "&mut horizon_client_lib::containers::ModBlockEntity", value = "entity" },
+  { name = "id", ty = "i32", value = "id" },
+  { name = "carried", ty = "&mut Option<horizon_client_lib::items::ItemStack>", value = "carried" },
+]
+
+[[module]]
+id = "extraction_filter"
+file = "crates/horizon-client/src/client_lib.rs"
+name = "techquest_pretty_pipes_filter"
+source = "filter.rs"
+visibility = "pub"
+
+[[module]]
+id = "filter_controls"
+file = "crates/horizon-client/src/game.rs"
+name = "techquest_pretty_pipes_ui"
+source = "ui.rs"
+visibility = "pub(crate)"
+
+[[injection]]
+id = "filter_component_types"
+target = "horizon_client::game::native_hooks::Game<'_>::native_component_types"
+kind = "HEAD"
+helper = "filter_types.rs"
+bindings = [{ name = "types", ty = "&mut Vec<String>", value = "types" }]
+
+[[module]]
+id = "insertion_capacity"
+file = "crates/horizon-client/src/game/machines.rs"
+name = "techquest_pretty_pipes_capacity"
+source = "capacity.rs"
+visibility = "pub(crate)"

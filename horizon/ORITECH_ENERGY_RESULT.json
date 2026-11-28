@@ -1,0 +1,240 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-17T08:00:26.746630+00:00",
+  "minecraft": "26.3",
+  "prototype_version": "0.1.0",
+  "scope": "Basic Generator -> Powered Furnace + one Machine Core, default configuration and no upgrades",
+  "source": {
+    "project": "Rearth/Oritech",
+    "version": "1.2.13",
+    "tag": "v1.2.13",
+    "commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "source_url": "https://github.com/Rearth/Oritech/tree/4069b6dd14b05dfe0c80126618739b64054630ea",
+    "pinned_source_license": "CC0-1.0",
+    "pinned_jar_license": "CC0-1.0",
+    "current_modrinth_project_license": "CC-BY-4.0",
+    "license_basis": "Verified LICENSE.md at pinned commit and own file headers; source at this pin has no header overrides",
+    "license_sha256": "d504e681c66e5b9b23bd0ff751d2cd721da2f99f983b5a5fd0bb138135e4e8d9",
+    "consulted_source_sha256": {
+      "common/src/main/java/rearth/oritech/api/energy/EnergyApi.java": "2c16614ccdcaf03b5c1fdb4c01e726049a48aa772474157ecb84a3a025f6866e",
+      "common/src/main/java/rearth/oritech/api/energy/containers/DynamicEnergyStorage.java": "11d536e5a70e2c8441385585d5c4adc0639c5efe849d6200e63552bf3a42183b",
+      "common/src/main/java/rearth/oritech/block/base/block/MultiblockMachine.java": "0e9365b6013b23a72d860b195c12d3676b1507462196800d74911c5df601f2e3",
+      "common/src/main/java/rearth/oritech/block/base/entity/MachineBlockEntity.java": "58977abc1cd134135439a817128e3481b75886e69170974909cce6f6444a201a",
+      "common/src/main/java/rearth/oritech/block/base/entity/MultiblockMachineEntity.java": "a00ffc3bb195d12c61e341e77d2fe73bc4602bec791e1a2bcc422009e9153997",
+      "common/src/main/java/rearth/oritech/block/base/entity/UpgradableGeneratorBlockEntity.java": "7c6aaf25f2113833713a1e5f30ce80c93fd690cd6ac46f15fc82dd741d788c27",
+      "common/src/main/java/rearth/oritech/block/base/entity/UpgradableMachineBlockEntity.java": "37a5bc55419ac84815420e67ccf42feb1f62ff386721dbeb4e2790621c000394",
+      "common/src/main/java/rearth/oritech/block/blocks/generators/BasicGeneratorBlock.java": "c611d24b6dc99006a2690484ee4a6ce96aa7eda5c1b7e87010d1b3919c43df92",
+      "common/src/main/java/rearth/oritech/block/blocks/processing/MachineCoreBlock.java": "4c0db77c8dd25ae89b7c5d2fd16e7e67bc5a8f6b40a14b24b45372c0393eb33c",
+      "common/src/main/java/rearth/oritech/block/blocks/processing/PoweredFurnaceBlock.java": "f5b6f7dc2cc9e126d99ac17d30c0830cc0ec69f025046df7f8a33928321b2fc5",
+      "common/src/main/java/rearth/oritech/block/entity/MachineCoreEntity.java": "b18a9cc1197be0f5e0d9b5ac88fa8e2892627707cf0710276a2fab0732ded7dd",
+      "common/src/main/java/rearth/oritech/block/entity/generators/BasicGeneratorEntity.java": "24e7ffed71a7d0fe5c49bfa021d08e410b109cd4a56221ea2b7e02dc40f49204",
+      "common/src/main/java/rearth/oritech/block/entity/processing/PoweredFurnaceBlockEntity.java": "929115dc8fa667e47eac732b07e0eb725b111a018a58bf94f864c77e10fd98b9",
+      "common/src/main/java/rearth/oritech/init/BlockContent.java": "246e22e5a0f05c7011f5abcec9d941dc286071430c2425aa8cc3d921a99fed05",
+      "common/src/main/java/rearth/oritech/init/BlockEntitiesContent.java": "e80f5ce7789ecc96099a7c0f751eb290602aecc1e5c228a52411c6e9f37aa059",
+      "common/src/main/java/rearth/oritech/init/OritechConfig.java": "cc638c6053be9c091bd43b0b5a407226beeb278b64e9ecd1f6901f1f05d7f697",
+      "common/src/main/java/rearth/oritech/util/MultiblockMachineController.java": "9ee2b2541a125f78a509c83225d2ee8f8da662b55187d1323164bbd31ba5b3da"
+    }
+  },
+  "runtime": {
+    "horizon_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+    "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+    "engine_sha256": "e60292ec17a54186153db8c7df6fe89b00097e8c9f78539c2e85455eb4878b7b",
+    "native_bundle_sha256": "8e3975dee11dc14539927187159de262c998a12a6d9b7b2b3dcc0115b5ac21fb",
+    "content_hmod_sha256": "caadc4c4a2ffa87d85550910a248c9d1f585b078762680c176d91209359411fd",
+    "native_sdk_validated": true,
+    "content_sdk_validated": true,
+    "all_bundle_injections": 27,
+    "all_support_modules": 7,
+    "new_injections": 8,
+    "new_support_modules": 1,
+    "new_player_runtime": "Rust",
+    "new_rust_warnings": 0,
+    "existing_pretty_pipes_visibility_warnings": 3
+  },
+  "original_reference": {
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.264",
+    "real_original_server_tick_methods": true,
+    "cases": 63,
+    "snapshots": 414,
+    "method": "Direct pinned original serverTick calls on server thread; explicit generator-then-furnace order for saved original pair",
+    "physical_world_restart_exact": true,
+    "produced_iron_ingots_after_restart": 2,
+    "particle_rng_or_original_animation_parity_tested": false
+  },
+  "native_comparison": {
+    "schema": 1,
+    "cases": 63,
+    "states": 414,
+    "mismatches": [],
+    "actual_game_ticks_executed": true,
+    "synthetic_initial_assembled_state": true,
+    "synthetic_local_owner": true,
+    "real_client_join_tested": false,
+    "full_mod_ported": false,
+    "published": false
+  },
+  "fixture_correction": {
+    "initial_diagnostic_mismatches": 24,
+    "cause": "Original inventory.setItem clamps two lava buckets to one before ticking; native NBT seeding originally supplied two. Oracle now records pre-tick snapshots and native fixtures use that actual initial inventory. No machine implementation changed for this correction.",
+    "final_mismatches": 0
+  },
+  "graphical": {
+    "schema": 1,
+    "prototype_version": "0.1.0",
+    "connected_local_graphical_client": true,
+    "core_required_and_assembled_by_interaction": true,
+    "first_assembly_click_consumed": true,
+    "fuel_and_input_inserted_by_menu_packets": true,
+    "output_rejects_player_insertion": true,
+    "energy_progress_or_output_injected": false,
+    "save_reopen_exact": true,
+    "two_iron_ingots_smelted_and_collected": true,
+    "energy_conserved": true,
+    "broken_core_disables_processing": true,
+    "protocol_decode_errors": 0,
+    "device_type": "cpu",
+    "saved": {
+      "generator_energy": 0,
+      "generator_progress": 1555,
+      "burn": 1600,
+      "furnace_energy": 0,
+      "furnace_progress": 45,
+      "generator_items": "[{count: 1, Slot: 0b, id: \"minecraft:coal\"}]",
+      "furnace_items": "[{count: 2, Slot: 0b, id: \"minecraft:raw_iron\"}]"
+    },
+    "completed": {
+      "generator_energy": 0,
+      "generator_progress": 1399,
+      "burn": 1600,
+      "furnace_energy": 32,
+      "furnace_progress": 0,
+      "generator_items": "[{count: 1, Slot: 0b, id: \"minecraft:coal\"}]",
+      "furnace_items": "[{count: 2, Slot: 1b, id: \"minecraft:iron_ingot\"}]"
+    },
+    "licensed_account_or_dedicated_join_tested": false,
+    "full_mod_ported": false,
+    "published": false,
+    "screenshots_sha256": {
+      "generator-menu.png": "9ea4c2342d496004ce250b35b0355ebf20dbc0d2369c7d328ad2bcc1a6bf26cf",
+      "furnace-menu.png": "88a13d1e7893e98e3cc410923c4f1f7e8c1f1190c94a19fdc03f38369e2648c8",
+      "working-pair.png": "ad8424b58d4ada1ea4bd3809eee471512bf4f6950696b951428a16b30769dcc7",
+      "collected-output.png": "d7cc475510ae978033e5dfc0497cb67b3202a64aca02ccfece2647a750b3e50f"
+    }
+  },
+  "dedicated": {
+    "installation": "/workspace/horizon-runtime/techquest-oritech-01a-server",
+    "port": 25639,
+    "bind": "127.0.0.1",
+    "online_mode": true,
+    "whitelist": true,
+    "content_modules": 8,
+    "native_modules": 4,
+    "actual_pair_ticks": 201,
+    "two_ingots_produced": true,
+    "initial_assembled_state_and_inventory_fixtures_injected": true,
+    "energy_or_output_injected": false,
+    "generator_disabled_before_saved_state_reopen_check": true,
+    "paused_machine_state_reopened_exactly": true,
+    "pretty_pipes_transport_and_save_reopen_passed": true,
+    "installation_lock_verified": true,
+    "stopped_after_test": true,
+    "licensed_dedicated_join_tested": false
+  },
+  "checks": {
+    "python_tests_passed": 113,
+    "rustfmt_passed": true,
+    "python_compile_passed": true,
+    "git_diff_check_passed": true,
+    "previous_pretty_pipes_05b_installation_lock_verified_unchanged": true
+  },
+  "proofs": {
+    "original_initial": {
+      "path": "/workspace/horizon-runtime/oritech-energy-reference-v3/initial-result.json",
+      "sha256": "055203776a2113c1251b0b36358a75d9cee8f41ccced00b0a23518a6f2dae947"
+    },
+    "original_reopen": {
+      "path": "/workspace/horizon-runtime/oritech-energy-reference-v3/reopen-result.json",
+      "sha256": "f550174e512813a6b8ffe1e592a703eacd0bc2bfdf30ae47d6c45b77fc445ca5"
+    },
+    "original_probe_inputs": {
+      "path": "/workspace/horizon-runtime/oritech-energy-reference-v3/inputs.json",
+      "sha256": "86e23059cacb28ee65b62e18285d59349bde7e47a78812e7a000fca3e289bc78"
+    },
+    "native_ticks": {
+      "path": "/workspace/horizon-runtime/oritech-01a-energy-native-v2/checked-result.json",
+      "sha256": "5e0c3101a66c99ada86164faab201ce587fd9fb5ba53afc36d325e39ef7b5c75"
+    },
+    "native_operations": {
+      "path": "/workspace/horizon-runtime/oritech-01a-energy-native-v2/operations.jsonl",
+      "sha256": "fc5800d140f84de989e9f7642fafe76501d8e6591b1f75cd5e592c758c3ad91e"
+    },
+    "native_tick_records": {
+      "path": "/workspace/horizon-runtime/oritech-01a-energy-native-v2/result.jsonl",
+      "sha256": "aae9a621c06f0207b623d745887183edf05399b004216d5d3a984f5d8755cc2a"
+    },
+    "graphical": {
+      "path": "/workspace/horizon-runtime/oritech-01a-energy-gui-v1/checked-result.json",
+      "sha256": "a3edf655c46e09de90f268da5294254484dde835c4d97a6f97c30179d17b3b4c"
+    },
+    "graphical_actions": {
+      "path": "/workspace/horizon-runtime/oritech-01a-energy-gui-v1/actions.json",
+      "sha256": "c16c6d902dbfe036cb4339ed70b7f2e3eddd71fa9d68a965b2e2b871aa7869d8"
+    },
+    "dedicated_prepare": {
+      "path": "/workspace/horizon-runtime/oritech-01a-dedicated-energy-prepare.json",
+      "sha256": "161f6c2a45b66063d3eef16eb0ec7b05ffd72f9c7e9a1d3662906d4a094748e8"
+    },
+    "dedicated_reopen": {
+      "path": "/workspace/horizon-runtime/oritech-01a-dedicated-energy-verify.json",
+      "sha256": "39f491a259316011aec7843c3650973c8cbb56a56a27255ff416cb185be5e236"
+    },
+    "dedicated_driver": {
+      "path": "/workspace/horizon-runtime/oritech-dedicated-check.py",
+      "sha256": "af57d16b99e23cdd87e67bd1ff05ab1a23179e49467b35cfce649f2af5c9e01e"
+    },
+    "pretty_pipes_prepare": {
+      "path": "/workspace/horizon-runtime/oritech-01a-pipes-prepare.json",
+      "sha256": "4add436d18a92608a117c9c2a0b4fdd0bc1a57a26c28598e05c21bd04b5b233d"
+    },
+    "pretty_pipes_reopen": {
+      "path": "/workspace/horizon-runtime/oritech-01a-pipes-verify.json",
+      "sha256": "4daa3dbb66121895862c87cc2de0d8a8055f1c0bfccf303694edc173e31213e8"
+    },
+    "native_apply": {
+      "path": "/workspace/horizon-runtime/oritech-01-native-apply-v5.json",
+      "sha256": "fcb9e3862f12aa18698a91e4d9173d9e4c81e6715705dec8b4e76c9f1190788f"
+    },
+    "native_build": {
+      "path": "/workspace/horizon-runtime/oritech-01-native-build-v2.log",
+      "sha256": "5da0a3dd2fdbd42546148bc565dcf8ca3a0de0f5586b860046a1ec9dcfe2feca"
+    },
+    "native_sdk": {
+      "path": "/workspace/horizon-runtime/oritech-01a-sdk.json",
+      "sha256": "3bd551308d1684fe1f21fcbc17b6951d959eab1e4b6d6af6bfd72d44bf028bff"
+    },
+    "content_stage": {
+      "path": "/workspace/horizon-runtime/oritech-content-01-v5-report.json",
+      "sha256": "bf209d0955f7c9d12ed3a9078228a85d6b14015b8d3b9ef6b735b9d89132a5f0"
+    },
+    "python_tests": {
+      "path": "/workspace/horizon-runtime/oritech-01-python-tests-final.log",
+      "sha256": "df16098f3be407d302174e97f162efac4f38ba32d8d29c67885512cfb7b7517d"
+    }
+  },
+  "limitations": [
+    "Only three blocks; original recipes, materials/survival progression, cables, other machines, upgrades and core qualities are not ported.",
+    "Simplified cube models; original geometry, orientation, lighting/animations/particles and associated RNG are not ported.",
+    "Only this generator routes energy through its linked furnace core; general energy/item/fluid capability delegation through cores is not implemented.",
+    "Current vanilla 26.3 fuel and smelting registry is used; only listed source cases were compared, not the full 1.21.1 registry.",
+    "Original NeoForge world/NBT import, long energy/config ranges, component-sensitive and oversized-stack cases require separate work.",
+    "Held-core auto-placement, multiple-consumer allocation order, immediate break/drop semantics, unloaded chunks and general automation remain unverified.",
+    "Pretty Pipes 0.5 endpoints do not yet include Oritech.",
+    "Synthetic local integrated-client player, CPU Vulkan and no audio; Microsoft login, hardware GPU and licensed dedicated join were not tested."
+  ],
+  "full_mod_ported": false,
+  "full_modpack_ported": false,
+  "main_modified": false,
+  "published": false,
+  "goal_complete": false
+}

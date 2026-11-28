@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-23T08:51:51.060195+00:00",
+  "scope": "Original basic Oritech cable waterlogging placement, liquid callbacks, buckets, neighbor scheduling, Shift destruction, wet endpoint lifecycle, real scheduled fluid ticks and physical save/reopen",
+  "source": {
+    "oritech_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "license": "Pinned own CC0-1.0 dedication and matching JAR declaration; own headers have no override",
+    "own_source_blob_sha1_verified_against_pinned_git_tree": true,
+    "own_source_sha256": {
+      "LICENSE.md": "d504e681c66e5b9b23bd0ff751d2cd721da2f99f983b5a5fd0bb138135e4e8d9",
+      "common/src/main/java/rearth/oritech/block/blocks/pipes/AbstractPipeBlock.java": "6d674d9c85448be3a6d2c399f267091549698c82b9f166a7113bc94f41acc7ee",
+      "common/src/main/java/rearth/oritech/block/blocks/pipes/GenericPipeBlock.java": "ed3a14fa0664245fe33291faae2a72a83b049c321805d85212ee4581ef6d28eb",
+      "common/src/main/java/rearth/oritech/block/blocks/pipes/GenericPipeConnectionBlock.java": "283be877a9368efab9a58d2ba4c9f711aaa57d5bdeedce4962da55a08bd3c66b",
+      "common/src/main/java/rearth/oritech/item/tools/Wrench.java": "c92f738ef5686f096c2618a252f5ce4fcc8a1d880edba83d1abbd3781f2d2807"
+    },
+    "dependency_java_source_read_or_decompiled": false
+  },
+  "reference_inputs": {
+    "oracle": "waterlogging",
+    "probe_source_sha256": "45376ab20bd3fe17cf6cbbf8e499d04c32ccac47350b38ebcae2444fb7c5182a",
+    "probe_jar_sha256": "c288ac6879541947c702ca1989f8be0c42733a410514cb2f34f35af7f813425d",
+    "oritech": "1.2.13",
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.264"
+  },
+  "counts": {
+    "placements": 34,
+    "liquid_callbacks": 16,
+    "pickup_callbacks": 4,
+    "neighbor_scheduling": 24,
+    "bucket_uses": 24,
+    "shift_removals": 8
+  },
+  "behavior": {
+    "placement_source_level_zero_waterlogs": true,
+    "placement_all_flowing_and_falling_levels_stay_dry": true,
+    "waterlogged_fluid_is_full_still_source": true,
+    "can_place_accepts_only_still_water_even_when_already_wet": true,
+    "place_liquid_on_already_wet_block_returns_false": true,
+    "pickup_water_changes_flag_retaining_block_and_buffer": true,
+    "six_neighbor_directions_schedule_water_only_when_wet": true,
+    "water_tick_delay": 5,
+    "bucket_hand_mode_combinations": 8,
+    "bucket_actions": [
+      "fill_dry",
+      "drain_wet",
+      "drain_dry"
+    ],
+    "wet_shift_removal_preserves_source_and_drops_one_normal_wire_even_in_creative": true,
+    "wet_last_provider_replacement_preserves_water_and_discards_buffer": true
+  },
+  "wet_lifecycle": {
+    "before": {
+      "block": "oritech:energy_pipe_connection",
+      "properties": {
+        "down": "0",
+        "east": "1",
+        "north": "0",
+        "south": "0",
+        "straight": "false",
+        "up": "0",
+        "waterlogged": "true",
+        "west": "0"
+      },
+      "fluid": "minecraft:water",
+      "amount": 8,
+      "source": true,
+      "empty": false,
+      "has_energy": true,
+      "energy": 333
+    },
+    "removed_provider": {
+      "block": "oritech:energy_pipe",
+      "properties": {
+        "down": "0",
+        "east": "0",
+        "north": "0",
+        "south": "0",
+        "straight": "false",
+        "up": "0",
+        "waterlogged": "true",
+        "west": "0"
+      },
+      "fluid": "minecraft:water",
+      "amount": 8,
+      "source": true,
+      "empty": false,
+      "has_energy": false
+    },
+    "replaced_provider": {
+      "block": "oritech:energy_pipe_connection",
+      "properties": {
+        "down": "0",
+        "east": "1",
+        "north": "0",
+        "south": "0",
+        "straight": "false",
+        "up": "0",
+        "waterlogged": "true",
+        "west": "0"
+      },
+      "fluid": "minecraft:water",
+      "amount": 8,
+      "source": true,
+      "empty": false,
+      "has_energy": true,
+      "energy": 0
+    }
+  },
+  "flow": {
+    "real_server_scheduled_ticks": true,
+    "chunks_forced_ticking": true,
+    "elapsed": [
+      0,
+      1,
+      4,
+      5,
+      6,
+      10
+    ],
+    "cells_per_snapshot": 25,
+    "nonair_cells": [
+      2,
+      2,
+      2,
+      5,
+      5,
+      8
+    ],
+    "adjacent_dry_cable_does_not_waterlog_by_flow": true
+  },
+  "physical_reopen": {
+    "before_equals_saved": true,
+    "saved": {
+      "block": "oritech:energy_pipe",
+      "properties": {
+        "down": "0",
+        "east": "0",
+        "north": "0",
+        "south": "0",
+        "straight": "false",
+        "up": "0",
+        "waterlogged": "true",
+        "west": "0"
+      },
+      "fluid": "minecraft:water",
+      "amount": 8,
+      "source": true,
+      "empty": false,
+      "has_energy": false
+    }
+  },
+  "driver": "Synthetic NeoForge FakePlayer, explicit head/body/previous pose synchronization and direct original callbacks; real forced-chunk server fluid ticks; no account or client packet claim",
+  "excluded_control": "reference-v1 loaded chunks but did not force ticking: its callback observations were usable but scheduled flow did not advance; canonical v2 forces all four grid chunks",
+  "not_tested": [
+    "Other cable variants",
+    "Lava/fish/sneaking bucket item-use cases, dispensers, Nether evaporation and long unload behavior",
+    "Licensed client or multiplayer"
+  ],
+  "native_implementation_evidence": "ORITECH_WATERLOGGING_RESULT.json",
+  "full_modpack_ported": false,
+  "published": false,
+  "proof_files_sha256": {
+    "oritech-waterlogging-reference-v2/inputs.json": "102da45d1d7d2e6c4a4c8b4c357712b21cf49eb544fbcbc80aa5433402fc5600",
+    "oritech-waterlogging-reference-v2/initial-result.json": "8ac04b22c6a6e558b630196956db609ad9c988a73457bc19e8189d4f6112330a",
+    "oritech-waterlogging-reference-v2/reopen-result.json": "18cdef005b3794a13f6185e6b670bcf26437023099e45d24d3b7860b93bfb9c1",
+    "oritech-waterlogging-reference-v2/initial-console.log": "d9d3134bdd04c7ab0713a88e502c1f28d68b3f6bf8986500f40cb2167660743f",
+    "oritech-waterlogging-reference-v2/reopen-console.log": "3fefceed5bca52c2917c3019f18f1887467cffd22149811d72285be463ed776f"
+  }
+}

@@ -1,0 +1,491 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-17T09:18:13.227626+00:00",
+  "minecraft": "26.3",
+  "content_version": "0.2.0",
+  "native_machine_version": "0.1.0",
+  "scope": "Original platinum alternative crafting route for the existing generator/furnace/core; selected ores and materials, not full Oritech progression",
+  "source": {
+    "oritech": "1.2.13",
+    "commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "license_at_pin": "CC0-1.0",
+    "jar_license": "CC0-1.0",
+    "current_modrinth_project_metadata_license": "CC-BY-4.0",
+    "license_basis": "Same pinned source dedication and file-header checks as ORITECH_ENERGY_RESULT.json; no dependency Java source read",
+    "terralith": "2.6.2",
+    "terralith_jar_sha512": "35298f1682567f63dc16658b04cee5498b30819f1c05f9712b4480d7f5eb17059db3b13ab14f81a05fe257149d11ced2cce2030d3727c1747edd8657c53e2a85",
+    "recipes": [
+      "crafting/core1",
+      "crafting/basicgen",
+      "crafting/electricfurnacealt",
+      "crafting/magnet",
+      "crafting/alloy/steel",
+      "crafting/alloy/electrum",
+      "nickel_ingot_from_smelting_raw_nickel",
+      "nickel_ingot_from_blasting_raw_nickel",
+      "platinum_ingot_from_smelting_raw_platinum",
+      "platinum_ingot_from_blasting_raw_platinum"
+    ],
+    "materials": [
+      "raw_nickel",
+      "raw_platinum",
+      "nickel_ingot",
+      "platinum_ingot",
+      "steel_ingot",
+      "electrum_ingot",
+      "magnetic_coil",
+      "biosteel_ingot"
+    ],
+    "ores": [
+      "nickel_ore",
+      "deepslate_nickel_ore",
+      "deepslate_platinum_ore",
+      "endstone_platinum_ore"
+    ],
+    "common_tag_membership": {
+      "c:player_workstations/furnaces": [
+        "minecraft:furnace"
+      ],
+      "c:ingots/copper": [
+        "minecraft:copper_ingot"
+      ],
+      "c:ingots/nickel": [
+        "oritech:nickel_ingot"
+      ],
+      "c:ingots/electrum": [
+        "oritech:electrum_ingot"
+      ],
+      "c:ingots/platinum": [
+        "oritech:platinum_ingot"
+      ],
+      "c:ingots/steel": [
+        "oritech:biosteel_ingot",
+        "oritech:steel_ingot"
+      ],
+      "c:ingots/iron": [
+        "minecraft:iron_ingot"
+      ],
+      "c:ingots/gold": [
+        "minecraft:gold_ingot"
+      ],
+      "c:dusts/redstone": [
+        "minecraft:redstone"
+      ]
+    },
+    "missing_optional_legacy_tags": [
+      "forge:dusts/redstone",
+      "forge:ingots/copper",
+      "forge:ingots/gold",
+      "forge:ingots/iron"
+    ]
+  },
+  "runtime": {
+    "horizon": "c78187dffffb60f31517eadcb87413386e8ce729",
+    "mixins": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+    "engine_sha256": "eafe7851ca0a2df6f62bf5470083c8165e362aecab065dc2ae1bae31a5af0a18",
+    "content_sha256": "f5c35d8b8b1f61c3652ee8e564626465a43e585755f961ed331ec7dc5a425265",
+    "native_bundle_ids": [
+      "techquest_terralith_wolves",
+      "techquest_yung_dungeons",
+      "techquest_pretty_pipes",
+      "techquest_oritech"
+    ],
+    "unchanged_native_bundle_versions": {
+      "techquest_terralith_wolves": "0.1.0",
+      "techquest_yung_dungeons": "0.1.0",
+      "techquest_pretty_pipes": "0.5.0",
+      "techquest_oritech": "0.1.0"
+    },
+    "core_patch": {
+      "schema": 1,
+      "id": "techquest_biome_modifiers",
+      "version": "0.1.0",
+      "horizon": "c78187dffffb60f31517eadcb87413386e8ce729",
+      "source_file": "crates/horizon-client/src/mod_content.rs",
+      "source_sha256": "5f162d574ed363cd1e089acf1bafae3195032102733213a93f5c27e07d8267c7",
+      "patched_sha256": "3ef975c68866b2c28c915c1ef2b955bf3176fcae2d1de2cb06b5ee2db8441709",
+      "patch_sha256": "f824b82342dffbf99e9dc08bdf49fef73de815a7e4cac581506a5031efb71e5f"
+    },
+    "new_player_runtime": "Rust",
+    "new_java_player_runtime": false,
+    "new_rust_warnings": 0,
+    "existing_pretty_pipes_visibility_warnings": 3
+  },
+  "biome_fix": {
+    "baseline_bundle_ignored_custom_biomes": true,
+    "baseline_custom_biome_ids_filtered_from_tags": true,
+    "baseline_modifiers_applied_to_vanilla_bundle": true,
+    "correction": "Register declared biomes before tag filtering and apply modifiers to the merged biome bundle",
+    "compiled_core_patch_not_sdk_hnmod": true,
+    "mixins_functions_with_try_and_closures_refused": true,
+    "only_generated_stage_patched": true,
+    "exact_source_and_diff_hashes_checked": true,
+    "repeat_is_read_only": true,
+    "target_counts": {
+      "minecraft": {
+        "registered_biomes": 67,
+        "source_overworld_ore_targets": 56
+      },
+      "terralith": {
+        "registered_biomes": 95,
+        "source_overworld_ore_targets": 90
+      }
+    },
+    "custom_target_set_equals_original_terralith_tag": true,
+    "unknown_ids_still_filtered": true,
+    "untargeted_fixture_desert_unchanged": true,
+    "no_mods_vanilla_biome_and_tag_bundles_byte_identical": true
+  },
+  "crafting_and_loot": {
+    "original_binary_recipe_manager_and_loot_codec": true,
+    "source_minecraft": "1.21.1",
+    "neoforge": "21.1.264",
+    "grids": 482,
+    "positive_target_grids": 38,
+    "mutated_grids": 444,
+    "mutations_crafting_correct_vanilla_chest": 6,
+    "vanilla_recipe_id_namespace_normalized": true,
+    "native_crafting_mismatches": 0,
+    "ore_loot_rolls": 60,
+    "ores": 4,
+    "tools": [
+      "plain diamond pickaxe",
+      "Silk Touch I",
+      "Fortune III"
+    ],
+    "seeds": [
+      1,
+      2,
+      42,
+      263,
+      9001
+    ],
+    "whole_source_ore_loot_tables_compared": true,
+    "native_loot_mismatches": 0
+  },
+  "graphical_crafting": {
+    "schema": 1,
+    "prototype_version": "0.2.0",
+    "crafts": [
+      {
+        "output": "oritech:steel_ingot",
+        "count": 1,
+        "consumed": {
+          "minecraft:iron_ingot": 2,
+          "minecraft:coal": 2
+        }
+      },
+      {
+        "output": "oritech:steel_ingot",
+        "count": 1,
+        "consumed": {
+          "minecraft:iron_ingot": 2,
+          "minecraft:coal": 2
+        }
+      },
+      {
+        "output": "oritech:steel_ingot",
+        "count": 1,
+        "consumed": {
+          "minecraft:iron_ingot": 2,
+          "minecraft:coal": 2
+        }
+      },
+      {
+        "output": "oritech:electrum_ingot",
+        "count": 1,
+        "consumed": {
+          "minecraft:gold_ingot": 2,
+          "minecraft:redstone": 2
+        }
+      },
+      {
+        "output": "oritech:magnetic_coil",
+        "count": 4,
+        "consumed": {
+          "oritech:nickel_ingot": 6,
+          "oritech:steel_ingot": 3
+        }
+      },
+      {
+        "output": "oritech:basic_generator_block",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 5,
+          "minecraft:copper_ingot": 1,
+          "oritech:magnetic_coil": 2,
+          "minecraft:furnace": 1
+        }
+      },
+      {
+        "output": "oritech:powered_furnace_block",
+        "count": 1,
+        "consumed": {
+          "minecraft:copper_ingot": 3,
+          "oritech:platinum_ingot": 2,
+          "oritech:electrum_ingot": 1,
+          "oritech:magnetic_coil": 2,
+          "minecraft:furnace": 1
+        }
+      },
+      {
+        "output": "oritech:machine_core_1",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 8,
+          "minecraft:crafting_table": 1
+        }
+      }
+    ],
+    "recipe_inputs_consumed_exactly": true,
+    "machines_and_alloys_not_given": true,
+    "crafted_blocks_placed_by_player": true,
+    "core_assembled_by_interaction": true,
+    "crafted_pair_produced_two_collected_ingots": true,
+    "vanilla_and_nickel_platinum_ingot_fixtures_given": true,
+    "natural_mining_or_full_survival_gathering_tested": false,
+    "licensed_dedicated_join_tested": false,
+    "published": false
+  },
+  "natural_ore_mining": {
+    "schema": 1,
+    "prototype_version": "0.2.0",
+    "terralith_datapack_enabled": true,
+    "found": [
+      {
+        "dimension": "minecraft:overworld",
+        "block": "oritech:nickel_ore",
+        "pos": [
+          -2300,
+          29,
+          2224
+        ],
+        "natural_blocks_found": 10,
+        "raw": "oritech:raw_nickel",
+        "mining_reply": {
+          "block": "minecraft:air",
+          "block_before": "oritech:nickel_ore",
+          "drops": {
+            "oritech:raw_nickel": 1
+          },
+          "items_left_on_ground": 1,
+          "ok": true,
+          "on_ground": [
+            {
+              "count": 1,
+              "id": 135,
+              "item": "oritech:raw_nickel",
+              "pos": [
+                -2299.125,
+                29.0,
+                2224.7667847973503
+              ]
+            }
+          ],
+          "picked_up": {},
+          "pos": [
+            -2300,
+            29,
+            2224
+          ],
+          "ticks": 15
+        }
+      },
+      {
+        "dimension": "minecraft:the_end",
+        "block": "oritech:endstone_platinum_ore",
+        "pos": [
+          -5,
+          62,
+          0
+        ],
+        "natural_blocks_found": 2227,
+        "raw": "oritech:raw_platinum",
+        "mining_reply": {
+          "block": "minecraft:air",
+          "block_before": "oritech:endstone_platinum_ore",
+          "drops": {
+            "oritech:raw_platinum": 1
+          },
+          "items_left_on_ground": 1,
+          "ok": true,
+          "on_ground": [
+            {
+              "count": 1,
+              "id": 182,
+              "item": "oritech:raw_platinum",
+              "pos": [
+                -4.125,
+                62.0,
+                0.6312430740736485
+              ]
+            }
+          ],
+          "picked_up": {},
+          "pos": [
+            -5,
+            62,
+            0
+          ],
+          "ticks": 20
+        }
+      }
+    ],
+    "natural_nickel_in_terralith_biome": true,
+    "natural_end_platinum": true,
+    "survival_mining_produced_raw_materials": true,
+    "ore_blocks_or_features_injected": false,
+    "raw_items_given": false,
+    "raw_inventory_and_broken_blocks_survive_reopen": true,
+    "overworld_deepslate_platinum_generation_verified": false,
+    "full_worldgen_rng_parity_tested": false,
+    "licensed_dedicated_join_tested": false,
+    "published": false
+  },
+  "energy_regression": {
+    "cases": 63,
+    "states": 414,
+    "mismatches": 0,
+    "gui_real_active_pair_save_reopen_exact": true,
+    "source_and_output_energy_conserved": true
+  },
+  "dedicated": {
+    "installation": "/workspace/horizon-runtime/techquest-oritech-02a-server",
+    "port": 25640,
+    "loopback": true,
+    "online_mode": true,
+    "whitelist": true,
+    "hmods": 8,
+    "native_bundles": 4,
+    "additional_reviewed_core_correction": true,
+    "machine_pair_produced_two_ingots": true,
+    "disabled_generator_state_save_reopen_exact": true,
+    "pretty_pipes_transport_and_inflight_reopen_passed": true,
+    "stopped_after_tests": true,
+    "lock_verified": true,
+    "licensed_join_tested": false
+  },
+  "checks": {
+    "python_tests": 116,
+    "rustfmt_passed": true,
+    "python_compile_passed": true,
+    "sdk_hmod_and_existing_native_bundles_checked": true,
+    "previous_oritech_01a_and_pretty_pipes_05b_locks_verified_unchanged": true
+  },
+  "proofs": {
+    "stage": {
+      "path": "/workspace/horizon-runtime/oritech-content-02-v1-report.json",
+      "sha256": "5b9c0dd04bf0429f3c117986f665ebf473863deca4ee4ac94401adf05309c314"
+    },
+    "cases": {
+      "path": "/workspace/horizon-runtime/oritech-content-cases-v1.json",
+      "sha256": "922f6de05eecbae333b972ad2236af8177ed290c6129deb636ce27b0bcdd846d"
+    },
+    "original_oracle": {
+      "path": "/workspace/horizon-runtime/oritech-content-reference-v2/initial-result.json",
+      "sha256": "92d6c5ccb91099fa4c7508d67c25f57925b76927e99827c90b58b6205a5f1d1a"
+    },
+    "original_inputs": {
+      "path": "/workspace/horizon-runtime/oritech-content-reference-v2/inputs.json",
+      "sha256": "96ccadd53328b7edc1d54b8f7459b437449a4394cfa0136487471d1710e9813e"
+    },
+    "native_crafting_loot": {
+      "path": "/workspace/horizon-runtime/oritech-content-parity-final-result.json",
+      "sha256": "d6ce2cf0434c91982625d510c93f343e84c3fe8132980025db1226671f3c1d8a"
+    },
+    "biome_controls": {
+      "path": "/workspace/horizon-runtime/oritech-biome-controls-v2/checked-result.json",
+      "sha256": "393f21a1ecdd0f8dba59b45d42ad9ce8666c57a43f70c2cf236d5414f3eba12d"
+    },
+    "merged_content_build": {
+      "path": "/workspace/horizon-runtime/oritech-content-02-effective-v3/techquest-content-build.json",
+      "sha256": "5ebdd3ed9f895e26aa3ffbbbb8f11d77e5921f4e6bfa1f6554ff1a1802143cd7"
+    },
+    "core_patch_application": {
+      "path": "/workspace/horizon-runtime/oritech-02-core-patch-v3.json",
+      "sha256": "0b2056a55cb4033e1439b074358760fa8f0d7637760f9a7800928eeef4cc3a0a"
+    },
+    "core_patch_repeat": {
+      "path": "/workspace/horizon-runtime/oritech-02-core-patch-final-check.json",
+      "sha256": "f66cbb9a319a82a1ee98334ca261af5f05570d34851d9ec180a6f475bbd1f9ea"
+    },
+    "engine_build": {
+      "path": "/workspace/horizon-runtime/oritech-02-native-build-v3.log",
+      "sha256": "e412c5a2fbd7f0b03e74640c461be4f1e26cd2902f3671ff223e3f5dc2634842"
+    },
+    "tools_build": {
+      "path": "/workspace/horizon-runtime/native-tools-oritech-02a/build-result.json",
+      "sha256": "5f6618746d00ba1cd9937ccdb38961a4f5bb8f5003153e5593b86ae7c49a8e9f"
+    },
+    "energy_regression": {
+      "path": "/workspace/horizon-runtime/oritech-02a-energy-native-v1/checked-result.json",
+      "sha256": "a2d5b9eaf7ca6e3de3073cdf51c55316e720841de233fee4dd6139e7a92a076d"
+    },
+    "graphical_crafting": {
+      "path": "/workspace/horizon-runtime/oritech-02a-crafting-gui-v1/checked-result.json",
+      "sha256": "9c38f8989843e4fa020b432bdd4317c89795b16e2da41a12f72249631f20bc4a"
+    },
+    "graphical_crafting_actions": {
+      "path": "/workspace/horizon-runtime/oritech-02a-crafting-gui-v1/actions.json",
+      "sha256": "c9317343197973183bdb93d1fb61ccdabcb74402e04e97c7b4eb730b8201b837"
+    },
+    "graphical_natural_ores": {
+      "path": "/workspace/horizon-runtime/oritech-02a-ore-mining-gui-v1/checked-result.json",
+      "sha256": "ac8fede21f00d9139a7fe624624f2e907a78ddcb166423f5440fe2c4c0f24b5d"
+    },
+    "graphical_natural_ore_actions": {
+      "path": "/workspace/horizon-runtime/oritech-02a-ore-mining-gui-v1/actions.json",
+      "sha256": "9225e5f91bfe6dd0ae352ed7b5c765b618025770bf975a31030820aea6927bcd"
+    },
+    "graphical_energy_reopen": {
+      "path": "/workspace/horizon-runtime/oritech-02a-energy-gui-v1/checked-result.json",
+      "sha256": "45b97bac9910573665330a99ad9ff6cf4e9b21c4fb76edde8ca7c368a417c837"
+    },
+    "dedicated_prepare": {
+      "path": "/workspace/horizon-runtime/oritech-02a-dedicated-energy-prepare.json",
+      "sha256": "4b6559ef1504872cda561e4ee6992bda09ac3b5520ceb71722c86fbc979008b1"
+    },
+    "dedicated_reopen": {
+      "path": "/workspace/horizon-runtime/oritech-02a-dedicated-energy-verify.json",
+      "sha256": "39f491a259316011aec7843c3650973c8cbb56a56a27255ff416cb185be5e236"
+    },
+    "dedicated_developer_driver": {
+      "path": "/workspace/horizon-runtime/oritech-dedicated-check-02.py",
+      "sha256": "a92c85eb2f37ac48b92377cfebdfe8f0ffaf93b77ccc33eb74855ffe37ff87ed"
+    },
+    "pipes_prepare": {
+      "path": "/workspace/horizon-runtime/oritech-02a-pipes-prepare.json",
+      "sha256": "4add436d18a92608a117c9c2a0b4fdd0bc1a57a26c28598e05c21bd04b5b233d"
+    },
+    "pipes_reopen": {
+      "path": "/workspace/horizon-runtime/oritech-02a-pipes-verify.json",
+      "sha256": "4daa3dbb66121895862c87cc2de0d8a8055f1c0bfccf303694edc173e31213e8"
+    },
+    "python_tests": {
+      "path": "/workspace/horizon-runtime/oritech-02-python-tests-final.log",
+      "sha256": "60e21dfc427dcaae031cc04dcbad6938e3b9f2249e1816649500fdce5a4ad2f8"
+    },
+    "native_parity_compiler": {
+      "path": "/workspace/horizon-runtime/oritech-content-parity-final-command.json",
+      "sha256": "3f4eee4ab78396a94f5a6e0d3681bfba44ab1e5270da5e8f595f6a11231ac67b"
+    },
+    "content_helper_compiler": {
+      "path": "/workspace/horizon-runtime/oritech-content-tool-v3-command.json",
+      "sha256": "ac29d3dfbc07c8beb4b1039a6e6c3dc6e58d3cec8451f2850dd76d4e117243bc"
+    }
+  },
+  "limitations": [
+    "Uses the original platinum alternative furnace recipe. Silicon/default furnace progression needs unported processing machines.",
+    "Nickel and platinum ingots in the crafting GUI are fixtures; natural ore mining is a separate world. A full gathered survival run is not claimed.",
+    "Natural nickel is verified in a Terralith biome and natural platinum in the End; overworld deepslate platinum generation is not verified.",
+    "Biosteel is registered to preserve the source c:ingots/steel alternative; its production route is not ported.",
+    "No whole-world generation/RNG parity with 1.21.1, complete vanilla-tag membership parity, terrain/performance parity or hardware GPU test.",
+    "Remaining recipes, ores/machines, cables, fluids, upgrades, animations, exact geometry and general core delegation remain incomplete.",
+    "Pretty Pipes does not yet expose Oritech endpoints. Licensed client/dedicated join and full multiplayer remain untested."
+  ],
+  "full_mod_ported": false,
+  "full_modpack_ported": false,
+  "goal_complete": false,
+  "main_modified": false,
+  "published": false
+}

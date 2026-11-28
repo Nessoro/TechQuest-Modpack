@@ -1,0 +1,797 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-22T10:38:07.927548+00:00",
+  "minecraft": "26.3",
+  "scope": "Selected four-input no-addon Assembler coils/motors, cross-chunk startup fix, graphical crafting, dedicated automation and own native save upgrade",
+  "versions": {
+    "oritech_content": "0.5.0",
+    "oritech_native": "0.4.0",
+    "pretty_pipes_content_and_native": "0.10.0"
+  },
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "source": {
+    "oritech_commit": "4069b6dd14b05dfe0c80126618739b64054630ea",
+    "license_basis": "Pinned own LICENSE.md and binary JAR declare CC0-1.0; current project metadata differs; consulted own headers have no override",
+    "assembler_source_sha256": "435944fab5c9130a6119c27ffedec58f751d1afaace0ef6bf54994755a28f031",
+    "horizon_streaming_install_order_source_sha256": "f89f8ad82357c2c466ff205b735807267620d56e5cda8e9c7af34b211e96911d",
+    "dependency_java_source_read_or_decompiled": false
+  },
+  "content": {
+    "ordinary_recipes": 18,
+    "processing_recipes": [
+      "pulverizer/quartz",
+      "pulverizer/coal",
+      "foundry/alloy/steel",
+      "foundry/alloy/electrum",
+      "foundry/alloy/adamant",
+      "assembler/magnet",
+      "assembler/motor"
+    ],
+    "pulverizer_recipe_count": 2,
+    "foundry_recipe_count": 3,
+    "assembler_recipe_count": 2,
+    "materials": 14,
+    "machine_and_core_blocks": 6,
+    "ore_blocks": 4,
+    "all_original_recipes_ported": false
+  },
+  "native_assembler": {
+    "energy_capacity": 50000,
+    "max_insertion_per_call": 1024,
+    "energy_per_processing_tick": 128,
+    "duration_ticks": 48,
+    "inputs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "result_slots": [
+      4
+    ],
+    "core1_required": 3,
+    "coil_result_count": 6,
+    "motor_result_count": 2,
+    "original_cases": 262,
+    "matched_states": 2096,
+    "assembly_geometry_cases": 20,
+    "distributed_and_compacted_repeated_ingredients_match": true,
+    "physical_core_callback_lifecycle_and_transient_reload_cache_match": true,
+    "native_cache_fields_seeded": false
+  },
+  "startup_fix": {
+    "old_control": {
+      "profile": "techquest-oritech-05a-server",
+      "coiler_assembly_before_restart": 1,
+      "coiler_assembly_after_restart": 0,
+      "own_chunk_core_used_after_restart": 0,
+      "neighbour_chunk_core_used_after_restart": 1,
+      "cause": "controller validation treated a not-yet-resident neighbouring core chunk as air",
+      "source_commands_retained": "oritech-05a-assembler-server-verify-v1.commands.json"
+    },
+    "applies_to_foundry_and_assembler": true,
+    "validation_and_processing_wait_for_resident_core_chunks": true,
+    "block_entities_installed_before_chunk_published_at_pinned_horizon_revision": true,
+    "two_cross_boundary_assembler_server_restarts_preserve_both_assemblies_and_six_core_flags": true,
+    "general_destruction_with_linked_chunks_unloaded_or_old_orphan_repair_tested": false
+  },
+  "graphical": {
+    "schema": 1,
+    "oritech_content_version": "0.5.0",
+    "native_machine_version": "0.4.0",
+    "crafts": [
+      {
+        "output": "minecraft:furnace",
+        "count": 1,
+        "consumed": {
+          "minecraft:cobblestone": 8
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:motor",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 1,
+          "oritech:steel_ingot": 4,
+          "oritech:magnetic_coil": 2
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:motor",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 1,
+          "oritech:steel_ingot": 4,
+          "oritech:magnetic_coil": 2
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:basic_generator_block",
+        "count": 1,
+        "consumed": {
+          "oritech:nickel_ingot": 5,
+          "minecraft:copper_ingot": 1,
+          "oritech:magnetic_coil": 2,
+          "minecraft:furnace": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "oritech:assembler_block",
+        "count": 1,
+        "consumed": {
+          "minecraft:copper_ingot": 3,
+          "minecraft:crafter": 2,
+          "oritech:adamant_ingot": 1,
+          "oritech:motor": 2,
+          "minecraft:blast_furnace": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "minecraft:crafting_table",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 4
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "oritech:machine_core_1",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 8,
+          "minecraft:crafting_table": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "minecraft:crafting_table",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 4
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "oritech:machine_core_1",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 8,
+          "minecraft:crafting_table": 1
+        },
+        "inventory_grid": false
+      },
+      {
+        "output": "minecraft:crafting_table",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 4
+        },
+        "inventory_grid": true
+      },
+      {
+        "output": "oritech:machine_core_1",
+        "count": 1,
+        "consumed": {
+          "minecraft:oak_planks": 8,
+          "minecraft:crafting_table": 1
+        },
+        "inventory_grid": false
+      }
+    ],
+    "base_material_and_tool_fixtures": {
+      "oritech:nickel_ingot": 10,
+      "oritech:steel_ingot": 10,
+      "oritech:magnetic_coil": 6,
+      "minecraft:copper_ingot": 5,
+      "oritech:adamant_ingot": 1,
+      "minecraft:crafter": 2,
+      "minecraft:blast_furnace": 1,
+      "minecraft:coal": 1,
+      "minecraft:cobblestone": 8,
+      "minecraft:oak_planks": 36,
+      "minecraft:diamond_pickaxe": 1
+    },
+    "placed_facing": "north",
+    "placement_yaw": -0.0,
+    "placement_faces_opposite_observed_player_yaw": true,
+    "core_positions": [
+      [
+        -2267,
+        200,
+        2272
+      ],
+      [
+        -2268,
+        201,
+        2272
+      ],
+      [
+        -2267,
+        201,
+        2272
+      ]
+    ],
+    "two_manual_motors_generator_assembler_three_cores_crafted_and_player_placed": true,
+    "missing_core_rejected_without_claiming_others": true,
+    "first_assembly_click_consumed": true,
+    "initial_six_coils_consumed_in_crafting_before_processing": true,
+    "machine_energy_inventory_or_progress_not_injected": true,
+    "assembler_result_slot_refuses_input": true,
+    "six_coils_and_two_motors_generated_and_collected": true,
+    "four_generated_coils_unused_in_final_inventory": true,
+    "real_core_mined_collected_and_reassembled": {
+      "block": "minecraft:air",
+      "block_before": "oritech:machine_core_1",
+      "drops": {
+        "oritech:machine_core_1": 1
+      },
+      "items_left_on_ground": 1,
+      "ok": true,
+      "on_ground": [
+        {
+          "count": 1,
+          "id": 42,
+          "item": "oritech:machine_core_1",
+          "pos": [
+            -2266.820454577881,
+            200.0,
+            2273.6626557027944
+          ]
+        }
+      ],
+      "picked_up": {},
+      "pos": [
+        -2267,
+        200,
+        2272
+      ],
+      "ticks": 19
+    },
+    "progress_while_core_missing": 27,
+    "progress_after_warm_reassembly_tick": 28,
+    "reopen_cold_cache_first_progress": 1,
+    "energy_conserved_including_13_lost_preload_ticks": true,
+    "saved": {
+      "inventory": {
+        "minecraft:diamond_pickaxe": 1,
+        "oritech:nickel_ingot": 1,
+        "oritech:steel_ingot": 1
+      },
+      "generator": {
+        "energy": "0",
+        "\"oritech.machine_progress\"": "0",
+        "Items": "Found no elements matching Items"
+      },
+      "assembler": {
+        "energy": "49536",
+        "\"oritech.machine_progress\"": "13",
+        "Items": "[{count: 1, Slot: 0b, id: \"oritech:steel_ingot\"}, {count: 1, Slot: 1b, id: \"oritech:nickel_ingot\"}, {count: 1, Slot: 2b, id: \"oritech:nickel_ingot\"}, {count: 1, Slot: 3b, id: \"minecraft:copper_ingot\"}]"
+      },
+      "assembled": 1,
+      "core_used": [
+        1,
+        1,
+        1
+      ]
+    },
+    "final": {
+      "inventory": {
+        "minecraft:diamond_pickaxe": 1,
+        "oritech:magnetic_coil": 4,
+        "oritech:motor": 2
+      },
+      "generator": {
+        "energy": "0",
+        "\"oritech.machine_progress\"": "0",
+        "Items": "Found no elements matching Items"
+      },
+      "assembler": {
+        "energy": "37248",
+        "\"oritech.machine_progress\"": "0",
+        "Items": "Found no elements matching Items"
+      },
+      "assembled": 1,
+      "core_used": [
+        1,
+        1,
+        1
+      ]
+    },
+    "two_physical_reopens_exact": true,
+    "protocol_decode_errors": 0,
+    "synthetic_local_player": true,
+    "unassisted_survival_or_licensed_join_tested": false,
+    "published": false
+  },
+  "dedicated_factory": {
+    "profile": "techquest-oritech-05b-server",
+    "port": 25653,
+    "source_fixtures": {
+      "coal": 2,
+      "nickel": 3,
+      "steel": 2,
+      "copper": 1
+    },
+    "machines_six_linked_cores_pipes_chests_modules_are_fixtures": true,
+    "energy_machine_inventory_outputs_or_cargo_seeded": false,
+    "coils_created": 6,
+    "motors_created_and_delivered": 2,
+    "remaining_input_coils_protected": 4,
+    "generated_energy": 102400,
+    "processing_energy_used": 12288,
+    "final_energy": 90112,
+    "genuine_motors_saved_in_flight": 2,
+    "physical_server_restarts": 2,
+    "normal_startup_can_deliver_cargo_before_console_freeze": true,
+    "checks": {
+      "prepare": {
+        "without_extractors": {
+          "sources": {
+            "135 201 176": {
+              "minecraft:coal": 2
+            },
+            "135 200 175": {
+              "oritech:nickel_ingot": 2,
+              "oritech:steel_ingot": 1,
+              "minecraft:copper_ingot": 1
+            },
+            "145 200 184": {
+              "oritech:nickel_ingot": 1,
+              "oritech:steel_ingot": 1
+            }
+          },
+          "generator": {},
+          "coiler": {},
+          "motor": {},
+          "delivered_motors": 0,
+          "destination_other_items": {},
+          "cargo": {
+            "minecraft:coal": 0,
+            "oritech:nickel_ingot": 0,
+            "oritech:steel_ingot": 0,
+            "minecraft:copper_ingot": 0,
+            "oritech:magnetic_coil": 0,
+            "oritech:motor": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": {
+            "143 200 175": 1,
+            "144 200 176": 1
+          },
+          "core_used": {
+            "144 200 175": 1,
+            "143 201 175": 1,
+            "144 201 175": 1,
+            "144 200 177": 1,
+            "144 201 176": 1,
+            "144 201 177": 1
+          }
+        },
+        "automatically_processed": {
+          "sources": {
+            "135 201 176": {},
+            "135 200 175": {},
+            "145 200 184": {}
+          },
+          "generator": {},
+          "coiler": {},
+          "motor": {
+            "oritech:magnetic_coil": 4,
+            "oritech:motor": 2
+          },
+          "delivered_motors": 0,
+          "destination_other_items": {},
+          "cargo": {
+            "minecraft:coal": 0,
+            "oritech:nickel_ingot": 0,
+            "oritech:steel_ingot": 0,
+            "minecraft:copper_ingot": 0,
+            "oritech:magnetic_coil": 0,
+            "oritech:motor": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 50000,
+            "144 200 176": 40112
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": {
+            "143 200 175": 1,
+            "144 200 176": 1
+          },
+          "core_used": {
+            "144 200 175": 1,
+            "143 201 175": 1,
+            "144 201 175": 1,
+            "144 200 177": 1,
+            "144 201 176": 1,
+            "144 201 177": 1
+          }
+        },
+        "saved_in_flight": {
+          "sources": {
+            "135 201 176": {},
+            "135 200 175": {},
+            "145 200 184": {}
+          },
+          "generator": {},
+          "coiler": {},
+          "motor": {
+            "oritech:magnetic_coil": 4
+          },
+          "delivered_motors": 0,
+          "destination_other_items": {},
+          "cargo": {
+            "minecraft:coal": 0,
+            "oritech:nickel_ingot": 0,
+            "oritech:steel_ingot": 0,
+            "minecraft:copper_ingot": 0,
+            "oritech:magnetic_coil": 0,
+            "oritech:motor": 2
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 50000,
+            "144 200 176": 40112
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": {
+            "143 200 175": 1,
+            "144 200 176": 1
+          },
+          "core_used": {
+            "144 200 175": 1,
+            "143 201 175": 1,
+            "144 201 175": 1,
+            "144 200 177": 1,
+            "144 201 176": 1,
+            "144 201 177": 1
+          }
+        }
+      },
+      "verify": {
+        "immediately_after_reopen": {
+          "sources": {
+            "135 201 176": {},
+            "135 200 175": {},
+            "145 200 184": {}
+          },
+          "generator": {},
+          "coiler": {},
+          "motor": {
+            "oritech:magnetic_coil": 4
+          },
+          "delivered_motors": 0,
+          "destination_other_items": {},
+          "cargo": {
+            "minecraft:coal": 0,
+            "oritech:nickel_ingot": 0,
+            "oritech:steel_ingot": 0,
+            "minecraft:copper_ingot": 0,
+            "oritech:magnetic_coil": 0,
+            "oritech:motor": 2
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 50000,
+            "144 200 176": 40112
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": {
+            "143 200 175": 1,
+            "144 200 176": 1
+          },
+          "core_used": {
+            "144 200 175": 1,
+            "143 201 175": 1,
+            "144 201 175": 1,
+            "144 200 177": 1,
+            "144 201 176": 1,
+            "144 201 177": 1
+          }
+        },
+        "final": {
+          "sources": {
+            "135 201 176": {},
+            "135 200 175": {},
+            "145 200 184": {}
+          },
+          "generator": {},
+          "coiler": {},
+          "motor": {
+            "oritech:magnetic_coil": 4
+          },
+          "delivered_motors": 2,
+          "destination_other_items": {},
+          "cargo": {
+            "minecraft:coal": 0,
+            "oritech:nickel_ingot": 0,
+            "oritech:steel_ingot": 0,
+            "minecraft:copper_ingot": 0,
+            "oritech:magnetic_coil": 0,
+            "oritech:motor": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 50000,
+            "144 200 176": 40112
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": {
+            "143 200 175": 1,
+            "144 200 176": 1
+          },
+          "core_used": {
+            "144 200 175": 1,
+            "143 201 175": 1,
+            "144 201 175": 1,
+            "144 200 177": 1,
+            "144 201 176": 1,
+            "144 201 177": 1
+          }
+        }
+      },
+      "final": {
+        "final": {
+          "sources": {
+            "135 201 176": {},
+            "135 200 175": {},
+            "145 200 184": {}
+          },
+          "generator": {},
+          "coiler": {},
+          "motor": {
+            "oritech:magnetic_coil": 4
+          },
+          "delivered_motors": 2,
+          "destination_other_items": {},
+          "cargo": {
+            "minecraft:coal": 0,
+            "oritech:nickel_ingot": 0,
+            "oritech:steel_ingot": 0,
+            "minecraft:copper_ingot": 0,
+            "oritech:magnetic_coil": 0,
+            "oritech:motor": 0
+          },
+          "energy": {
+            "143 200 176": 0,
+            "143 200 175": 50000,
+            "144 200 176": 40112
+          },
+          "progress": {
+            "143 200 176": 0,
+            "143 200 175": 0,
+            "144 200 176": 0
+          },
+          "assembled": {
+            "143 200 175": 1,
+            "144 200 176": 1
+          },
+          "core_used": {
+            "144 200 175": 1,
+            "143 201 175": 1,
+            "144 201 175": 1,
+            "144 200 177": 1,
+            "144 201 176": 1,
+            "144 201 177": 1
+          }
+        }
+      }
+    }
+  },
+  "own_native_save_upgrade": {
+    "source_content_version": "0.4.0",
+    "target_content_version": "0.5.0",
+    "source_world_file_count": 1916,
+    "source_world_unmodified": true,
+    "old_machine_ids_facing_energy_progress_core_links_and_inventory_preserved": true,
+    "one_tick_and_physical_reopen_checked": true,
+    "no_items_energy_or_blocks_inserted": true,
+    "general_neoforge_conversion_or_item_component_fidelity_tested": false,
+    "checks": {
+      "upgrade": {
+        "machine_energy_progress_and_empty_inventories_preserved": true,
+        "inventory": {
+          "oritech:adamant_ingot": 1,
+          "oritech:electrum_ingot": 1,
+          "oritech:steel_ingot": 4,
+          "minecraft:diamond_pickaxe": 1
+        },
+        "facing_assembly_and_all_core_offsets_preserved": true,
+        "one_normal_tick_executed": true
+      },
+      "reopen": {
+        "machine_energy_progress_and_empty_inventories_preserved": true,
+        "inventory": {
+          "oritech:adamant_ingot": 1,
+          "oritech:electrum_ingot": 1,
+          "oritech:steel_ingot": 4,
+          "minecraft:diamond_pickaxe": 1
+        },
+        "facing_assembly_and_all_core_offsets_preserved": true,
+        "one_normal_tick_executed": false
+      }
+    }
+  },
+  "regressions": {
+    "generator_furnace_cases": 63,
+    "generator_furnace_states": 414,
+    "quartz_cases": 67,
+    "quartz_states": 536,
+    "quartz_reopen_matched": true,
+    "foundry_cases": 68,
+    "foundry_states": 680,
+    "foundry_geometry_cases": 20,
+    "foundry_reopen_matched": true,
+    "capacity_cases": 126,
+    "redstone_cases": 24,
+    "menu_cases": 66,
+    "legacy_menu_steps": 20,
+    "crafting_grids": 910,
+    "ore_loot_rolls": 60,
+    "python_unit_tests": 125,
+    "six_pretty_pipes_recipe_payloads_unchanged": true
+  },
+  "installation": {
+    "profile": "techquest-oritech-05b-server",
+    "port": 25653,
+    "bind": "127.0.0.1",
+    "online_mode": true,
+    "whitelist": true,
+    "eula_consent_reused": true,
+    "content_modules": 8,
+    "native_bundles": 4,
+    "core_corrections": 2,
+    "locks_verified_servers_stopped": [
+      {
+        "profile": "techquest-oritech-05b-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-oritech-05a-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-oritech-04c-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-oritech-03b-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-pipes-08a-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-pipes-06a-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      },
+      {
+        "profile": "techquest-oritech-02b-server",
+        "lock_verified": true,
+        "status": "Stopped."
+      }
+    ],
+    "historical_profiles_tools_locks_unchanged": true
+  },
+  "probe_sources_at_report_time_sha256": {
+    "horizon/probes/OritechAssemblerProbe.java": "953d4a97b091f234bc5a9d5e5736a77ac7755f5bdf73dbb9493b0858b530b351",
+    "horizon/probes/live_oritech_assembler.py": "a6eb5898480b200c82c4f82a6d9aed18bdb86183647da6a2e2c7c4c096499d22",
+    "horizon/probes/live_oritech_assembler_gui.py": "8b2eca1bece4291f515b00607daff84078df3ea630bf6f40856c54267e4462ed",
+    "horizon/probes/live_oritech_assembler_server.py": "1f40b70be571ca7a8e4d092fe623232f83a12fc06555aa2c3cf0024d1eb29cd2",
+    "horizon/probes/live_oritech_save_upgrade.py": "fdfd1509876d47304a784363b670945e214dfaf505233a4a65eb465a08f4e6a7",
+    "horizon/probes/run_oritech_reference.py": "f6f580bf9acd1151ab63dea760accafc08b8ca357794d79846ce7ffe9194e52c"
+  },
+  "proof_files_sha256": {
+    "oritech-assembler-reference-v1/inputs.json": "c0f7cd470929226405ac615010e8c7b7de5f096b49d9d88c8e3210f08945d27e",
+    "oritech-assembler-reference-v1/initial-result.json": "6e59829083c92939be69caccdd9cdfbc3f1461243f1a2f57677c909ff2bd8e21",
+    "oritech-assembler-reference-v1/reopen-result.json": "56ce77f8043dd5637eafde85c79e0c29b53cdcc62c38731e57ceceed63c511e2",
+    "oritech-05b-assembler-parity-v1/checked-result.json": "a96328d408bf976c354efd87ad0f93cc0592ab922814a8e7f4d8c49f809a4e6e",
+    "oritech-05b-assembler-parity-v1/initial-result.jsonl": "e7569ff3ac40fd936f42da28cd980352bab7a57123b903e10882e528a6276882",
+    "oritech-05b-assembler-parity-v1/reopen-result.jsonl": "f21cd2ec2cb77ae2dda6782c99597a0e58563f0d3ab114535e9844018b703e8a",
+    "oritech-05b-energy-regression-v1/checked-result.json": "65f9c47d165d0e1046d77ca6d80c8def07da1155e769c64d681040fc9d14c8d6",
+    "oritech-05b-pulverizer-regression-v1/checked-result.json": "2708cd177dfc8d5a0537243337c1b804181e1780298b7750593ad950d95c110e",
+    "oritech-05b-foundry-regression-v1/checked-result.json": "f2c03915e2ac843b7837e4fa894cac0128f28da0931df82584784f85cddd6e2a",
+    "oritech-05b-capacity-regression-v1/checked-result.json": "82e170217d4343b98755b84dff43910d576115e82c3ec682fc58eb13998d9551",
+    "oritech-05b-redstone-regression-v1/checked-result.json": "d782cf23317ba0f5df57be80f41518c1a73cec25d29e931226bb407785d245ac",
+    "oritech-05-content-cases-v1.json": "6cc77df1f42d0a1aa993d8febd3f369c002410a431ae2150377e71efc23262ad",
+    "oritech-05-content-reference-v1/initial-result.json": "0dadad53863998911033d92027b566ef308efc138e04cfb46cb648e9eb8efc20",
+    "oritech-05-content-reference-v1/inputs.json": "63e1610df611f4ba9cbd4456714b3cf28e9c9ce4b09518cf0ead78116a685d94",
+    "oritech-05-content-parity-result-v1.json": "61b2047c721e62f65796456056865fb67c7605186526d9f3a961c4a31ba490c9",
+    "oritech-05-pipes-menu-redstone-result-v1.json": "fb8cbafd99816d6271df5ff5fcd33ef3f8281cdbcf299dc5e9958781c07febad",
+    "oritech-05-pipes-menu-legacy-result-v1.json": "d15bb00c6667c9bf6f8f3321859620cb5bc1da32d2c830d3eedc6eaad6765fbf",
+    "oritech-05-pipes-menu-compile-command-v1.json": "b9fa569d932ba785bef9c8b8db14de27d09e9ff820e7774fc9d769f4cce43eaf",
+    "oritech-05-content-compile-command-v1.json": "a9ee747a40ba9bca22349a5200ea1af4d6bee578181a4f744ebc90c74f975dfb",
+    "oritech-05-pipes-recipes-unchanged-v1.json": "a5335a343035fd700e1f503fca69d8f264bc7be62c05e3d1ed99ca190708c1a7",
+    "oritech-05-python-tests-v2.log": "61f9fd13606aa7a9c1747b4a562081d9a8a7b7857e55f002fbbdfc6b76937c89",
+    "oritech-05-startup-failure-control-v1.json": "3d98572cd8598b4dca55d0b63138fb83175ed83f9833b7751d714739931212cf",
+    "oritech-05a-assembler-server-verify-v1.commands.json": "c4df5a0e10dd25721abce7fcbbdc4b92e2c1cbeb2749c1dba9f3c06e96086fc4",
+    "oritech-05-startup-fix-delta-v1.json": "982217a6c87a28c030106132845e7639e280cc2d0933c580afda27cb0160a741",
+    "oritech-05-profile-verification-v1.json": "6df3da250efe4345f3099376a94f9ac7be79aff1ba32ca42c8b3966bc80efcc4",
+    "oritech-05-mixins-v2.json": "3850e73df1a8ea5e37e0417f6c6d62dd109deb42c763518aa45e82df489cb01f",
+    "oritech-05-core-patches-v2.json": "32a9ca6daf5c9c640844852a3d7a6c136af411270511396a01b58f87849e434d",
+    "oritech-05-native-build-v2.log": "de348acdd4118e67c6e6b97e430394c0335e017bfebdf946393904d67f547d2d",
+    "oritech-05-stage-sync-v2.json": "9e93fc4abd1ff7e3a7110f3c7edb65eb443e4acb81348308e4d5a9e8fdad1829",
+    "oritech-05-native-generation-v2/.horizon-mixins-stage.json": "50e4bf059beb6a56e3358514577054ae3b6e1ccecefebb05e27bcc72dacd7966",
+    "oritech-05-techquest_oritech-sdk-v2.json": "be71914477649f8a300f38ed3c73bafb76c498041d03e77689515c0ead432c32",
+    "oritech-05-techquest_pretty_pipes-sdk-v2.json": "c34c0aa410e5956a18722d25b8aad363a9ce4e8fde3ba8812d77fbf388245a9f",
+    "techquest_oritech-oritech05-v2.hnmod": "9f60aab081100b4455bf11faaadfe676bc5dc1228a790514a324d3b9088f353e",
+    "techquest_pretty_pipes-oritech05-v2.hnmod": "e391143c326f06e14eb507be96298430196215d3d432afd8f4dfbf998dc720d4",
+    "native-tools-oritech-05b/build-result.json": "5b9b69a2e0c62d3a6f40fe09da346b40ac382a46947860bd07c817ca3e3b1937",
+    "oritech-05b-install-v1.json": "2ed282e7a56d5b24dbb90f53e51861d024446e1828892dd5b49fa9804ae39e28",
+    "techquest-oritech-05b-server/techquest-local-install.json": "464e3b29640a24be6050db0608387362db51feec1aee53643f2f86838315dde7",
+    "oritech-content-05-v1/techquest-oritech-trial.json": "f36fdffceb7f9b4cbcb9c79540b8839e5b816d749759a1100088224c14776425",
+    "pretty-pipes-content-010-v1/techquest-pretty-pipes-trial.json": "00e22f2e43b6514c97e7d9cc74891503daba11685d4d53af8222fc77264ef533",
+    "oritech-05b-save-upgrade-v1/checked-result.json": "ccc06344a5a5c68e14d6cb6589227be4d9ff542961b9b2c7fecc5f9a108a2076",
+    "oritech-05b-save-upgrade-v1/upgrade-result.jsonl": "f5f02313c06399073de950ac41184672aef1fcad89f8910d8e6653f3f06a0088",
+    "oritech-05b-save-upgrade-v1/reopen-result.jsonl": "d0617394317dd70c7cc8f828f63eecace8343a1e8e2cacf3f3007bf8d7827a2b",
+    "oritech-05b-assembler-server-prepare-v2.json": "8dc9cc020bae77590567e31cdd3217943b04579eacabf957e215c56f4ff84554",
+    "oritech-05b-assembler-server-prepare-v2.commands.json": "63e69470d5b4c39d9e90ccfac7da7f627db6c1f2e237fb7a6f0e408cc65f9ca5",
+    "oritech-05b-assembler-server-verify-v2.json": "c8116f118628d3be3fbb9f3fec1c66a850a8ce258ef63add28114c3ab9542c14",
+    "oritech-05b-assembler-server-verify-v2.commands.json": "d32e3d1191ab38e1281c2aa2a66012f6ca86b65df32c940d2d9b862ff01bbbe0",
+    "oritech-05b-assembler-server-final-v2.json": "bb1dc6cb363b72159a5866000dd15d16fca9adbe4a68a94001f7a9ff311d7552",
+    "oritech-05b-assembler-server-final-v2.commands.json": "5d5dc3bf700e6cf9c39125e955439855015141f80fabca7b4f25c183732dc723",
+    "oritech-05b-assembler-gui-v1/checked-result.json": "4d017344d28f29c84f129a40f222f193b08c11d9acb0b798ad8d2e767046bb54",
+    "oritech-05b-assembler-gui-v1/actions.json": "78f20969580620aec8497242145d26c1e1f9f010b527ee85571722a0c056edce",
+    "oritech-05b-assembler-gui-v1/assembler-four-inputs.png": "431b71d9b14337293474375520e7e0965ca98e93045dcc50ebfdc3cd54466d52",
+    "oritech-05b-assembler-gui-v1/assembler-compacted-inputs.png": "ae848e2c2a5b8fd9fb22cf4966b9eda40d5e89260dea8e0bc15921af1c554e89",
+    "oritech-05b-assembler-gui-v1/assembler-working.png": "3c8b420979dd39a0b521f4373d410d496083d75927ec6116e0615d12e4f490ea",
+    "oritech-05b-assembler-gui-v1/assembler-collected-components.png": "e7af58771c0446261acdeec1a65204f84d88df72870037df429b3d9f7cfbb83e",
+    "oritech-05b-assembler-gui-v1/craft-and-partial-coils-console.log": "b8b76653197c8ba9fe5f2616680954b1f7af9e4e176114781c2f0184ab091687",
+    "oritech-05b-assembler-gui-v1/rebuild-and-motors-console.log": "c53ba55b4cffa719c8437cfdcaf6b7457516902fb75b3056bc685a9bc3aa019b",
+    "oritech-05b-assembler-gui-v1/final-reopen-console.log": "8586ed0d97db35ade3b0998736ecc1aaaf2ad15b572feaf6694a352936aa3588",
+    "oritech-05b-assembler-gui-v1/partial-coils-checkpoint/checkpoint.json": "2a6471c8febf67a304021f1cf1b21f30731b12caabb445566e4790b418dabd13",
+    "oritech-05b-assembler-gui-v1/partial-coils-checkpoint/actions.json": "ff80e92d6ff7d8afe8e49dfca7ce291b653f23471ea447b1b6d2738674e0ddc7"
+  },
+  "remaining_scope": [
+    "Other original Assembler recipes, electronics/plastic chain, addons and higher-quality cores",
+    "Unloaded core/controller destruction, deferred cleanup and general core capability delegation",
+    "Unassisted survival from spawn, full industrial modpack, licensed multiplayer and comparable load tests",
+    "Full original model/animation and particle fidelity"
+  ],
+  "neo_forge_main_changed": false,
+  "licensed_join_tested": false,
+  "full_modpack_ported": false,
+  "goal_complete": false,
+  "pushed": false,
+  "merged": false,
+  "published": false
+}

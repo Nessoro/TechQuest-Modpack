@@ -1,0 +1,262 @@
+{
+  "schema": 1,
+  "checked_at_utc": "2026-11-16T15:25:13.902156+00:00",
+  "minecraft": "26.3",
+  "prototype_version": "0.5.0",
+  "working_base_commit": "29dbdc4",
+  "upstream_commit": "c78187dffffb60f31517eadcb87413386e8ce729",
+  "mixins_commit": "5a64af938ec86b00d53d16a408aabc0038fb3e57",
+  "source": {
+    "pretty_pipes": "1.22.0",
+    "git_commit": "1f8ac61c6de5b191f3b28da2c23d8040a231047f",
+    "jar_sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
+    "license": "MIT",
+    "reference_minecraft": "1.21.1",
+    "reference_loader": "NeoForge 21.1.264",
+    "lgpl_java_source_read_or_decompiled": false,
+    "nested_binary_dependencies_used_only_by_developer_oracle": true
+  },
+  "implementation": {
+    "destination_capacity_read_only": true,
+    "extraction_clamped_before_source_removal": true,
+    "medium_high_subtract_all_inflight_types": true,
+    "low_does_not_subtract_reservations": true,
+    "current_ticking_pipe_counted_once": true,
+    "reservations_derived_from_saved_queue_and_destination": true,
+    "loaded_world_and_exact_destination_coordinate_scope": true,
+    "supported_containers": [
+      "chest",
+      "trapped_chest",
+      "barrel",
+      "hopper",
+      "furnace",
+      "blast_furnace",
+      "smoker"
+    ],
+    "container_slots": 67,
+    "data_slots": 21,
+    "inventory_schema_unchanged": 3,
+    "head_injections": 18,
+    "return_injections": 1,
+    "support_modules": 6
+  },
+  "original_oracle": {
+    "actual_public_destination_capacity_method_executed": true,
+    "synthetic_queue_entries_injected": true,
+    "cases": 126,
+    "cases_by_block": {
+      "minecraft:chest": 96,
+      "minecraft:hopper": 18,
+      "minecraft:furnace": 12
+    },
+    "cases_by_tier": {
+      "low": 42,
+      "medium": 42,
+      "high": 42
+    },
+    "chest_space_cases": [
+      0,
+      1,
+      2,
+      8,
+      64
+    ],
+    "reserved_counts": [
+      0,
+      1,
+      8
+    ],
+    "reserved_types": [
+      "iron_ingot",
+      "gold_ingot"
+    ],
+    "reference_shutdown_exit_code": 0,
+    "complete_network_timing_tested": false
+  },
+  "native_game_comparison": {
+    "schema": 1,
+    "minecraft": "26.3",
+    "prototype_version": "0.5.0",
+    "cases_match_original": 126,
+    "mismatches": [],
+    "actual_game_extraction_ticks_executed": true,
+    "synthetic_local_owner": true,
+    "queue_fixtures_injected": true,
+    "source_delta_equals_new_queue": true,
+    "destination_unchanged_before_arrival": true,
+    "one_extraction_period_per_case": true,
+    "containers": [
+      "chest",
+      "hopper",
+      "furnace"
+    ],
+    "real_graphical_or_dedicated_join_tested": false,
+    "full_mod_ported": false,
+    "published": false
+  },
+  "baseline_04": {
+    "cases_matching": 75,
+    "cases_differing": 51,
+    "source_delta_equals_new_queue": true,
+    "destination_unchanged_before_arrival": true
+  },
+  "graphical_gameplay": {
+    "schema": 1,
+    "minecraft": "26.3",
+    "prototype_version": "0.5.0",
+    "connected_local_graphical_client": true,
+    "modules_installed_by_hand": true,
+    "competing_extractors_respect_three_free_spaces": true,
+    "own_inflight_reservations_counted": true,
+    "medium_batches_8_then_2_then_zero": true,
+    "both_real_inflight_worlds_saved_reopened_delivered": true,
+    "source_target_totals_conserved": true,
+    "synthetic_queue_entries_injected": false,
+    "protocol_decode_errors": 0,
+    "device_type": "cpu",
+    "licensed_account_or_dedicated_join_tested": false,
+    "published": false,
+    "screenshots_sha256": {
+      "competing-inflight.png": "4506398aac7ae377b0a246e45dd1e3b8dd8a3be411c7dcf0028df111b72f4c4e",
+      "own-reservation.png": "2af6b6cd41e9dc8aec4b4c858943c21802c807b7374ce4d83221aab1105b8ae0",
+      "delivered.png": "798e98fe9b65e1240946bf9cc243997481bfded84e826de47a6477da58b1bed8"
+    }
+  },
+  "filter_regression": {
+    "schema": 1,
+    "minecraft": "26.3",
+    "prototype_version": "0.5.0",
+    "connected_local_graphical_client": true,
+    "ghost_sample_edits_via_menu_button_packet": true,
+    "cursor_and_inventory_counts_preserved": true,
+    "blacklist_blocks_only_sample_item": true,
+    "whitelist_allows_only_sample_item": true,
+    "single_pipe_west_to_east_route": true,
+    "single_pipe_east_to_west_route": true,
+    "extraction_side_excluded_as_destination": true,
+    "sample_replaced_without_duplication": true,
+    "settings_persist_after_restart": true,
+    "settings_persist_after_module_remove_reinstall": true,
+    "own_module_slots": 3,
+    "hidden_queue_slots": 64,
+    "protocol_decode_errors": 0,
+    "renderer": "Vulkan",
+    "device_type": "cpu",
+    "licensed_account_or_dedicated_join_tested": false,
+    "full_pretty_pipes_ported": false,
+    "published": false,
+    "screenshots_sha256": {
+      "blacklist.png": "c871d9fcdd92592432ef67648172c158b13ce46260faed0d2bbcb10f4d1240b9",
+      "whitelist-east.png": "cf7aaa180cdad187e13bb3fdb97b45414a8175eef7a2e47a018f5ecdde802f8b",
+      "reopened.png": "cd2c57b23dff7dc02da9f8f968c60d7c95ba0d48f8883d2ac1777fc8592df7ab"
+    }
+  },
+  "dedicated_server": {
+    "loopback_only": true,
+    "online_mode": true,
+    "whitelist": true,
+    "content_modules": 7,
+    "native_modules": 3,
+    "human_players_connected": 0,
+    "prepare": {
+      "without_extraction_module": {
+        "input": 8,
+        "output": 0
+      },
+      "low_module_delivery": {
+        "input": 0,
+        "output": 8
+      },
+      "disconnected_network": {
+        "input": 8,
+        "output": 0
+      },
+      "saved_while_in_flight": {
+        "input": 0,
+        "output": 0
+      }
+    },
+    "reopen": {
+      "immediately_after_reopen": {
+        "input": 0,
+        "output": 0
+      },
+      "delivery_after_reopen": {
+        "input": 0,
+        "output": 8
+      }
+    },
+    "removal": {
+      "schema": 1,
+      "minecraft": "26.3",
+      "checks": {
+        "replace": {
+          "dropped": {
+            "prettypipes:low_extraction_module": 1,
+            "minecraft:iron_ingot": 8
+          },
+          "pipe_removed": true
+        },
+        "destroy": {
+          "dropped": {
+            "prettypipes:pipe": 1,
+            "prettypipes:low_extraction_module": 1,
+            "minecraft:iron_ingot": 8
+          },
+          "pipe_removed": true
+        }
+      },
+      "matches_original": true,
+      "queue_and_module_fixture_injected": true,
+      "drop_query_positive_control_passed": true,
+      "same_pipe_state_preserves_inventory": true,
+      "repeated_removal_no_duplicates": true,
+      "creative_player_dispatch_tested": false,
+      "real_client_tested": false
+    },
+    "status": "stopped",
+    "lock_verified": true
+  },
+  "verification": {
+    "python_tests_passed": 112,
+    "native_sdk_validated": true,
+    "content_sdk_validated": true,
+    "bundle_matches_checked_source": true,
+    "generated_source_unchanged_by_final_formatting": true,
+    "final_profile_engine_equals_graphically_tested_engine": true,
+    "old_profiles_remain_lock_valid": true
+  },
+  "artifacts_sha256": {
+    "engine": "84885fb6d4d3b59510be7b66fe61f960903e0a8bf693ce031e5c103ad7bd52c1",
+    "native_bundle": "c903cb0512ba4b104b0766b56cfc1ae1a565eb4e43226cca66058fd0e7e43823",
+    "content_hmod": "57a4ba646fc0dda9099a8528d1cf6d8af0c95b06d10d3335db10815ac5741a47",
+    "installation_lock": "572fc39af2c259f16f1ad51c70d9e5e07df766bebe39e22f705cf81872df02db",
+    "native_build_log": "bdc81a67542126559785477e9093eb45325810b1e88ef62553f4203d2552538d",
+    "original_probe_java": "e9dcf8bfda14b5d2af603146bd917d60f8b9935255aae067337e2d5439058bdd",
+    "original_probe_jar": "a520609b781544c39d33ac7cba120f1ab4953723e35286b5eb2cc96b7049e310",
+    "original_result": "123105b4869a608f40c9968655d9f85e91f5d9ad8b2e395701e6e17aa3b09580",
+    "baseline_result": "fbc472201a801562c758cb48c2efc514b547b95c3190c035edc7c3552732aa12",
+    "native_result": "6a34854ae0419685add8b8ceb52df3da025edd9713c62e553ec2506d3689f7df",
+    "native_operations": "56e6a738cd21fb1f3ddd11c3c545cc07e10083eb5098aedee4f2f662cc52fcd4",
+    "native_raw_result": "74fb96dc03a50b5a7946e017b2468c77dee0becc9e3daff1d4e4a28decd1edc6",
+    "native_probe_source": "e9738dd7f1a3e3c0148687bc9084f21ebb0bdf4ebf556b58b2b327e3a6ec5009",
+    "graphical_probe_source": "0f139b1d30d894fd720a4b7a2ea218575aff28ed4a6fdbb41c1807b749927024",
+    "graphical_actions": "c2a2426de9a12fc460875b35b1f4603194e25f6c9be7f78b354feaa907220720",
+    "filter_regression_actions": "07bbc8eafd215fe7eb2bc77805faab8bd59e7008358d2819a27e1e682b9d2e9c"
+  },
+  "known_gaps": [
+    "Insertion-limiting modules, exotic/modded slot limits and oversized stack components",
+    "Reservation aliases for both halves of a double chest",
+    "Unloaded queues, full rerouting, branch/priority semantics and fairness",
+    "Filter equality/increase modules, offhand flow, bulk edits and exact drop motion",
+    "Licensed online-mode client join, hardware GPU and audio"
+  ],
+  "full_pretty_pipes_ported": false,
+  "full_modpack_ported": false,
+  "published": false,
+  "generated_engine_sources_sha256": {
+    "crates/horizon-client/src/game.rs": "58fc17a48ca435e316287e992f6d05a562b7858b3711c7bdd09398fe9777c06e",
+    "crates/horizon-client/src/game/machines.rs": "ded8897eaaf35a35e1cd002b064e1f668566dd7ea5925b90dc594e9976fa5362",
+    "crates/horizon-client/src/client_lib.rs": "c0a553f97fcac9965df42938a32ad332b9738bd671573b784967d5f078290a32"
+  }
+}

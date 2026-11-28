@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "tested_on": "2026-11-15",
+  "reference_only": true,
+  "source_manifest_commit": "f5d779750c56762dcfa6ea0c4c76e088a8782759",
+  "source_minecraft": "1.21.1",
+  "source_loader": "NeoForge 21.1.264",
+  "source_mod": "Pretty Pipes",
+  "source_version": "1.22.0",
+  "source_version_id": "lrhbGGSe",
+  "source_jar_sha512": "c6b0b70fcd24acbd9e7c47887a81c0d5cb649a4e82dfb7159d1a5b447e419539396584d260fce5d628b776ad9d953a337669cb24bf09978b7c8b5eec86e69e0d",
+  "source_code_commit": "1f8ac61c6de5b191f3b28da2c23d8040a231047f",
+  "source_code_license": "MIT",
+  "license_copyright": "Copyright (c) 2020-2021 Ellpeck",
+  "top_level_test_mods": 1,
+  "bind": "127.0.0.1",
+  "port": 25612,
+  "rcon_port": 25613,
+  "online_mode": true,
+  "whitelist": true,
+  "players_connected": 0,
+  "seed": 263,
+  "original_boot_reached_done": true,
+  "prepare": {
+    "without_extraction_module": {
+      "input": 8,
+      "output": 0
+    },
+    "low_module_delivery": {
+      "input": 0,
+      "output": 8
+    },
+    "disconnected_network": {
+      "input": 8,
+      "output": 0
+    },
+    "saved_while_in_flight": {
+      "input": 0,
+      "output": 0
+    }
+  },
+  "verify": {
+    "immediately_after_reopen": {
+      "input": 0,
+      "output": 8
+    },
+    "delivery_after_reopen": {
+      "input": 0,
+      "output": 8
+    }
+  },
+  "items_in_test_batch": 8,
+  "in_flight_save_reopen_delivery_verified": true,
+  "both_server_sessions_exit_code": 0,
+  "stopped_gracefully": true,
+  "horizon_port_implemented": false,
+  "horizon_runtime_tested": false,
+  "full_modpack_ported": false,
+  "published": false,
+  "unverified": [
+    "Exact transfer tick timing",
+    "Filter and priority modules",
+    "Branching and network cycle behavior",
+    "Destination capacity and overflow",
+    "Redstone behavior",
+    "Player UI and multiplayer",
+    "Native Horizon execution"
+  ],
+  "local_evidence_root": "/workspace/horizon-runtime/pretty-pipes-reference",
+  "local_evidence_sha256": {
+    "download.json": "99e16324e0300ec9e9480daa6af2434b4bce86b52fb91836f1e433d0ce1cb638",
+    "prepare-result.json": "07c8f86af1357424ee691077b2bd701a3624c6be8fef38d6aa86ce9fd5fd00fb",
+    "verify-result.json": "87cd16333d13a8d7fc91d66f104077e262080b6dc20a4da1ce5b9dbfc0b798f6"
+  }
+}
