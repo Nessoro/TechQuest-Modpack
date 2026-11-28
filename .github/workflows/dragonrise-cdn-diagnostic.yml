@@ -1,0 +1,28 @@
+name: DragonRise CDN authentication diagnostic (no pack build)
+on:
+  push:
+    branches:
+      - fix/dragonrise-cdn-auth-diagnostic
+    paths:
+      - scripts/probe_dragonrise_delivery.py
+      - scripts/test_dragonrise_cdn_auth.py
+      - .github/workflows/dragonrise-cdn-diagnostic.yml
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test authenticated CDN and redirect guard without network
+        run: |
+          python -m unittest scripts.test_dragonrise_cdn_auth -v
+          python -m unittest discover -s tests -p test_dragonrise_delivery_evidence.py -v
+      - name: Verify authorized DragonRise download and hashes
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: python scripts/probe_dragonrise_delivery.py

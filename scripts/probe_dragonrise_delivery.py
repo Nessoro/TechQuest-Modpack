@@ -57,7 +57,9 @@ def probe():
     if not isinstance(size,int) or not 1024<size<=LIMIT:
         raise ValueError("invalid official file size")
     cdn=urllib.request.build_opener(CDNRedirect())
-    with cdn.open(urllib.request.Request(url),timeout=120) as response:
+    # CurseForge CDN requires authentication as of 2026-07-16.
+    # Only the exact API-authorized HTTPS file and allowlisted redirects receive the key.
+    with cdn.open(urllib.request.Request(url,headers={"x-api-key":key}),timeout=120) as response:
         if not allowed(response.geturl()):
             raise ValueError("unexpected final download URL")
         data=response.read(size+1)
