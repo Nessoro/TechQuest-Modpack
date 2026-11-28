@@ -1,0 +1,48 @@
+name: Construction mod evidence (issue 80)
+on:
+  pull_request:
+    paths:
+      - scripts/audit_construction_80.py
+      - .github/workflows/construction-evidence.yml
+  push:
+    branches: [feat/construction-refill-80]
+    paths:
+      - scripts/audit_construction_80.py
+      - .github/workflows/construction-evidence.yml
+permissions:
+  contents: read
+jobs:
+  modrinth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m py_compile scripts/audit_construction_80.py
+      - run: python scripts/audit_construction_80.py modrinth
+      - uses: actions/upload-artifact@v4
+        with:
+          name: construction-modrinth-evidence
+          path: construction-evidence/*.json
+          if-no-files-found: error
+  curseforge:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/feat/construction-refill-80'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/audit_construction_80.py curseforge
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: construction-curseforge-evidence
+          path: construction-evidence/curseforge-evidence.json
+          if-no-files-found: error
