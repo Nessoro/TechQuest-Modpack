@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Only these registered Cataclysm boss entity types are tracked for 14 chunks.
+ * Track selected Cataclysm bosses and the Legendary Monsters Obliterator.
  * 14 chunks = 224 blocks at most, bounded by the server/client view distance.
- * Ordinary mobs, bosses from other mods, attacks and boss immunity are unchanged.
+ * Ordinary mobs, clones, projectiles and boss immunity are unchanged.
  */
 @Mixin(EntityType.class)
 public abstract class BossTrackingRangeMixin {
@@ -20,7 +20,14 @@ public abstract class BossTrackingRangeMixin {
     private void techquest$bossTrackingRange(CallbackInfoReturnable<Integer> cir) {
         EntityType<?> type = (EntityType<?>) (Object) this;
         ResourceLocation id = EntityType.getKey(type);
-        if (id == null || !"cataclysm".equals(id.getNamespace())) {
+        if (id == null) {
+            return;
+        }
+        if ("legendary_monsters".equals(id.getNamespace()) && "the_obliterator".equals(id.getPath())) {
+            cir.setReturnValue(Math.max(cir.getReturnValueI(), TECHQUEST_BOSS_TRACKING_CHUNKS));
+            return;
+        }
+        if (!"cataclysm".equals(id.getNamespace())) {
             return;
         }
         switch (id.getPath()) {

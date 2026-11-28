@@ -1,0 +1,14 @@
+# TechQuest 0.3.3.9 — partial draft and remaining acceptance gates
+
+Base: PR #73, tested SHA 56dab792a3ea4778bd8be2fae7140b903fa850ab. This is an incomplete development candidate, not a release. Preserve Minecraft 1.21.1, NeoForge 21.1.264, Java 21 and all previously tested content.
+
+## Implemented scope
+Extend the existing EntityType.clientTrackingRange return injection to the single exact ID legendary_monsters:the_obliterator, using max(existing,14) and retaining EntityType.getKey(type). Leave all 11 Cataclysm boss IDs, other entities, global broadcast range, chunk loading and damage unchanged. Public 1.21.1 upstream registry code and PR #59 localization corroborate the ID; the public checkout declares 2.1.15, not the pinned 2.2.4. Verify the pinned JAR before final acceptance. Isolated Java21 stub probe covers 20 cases and committed class must recompile byte-identically. Investigate actual client entity availability separately from vanilla/mod renderer culling; no global culling bypass.
+
+## Outstanding tasks (not implemented)
+- Cataclysm 3.33 / PsPYpoCC: inspect hash-pinned JAR for Netherite Monstrosity override, parent hierarchy, multipart routing, source filters, state guards, range and caps. Trace rejection on genuinely vulnerable boss. Patch only proven rejection point for Incoming 3.10.4; retain special phases, partial hits and other damage. Do not bypass global immunity or force health/death.
+- DragonRise Reforge 1.5.1, CurseForge project 1346094 file 9208025: official file, verify exact size, SHA-256 80ef4546d78bd7e0d5733ace4aa32448dc3c899905aaedfa2cf0c706538397f9 and independently obtained SHA-512. Confirm authorized third-party API download URL and applicable distribution terms; if blocked, seek author-approved delivery, not an inferred CDN bypass or mirror. Extend external_mods and exact trusted URL/hash policy, include same mandatory record in client/server/mrpack and security audit, preserve updates and remove obsolete manual entry/UI/docs only when compliant automatic path works. PR #71 (5734de1d) remains intact, 196 proposed recipes, runtime acceptance outstanding; no blind merge.
+- Ender Guardian: intermittent displayed zero HP on 0.3.3.8, not reproduced. Gather server HP, death timer, animation/phase and client sync; repeated and large hits. No speculative changes.
+
+## Acceptance
+Owner-reported baseline results and Russian test checklist: docs/BOSS_DRAGONRISE_0339_RU.md. Run repository and regression tests, version reservation, exact pack composition, both custom JARs, Windows compile/self-test, ClamAV, site validation, real client startup and world/gameplay tests. Dedicated server requires explicit owner EULA acceptance. Record actual outcomes on exact SHA; no stable release or merge. A failed/cancelled build consumes its version; further changed content uses the next free number, exact SHA retries only.

@@ -162,7 +162,7 @@ class IncomingLethalityTests(unittest.TestCase):
             build_pack.make_mrpack(build_pack.load_cfg(),[],pack)
             with zipfile.ZipFile(pack) as z:
                 self.assertEqual(z.read("overrides/mods/"+build_pack.COMPAT_JAR_NAME),jar)
-        self.assertEqual(build_pack.load_cfg()["version"],"0.3.3.8")
+        self.assertEqual(build_pack.load_cfg()["version"],"0.3.3.9")
 
 
 if __name__=="__main__":
