@@ -31,6 +31,7 @@ LOCALE_COUNTS = {
     "ic2": 1336,
     "irons_lib": 77,
     "immersiveengineering": 894,
+    "jade": 129,
     "jei": 625,
     "lionfishapi": 4,
     "mekanism": 2279,
@@ -188,6 +189,12 @@ class AdditionalTranslationTests(unittest.TestCase):
         modern = json.loads((COMPAT / "assets/modernfix/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("Redirector", modern["modernfix.redirector_installed"])
         self.assertIn("JVM", modern["modernfix.option.mixin.bugfix.buffer_builder_leak"])
+        jade = json.loads((COMPAT / "assets/jade/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(jade["jade.access.block.facing"], "Направление: %s")
+        self.assertEqual(jade["config.jade.key_name_n_bind_2"], "[%s] (сейчас %s, %s)")
+        self.assertIn("${SHOW_OVERLAY}", jade["config.jade.display_mode_toggle_desc"])
+        self.assertIn("{1,choice,", jade["jade.access.slime.size"])
+        self.assertEqual(jade["jade.fluid.with_capacity"], "%s / %s")
 
         irons = json.loads((COMPAT / "assets/irons_lib/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(irons["attribute.name.irons_lib.crit_damage"], "Критический урон")
