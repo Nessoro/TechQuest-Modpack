@@ -7,6 +7,11 @@ on:
       - tests/test_interdimensional_wireless_transmitter.py
       - tests/test_quartz_arsenal.py
       - tests/test_betterblockz.py
+      - compat/**
+      - scripts/audit_localizations.py
+      - tests/test_additional_localizations.py
+      - tests/test_localization_audit.py
+      - docs/LOCALIZATION_RU.md
       - .github/workflows/build-alpha.yml
   push:
     paths:
