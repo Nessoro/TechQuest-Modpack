@@ -1,0 +1,12 @@
+{
+  "physicsmod.keybinding.category": "Physics Mod",
+  "physicsmod.menu.liquid.cudaliquids": "Жидкости на GPU",
+  "physicsmod.menu.liquid.cudaliquids.blur": "Проходы сглаживания жидкости",
+  "physicsmod.menu.liquid.cudaliquids.blur.info": "Изменяет гладкость поверхности. Высокое значение увеличивает вычислительную нагрузку на GPU.",
+  "physicsmod.menu.liquid.cudaliquids.commands": "Физика на GPU включена. Возможны конфликты с другими функциями мода и снижение производительности. В чате введите /liquid help для команд создания жидкости. Функция находится в стадии БЕТА и предназначена только для съёмки видео и тестирования.",
+  "physicsmod.menu.liquid.cudaliquids.error": "Для изменения этой настройки откройте главное меню. Поддерживаются только видеокарты NVIDIA под Windows и Linux!",
+  "physicsmod.menu.liquid.cudaliquids.info": "Реалистичные жидкости рассчитываются на видеокарте. Сильно влияют на производительность. После включения станут доступны команды создания жидкости.",
+  "physicsmod.menu.liquid.cudaliquids.size": "Размер частицы жидкости",
+  "physicsmod.menu.liquid.cudaliquids.size.error": "Для изменения этой настройки нужно открыть главное меню.",
+  "physicsmod.menu.liquid.cudaliquids.size.info": "Изменяет размер частиц жидкости."
+}
