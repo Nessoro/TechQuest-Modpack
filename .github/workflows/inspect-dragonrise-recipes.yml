@@ -54,9 +54,9 @@ jobs:
                   lang = next((l["path"] for l in item["localization"] if l["path"].endswith("/en_us.json")), None)
                   translations = json.loads(z.read(lang)) if lang else {}
               if key == "dragonrise":
-                  names = [p for p in item["class_paths"] if p.rsplit("/", 1)[-1] in ("ModItems.class", "ModEntities.class", "ModTabs.class", "ModRecipeSerializers.class", "ModBlocks.class", "DragonVehicleDeployer.class", "VehicleDeployerBlock.class", "Dragonrise_reforge.class", "GeneratorDeployer.class", "KV1Deployer.class")]
+                  names = [p for p in item["class_paths"] if p.rsplit("/", 1)[-1] in ("ModItems.class", "ModEntities.class", "ModTabs.class", "ModRecipeSerializers.class", "ModBlocks.class", "DragonVehicleDeployer.class", "VehicleDeployerBlock.class", "Dragonrise_reforge.class", "GeneratorDeployer.class", "KV1Deployer.class", "GeneratorEntity.class", "GeneratorEntity$GeneratorContainerBridge.class", "SD905Entity.class", "SpacebagEntity.class", "SU24Entity.class", "SU24MEntity.class", "Zsl10Entity.class")]
               else:
-                  names = [p for p in item["class_paths"] if "vehicleassemblingrecipe" in p.lower() and "/recipe/" in p.lower()]
+                  names = [p for p in item["class_paths"] if "vehicleassembling" in p.lower() and "/recipe/" in p.lower()]
               classes = {}
               for p in names:
                   name = p[:-6].replace("/", ".")
@@ -65,6 +65,7 @@ jobs:
               if key == "dragonrise":
                   with zipfile.ZipFile(jar) as z:
                       evidence[key]["vehicle_definitions"] = {p: json.loads(z.read(p)) for p in item["data_json_paths"] if "/sbw/vehicles/" in p}
+                      evidence[key]["hidden_vehicle_client_definitions"] = {p: json.loads(z.read(p)) for p in item["asset_json_paths"] if "/sbw/vehicles/" in p and p.rsplit("/",1)[-1] in ("generator.json","sd905.json","spacebag.json","su24.json","su24m.json","zsl10.json")}
                       evidence[key]["additional_registry_classes"] = [p for p in item["class_paths"] if b"net/neoforged/neoforge/registries/DeferredRegister" in z.read(p)]
           (root / "dragonrise-detail-evidence.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2))
           PY

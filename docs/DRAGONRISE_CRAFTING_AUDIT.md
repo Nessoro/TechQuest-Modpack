@@ -24,3 +24,16 @@ Tier assignments and costs are proposed balance decisions, not measured gameplay
 ## Remaining gates
 
 The unresolved hidden entries require explicit inspection of intent and obtainability. A real Minecraft client and dedicated-server session must confirm actual registry IDs, serializer decoding, survival crafting, JEI, container deployment, ammunition/repair and conditional absence. A successful static test is not runtime evidence and does not establish 100% obtainable coverage. No release or merge until review and all acceptance checks pass.
+
+## Dedicated-server recipe decoding test
+
+The new [runtime workflow](../.github/workflows/dragonrise-runtime.yml) compiles
+a standalone test observer on PRs. Actual server execution is explicitly opt-in
+through the Minecraft EULA checkbox, as in the existing server smoke workflow.
+It uses the hash-matched original DragonRise JAR only in the disposable test
+server, never in distribution, and tests absence followed by installation into
+the same existing world and another restart. It checks decoded recipe IDs,
+serializers, registered ingredients, item results, deployment-container entity
+data and original SBW recipe ID retention. This is not a player crafting, JEI,
+network synchronization, or deployment test. Do not use it alone to clear the
+full obtainability release gate.

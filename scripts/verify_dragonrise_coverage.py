@@ -79,6 +79,8 @@ def verify(evidence):
         ("blocks",real_blocks,bykind({"block"})),
     ):
         check(actual==recorded, f"{kind}: missing {sorted(actual-recorded)}, extra {sorted(recorded-actual)}")
+    check(summary["dragonrise"]["sha256"] == inv["source"]["dragonrise_sha256"], "DragonRise source fingerprint changed")
+    check(summary["superb_warfare"]["sha256"] == inv["source"]["superb_warfare_sha256"], "SBW source fingerprint changed")
     target_items = {e["registry_id"] for e in targets if e["kind"]=="item"}
     target_entities = {e["registry_id"] for e in targets if e["kind"]=="vehicle"}
     check(visible_items <= target_items, "Creative-tab items missing: "+str(sorted(visible_items-target_items)))

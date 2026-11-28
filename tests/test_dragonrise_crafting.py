@@ -79,5 +79,33 @@ class DragonRiseCraftingTest(unittest.TestCase):
                 self.assertIn("data/techquest/recipe/"+rid+".json",z.namelist())
             self.assertFalse(any(n.startswith("data/superbwarfare/recipe/dragonrise/") for n in z.namelist()))
 
+    def test_recipes_survive_client_and_server_install_and_update(self):
+        import tempfile
+        import build_pack
+        import scripts.install_client as client
+        import scripts.install_server as server
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            pack = root / "test.mrpack"
+            build_pack.make_mrpack(build_pack.load_cfg(), [], pack)
+            game = root / "game"
+            mods = root / "server" / "mods"
+            mods.mkdir(parents=True)
+            name = build_pack.COMPAT_JAR_NAME
+            for _ in range(2):
+                with zipfile.ZipFile(pack) as archive:
+                    client.install_guide_overrides(archive, game)
+                server.install_compatibility(pack, mods)
+                for installed in (game / "mods" / name, mods / name):
+                    self.assertEqual(installed.read_bytes(), build_pack.compatibility_jar())
+                    with zipfile.ZipFile(installed) as jar:
+                        actual = {n for n in jar.namelist() if n.startswith("data/techquest/recipe/dragonrise/")}
+                        self.assertEqual(actual, {"data/techquest/recipe/" + e["recipe_id"].split(":",1)[1] + ".json" for e in TARGETS})
+                # Simulate an old generated compat JAR before applying the update.
+                for installed in (game / "mods" / name, mods / name):
+                    with zipfile.ZipFile(installed, "w") as stale:
+                        stale.writestr("old.txt", "old generated payload")
+
+
 if __name__ == "__main__":
     unittest.main()
