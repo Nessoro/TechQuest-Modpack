@@ -1,5 +1,14 @@
-name: DragonRise dedicated server recipe decoding (opt-in runtime)
+name: DragonRise dedicated server recipe decoding
 on:
+  push:
+    branches: ['feat/dragonrise-complete-recipes']
+    paths:
+      - 'tests/runtime-dragonrise-probe/**'
+      - 'scripts/smoke_dragonrise_server.py'
+      - 'scripts/dragonrise_acceptance.py'
+      - 'compat/dragonrise_inventory.json'
+      - 'compat/techquest-compat/data/techquest/recipe/dragonrise/**'
+      - '.github/workflows/dragonrise-runtime.yml'
   pull_request:
     paths:
       - 'tests/runtime-dragonrise-probe/**'
@@ -44,7 +53,9 @@ jobs:
           retention-days: 3
   runtime:
     needs: compile-probe
-    if: inputs.accept_minecraft_eula == true
+    # Repository owner confirmed EULA for this project's temporary CI server.
+    # Automatic execution is limited to trusted pushes to the dedicated branch.
+    if: inputs.accept_minecraft_eula == true || (github.event_name == 'push' && github.repository == 'Nessoro/TechQuest-Modpack' && github.ref == 'refs/heads/feat/dragonrise-complete-recipes')
     runs-on: ubuntu-latest
     timeout-minutes: 70
     steps:

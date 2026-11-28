@@ -28,8 +28,7 @@ The hidden entries have explicit static scope decisions; review them before rele
 ## Dedicated-server recipe decoding test
 
 The new [runtime workflow](../.github/workflows/dragonrise-runtime.yml) compiles
-a standalone test observer on PRs. Actual server execution is explicitly opt-in
-through the Minecraft EULA checkbox, as in the existing server smoke workflow.
+a standalone test observer on PRs. Actual server execution is enabled for trusted pushes to the dedicated DragonRise branch following the repository owner's explicit confirmation of existing project EULA acceptance (2026-11-28). Other branches and manual calls retain the opt-in checkbox.
 It uses the hash-matched original DragonRise JAR only in the disposable test
 server, never in distribution, and tests absence followed by installation into
 the same existing world and another restart. It checks decoded recipe IDs,
@@ -38,7 +37,7 @@ data and original SBW recipe ID retention. This is not a player crafting, JEI,
 network synchronization, or deployment test. Do not use it alone to clear the
 full obtainability release gate.
 
-For a draft-only branch, use the already-registered [Smoke-test TechQuest server](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/smoke-server.yml) workflow, select branch `feat/dragonrise-complete-recipes`, and explicitly accept the EULA in its existing input. The branch workflow calls the additional DragonRise observer. The standard smoke job remains unchanged. Do not accept the EULA programmatically on behalf of another person.
+For manual reruns, use the already-registered [Smoke-test TechQuest server](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/smoke-server.yml) workflow, select branch `feat/dragonrise-complete-recipes`, and explicitly accept the EULA in its existing input. The branch workflow calls the additional DragonRise observer. The standard smoke job remains unchanged. Do not accept the EULA programmatically on behalf of another person.
 
 ## Review of the seven outstanding registrations
 
