@@ -27,10 +27,45 @@ jobs:
       - name: Collect static evidence (never execute the downloaded JARs)
         run: |
           python scripts/inspect_dragonrise_recipes.py --dragonrise "$RUNNER_TEMP/dragonrise-audit/dragonrise_reforge-1.5.1-release.jar" --superb-warfare "$RUNNER_TEMP/dragonrise-audit/superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar" --output "$RUNNER_TEMP/dragonrise-evidence.json"
+      - name: Set up Java for static bytecode inspection
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Collect registration and recipe codec evidence
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, subprocess, zipfile
+          root = pathlib.Path(os.environ["RUNNER_TEMP"])
+          report = json.loads((root / "dragonrise-evidence.json").read_text())
+          evidence = {}
+          for key in ("dragonrise", "superb_warfare"):
+              item = report[key]
+              jar = root / "dragonrise-audit" / item["filename"]
+              with zipfile.ZipFile(jar) as z:
+                  records = {}
+                  for r in item["recipes"]:
+                      if key == "dragonrise" or r["serializer"] == "superbwarfare:vehicle_assembling":
+                          records[r["path"]] = json.loads(z.read(r["path"]))
+                  lang = next((l["path"] for l in item["localization"] if l["path"].endswith("/en_us.json")), None)
+                  translations = json.loads(z.read(lang)) if lang else {}
+              if key == "dragonrise":
+                  names = [p for p in item["class_paths"] if p.rsplit("/", 1)[-1] in ("ModItems.class", "ModEntities.class", "ModTabs.class", "ModRecipeSerializers.class", "ModBlocks.class")]
+              else:
+                  names = [p for p in item["class_paths"] if "vehicleassemblingrecipe" in p.lower() and "/recipe/" in p.lower()]
+              classes = {}
+              for p in names:
+                  name = p[:-6].replace("/", ".")
+                  classes[name] = subprocess.run(["javap", "-c", "-p", "-classpath", str(jar), name], check=True, capture_output=True, text=True).stdout
+              evidence[key] = {"recipe_payloads": records, "english_translations": translations, "registration_or_codec_disassembly": classes}
+          (root / "dragonrise-detail-evidence.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2))
+          PY
       - name: Upload evidence only (no third-party binaries)
         uses: actions/upload-artifact@v4
         with:
           name: dragonrise-static-evidence
-          path: ${{ runner.temp }}/dragonrise-evidence.json
+          path: |
+            ${{ runner.temp }}/dragonrise-evidence.json
+            ${{ runner.temp }}/dragonrise-detail-evidence.json
           retention-days: 7
           if-no-files-found: error
