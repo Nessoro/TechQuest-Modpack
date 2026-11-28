@@ -15,33 +15,47 @@ SPEC.loader.exec_module(builder)
 
 LOCALE_COUNTS = {
     "ae2": 1,
+    "apotheosis": 62,
+    "apothic_attributes": 6,
+    "aquamirae": 30,
     "appleskin": 10,
     "artifacts": 55,
     "balm": 36,
     "betterzoom": 49,
+    "betterstrongholds": 5,
+    "bosses_of_mass_destruction": 2,
     "betterblockz": 1748,
     "bookshelf": 200,
     "create": 20,
+    "curios": 4,
     "deeperdarker": 62,
     "dynamic_fps": 22,
+    "dungeons_arise": 14,
+    "entityculling": 7,
     "critical_strike": 18,
     "ftbultimine": 20,
+    "ftblibrary": 4,
     "fragmentum": 17,
     "fluidic_tanks": 24,
     "ic2": 1336,
     "irons_lib": 77,
     "immersiveengineering": 894,
+    "irons_spellbooks": 167,
     "jade": 129,
     "jei": 625,
     "lionfishapi": 4,
     "mekanism": 2279,
     "mekanismgenerators": 364,
     "modernfix": 34,
+    "moreculling": 4,
     "modern_industrialization": 49,
     "mowziesmobs": 440,
+    "naturalist": 5,
     "guideme": 36,
     "oritech": 1,
     "openpartiesandclaims": 703,
+    "physicsmod": 10,
+    "puffish_skills": 8,
     "prettypipes": 41,
     "refinedstorage": 10,
     "sophisticatedcore": 30,
@@ -213,6 +227,23 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("Oculus", lionfish["gui.lionfishapi.optifine.oculussuggestions"])
         mowzie = json.loads((COMPAT / "assets/mowziesmobs/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(mowzie["itemGroup.mowziesmobs.creativeTab"], "Mowzie's Mobs")
+        iron_spells = json.loads((COMPAT / "assets/irons_spellbooks/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("%3$s", iron_spells["death.attack.irons_spellbooks.summon_swords.item"])
+        self.assertIn("override", iron_spells["commands.irons_spellbooks.config.cant_override"])
+        self.assertEqual(iron_spells["potion.potency.8"], "XIII")
+        self.assertIn("чёрную дыру", iron_spells["spell.irons_spellbooks.gravity_fissure.guide"].lower())
+        apotheosis = json.loads((COMPAT / "assets/apotheosis/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("%s", apotheosis["affix.apotheosis:boots/ability/unhurried.desc"])
+        self.assertEqual(apotheosis["tier_augment.apotheosis.damage_reduction"], "+%s%% сопротивление: %s")
+        aquamirae = json.loads((COMPAT / "assets/aquamirae/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("§fVANILLA§7", aquamirae["config.aquamirae.option.difficulty.desc"])
+        self.assertIn("/reload", aquamirae["config.aquamirae.descWithAnyReload"])
+        skills = json.loads((COMPAT / "assets/puffish_skills/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("%3$s", skills["command.puffish_skills.level.get.success"])
+        curios = json.loads((COMPAT / "assets/curios/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(curios["gui.curios.page"], "Страница %d / %d")
+        self.assertIn("§6", aquamirae["config.aquamirae.descWithWorldReload"])
+
 
 
     def test_compatibility_jar_contains_every_localization(self):
