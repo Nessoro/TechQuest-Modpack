@@ -107,3 +107,62 @@ Java-механики Create/IC2/Incoming и остальных компонен
 ## 24 ноября 2026 — попытка подготовки из официального server JAR
 
 На bb5ea8b все шесть CI workflows успешны, включая native build и Pages. Официальные метаданные 26.3 и Java 25 подтверждены. Новый отдельный job `server-resource-preparation` использует собранные и проверенные по SHA-256 нативные инструменты, Java 25, pinned Horizon checkout и официальный server JAR, проверенный по размеру, SHA-1 и ZIP. Он пробует `horizon-prepare --prepare --server-jar ...` с пустым изолированным Minecraft-каталогом и затем `--check`. Клиентские файлы не скачиваются, вход Microsoft не производится; если официальный preparer требует установленный клиент, это остаётся явным блокером. Не публикуются JAR, игровые ресурсы или миры; артефакты содержат только JSON статуса. До получения результата не считать ресурсы готовыми или сервер запущенным.
+
+## 28 ноября 2026 — этап 3: локальная подготовка
+
+На HEAD 36675e6 [native workflow 45439264796](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/45439264796)
+подтвердил сборку инструментов, метаданные и проверенный server.jar; resource
+preparation упал на отсутствующем versions/26.3/26.3.json в пустом каталоге.
+Официальный CLI требует установленный и однажды запущенный Minecraft 26.3.
+Повторять server-only job без клиентских файлов не имеет смысла.
+
+Добавлен `horizon/tools/prepare_local_resources.py`. Это Linux x86-64
+инструмент разработчика, не установщик для игроков. Предварительно владелец
+устанавливает и запускает **26.3** в официальном Minecraft Launcher с
+собственным аккаунтом. На доверенном локальном Linux-стенде (в том числе
+WSL2 с доступом к установленным файлам) нужны:
+
+- установленный официальный Minecraft-каталог (версия, libraries, assets);
+- pinned upstream Horizon checkout с чистыми tracked-файлами;
+- распакованный native-tools BUILD-ONLY текущего успешного native-tools job,
+  с build-result.json; если артефакт истёк, пересобрать pinned инструменты;
+- JDK 25, а также server.jar, полученный существующим
+  `fetch_official_server.py` на локальную машину, вне репозитория;
+- новый отдельный путь вывода вне всех исходных каталогов и checkout.
+
+Из корня TechQuest на локальном стенде:
+
+```bash
+python horizon/tools/fetch_official_server.py \
+  --output /local/horizon-input/server.jar \
+  --report /local/horizon-input/server-download.json
+
+python horizon/tools/prepare_local_resources.py \
+  --minecraft-dir /path/to/installed/.minecraft \
+  --upstream /path/to/pinned/horizon \
+  --tools /path/to/native-tools \
+  --java-home /path/to/jdk-25 \
+  --server-jar /local/horizon-input/server.jar \
+  --output /local/horizon-prepared-26.3
+```
+
+Пути условные; создать родительские каталоги при необходимости. Скрипт
+проверяет SHA-1 и размер обоих JAR по установленным метаданным, SHA-256
+preparer по отчёту сборки, pinned Git revision, каталоги библиотек и assets.
+Это проверка целостности локальных входов, не проверка лицензии или
+криптографическая аттестация происхождения метаданных. Затем выполняет
+официальные --prepare --complete и --check. При ошибке сохраняет локальные
+результаты для диагностики; для повтора выбрать новый выходной каталог.
+Скрипт сам не скачивает игру, не авторизуется и не запускает сервер.
+Не передавать токены, клиентские JAR, библиотеки, assets, подготовленные
+ресурсы и сырые логи в GitHub. Публиковать только обезличенный JSON-итог.
+
+После успешного --check выполнить отдельный server boot на loopback в
+новом каталоге с ранее согласованной EULA; официальные CLI команды
+`horizon-server --dir DIR init`, `import-resources`, `run`, `status --json`,
+`cmd`, `stop` подтверждены выводом --help, однако точную конфигурацию engine
+и bind следует проверить по pinned upstream перед запуском. Не запускать
+до подтверждения loopback, online-mode и whitelist. Не подменять запуск
+мира успешным --check. После первого запуска выполнить сохранение,
+штатное завершение, повторный запуск; моды и multiplayer проверять отдельно.
+До реального запуска этап 3 остаётся незавершённым.
