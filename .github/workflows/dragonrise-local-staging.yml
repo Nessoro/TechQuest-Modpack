@@ -1,0 +1,51 @@
+name: DragonRise local pack staging (no distribution)
+on:
+  push:
+    branches: ['test/dragonrise-local-pack-staging']
+    paths:
+      - 'scripts/stage_dragonrise_local.py'
+      - '.github/workflows/dragonrise-local-staging.yml'
+permissions:
+  contents: read
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Retrieve exact original from previously observed public official CDN
+        run: |
+          set -euo pipefail
+          # This exact public endpoint succeeded in run 46152268140.
+          # No authentication bypass, alternate host, mirror or retry on denied access.
+          curl --fail --max-time 180 --max-filesize 150000000 -o "$RUNNER_TEMP/dragonrise_reforge-1.5.1-release.jar" https://mediafilez.forgecdn.net/files/9208/25/dragonrise_reforge-1.5.1-release.jar
+          echo "80ef4546d78bd7e0d5733ace4aa32448dc3c899905aaedfa2cf0c706538397f9  $RUNNER_TEMP/dragonrise_reforge-1.5.1-release.jar" | sha256sum --check
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Build Hybrid Warfare from source
+        working-directory: addons/hybrid-warfare-armor
+        run: |
+          python scripts/generate_assets.py
+          gradle build --no-daemon --stacktrace
+      - name: Assemble disposable client and server without distributable archive
+        run: python build_pack.py --no-mrpack
+      - name: Stage original DragonRise in both local mod directories
+        run: |
+          python scripts/stage_dragonrise_local.py --jar "$RUNNER_TEMP/dragonrise_reforge-1.5.1-release.jar" --output output --report "$RUNNER_TEMP/dragonrise-local-staging.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dragonrise-local-staging-evidence-only
+          path: ${{ runner.temp }}/dragonrise-local-staging.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Remove temporary mod directories and original JAR
+        if: always()
+        run: rm -rf output "$RUNNER_TEMP/dragonrise_reforge-1.5.1-release.jar"
