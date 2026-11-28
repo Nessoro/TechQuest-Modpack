@@ -16,7 +16,13 @@ MAX_LANG_BYTES = 8 * 1024 * 1024
 
 # Java Formatter indices matter: swapping bare %s and %d is unsafe, but
 # repositioning %1$s/%2$d is fine if each argument keeps its type.
-PRINTF = re.compile(r"%(?:([1-9]\d*)\$)?([-#+ 0,(<]*)(?:\d+)?(?:\.\d+)?([a-zA-Z])")
+# Only accept Java Formatter conversions, not arbitrary letters. In particular,
+# "25% of damage" must not be mistaken for a "% o" numeric formatter.
+# The intentional omission of whitespace from flags is safe for these locales:
+# a space after % is overwhelmingly prose, not a numeric padding flag.
+PRINTF = re.compile(
+    r"%(?:([1-9]\d*)\$)?([-#+0,(<]*)(?:\d+)?(?:\.\d+)?([bBhHsScCdoxXeEfgGaAtTn])"
+)
 
 
 def placeholder_signature(value):
