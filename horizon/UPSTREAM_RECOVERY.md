@@ -74,15 +74,43 @@ cargo +1.99.1 build --manifest-path /path/to/generated-horizon/Cargo.toml \
 
 ## Local checks and remaining recovery scope
 
-The recovered Horizon build tree and Mixins compile offline. Native runtime
-verification uses isolated worlds and already prepared game resources.
-The draft Small Tank diff and untracked files are preserved separately and
-remain in the working tree. Existing profile locks and EULA settings remain
-in their local profile directories.
+The SDK compiled from a new Cargo home populated only from the archived
+registry and built and checked Expedition Marker. Mixins compiled after a
+restore from its full bundle. The TechQuest engine compiled offline with an
+empty target directory. The rebuilt engine passed 768 bucket, 80 portable
+item and 48 gravity cases, the filled/empty ground merge control, and a
+physical reopen with matching fluid components. The dedicated profile
+started, saved, stopped, physically restarted, saved and stopped again.
+The sealed 11b GUI also passed bucket use, menu interaction, harvesting,
+replacement and physical reopen. Verified all 17 existing profile locks
+and their stopped state. The Small Tank draft remains in the working tree
+and in a private patch and untracked-file archive.
 
-The available mirror can recover the entire history reachable from the Horizon
-build pin. Other local Horizon refs came from a partial clone. Their ref map
-and locally available packs are preserved separately. Any missing objects
-outside the pinned history still need an accessible historical source.
-The public CI checkout uses the mirror. The private archives provide a
-network-independent input to the same checkout helper.
+All eight checks triggered by the CI repair at `cc65d3c` passed, as did
+158 local Horizon and 181 repository tests.
+[SDK build and real content validation](https://github.com/Nessoro/TechQuest-Modpack/actions/runs/46154940903)
+
+The private Horizon backup has two bundles. `horizon-pinned.bundle`
+contains the entire history reachable from the build pin and works on its own
+for builds. `horizon-additional-refs.bundle` adds the remaining recorded
+history. `upstream-refs.txt` records the original refs and object IDs. Import
+both bundles, then replay the ref map to restore all original local refs.
+A fresh restore reproduced all 777 named refs, the exact pinned HEAD and
+complete Git object connectivity. The Mixins bundle preserves its six
+named refs and pinned HEAD.
+
+```sh
+git init --bare recovered-horizon.git
+git -C recovered-horizon.git bundle unbundle /path/to/recovery/horizon-pinned.bundle
+git -C recovered-horizon.git bundle verify /path/to/recovery/horizon-additional-refs.bundle
+git -C recovered-horizon.git bundle unbundle /path/to/recovery/horizon-additional-refs.bundle
+awk '$2 ~ /^refs\// {print "create", $2, $1}' /path/to/recovery/upstream-refs.txt |
+  git -C recovered-horizon.git update-ref --stdin
+git -C recovered-horizon.git update-ref --no-deref HEAD "$(cat /path/to/recovery/upstream-pin.txt)"
+git -C recovered-horizon.git fsck --full --no-dangling
+```
+
+The public CI checkout still depends on mirror availability. Local
+reconstruction can use the private verified bundles and archived crate
+payloads. The registry snapshot covers the verified Linux build paths.
+Dependencies for other targets must be collected and checked separately.
