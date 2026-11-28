@@ -16,11 +16,14 @@ SPEC.loader.exec_module(builder)
 LOCALE_COUNTS = {
     "ae2": 1,
     "appleskin": 10,
+    "artifacts": 55,
     "balm": 36,
     "betterzoom": 49,
     "betterblockz": 1748,
     "bookshelf": 200,
     "create": 20,
+    "deeperdarker": 62,
+    "dynamic_fps": 22,
     "critical_strike": 18,
     "ftbultimine": 20,
     "fragmentum": 17,
@@ -32,6 +35,7 @@ LOCALE_COUNTS = {
     "lionfishapi": 4,
     "mekanism": 2279,
     "mekanismgenerators": 364,
+    "modernfix": 34,
     "modern_industrialization": 49,
     "mowziesmobs": 440,
     "guideme": 36,
@@ -39,6 +43,8 @@ LOCALE_COUNTS = {
     "openpartiesandclaims": 703,
     "prettypipes": 41,
     "refinedstorage": 10,
+    "sophisticatedcore": 30,
+    "sophisticatedstorage": 133,
     "xaeroworldmap": 338,
     "xaerominimap": 77,
     "waystones": 268,
@@ -161,6 +167,28 @@ class AdditionalTranslationTests(unittest.TestCase):
         self.assertIn("BlueMap", waystones["waystones.configuration.blueMap.enabled.tooltip"])
         self.assertEqual(waystones["chat.waystones.teleport_failed"],
                          "Телепортация не удалась.")
+        sc = json.loads((COMPAT / "assets/sophisticatedcore/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(sc["sophisticatedcore.configuration.sortButtonsPosition.hidden"], "Скрыть")
+        self.assertEqual(sc["tooltip.sophisticatedcore.linked_storage.primary_named"], "%s (%s)")
+        self.assertIn("sophisticatedbackpacks:smelting_upgrade|true",
+                      sc["sophisticatedcore.configuration.enabledItems.tooltip"])
+        ss = json.loads((COMPAT / "assets/sophisticatedstorage/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(ss["gui.sophisticatedstorage.upgrades.buttons.refill_input"], "Пополнять входные слоты")
+        self.assertEqual(ss["sophisticatedstorage.configuration.limitedNetheriteBarrel4"],
+                         "Ограниченная незеритовая бочка IV")
+        self.assertEqual(ss["item.sophisticatedstorage.stack_upgrade_tier_1_to_tier_5_conversion"],
+                         "Преобразование улучшения стопки: I → V")
+        artifacts = json.loads((COMPAT / "assets/artifacts/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(artifacts["artifacts.tooltip.plus_mob_effect_chance"], "+%s (%s%%)")
+        self.assertIn("Curios", artifacts["artifacts.tooltip.missing_dependency"])
+        dynamic = json.loads((COMPAT / "assets/dynamic_fps/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("F3", dynamic["config.dynamic_fps.battery_indicator_debug"])
+        deeper = json.loads((COMPAT / "assets/deeperdarker/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(deeper["tooltips.deeperdarker.sculk_transmitter.location_level"], "Измерение: %s")
+        modern = json.loads((COMPAT / "assets/modernfix/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertIn("Redirector", modern["modernfix.redirector_installed"])
+        self.assertIn("JVM", modern["modernfix.option.mixin.bugfix.buffer_builder_leak"])
+
         irons = json.loads((COMPAT / "assets/irons_lib/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(irons["attribute.name.irons_lib.crit_damage"], "Критический урон")
         self.assertIn("%s", irons["tooltip.irons_lib.transmog_title"])
