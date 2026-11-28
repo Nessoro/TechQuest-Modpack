@@ -39,7 +39,8 @@ LOCALE_COUNTS = {
     "openpartiesandclaims": 703,
     "prettypipes": 41,
     "refinedstorage": 10,
-    "xaeroworldmap": 303,
+    "xaeroworldmap": 338,
+    "xaerominimap": 77,
     "waystones": 268,
     "twisted_mobs": 113,
 }
@@ -143,6 +144,14 @@ class AdditionalTranslationTests(unittest.TestCase):
         xaero = json.loads((COMPAT / "assets/xaeroworldmap/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertIn("карты", xaero["effect.xaeroworldmap.no_cave_maps"])
         self.assertIn("%1$s", xaero["gui.xaero_wm_ceiling"])
+        self.assertIn("%1$s", xaero["gui.xaero_pac_requested_large_claim"])
+        self.assertIn("Enter", xaero["gui.xaero_hop_field_tooltip"])
+        minimap = json.loads((COMPAT / "assets/xaerominimap/lang/ru_ru.json").read_text(encoding="utf-8"))
+        self.assertEqual(minimap["gui.xaero_default_waystone_name"], "Камень пути")
+        self.assertIn("%1$s", minimap["gui.xaero_minimap_redirect_item"])
+        self.assertIn("%3$s", minimap["gui.xaero_waypoint_shared_dimension2"])
+        self.assertIn("Waystones", minimap["gui.xaero_box_discovered_waystone_waypoints"])
+        self.assertEqual(minimap["gui.xaero_unit_ms"], "мс")
         waystones = json.loads((COMPAT / "assets/waystones/lang/ru_ru.json").read_text(encoding="utf-8"))
         self.assertEqual(waystones["gui.waystones.waystone_selection.item_requirement"],
                          "Стоимость предметами: %d %s")
