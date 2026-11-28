@@ -37,3 +37,5 @@ serializers, registered ingredients, item results, deployment-container entity
 data and original SBW recipe ID retention. This is not a player crafting, JEI,
 network synchronization, or deployment test. Do not use it alone to clear the
 full obtainability release gate.
+
+For a draft-only branch, use the already-registered [Smoke-test TechQuest server](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/smoke-server.yml) workflow, select branch `feat/dragonrise-complete-recipes`, and explicitly accept the EULA in its existing input. The branch workflow calls the additional DragonRise observer. The standard smoke job remains unchanged. Do not accept the EULA programmatically on behalf of another person.

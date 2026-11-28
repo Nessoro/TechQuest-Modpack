@@ -5,6 +5,11 @@ on:
       - 'tests/runtime-dragonrise-probe/**'
       - 'scripts/smoke_dragonrise_server.py'
       - '.github/workflows/dragonrise-runtime.yml'
+  workflow_call:
+    inputs:
+      accept_minecraft_eula:
+        type: boolean
+        required: true
   workflow_dispatch:
     inputs:
       accept_minecraft_eula:
@@ -39,7 +44,7 @@ jobs:
           retention-days: 3
   runtime:
     needs: compile-probe
-    if: github.event_name == 'workflow_dispatch' && inputs.accept_minecraft_eula == true
+    if: inputs.accept_minecraft_eula == true
     runs-on: ubuntu-latest
     timeout-minutes: 70
     steps:

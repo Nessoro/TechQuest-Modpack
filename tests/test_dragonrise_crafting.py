@@ -81,6 +81,7 @@ class DragonRiseCraftingTest(unittest.TestCase):
 
     def test_recipes_survive_client_and_server_install_and_update(self):
         import tempfile
+        from unittest.mock import patch
         import build_pack
         import scripts.install_client as client
         import scripts.install_server as server
@@ -88,13 +89,29 @@ class DragonRiseCraftingTest(unittest.TestCase):
             root = Path(directory)
             pack = root / "test.mrpack"
             build_pack.make_mrpack(build_pack.load_cfg(), [], pack)
+            # Add a synthetic manifest entry so the actual transactional installer
+            # runs; only network retrieval is mocked, not activation or extraction.
+            fixture = root / "fixture.mrpack"
+            with zipfile.ZipFile(pack) as src, zipfile.ZipFile(fixture, "w") as dst:
+                for info in src.infolist():
+                    data = src.read(info)
+                    if info.filename == "modrinth.index.json":
+                        index = json.loads(data)
+                        index["files"] = [{"path": "mods/fixture.jar",
+                            "hashes": {"sha1": "a" * 40},
+                            "env": {"client": "required", "server": "required"},
+                            "downloads": ["https://example.org/fixture.jar"]}]
+                        data = json.dumps(index).encode()
+                    dst.writestr(info, data)
+            def download(record, staging):
+                (staging / record["file"]["filename"]).write_bytes(b"fixture")
             game = root / "game"
             mods = root / "server" / "mods"
             mods.mkdir(parents=True)
             name = build_pack.COMPAT_JAR_NAME
             for _ in range(2):
-                with zipfile.ZipFile(pack) as archive:
-                    client.install_guide_overrides(archive, game)
+                with patch.object(client.build_pack, "download_checked", side_effect=download):
+                    client.install(fixture, game)
                 server.install_compatibility(pack, mods)
                 for installed in (game / "mods" / name, mods / name):
                     self.assertEqual(installed.read_bytes(), build_pack.compatibility_jar())

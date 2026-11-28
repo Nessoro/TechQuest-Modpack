@@ -96,3 +96,10 @@ jobs:
             output/BUILD_STATUS.json
           if-no-files-found: warn
           retention-days: 14
+  dragonrise-recipes:
+    if: ${{ inputs.accept_minecraft_eula == true }}
+    uses: ./.github/workflows/dragonrise-runtime.yml
+    with:
+      accept_minecraft_eula: true
+    permissions:
+      contents: read
