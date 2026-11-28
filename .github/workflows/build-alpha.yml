@@ -4,6 +4,13 @@ on:
   pull_request:
     paths:
       - modlist.json
+      - addons/hybrid-warfare-armor/**
+      - build_pack.py
+      - scripts/install_client.py
+      - scripts/install_server.py
+      - scripts/security_audit.py
+      - windows-installer/**
+      - tests/test_hybrid_pack.py
       - tests/test_interdimensional_wireless_transmitter.py
       - tests/test_quartz_arsenal.py
       - tests/test_betterblockz.py
@@ -12,6 +19,7 @@ on:
     paths:
       - modlist.json
       - build_pack.py
+      - addons/hybrid-warfare-armor/**
       - compat/**
       - rpg-core/**
       - scripts/install_server.py
@@ -25,6 +33,7 @@ on:
       - scripts/audit_keybinds.py
       - scripts/KeymapAudit.java
       - scripts/guide_assets.py
+      - scripts/boss_checklist.py
       - tests/**
       - .github/workflows/build-alpha.yml
 permissions:
@@ -68,8 +77,36 @@ jobs:
               build_pack.verify(data,item["hashes"])
               print("IC2 binary and raw download match:",item["filename"],len(data),"bytes")
           PY
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Build first-party Hybrid Warfare from source
+        working-directory: addons/hybrid-warfare-armor
+        run: |
+          python scripts/generate_assets.py
+          python -m unittest discover -s scripts -p 'test_*.py' -v
+          gradle build --no-daemon --stacktrace
       - name: Assemble client and server mods (temporary; do not redistribute)
         run: python build_pack.py
+      - name: Verify Hybrid Warfare JAR and identical client/server/installer payload
+        run: |
+          python - <<'PY'
+          import hashlib, zipfile
+          from pathlib import Path
+          import build_pack
+          with zipfile.ZipFile(next(Path("output").glob("*.mrpack"))) as archive:
+              data = build_pack.hybrid_from_pack(archive, required=True)
+          assert data == build_pack.compiled_hybrid_jar()
+          for side in ("client", "server"):
+              folder = Path("output") / side / "mods"
+              assert list(folder.glob("techquest-hybrid-warfare*.jar")) == [folder / build_pack.HYBRID_JAR_NAME]
+              assert (folder / build_pack.HYBRID_JAR_NAME).read_bytes() == data
+          print("Hybrid Warfare SHA256:", hashlib.sha256(data).hexdigest())
+          PY
       - name: Verify new JEI integration and pinned foundation in client/server
         run: |
           python - <<'PY'
@@ -429,6 +466,7 @@ jobs:
               z.write("scripts/mi_guide_config.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
+              z.write("scripts/boss_checklist.py")
               z.write(out/"TechQuest_0.3.3.1.mrpack",arcname="TechQuest_0.3.3.1.mrpack")
               z.writestr("SERVER_INSTALL_README.txt",readme)
           print("Created",p,p.stat().st_size,"bytes")
@@ -460,6 +498,7 @@ jobs:
               z.write("scripts/mi_guide_config.py")
               z.write("build_pack.py")
               z.write("scripts/guide_assets.py")
+              z.write("scripts/boss_checklist.py")
               z.write(out/"TechQuest_0.3.3.1.mrpack",arcname="TechQuest_0.3.3.1.mrpack")
               z.writestr("OFFICIAL_LAUNCHER_INSTALL.txt", readme)
           PY
@@ -577,7 +616,9 @@ jobs:
               'overrides/patchouli_books/techquest_guide/book.json',
               'overrides/patchouli_books/techquest_guide/en_us/entries/start.json',
               'overrides/config/openloader/packs/techquest_starter_guide.zip',
-              'overrides/mods/techquest-compat-1.0.0.jar'
+              'overrides/mods/techquest-compat-1.0.0.jar',
+              'overrides/mods/techquest-hybrid-warfare-0.2.9-SNAPSHOT.jar',
+              'overrides/TECHQUEST_HYBRID_SHA256.txt'
             )) {
               if(-not ($zip.Entries | Where-Object FullName -EQ $required)) { throw "Missing in-game book: $required" }
             }

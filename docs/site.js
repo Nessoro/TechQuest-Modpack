@@ -141,7 +141,7 @@ async function githubJSON(url) {
 // Release assets can be downloaded directly by anonymous visitors. Workflow
 // artifacts, even successful ones, still require GitHub authentication.
 const PUBLIC_FALLBACK_TAG = 'v0.3.3-micro2-preview';
-const INSTALLER_ASSET = /^TechQuest(?:Installer|_\d+\.\d+\.\d+(?:[-_][A-Za-z0-9.]+)?)\.exe$/i;
+const INSTALLER_ASSET = /^TechQuest(?:Installer|_\d+\.\d+\.\d+(?:\.\d+)?(?:[-_][A-Za-z0-9.]+)?)\.exe$/i;
 
 function directReleaseAssetUrl(tag, filename) {
   if (!/^v\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.-]+)?$/.test(tag) ||
@@ -181,14 +181,18 @@ function updatePublicInstaller(release) {
 async function latestPublicInstaller() {
   try {
     const releases = await githubJSON('https://api.github.com/repos/' + REPO + '/releases?per_page=30');
-    if (!Array.isArray(releases)) return;
+    if (!Array.isArray(releases)) throw new Error('Invalid releases response');
     releases.sort((a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0));
     for (const release of releases) {
       if (updatePublicInstaller(release)) return;
     }
-    // The HTML contains a working anonymous fallback URL even with no API access.
+    // Preserve the static public release and checksum; never advertise expiring
+    // Actions artifacts as anonymous downloads.
+    document.querySelector('#build-status').textContent =
+      'Новый публичный установщик не найден. Доступна ссылка на предыдущий выпуск.';
   } catch {
-    // Avoid replacing an actual public direct link with an Actions login page.
+    document.querySelector('#build-status').textContent =
+      'Не удалось проверить публичные выпуски через GitHub API. Сохранена ссылка на предыдущий выпуск.';
   }
 }
 

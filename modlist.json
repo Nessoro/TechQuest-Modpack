@@ -609,14 +609,6 @@
       "required": true,
       "note": "Обязательный IC2 порт. JAR хранится в репозитории и скачивается по закреплённому GitHub commit с SHA-512/SHA-1 проверкой. Публикация требует отдельного соблюдения лицензий IC2 и автора порта.",
       "download_url": "https://raw.githubusercontent.com/Nessoro/TechQuest-Modpack/503b0676cb44764ede56e94975f66e9a3c35c6db/manual-mods/industrial-craft-2-nostalgia-21.1.0-local.26.jar"
-    },
-    {
-      "name": "[SBW] DragonRise: Reforge",
-      "group": "Военная техника",
-      "file_name": "dragonrise_reforge-1.5.1-release.jar",
-      "source": "https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025",
-      "required": false,
-      "note": "Выпуск 1.5.1 для NeoForge 1.21.1. Требует Superb Warfare. ОЖИДАЕТ ручного добавления оригинального JAR в manual-mods/ и проверки лицензии; НЕ включён в публичный .mrpack, пока файл не предоставлен."
     }
   ],
   "performance_profile": {
@@ -682,23 +674,23 @@
   ],
   "optional_local_mods": [
     {
-      "id": "acceleratedmcwarfare",
-      "name": "AcceleratedMcWarfare (AMW)",
-      "file_name": "acceleratedMcWarfare-1.0.4..jar",
-      "version": "1.0.4-alpha",
+      "id": "dragonrise_reforge",
+      "name": "[SBW] DragonRise: Reforge",
+      "file_name": "dragonrise_reforge-1.5.1-release.jar",
+      "version": "1.5.1",
       "minecraft": "1.21.1",
       "loader": "neoforge",
       "side": "both",
       "required": false,
       "install_mode": "manual_user_import",
-      "source": "https://www.curseforge.com/minecraft/mc-mods/amw/files/9298161",
-      "curseforge_project_id": 1711633,
-      "curseforge_file_id": 9298161,
-      "license": "All Rights Reserved",
+      "source": "https://www.curseforge.com/minecraft/mc-mods/sbw-drr/files/9208025",
+      "curseforge_project_id": 1346094,
+      "curseforge_file_id": 9208025,
+      "license": "GPL-3.0-only",
       "dependencies": [
-        "geckolib"
+        "superb-warfare"
       ],
-      "note": "The official file is client+server but downloads require the publisher's delivery channel. This JAR is not bundled or redistributed by TechQuest. Import the original JAR using the GUI, and copy the same file to the dedicated server. Compatibility with Incoming/Superb Warfare/Explosion Overhaul is untested."
+      "note": "Official CurseForge client/server release; license listed as GPLv3. User imports original JAR; no redistribution or independent checksum yet. Keep the same JAR on client and dedicated server. Runtime compatibility with SBW 0.8.9.2, Incoming is untested."
     }
   ],
   "modrinth_lock": {

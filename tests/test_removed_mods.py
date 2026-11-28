@@ -42,7 +42,8 @@ class RemovedModsTests(unittest.TestCase):
         src = (ROOT / "windows-installer/Program.cs").read_text(encoding="utf-8")
         self.assertNotIn("ImportOfficialTaczGunpacks", src)
         self.assertNotIn("Импорт TaCZ ZIP", src)
-        self.assertIn("ImportAcceleratedMcWarfare", src)
+        self.assertNotIn("ImportAcceleratedMcWarfare", src)
+        self.assertIn("ImportDragonRise", src)
         html = (ROOT / "docs/index.html").read_text(encoding="utf-8")
         for slug in REMOVED:
             self.assertNotIn("https://modrinth.com/mod/" + slug, html)
