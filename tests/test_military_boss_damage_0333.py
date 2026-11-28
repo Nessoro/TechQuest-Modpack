@@ -15,6 +15,8 @@ EXPECTED = {
     "incoming:strike", "incoming:shockwave", "incoming:kinetic",
     "incoming:debris", "incoming:fragment", "incoming:nuclear_blast",
     "incoming:player_nuclear_blast",
+    "incoming:nuclear_thermal", "incoming:player_nuclear_thermal",
+    "incoming:radiation", "incoming:player_radiation", "incoming:burn_shock",
 }
 
 
