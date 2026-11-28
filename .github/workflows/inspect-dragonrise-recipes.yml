@@ -60,6 +60,44 @@ jobs:
               evidence[key] = {"recipe_payloads": records, "english_translations": translations, "registration_or_codec_disassembly": classes}
           (root / "dragonrise-detail-evidence.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2))
           PY
+      - name: Inspect pinned progression ingredients (static only)
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, pathlib, subprocess, urllib.request, zipfile
+          root = pathlib.Path(os.environ["RUNNER_TEMP"])
+          cfg = json.loads(pathlib.Path("modlist.json").read_text())
+          report = {}
+          jars = {}
+          for project in ("LNytGWDc", "Ce6I4WUE"):
+              lock = cfg["modrinth_lock"][project]
+              path = root / "dragonrise-audit" / lock["filename"]
+              url = "https://cdn.modrinth.com/data/" + project + "/versions/" + lock["version_id"] + "/" + lock["filename"]
+              with urllib.request.urlopen(url, timeout=90) as response:
+                  data = response.read(200 * 1024 * 1024 + 1)
+              if len(data) > 200 * 1024 * 1024 or hashlib.sha512(data).hexdigest() != lock["sha512"]:
+                  raise ValueError("Locked download mismatch: " + lock["title"])
+              path.write_bytes(data)
+              jars[lock["title"]] = path
+          ic2 = next(m for m in cfg["manual_mods"] if m["name"] == "Industrial Craft 2: Nostalgia")
+          jars["IC2"] = pathlib.Path("manual-mods") / ic2["file_name"]
+          jars["SBW"] = root / "dragonrise-audit" / cfg["modrinth_lock"]["Cd3DYqzn"]["filename"]
+          for title, path in jars.items():
+              outputs, classes, langs = [], {}, {}
+              with zipfile.ZipFile(path) as z:
+                  for name in z.namelist():
+                      if name.startswith("data/") and "/recipe/" in name and name.endswith(".json"):
+                          obj = json.loads(z.read(name))
+                          if isinstance(obj, dict):
+                              outputs.append({"path": name, "result": obj.get("result"), "output": obj.get("output")})
+                      if name.startswith("assets/") and name.endswith("/lang/en_us.json"):
+                          langs[name] = json.loads(z.read(name))
+                  selected = [p for p in z.namelist() if p.endswith(".class") and p.rsplit("/",1)[-1] in ("ModItems.class","ModBlocks.class","AllItems.class","AllBlocks.class","MekanismItems.class","MekanismBlocks.class","IC2Items.class","IC2Blocks.class","ItemsItems.class","ItemRegistry.class","BlockRegistry.class")]
+              for p in selected:
+                  name = p[:-6].replace("/", ".")
+                  classes[name] = subprocess.run(["javap", "-c", "-p", "-classpath", str(path.resolve()), name], check=True, capture_output=True, text=True).stdout
+              report[title] = {"filename":path.name, "sha256":hashlib.sha256(path.read_bytes()).hexdigest(),"recipe_results":outputs,"class_disassembly":classes,"localization":langs}
+          (root / "dragonrise-progression-evidence.json").write_text(json.dumps(report, ensure_ascii=False))
+          PY
       - name: Upload evidence only (no third-party binaries)
         uses: actions/upload-artifact@v4
         with:
@@ -67,5 +105,6 @@ jobs:
           path: |
             ${{ runner.temp }}/dragonrise-evidence.json
             ${{ runner.temp }}/dragonrise-detail-evidence.json
+            ${{ runner.temp }}/dragonrise-progression-evidence.json
           retention-days: 7
           if-no-files-found: error
