@@ -1,0 +1,36 @@
+name: DragonRise static crafting audit
+on:
+  pull_request:
+    paths:
+      - 'scripts/inspect_dragonrise_recipes.py'
+      - 'tests/test_dragonrise_recipe_audit.py'
+      - '.github/workflows/inspect-dragonrise-recipes.yml'
+  workflow_dispatch:
+jobs:
+  static-evidence:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download pinned original files for read-only inspection
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/dragonrise-audit"
+          cd "$RUNNER_TEMP/dragonrise-audit"
+          curl --fail --location --retry 2 --max-time 180 --max-filesize 150000000 -o dragonrise_reforge-1.5.1-release.jar https://mediafilez.forgecdn.net/files/9208/25/dragonrise_reforge-1.5.1-release.jar
+          curl --fail --location --retry 2 --max-time 180 --max-filesize 150000000 -o superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar https://cdn.modrinth.com/data/Cd3DYqzn/versions/bl7W8fjU/superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar
+      - name: Collect static evidence (never execute the downloaded JARs)
+        run: |
+          python scripts/inspect_dragonrise_recipes.py --dragonrise "$RUNNER_TEMP/dragonrise-audit/dragonrise_reforge-1.5.1-release.jar" --superb-warfare "$RUNNER_TEMP/dragonrise-audit/superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar" --output "$RUNNER_TEMP/dragonrise-evidence.json"
+      - name: Upload evidence only (no third-party binaries)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragonrise-static-evidence
+          path: ${{ runner.temp }}/dragonrise-evidence.json
+          retention-days: 7
+          if-no-files-found: error
