@@ -1,4 +1,4 @@
-# TechQuest 0.3.3.7 — lethal Incoming strikes and boss health caps
+# TechQuest 0.3.3.8 — lethal Incoming strikes and boss health caps
 
 **Status:** DRAFT. This restores the previously omitted PR #68 damage patch onto the world-crash-safe 0.3.3.6 from PR #70. Do not use 0.3.3.6 to evaluate Incoming lethality. The candidate is built on 0.3.3.4 / PR #66. No Minecraft world or dedicated-server boss combat test has passed yet.
 
