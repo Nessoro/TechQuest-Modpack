@@ -127,7 +127,7 @@ class IncomingLethalityTests(unittest.TestCase):
             harness=dest/"IncomingLethalHarness.java"
             harness.write_text(HARNESS)
             sources=sorted(STUBS.rglob("*.java"))
-            self.assertEqual(len(sources),12)
+            self.assertEqual(len(sources),13)
             extra = sorted((SOURCE.parent).glob("IncomingLegendary*Mixin.java"))
             self.assertEqual(len(extra), 2)
             subprocess.run([javac,"--release","21","-g:none","-d",tmp,
@@ -162,7 +162,7 @@ class IncomingLethalityTests(unittest.TestCase):
             build_pack.make_mrpack(build_pack.load_cfg(),[],pack)
             with zipfile.ZipFile(pack) as z:
                 self.assertEqual(z.read("overrides/mods/"+build_pack.COMPAT_JAR_NAME),jar)
-        self.assertEqual(build_pack.load_cfg()["version"],"0.3.3.9")
+        self.assertEqual(build_pack.load_cfg()["version"],"0.3.3.10")
 
 
 if __name__=="__main__":
