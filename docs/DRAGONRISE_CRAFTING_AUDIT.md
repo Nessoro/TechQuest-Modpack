@@ -39,3 +39,9 @@ network synchronization, or deployment test. Do not use it alone to clear the
 full obtainability release gate.
 
 For a draft-only branch, use the already-registered [Smoke-test TechQuest server](https://github.com/Nessoro/TechQuest-Modpack/actions/workflows/smoke-server.yml) workflow, select branch `feat/dragonrise-complete-recipes`, and explicitly accept the EULA in its existing input. The branch workflow calls the additional DragonRise observer. The standard smoke job remains unchanged. Do not accept the EULA programmatically on behalf of another person.
+
+## Review of the seven outstanding registrations
+
+The deeper original JAR audit (https://github.com/Nessoro/TechQuest-Modpack/actions/runs/46139219780) found a dedicated generator item with real survival consumption, fuel handling, and stored-energy extraction. Added a tier 4 generator deployer recipe; its entity is not a separate output. Four hidden vehicles have server data but no audited player-facing deployment path; base Su-24 has only client vehicle data. Each remains excluded individually to avoid accidentally exposing unfinished content. These are conservative static scope decisions, not a declaration that the hidden vehicles can never work. Owner can reconsider them after runtime testing.
+
+Updated static totals: 196 recipes, 57 excluded registry records, zero unclassified records. Runtime coverage remains unknown. The observer also compares actual decoded ingredient counts, output counts, and registry IDs; it does not replace manual survival gameplay/JEI testing.

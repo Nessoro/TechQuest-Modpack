@@ -8,6 +8,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -31,6 +32,31 @@ public final class DragonRiseProbe {
             for (Tag child : list) if (containsExact(child, expected)) return true;
         }
         return false;
+    }
+
+    private static void addIngredient(Map<String, Integer> counts, Ingredient ingredient, int amount) {
+        ItemStack[] options = ingredient.getItems();
+        if (options.length != 1 || options[0].isEmpty() || amount <= 0)
+            throw new IllegalArgumentException("Invalid or ambiguous decoded ingredient");
+        counts.merge(BuiltInRegistries.ITEM.getKey(options[0].getItem()).toString(), amount, Integer::sum);
+    }
+
+    // SBW 0.8.9.2 exposes public inputs and count, and getIngredient() in
+    // VehicleAssemblingIngredient. Read these from the real decoded object.
+    private static Map<String, Integer> decodedIngredients(RecipeHolder<?> holder, String serializer) throws Exception {
+        Map<String, Integer> counts = new TreeMap<>();
+        if (serializer.equals("superbwarfare:vehicle_assembling")) {
+            Object recipe = holder.value();
+            for (Object input : (List<?>) recipe.getClass().getField("inputs").get(recipe)) {
+                Ingredient ingredient = (Ingredient) input.getClass().getMethod("getIngredient").invoke(input);
+                int count = input.getClass().getField("count").getInt(input);
+                addIngredient(counts, ingredient, count);
+            }
+        } else {
+            for (Ingredient ingredient : holder.value().getIngredients())
+                if (!ingredient.isEmpty()) addIngredient(counts, ingredient, 1);
+        }
+        return counts;
     }
 
     private void onStarted(ServerStartedEvent event) {
@@ -70,16 +96,21 @@ public final class DragonRiseProbe {
                         String target = definition.get("target").getAsString();
                         String kind = definition.get("kind").getAsString();
                         if (!serializer.equals(wantSerializer)) errors.add("Wrong serializer " + id + ": " + serializer);
-                        for (JsonElement ingredient : definition.getAsJsonArray("ingredients")) {
-                            String ingredientId = ingredient.getAsString();
+                        Map<String, Integer> expectedCounts = new TreeMap<>();
+                        for (var ingredient : definition.getAsJsonObject("ingredients").entrySet()) {
+                            String ingredientId = ingredient.getKey();
+                            expectedCounts.put(ingredientId, ingredient.getValue().getAsInt());
                             if (!BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(ingredientId)))
                                 errors.add("Unregistered ingredient " + ingredientId + " in " + id);
                         }
+                        Map<String, Integer> decoded = decodedIngredients(holder, serializer);
+                        if (!decoded.equals(expectedCounts)) errors.add("Decoded ingredient quantities differ " + id + ": " + decoded);
                         ItemStack stack = holder.value().getResultItem(server.registryAccess());
                         if (stack.isEmpty()) {
                             errors.add("Empty output " + id);
                             continue;
                         }
+                        if (stack.getCount() != definition.get("count").getAsInt()) errors.add("Wrong output count " + id);
                         String item = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
                         if (kind.equals("vehicle")) {
                             if (!BuiltInRegistries.ENTITY_TYPE.containsKey(ResourceLocation.parse(target)))
@@ -95,6 +126,7 @@ public final class DragonRiseProbe {
                         observation.addProperty("serializer", serializer);
                         observation.addProperty("item", item);
                         observation.addProperty("count", stack.getCount());
+                        observation.add("decoded_ingredients", new Gson().toJsonTree(decoded));
                         observations.add(id, observation);
                     } catch (Exception ex) {
                         errors.add("Exception evaluating " + id + ": " + ex);

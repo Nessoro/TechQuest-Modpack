@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Opt-in disposable server test, launched only after explicit EULA acceptance."""
 import argparse
+from collections import Counter
 import hashlib
 import json
 import re
@@ -24,14 +25,19 @@ def expected_recipes():
             continue
         recipe = json.loads((PREFIX / (rid.split(":", 1)[1] + ".json")).read_text(encoding="utf-8"))
         if "inputs" in recipe:
-            ingredients = [re.sub(r"^\d+ ", "", v) for v in recipe["inputs"]]
+            ingredients = Counter()
+            for value in recipe["inputs"]:
+                match = re.fullmatch(r"(?:(\d+) )?([a-z0-9_.-]+:[a-z0-9_./-]+)", value)
+                if match is None:
+                    raise ValueError("Invalid assembly ingredient: " + value)
+                ingredients[match[2]] += int(match[1] or 1)
         elif "key" in recipe:
-            ingredients = [v["item"] for v in recipe["key"].values()]
+            ingredients = Counter(recipe["key"][symbol]["item"] for line in recipe["pattern"] for symbol in line if symbol != " ")
         else:
-            ingredients = [v["item"] for v in recipe["ingredients"]]
+            ingredients = Counter(v["item"] for v in recipe["ingredients"])
         if rid in rows:
             raise ValueError("Duplicate recipe: " + rid)
-        rows[rid] = {"kind": row["kind"], "target": row["registry_id"], "serializer": recipe["type"], "ingredients": sorted(set(ingredients))}
+        rows[rid] = {"kind": row["kind"], "target": row["registry_id"], "serializer": recipe["type"], "ingredients": dict(sorted(ingredients.items())), "count": recipe["result"].get("count", 1)}
     if not rows:
         raise ValueError("Empty recipe inventory")
     return rows

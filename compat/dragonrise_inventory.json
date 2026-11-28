@@ -12,12 +12,12 @@
     "registered_items": 67,
     "registered_entities": 185,
     "registered_blocks": 1,
-    "static_player_facing_targets": 195,
-    "new_recipes": 195,
+    "static_player_facing_targets": 196,
+    "new_recipes": 196,
     "legacy_recipe_targets": 118,
     "invalid_legacy_target": 1,
-    "excluded": 51,
-    "review_required": 7,
+    "excluded": 57,
+    "review_required": 0,
     "runtime_verified": false,
     "obtainable_coverage_percent": null
   },
@@ -207,9 +207,10 @@
       "category": "technical_or_hidden",
       "progression_tier": null,
       "proposed_crafting_method": null,
-      "implementation_status": "review_required",
-      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
-      "original_recipe_ids": []
+      "implementation_status": "excluded",
+      "reason": "Entity is represented by the dedicated generator_deployer item; separate SBW container would duplicate the deployer path.",
+      "original_recipe_ids": [],
+      "review_evidence": "GeneratorDeployer.useOn explicitly instantiates GeneratorEntity; survival use shrinks stack."
     },
     {
       "registry_id": "dragonrise_reforge:hj8",
@@ -431,13 +432,15 @@
     {
       "registry_id": "dragonrise_reforge:sd905",
       "kind": "entity",
-      "display_name": null,
+      "display_name": "SD 905",
       "category": "technical_or_hidden",
       "progression_tier": null,
       "proposed_crafting_method": null,
-      "implementation_status": "review_required",
-      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
-      "original_recipe_ids": []
+      "implementation_status": "excluded",
+      "reason": "Unlisted AirshipVehicle with server and client vehicle data; no original assembly result, creative-tab deployment entry or direct deployer in the audited release. Keep outside survival rather than expose a hidden vehicle.",
+      "original_recipe_ids": [],
+      "review_evidence": "hidden_no_player_path",
+      "server_definition_present": true
     },
     {
       "registry_id": "dragonrise_reforge:shield",
@@ -464,13 +467,15 @@
     {
       "registry_id": "dragonrise_reforge:spacebag",
       "kind": "entity",
-      "display_name": null,
+      "display_name": "Space Bag",
       "category": "technical_or_hidden",
       "progression_tier": null,
       "proposed_crafting_method": null,
-      "implementation_status": "review_required",
-      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
-      "original_recipe_ids": []
+      "implementation_status": "excluded",
+      "reason": "Unlisted DragonriseVehicleBase with server and client vehicle data; no original assembly result, creative-tab deployment entry or direct deployer. Do not expose the hidden space-life-support prototype.",
+      "original_recipe_ids": [],
+      "review_evidence": "hidden_no_player_path",
+      "server_definition_present": true
     },
     {
       "registry_id": "dragonrise_reforge:spg9",
@@ -499,24 +504,28 @@
     {
       "registry_id": "dragonrise_reforge:su24",
       "kind": "entity",
-      "display_name": null,
+      "display_name": "Su-24",
       "category": "technical_or_hidden",
       "progression_tier": null,
       "proposed_crafting_method": null,
-      "implementation_status": "review_required",
-      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
-      "original_recipe_ids": []
+      "implementation_status": "excluded",
+      "reason": "Unlisted DragonriseVehicleBase; client vehicle definition exists but no data/dragonrise_reforge/sbw/vehicles/su24.json server definition, no creative entry or original deployment recipe. Do not expose incomplete vehicle.",
+      "original_recipe_ids": [],
+      "review_evidence": "hidden_no_player_path",
+      "server_definition_present": false
     },
     {
       "registry_id": "dragonrise_reforge:su24m",
       "kind": "entity",
-      "display_name": null,
+      "display_name": "Su-24M Fencer-D",
       "category": "technical_or_hidden",
       "progression_tier": null,
       "proposed_crafting_method": null,
-      "implementation_status": "review_required",
-      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
-      "original_recipe_ids": []
+      "implementation_status": "excluded",
+      "reason": "Unlisted DragonriseVehicleBase with server and client vehicle data; no original assembly result, creative-tab deployment entry or direct deployer. Leave hidden despite localized name.",
+      "original_recipe_ids": [],
+      "review_evidence": "hidden_no_player_path",
+      "server_definition_present": true
     },
     {
       "registry_id": "dragonrise_reforge:terrorist",
@@ -554,13 +563,15 @@
     {
       "registry_id": "dragonrise_reforge:zsl10",
       "kind": "entity",
-      "display_name": null,
+      "display_name": "ZSL-10",
       "category": "technical_or_hidden",
       "progression_tier": null,
       "proposed_crafting_method": null,
-      "implementation_status": "review_required",
-      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
-      "original_recipe_ids": []
+      "implementation_status": "excluded",
+      "reason": "Unlisted SyncCameraVehicle with server and client vehicle data; no original assembly result, creative-tab deployment entry or direct deployer. Leave hidden despite implemented water-control tick logic.",
+      "original_recipe_ids": [],
+      "review_evidence": "hidden_no_player_path",
+      "server_definition_present": true
     },
     {
       "registry_id": "dragonrise_reforge:zu23",
@@ -825,13 +836,15 @@
       "registry_id": "dragonrise_reforge:generator_deployer",
       "kind": "item",
       "display_name": "Generator Deployer",
-      "category": "technical_or_hidden",
-      "progression_tier": null,
-      "proposed_crafting_method": null,
-      "implementation_status": "review_required",
-      "reason": "Hidden generator deployer; confirm intended survival availability and energy behavior.",
+      "category": "utility",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
       "original_recipe_ids": [],
-      "original_recipe_status": "none"
+      "original_recipe_status": "none",
+      "recipe_id": "techquest:dragonrise/item/generator_deployer",
+      "creative_evidence": "dedicated_survival_deployer_bytecode",
+      "review_evidence": "GeneratorDeployer.useOn creates GeneratorEntity and consumes one item outside instabuild. GeneratorEntity.tick consumes furnace fuel or food, or extracts stored item energy; charge methods extract stored energy. No unconditional generation in inspected tick. Runtime fuel, retrieval and balance still require tests."
     },
     {
       "registry_id": "dragonrise_reforge:gorka3",
@@ -3742,6 +3755,7 @@
     "SBW vehicle containers share a single item ID and carry distinct entity data; audit coverage therefore counts deployment targets separately.",
     "Hidden entries are individually recorded; review_required prevents a claim of complete coverage.",
     "Legacy recipe paths are not evidence of runtime loading.",
-    "No separate DragonRise ammo items found in primary item registry; projectile entities must not become inventory items."
+    "No separate DragonRise ammo items found in primary item registry; projectile entities must not become inventory items.",
+    "Hidden-entity scope is a conservative static decision: registered entities without tab entries, legacy assembly results or dedicated items are not automatically exposed. Four have data definitions and can be reconsidered after owner/runtime confirmation. Generator is a distinct survival deployer, not a second vehicle container."
   ]
 }

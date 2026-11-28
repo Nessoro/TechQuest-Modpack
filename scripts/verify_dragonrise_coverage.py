@@ -88,6 +88,28 @@ def verify(evidence):
     originals = {NS+p.rsplit("/",1)[-1][:-5] for p in dr["recipe_payloads"]}
     for e in rows:
         check(set(e.get("original_recipe_ids",[])) <= originals,"Invalid legacy recipe reference: "+e["registry_id"])
+    # A hidden registration is not automatically a player-facing deployment target.
+    # Re-evaluate these explicit decisions if the pinned source evidence changes.
+    def legacy_entity_result(obj):
+        result = obj.get("result")
+        return result.get("entity") if isinstance(result, dict) else None
+    legacy_entities = {legacy_entity_result(obj) for obj in dr["recipe_payloads"].values()}
+    for e in rows:
+        if e.get("review_evidence") != "hidden_no_player_path":
+            continue
+        ident = e["registry_id"]
+        check(ident not in visible_entities and ident not in legacy_entities and ident not in real_items
+              and ident + "_deployer" not in real_items,
+              "Hidden entity now has a player-facing path: " + ident)
+        definition = "data/dragonrise_reforge/sbw/vehicles/" + ident.split(":",1)[1] + ".json"
+        check((definition in dr["vehicle_definitions"]) == e["server_definition_present"],
+              "Hidden entity server definition changed: " + ident)
+    generator = klass("GeneratorEntity")
+    deployer = klass("GeneratorDeployer")
+    check(all(token in generator for token in ("getBurnTime", "ItemStack.shrink", "extractEnergy", "fuelTick")),
+          "Generator fuel/energy evidence changed")
+    check(all(token in deployer for token in ("GeneratorEntity", "Abilities.instabuild", "ItemStack.shrink")),
+          "Generator deployment evidence changed")
     results = {}
     for mod,p in prog.items():
         results[mod] = {s for r in p["recipe_results"] for s in strings([r["result"],r["output"]])}
