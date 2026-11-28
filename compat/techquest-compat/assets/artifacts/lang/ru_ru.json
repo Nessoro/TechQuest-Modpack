@@ -51,7 +51,7 @@
   "artifacts.tooltip.ability.damage_absorption.chance": "При атаке в ближнем бою есть шанс %s%% поглотить здоровье",
   "artifacts.tooltip.ability.phantom_repellent": "Шипит на атакующих фантомов",
   "artifacts.tooltip.missing_dependency": "Для использования предмета установите Curios, Trinkets или Accessories",
-  "artifacts.tooltip.plus_mob_effect_chance": " +%s (%s%%)",
+  "artifacts.tooltip.plus_mob_effect_chance": "+%s (%s%%)",
   "effect.artifacts.magnetism": "Магнетизм",
   "tag.item.artifacts.slot.face": "Артефакты для слота лица"
 }
