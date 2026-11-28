@@ -1,0 +1,29 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "land",
+  "inputs": [
+    "5 superbwarfare:steel_block",
+    "4 superbwarfare:track",
+    "2 superbwarfare:motor",
+    "superbwarfare:light_armament_module",
+    "2 create:precision_mechanism",
+    "4 superbwarfare:armor_plate"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:t26b"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ]
+}

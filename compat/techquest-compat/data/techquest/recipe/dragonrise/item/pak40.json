@@ -1,0 +1,27 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "defense",
+  "inputs": [
+    "4 superbwarfare:steel_block",
+    "2 superbwarfare:wheel",
+    "superbwarfare:medium_armament_module",
+    "2 create:precision_mechanism"
+  ],
+  "result": {
+    "item": "dragonrise_reforge:pak40"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ]
+}

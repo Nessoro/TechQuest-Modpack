@@ -1,0 +1,26 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "defense",
+  "inputs": [
+    "2 superbwarfare:steel_block",
+    "superbwarfare:light_armament_module",
+    "create:precision_mechanism"
+  ],
+  "result": {
+    "item": "dragonrise_reforge:dshk"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ]
+}

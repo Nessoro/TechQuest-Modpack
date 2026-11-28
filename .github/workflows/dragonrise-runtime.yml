@@ -1,0 +1,114 @@
+name: DragonRise dedicated server recipe decoding
+on:
+  push:
+    branches: ['feat/dragonrise-complete-recipes']
+    paths:
+      - 'tests/runtime-dragonrise-probe/**'
+      - 'scripts/smoke_dragonrise_server.py'
+      - 'scripts/dragonrise_acceptance.py'
+      - 'compat/dragonrise_inventory.json'
+      - 'compat/techquest-compat/data/techquest/recipe/dragonrise/**'
+      - '.github/workflows/dragonrise-runtime.yml'
+  pull_request:
+    paths:
+      - 'tests/runtime-dragonrise-probe/**'
+      - 'scripts/smoke_dragonrise_server.py'
+      - '.github/workflows/dragonrise-runtime.yml'
+  workflow_call:
+    inputs:
+      accept_minecraft_eula:
+        type: boolean
+        required: true
+  workflow_dispatch:
+    inputs:
+      accept_minecraft_eula:
+        description: 'I have read and agree to the Minecraft EULA for this temporary test server'
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+jobs:
+  compile-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Compile test-only server observer
+        working-directory: tests/runtime-dragonrise-probe
+        run: gradle build --no-daemon --stacktrace
+      - name: Upload first-party observer
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragonrise-runtime-probe
+          path: tests/runtime-dragonrise-probe/build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 3
+  runtime:
+    needs: compile-probe
+    # Repository owner confirmed EULA for this project's temporary CI server.
+    # Automatic execution is limited to trusted pushes to the dedicated branch.
+    if: inputs.accept_minecraft_eula == true || (github.event_name == 'push' && github.repository == 'Nessoro/TechQuest-Modpack' && github.ref == 'refs/heads/feat/dragonrise-complete-recipes')
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Build Hybrid Warfare from source
+        working-directory: addons/hybrid-warfare-armor
+        run: |
+          python scripts/generate_assets.py
+          gradle build --no-daemon --stacktrace
+      - name: Assemble disposable server
+        run: |
+          python build_pack.py
+          mkdir -p smoke-dragonrise
+          cp -r output/server/mods output/server/config output/server/patchouli_books smoke-dragonrise/
+          cp output/server/server.properties smoke-dragonrise/
+          # Local-only, isolated test server, no change to packaged properties.
+          sed -i '/^server-ip=/d; /^level-type=/d; /^level-name=/d' smoke-dragonrise/server.properties
+          printf '\nserver-ip=127.0.0.1\nlevel-type=minecraft:flat\nlevel-name=world\n' >> smoke-dragonrise/server.properties
+      - uses: actions/download-artifact@v4
+        with:
+          name: dragonrise-runtime-probe
+          path: smoke-dragonrise/mods
+      - name: Install hash-verified NeoForge and download original DragonRise
+        run: |
+          set -euo pipefail
+          version=$(python -c 'import json;print(json.load(open("modlist.json"))["loader_version"])')
+          url="https://maven.neoforged.net/releases/net/neoforged/neoforge/$version/neoforge-$version-installer.jar"
+          cd smoke-dragonrise
+          curl -fsSL --retry 3 "$url" -o installer.jar
+          curl -fsSL --retry 3 "$url.sha512" -o installer.jar.sha512
+          echo "$(cut -d ' ' -f1 installer.jar.sha512)  installer.jar" | sha512sum --check
+          java -jar installer.jar --installServer
+          curl --fail --location --retry 2 --max-time 180 --max-filesize 150000000 -o "$RUNNER_TEMP/dragonrise_reforge-1.5.1-release.jar" https://mediafilez.forgecdn.net/files/9208/25/dragonrise_reforge-1.5.1-release.jar
+      - name: Verify real recipe decoding with absence, existing world and restart
+        run: python scripts/smoke_dragonrise_server.py --server smoke-dragonrise --dragonrise "$RUNNER_TEMP/dragonrise_reforge-1.5.1-release.jar" --reports dragonrise-runtime-reports --accept-minecraft-eula
+      - name: Upload reports only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragonrise-runtime-reports
+          path: |
+            dragonrise-runtime-reports/
+            smoke-dragonrise/logs/latest.log
+            smoke-dragonrise/crash-reports/
+          retention-days: 7
+          if-no-files-found: warn

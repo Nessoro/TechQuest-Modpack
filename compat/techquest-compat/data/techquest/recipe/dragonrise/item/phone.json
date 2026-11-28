@@ -1,0 +1,26 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "misc",
+  "inputs": [
+    "ic2:circuit",
+    "2 minecraft:glass_pane",
+    "2 minecraft:copper_ingot"
+  ],
+  "result": {
+    "item": "dragonrise_reforge:phone"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ic2"
+    }
+  ]
+}

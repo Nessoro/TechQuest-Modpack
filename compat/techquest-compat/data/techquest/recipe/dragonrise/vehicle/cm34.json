@@ -1,0 +1,34 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "land",
+  "inputs": [
+    "7 superbwarfare:steel_block",
+    "8 superbwarfare:wheel",
+    "superbwarfare:large_motor",
+    "superbwarfare:medium_armament_module",
+    "2 ic2:advanced_circuit",
+    "2 mekanism:advanced_control_circuit",
+    "5 superbwarfare:armor_plate"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:cm34"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ic2"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ]
+}

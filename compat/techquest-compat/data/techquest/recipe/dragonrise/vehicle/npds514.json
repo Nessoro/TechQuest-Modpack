@@ -1,0 +1,33 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "defense",
+  "inputs": [
+    "7 superbwarfare:steel_block",
+    "3 superbwarfare:cemented_carbide_block",
+    "superbwarfare:heavy_armament_module",
+    "2 superbwarfare:large_battery_pack",
+    "3 ic2:advanced_circuit",
+    "2 mekanism:elite_control_circuit"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:npds514"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ic2"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ]
+}

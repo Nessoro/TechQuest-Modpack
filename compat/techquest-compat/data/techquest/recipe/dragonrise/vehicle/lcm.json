@@ -1,0 +1,28 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "water",
+  "inputs": [
+    "6 superbwarfare:steel_block",
+    "2 superbwarfare:propeller",
+    "superbwarfare:large_motor",
+    "2 create:precision_mechanism",
+    "4 superbwarfare:armor_plate"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:lcm"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ]
+}

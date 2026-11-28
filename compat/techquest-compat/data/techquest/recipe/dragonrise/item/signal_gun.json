@@ -1,0 +1,21 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "misc",
+  "inputs": [
+    "superbwarfare:light_armament_module",
+    "2 minecraft:copper_ingot"
+  ],
+  "result": {
+    "item": "dragonrise_reforge:signal_gun"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    }
+  ]
+}

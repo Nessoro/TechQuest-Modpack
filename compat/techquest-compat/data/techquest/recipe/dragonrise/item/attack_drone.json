@@ -1,0 +1,27 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "misc",
+  "inputs": [
+    "2 superbwarfare:armor_plate",
+    "2 superbwarfare:motor",
+    "superbwarfare:medium_armament_module",
+    "mekanism:advanced_control_circuit"
+  ],
+  "result": {
+    "item": "dragonrise_reforge:attack_drone"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ]
+}

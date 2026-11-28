@@ -1,0 +1,29 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "aircraft",
+  "inputs": [
+    "5 superbwarfare:steel_block",
+    "2 superbwarfare:propeller",
+    "2 superbwarfare:large_motor",
+    "superbwarfare:light_armament_module",
+    "3 create:precision_mechanism",
+    "2 create:electron_tube"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:camel"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ]
+}

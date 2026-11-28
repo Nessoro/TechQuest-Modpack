@@ -1,0 +1,130 @@
+name: DragonRise static crafting audit
+on:
+  pull_request:
+    paths:
+      - 'scripts/inspect_dragonrise_recipes.py'
+      - 'tests/test_dragonrise_recipe_audit.py'
+      - 'tests/test_dragonrise_crafting.py'
+      - 'scripts/verify_dragonrise_coverage.py'
+      - 'scripts/dragonrise_acceptance.py'
+      - 'scripts/smoke_dragonrise_server.py'
+      - 'compat/dragonrise_runtime_evidence/**'
+      - 'compat/dragonrise_inventory.json'
+      - 'compat/techquest-compat/data/techquest/recipe/dragonrise/**'
+      - '.github/workflows/inspect-dragonrise-recipes.yml'
+  workflow_dispatch:
+jobs:
+  static-evidence:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download pinned original files for read-only inspection
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/dragonrise-audit"
+          cd "$RUNNER_TEMP/dragonrise-audit"
+          curl --fail --location --retry 2 --max-time 180 --max-filesize 150000000 -o dragonrise_reforge-1.5.1-release.jar https://mediafilez.forgecdn.net/files/9208/25/dragonrise_reforge-1.5.1-release.jar
+          curl --fail --location --retry 2 --max-time 180 --max-filesize 150000000 -o superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar https://cdn.modrinth.com/data/Cd3DYqzn/versions/bl7W8fjU/superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar
+      - name: Collect static evidence (never execute the downloaded JARs)
+        run: |
+          python scripts/inspect_dragonrise_recipes.py --dragonrise "$RUNNER_TEMP/dragonrise-audit/dragonrise_reforge-1.5.1-release.jar" --superb-warfare "$RUNNER_TEMP/dragonrise-audit/superbwarfare-0.8.9.2-mc1.21.1-c22d98c2.jar" --output "$RUNNER_TEMP/dragonrise-evidence.json"
+      - name: Set up Java for static bytecode inspection
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Collect registration and recipe codec evidence
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, subprocess, zipfile
+          root = pathlib.Path(os.environ["RUNNER_TEMP"])
+          report = json.loads((root / "dragonrise-evidence.json").read_text())
+          evidence = {}
+          for key in ("dragonrise", "superb_warfare"):
+              item = report[key]
+              jar = root / "dragonrise-audit" / item["filename"]
+              with zipfile.ZipFile(jar) as z:
+                  records = {}
+                  for r in item["recipes"]:
+                      if key == "dragonrise" or r["serializer"] == "superbwarfare:vehicle_assembling":
+                          records[r["path"]] = json.loads(z.read(r["path"]))
+                  lang = next((l["path"] for l in item["localization"] if l["path"].endswith("/en_us.json")), None)
+                  translations = json.loads(z.read(lang)) if lang else {}
+              if key == "dragonrise":
+                  names = [p for p in item["class_paths"] if p.rsplit("/", 1)[-1] in ("ModItems.class", "ModEntities.class", "ModTabs.class", "ModRecipeSerializers.class", "ModBlocks.class", "DragonVehicleDeployer.class", "VehicleDeployerBlock.class", "Dragonrise_reforge.class", "GeneratorDeployer.class", "KV1Deployer.class", "GeneratorEntity.class", "GeneratorEntity$GeneratorContainerBridge.class", "SD905Entity.class", "SpacebagEntity.class", "SU24Entity.class", "SU24MEntity.class", "Zsl10Entity.class")]
+              else:
+                  names = [p for p in item["class_paths"] if "vehicleassembling" in p.lower() and "/recipe/" in p.lower()]
+              classes = {}
+              for p in names:
+                  name = p[:-6].replace("/", ".")
+                  classes[name] = subprocess.run(["javap", "-c", "-p", "-classpath", str(jar), name], check=True, capture_output=True, text=True).stdout
+              evidence[key] = {"recipe_payloads": records, "english_translations": translations, "registration_or_codec_disassembly": classes}
+              if key == "dragonrise":
+                  with zipfile.ZipFile(jar) as z:
+                      evidence[key]["vehicle_definitions"] = {p: json.loads(z.read(p)) for p in item["data_json_paths"] if "/sbw/vehicles/" in p}
+                      evidence[key]["hidden_vehicle_client_definitions"] = {p: json.loads(z.read(p)) for p in item["asset_json_paths"] if "/sbw/vehicles/" in p and p.rsplit("/",1)[-1] in ("generator.json","sd905.json","spacebag.json","su24.json","su24m.json","zsl10.json")}
+                      evidence[key]["additional_registry_classes"] = [p for p in item["class_paths"] if b"net/neoforged/neoforge/registries/DeferredRegister" in z.read(p)]
+          (root / "dragonrise-detail-evidence.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2))
+          PY
+      - name: Inspect pinned progression ingredients (static only)
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, pathlib, subprocess, urllib.request, zipfile
+          root = pathlib.Path(os.environ["RUNNER_TEMP"])
+          cfg = json.loads(pathlib.Path("modlist.json").read_text())
+          report = {}
+          jars = {}
+          for project in ("LNytGWDc", "Ce6I4WUE"):
+              lock = cfg["modrinth_lock"][project]
+              path = root / "dragonrise-audit" / lock["filename"]
+              url = "https://cdn.modrinth.com/data/" + project + "/versions/" + lock["version_id"] + "/" + lock["filename"]
+              with urllib.request.urlopen(url, timeout=90) as response:
+                  data = response.read(200 * 1024 * 1024 + 1)
+              if len(data) > 200 * 1024 * 1024 or hashlib.sha512(data).hexdigest() != lock["sha512"]:
+                  raise ValueError("Locked download mismatch: " + lock["title"])
+              path.write_bytes(data)
+              jars[lock["title"]] = path
+          ic2 = next(m for m in cfg["manual_mods"] if m["name"] == "Industrial Craft 2: Nostalgia")
+          jars["IC2"] = pathlib.Path("manual-mods") / ic2["file_name"]
+          jars["SBW"] = root / "dragonrise-audit" / cfg["modrinth_lock"]["Cd3DYqzn"]["filename"]
+          for title, path in jars.items():
+              outputs, classes, langs = [], {}, {}
+              with zipfile.ZipFile(path) as z:
+                  for name in z.namelist():
+                      if name.startswith("data/") and "/recipe/" in name and name.endswith(".json"):
+                          obj = json.loads(z.read(name))
+                          if isinstance(obj, dict):
+                              outputs.append({"path": name, "result": obj.get("result"), "output": obj.get("output")})
+                      if name.startswith("assets/") and name.endswith("/lang/en_us.json"):
+                          langs[name] = json.loads(z.read(name))
+                  selected = [p for p in z.namelist() if p.endswith(".class") and p.rsplit("/",1)[-1] in ("ModItems.class","ModBlocks.class","AllItems.class","AllBlocks.class","MekanismItems.class","MekanismBlocks.class","IC2Items.class","IC2Blocks.class","ItemsItems.class","ItemRegistry.class","BlockRegistry.class")]
+                  if title == "IC2":
+                      selected = [p for p in z.namelist() if p.endswith(".class") and b"advanced_circuit" in z.read(p) and (b"register" in z.read(p) or b"DeferredRegister" in z.read(p))]
+              for p in selected:
+                  name = p[:-6].replace("/", ".")
+                  classes[name] = subprocess.run(["javap", "-c", "-p", "-classpath", str(path.resolve()), name], check=True, capture_output=True, text=True).stdout
+              report[title] = {"filename":path.name, "sha256":hashlib.sha256(path.read_bytes()).hexdigest(),"recipe_results":outputs,"class_disassembly":classes,"localization":langs}
+          (root / "dragonrise-progression-evidence.json").write_text(json.dumps(report, ensure_ascii=False))
+          PY
+      - name: Compare checked-in inventory and recipes to real JAR evidence
+        run: python scripts/verify_dragonrise_coverage.py "$RUNNER_TEMP" --output "$RUNNER_TEMP/dragonrise-coverage.json"
+      - name: Upload evidence only (no third-party binaries)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dragonrise-static-evidence
+          path: |
+            ${{ runner.temp }}/dragonrise-evidence.json
+            ${{ runner.temp }}/dragonrise-detail-evidence.json
+            ${{ runner.temp }}/dragonrise-progression-evidence.json
+            ${{ runner.temp }}/dragonrise-coverage.json
+          retention-days: 7
+          if-no-files-found: error
+      - name: Require complete, verified crafting scope before release
+        run: python scripts/verify_dragonrise_coverage.py "$RUNNER_TEMP" --require-complete

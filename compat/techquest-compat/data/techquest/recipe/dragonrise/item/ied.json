@@ -1,0 +1,21 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "misc",
+  "inputs": [
+    "superbwarfare:armor_plate",
+    "superbwarfare:light_armament_module"
+  ],
+  "result": {
+    "item": "dragonrise_reforge:ied"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    }
+  ]
+}
