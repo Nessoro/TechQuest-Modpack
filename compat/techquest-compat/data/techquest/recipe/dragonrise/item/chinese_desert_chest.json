@@ -1,0 +1,21 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "misc",
+  "inputs": [
+    "4 dragonrise_reforge:kevlar",
+    "4 minecraft:iron_ingot"
+  ],
+  "result": {
+    "item": "dragonrise_reforge:chinese_desert_chest"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    }
+  ]
+}

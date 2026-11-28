@@ -1,0 +1,29 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "land",
+  "inputs": [
+    "8 superbwarfare:steel_block",
+    "6 superbwarfare:track",
+    "superbwarfare:large_motor",
+    "superbwarfare:medium_armament_module",
+    "3 create:precision_mechanism",
+    "6 superbwarfare:armor_plate"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:lvt"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ]
+}

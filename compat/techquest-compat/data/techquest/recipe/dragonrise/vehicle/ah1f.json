@@ -1,0 +1,34 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "aircraft",
+  "inputs": [
+    "7 superbwarfare:steel_block",
+    "2 superbwarfare:large_propeller",
+    "2 superbwarfare:large_motor",
+    "superbwarfare:medium_armament_module",
+    "superbwarfare:large_battery_pack",
+    "4 ic2:circuit",
+    "3 create:precision_mechanism"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:ah1f"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ic2"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "land",
+  "inputs": [
+    "20 superbwarfare:steel_block",
+    "10 superbwarfare:cemented_carbide_block",
+    "10 superbwarfare:track",
+    "4 superbwarfare:large_motor",
+    "3 superbwarfare:heavy_armament_module",
+    "2 mekanism:ultimate_control_circuit",
+    "4 mekanism:alloy_atomic",
+    "6 ic2:advanced_circuit"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:darkbear"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ic2"
+    }
+  ]
+}

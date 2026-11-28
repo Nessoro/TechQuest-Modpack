@@ -1,0 +1,3747 @@
+{
+  "schema": 1,
+  "source": {
+    "dragonrise_version": "1.5.1",
+    "dragonrise_sha256": "80ef4546d78bd7e0d5733ace4aa32448dc3c899905aaedfa2cf0c706538397f9",
+    "superb_warfare_version": "0.8.9.2",
+    "superb_warfare_sha256": "c06b4da8258adbc7d623c5c8e36ffc642c28831ddf6c9aa9c05c10dd18997490",
+    "audit_run": "https://github.com/Nessoro/TechQuest-Modpack/actions/runs/46128787328",
+    "scope": "Static registrations and creative-tab code; not runtime registry or obtainability proof."
+  },
+  "stats": {
+    "registered_items": 67,
+    "registered_entities": 185,
+    "registered_blocks": 1,
+    "static_player_facing_targets": 195,
+    "new_recipes": 195,
+    "legacy_recipe_targets": 118,
+    "invalid_legacy_target": 1,
+    "excluded": 51,
+    "review_required": 7,
+    "runtime_verified": false,
+    "obtainable_coverage_percent": null
+  },
+  "entries": [
+    {
+      "registry_id": "dragonrise_reforge:vehicle_deployer",
+      "kind": "block",
+      "display_name": "Vehicle Deployer",
+      "category": "administrative",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Administrative programmable spawner: configuration requires permission level 2 and redstone can deploy entities.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:9m133",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:aashell",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:agm65",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:aim120",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:aim9",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:airbomb500kg",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:ammo_supply_station",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:anti_top_wire_guide_missile",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:attack_drone",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:cluster_charge",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:dshk",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": [
+        "dragonrise_reforge:dshk"
+      ]
+    },
+    {
+      "registry_id": "dragonrise_reforge:gb_250",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:gb_500",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:gbu_12",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:gbu_24",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:generator",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "review_required",
+      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:hj8",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:ied",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:jdam_er",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:kd_88a",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:kh_29",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:ls_6",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:ls_6_ir",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:m2",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": [
+        "dragonrise_reforge:m2"
+      ]
+    },
+    {
+      "registry_id": "dragonrise_reforge:missile_shell",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:mk19",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": [
+        "dragonrise_reforge:mk19"
+      ]
+    },
+    {
+      "registry_id": "dragonrise_reforge:nukerbomb",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:pak40",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": [
+        "dragonrise_reforge:pak40"
+      ]
+    },
+    {
+      "registry_id": "dragonrise_reforge:pl_10",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:pl_12",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:pl_15",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:qjz89",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": [
+        "dragonrise_reforge:qjz89"
+      ]
+    },
+    {
+      "registry_id": "dragonrise_reforge:r_73",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:r_77",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:r6_drone",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:sd905",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "review_required",
+      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:shield",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:signal_flare",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:spacebag",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "review_required",
+      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:spg9",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": [
+        "dragonrise_reforge:spg9"
+      ]
+    },
+    {
+      "registry_id": "dragonrise_reforge:star_shell",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Internal projectile or effect entity, not a separate inventory stack.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:su24",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "review_required",
+      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:su24m",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "review_required",
+      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:terrorist",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Mob, not a survival inventory item.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:test",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Hidden test entity.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:test_ship",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Hidden test entity.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:zsl10",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "review_required",
+      "reason": "Registered non-tab entity; intended player-facing availability requires inspection.",
+      "original_recipe_ids": []
+    },
+    {
+      "registry_id": "dragonrise_reforge:zu23",
+      "kind": "entity",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Already represented by its registered deployer or consumable item.",
+      "original_recipe_ids": [
+        "dragonrise_reforge:zu23"
+      ]
+    },
+    {
+      "registry_id": "dragonrise_reforge:9m133",
+      "kind": "item",
+      "display_name": "Kornet Anti-Tank Missile",
+      "category": "defense",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/9m133",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:aljin_helmet",
+      "kind": "item",
+      "display_name": "Aljin Ballistic Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/aljin_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:01_aljin_helmet_assembling",
+        "dragonrise_reforge:aljin_helmet",
+        "dragonrise_reforge:aljin_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ammo_supply_station",
+      "kind": "item",
+      "display_name": "Ammo Supply Station",
+      "category": "misc",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/ammo_supply_station",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:attack_drone",
+      "kind": "item",
+      "display_name": "Attack Drone",
+      "category": "misc",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/attack_drone",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:chinese_desert_chest",
+      "kind": "item",
+      "display_name": "PLA Desert Camo Jacket",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/chinese_desert_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:chinese_desert_chest",
+        "dragonrise_reforge:chinese_desert_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:chinese_desert_helmet",
+      "kind": "item",
+      "display_name": "PLA Desert Camo Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/chinese_desert_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:chinese_desert_helmet",
+        "dragonrise_reforge:chinese_desert_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:chinese_desert_pants",
+      "kind": "item",
+      "display_name": "PLA Desert Camo Pants",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/chinese_desert_pants",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:chinese_desert_pants",
+        "dragonrise_reforge:chinese_desert_pants_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:cluster_charge",
+      "kind": "item",
+      "display_name": "Cluster Charge",
+      "category": "misc",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/cluster_charge",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:cn21",
+      "kind": "item",
+      "display_name": "Chinese Type 21 Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/cn21",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:02_cn21_assembling",
+        "dragonrise_reforge:cn21_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:cnchest",
+      "kind": "item",
+      "display_name": "Chinese Type 21 Uniform & Carrier",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/cnchest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:04_cnchest_assembling",
+        "dragonrise_reforge:cnchest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:cnfast",
+      "kind": "item",
+      "display_name": "FAST Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/cnfast",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:03_cnfast_assembling",
+        "dragonrise_reforge:cnfast_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:desert07_chest",
+      "kind": "item",
+      "display_name": "Type 07 Desert Camo Jacket",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/desert07_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:06_desert07_chest_assembling",
+        "dragonrise_reforge:desert07_chest",
+        "dragonrise_reforge:desert07_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:desert07_helmet",
+      "kind": "item",
+      "display_name": "Type 07 Desert Camo Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/desert07_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:05_desert07_helmet_assembling",
+        "dragonrise_reforge:desert07_helmet",
+        "dragonrise_reforge:desert07_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:desert07_pants",
+      "kind": "item",
+      "display_name": "Type 07 Desert Camo Pants",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/desert07_pants",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:07_desert07_pants_assembling",
+        "dragonrise_reforge:desert07_pants",
+        "dragonrise_reforge:desert07_pants_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:dshk",
+      "kind": "item",
+      "display_name": "DShK Heavy Machine Gun (Deployable)",
+      "category": "defense",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/dshk",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:fast_helmet",
+      "kind": "item",
+      "display_name": "FAST Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/fast_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:08_fast_helmet_assembling",
+        "dragonrise_reforge:fast_helmet",
+        "dragonrise_reforge:fast_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:generator_deployer",
+      "kind": "item",
+      "display_name": "Generator Deployer",
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "review_required",
+      "reason": "Hidden generator deployer; confirm intended survival availability and energy behavior.",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:gorka3",
+      "kind": "item",
+      "display_name": "Gorka-3 Combat Suit",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/gorka3",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:09_gorka3_assembling",
+        "dragonrise_reforge:gorka3",
+        "dragonrise_reforge:gorka3_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:gorka3_leggings",
+      "kind": "item",
+      "display_name": "Gorka-3 Leggings",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/gorka3_leggings",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:10_gorka3_leggings_assembling",
+        "dragonrise_reforge:gorka3_leggings",
+        "dragonrise_reforge:gorka3_leggings_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:hj8",
+      "kind": "item",
+      "display_name": "HJ-8 Anti-Tank Missile",
+      "category": "defense",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/hj8",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ied",
+      "kind": "item",
+      "display_name": "Improvised Explosive Device",
+      "category": "misc",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/ied",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:jungle07_chest",
+      "kind": "item",
+      "display_name": "Type 07 Jungle Camo Jacket",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/jungle07_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:jungle07_chest",
+        "dragonrise_reforge:jungle07_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:jungle07_helmet",
+      "kind": "item",
+      "display_name": "Type 07 Jungle Camo Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/jungle07_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:jungle07_helmet",
+        "dragonrise_reforge:jungle07_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:jungle07_medic_chest",
+      "kind": "item",
+      "display_name": "Type 07 Jungle Camo Medic Jacket",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/jungle07_medic_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:jungle07_medic_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:jungle07_medic_helmet",
+      "kind": "item",
+      "display_name": "Type 07 Jungle Camo Medic Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/jungle07_medic_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:jungle07_medic_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:jungle07_medic_pants",
+      "kind": "item",
+      "display_name": "Type 07 Jungle Camo Medic Pants",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/jungle07_medic_pants",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:jungle07_medic_pants_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:jungle07_pants",
+      "kind": "item",
+      "display_name": "Type 07 Jungle Camo Pants",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/jungle07_pants",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:jungle07_pants",
+        "dragonrise_reforge:jungle07_pants_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:kevlar",
+      "kind": "item",
+      "display_name": "Kevlar Vest",
+      "category": "misc",
+      "progression_tier": 1,
+      "proposed_crafting_method": "crafting_table",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/kevlar",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:kevlar"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:kr06_chest",
+      "kind": "item",
+      "display_name": "KR06 Chestplate",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/kr06_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:12_kr06_chest_assembling",
+        "dragonrise_reforge:kr06_chest",
+        "dragonrise_reforge:kr06_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:kr06_helmet",
+      "kind": "item",
+      "display_name": "KR06 Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/kr06_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:11_kr06_helmet_assembling",
+        "dragonrise_reforge:kr06_helmet",
+        "dragonrise_reforge:kr06_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:kr06_pants",
+      "kind": "item",
+      "display_name": "KR06 Leggings",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/kr06_pants",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:13_kr06_pants_assembling",
+        "dragonrise_reforge:kr06_pants",
+        "dragonrise_reforge:kr06_pants_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:kv1",
+      "kind": "item",
+      "display_name": "KV-1 Heavy Tank",
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Hidden redundant item; the same KV-1 is provided by the visible SBW deployment container.",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m2",
+      "kind": "item",
+      "display_name": "M2HB Heavy Machine Gun (Deployable)",
+      "category": "defense",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/m2",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:med21_chest",
+      "kind": "item",
+      "display_name": "Type 21 MED Chestplate",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/med21_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:14_med21_chest_assembling",
+        "dragonrise_reforge:med21_chest",
+        "dragonrise_reforge:med21_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:misc_icon",
+      "kind": "item",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Creative tab icon.",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:mk19",
+      "kind": "item",
+      "display_name": "MK-19 Grenade Launcher",
+      "category": "defense",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/mk19",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:msv_chest",
+      "kind": "item",
+      "display_name": "MSV Ballistic Vest",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/msv_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:15_msv_chest_assembling",
+        "dragonrise_reforge:msv_chest",
+        "dragonrise_reforge:msv_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:msv_pants",
+      "kind": "item",
+      "display_name": "MSV Combat Pants",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/msv_pants",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:16_msv_pants_assembling",
+        "dragonrise_reforge:msv_pants",
+        "dragonrise_reforge:msv_pants_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ocean07_chest",
+      "kind": "item",
+      "display_name": "Type 07 Ocean Camo Jacket",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/ocean07_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:18_ocean07_chest_assembling",
+        "dragonrise_reforge:ocean07_chest",
+        "dragonrise_reforge:ocean07_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ocean07_helmet",
+      "kind": "item",
+      "display_name": "Type 07 Ocean Camo Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/ocean07_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:17_ocean07_helmet_assembling",
+        "dragonrise_reforge:ocean07_helmet",
+        "dragonrise_reforge:ocean07_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ocean07_pants",
+      "kind": "item",
+      "display_name": "Type 07 Ocean Camo Pants",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/ocean07_pants",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:19_ocean07_pants_assembling",
+        "dragonrise_reforge:ocean07_pants",
+        "dragonrise_reforge:ocean07_pants_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:pak40",
+      "kind": "item",
+      "display_name": "Pak 40 Anti-Tank Gun",
+      "category": "defense",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/pak40",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:pants21",
+      "kind": "item",
+      "display_name": "Type 21 Pants",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/pants21",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:20_pants21_assembling",
+        "dragonrise_reforge:pants21_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:phone",
+      "kind": "item",
+      "display_name": "Boy's Phone",
+      "category": "misc",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/phone",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:qjz89",
+      "kind": "item",
+      "display_name": "QJZ-89 AA Machine Gun (Deployable)",
+      "category": "defense",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/qjz89",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:r6_drone",
+      "kind": "item",
+      "display_name": "Scout Drone",
+      "category": "misc",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/r6_drone",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:russian_soldier_chest",
+      "kind": "item",
+      "display_name": "Russian Soldier Jacket",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/russian_soldier_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:russian_soldier_chest",
+        "dragonrise_reforge:russian_soldier_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:russian_soldier_helmet",
+      "kind": "item",
+      "display_name": "Russian Soldier Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/russian_soldier_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:russian_soldier_helmet",
+        "dragonrise_reforge:russian_soldier_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:russian_soldier_pants",
+      "kind": "item",
+      "display_name": "Russian Soldier Pants",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/russian_soldier_pants",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:russian_soldier_pants",
+        "dragonrise_reforge:russian_soldier_pants_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:sf_tab_icon",
+      "kind": "item",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Creative tab icon.",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:shield",
+      "kind": "item",
+      "display_name": "Portable Foldable Shield",
+      "category": "misc",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/shield",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:signal_flare",
+      "kind": "item",
+      "display_name": "Signal Flare",
+      "category": "misc",
+      "progression_tier": 1,
+      "proposed_crafting_method": "crafting_table",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/signal_flare",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:signal_gun",
+      "kind": "item",
+      "display_name": "Signal Gun",
+      "category": "misc",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/signal_gun",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:sniper21_helmet",
+      "kind": "item",
+      "display_name": "Type 21 Recon Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/sniper21_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:21_sniper21_helmet_assembling",
+        "dragonrise_reforge:sniper21_helmet",
+        "dragonrise_reforge:sniper21_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:soc_tab_icon",
+      "kind": "item",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Creative tab icon.",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:spg9",
+      "kind": "item",
+      "display_name": "SPG-9 Recoilless Gun (Deployable)",
+      "category": "defense",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/spg9",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:spray_can",
+      "kind": "item",
+      "display_name": "Spray Can",
+      "category": "misc",
+      "progression_tier": 1,
+      "proposed_crafting_method": "crafting_table",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/spray_can",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:spray_can"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:t21_helmet",
+      "kind": "item",
+      "display_name": "Type T21 Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/t21_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:22_t21_helmet_assembling",
+        "dragonrise_reforge:t21_helmet",
+        "dragonrise_reforge:t21_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:tab_icon",
+      "kind": "item",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Creative tab icon.",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:terrorist_spawn_egg",
+      "kind": "item",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Hidden mob spawn egg, not a survival equipment item.",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ukrainian_soldier_chest",
+      "kind": "item",
+      "display_name": "Ukrainian Soldier Jacket",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/ukrainian_soldier_chest",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ukrainian_soldier_chest",
+        "dragonrise_reforge:ukrainian_soldier_chest_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ukrainian_soldier_helmet",
+      "kind": "item",
+      "display_name": "Ukrainian Soldier Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/ukrainian_soldier_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ukrainian_soldier_helmet",
+        "dragonrise_reforge:ukrainian_soldier_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ukrainian_soldier_pants",
+      "kind": "item",
+      "display_name": "Ukrainian Soldier Pants",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/ukrainian_soldier_pants",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ukrainian_soldier_pants",
+        "dragonrise_reforge:ukrainian_soldier_pants_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:un_helmet",
+      "kind": "item",
+      "display_name": "UN Helmet",
+      "category": "armor",
+      "progression_tier": 1,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/un_helmet",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:23_un_helmet_assembling",
+        "dragonrise_reforge:un_helmet",
+        "dragonrise_reforge:un_helmet_assembling"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:vehicle_deployer",
+      "kind": "item",
+      "display_name": "Vehicle Deployer",
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Administrative programmable spawner: configuration requires permission level 2 and redstone can deploy entities.",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ww2_tab_icon",
+      "kind": "item",
+      "display_name": null,
+      "category": "technical_or_hidden",
+      "progression_tier": null,
+      "proposed_crafting_method": null,
+      "implementation_status": "excluded",
+      "reason": "Creative tab icon.",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:zu23",
+      "kind": "item",
+      "display_name": "ZU-23 Twin AA Gun",
+      "category": "defense",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/item/zu23",
+      "creative_evidence": "mod_creative_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:2s25m",
+      "kind": "vehicle",
+      "display_name": "2S25 Sprut-SDM1",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/2s25m",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:2s38",
+      "kind": "vehicle",
+      "display_name": "2S38",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/2s38",
+      "balance_profile": "modern_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:2s38"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:625e",
+      "kind": "vehicle",
+      "display_name": "625E",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/625e",
+      "balance_profile": "modern_wheeled",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:625e"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:aav7a1",
+      "kind": "vehicle",
+      "display_name": "AAV7A1",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/aav7a1",
+      "balance_profile": "cold_war_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:aavc7c1",
+      "kind": "vehicle",
+      "display_name": "AAVC7C1",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/aavc7c1",
+      "balance_profile": "cold_war_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ac130",
+      "kind": "vehicle",
+      "display_name": "AC-130",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ac130",
+      "balance_profile": "heavy_aircraft",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ac130"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ah1f",
+      "kind": "vehicle",
+      "display_name": "AH-1F Cobra",
+      "category": "aircraft",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ah1f",
+      "balance_profile": "cold_war_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ah64",
+      "kind": "vehicle",
+      "display_name": "AH-64 Apache",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ah64",
+      "balance_profile": "modern_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ah64"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:akm",
+      "kind": "vehicle",
+      "display_name": "AKM Hornet",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/akm",
+      "balance_profile": "modern_wheeled",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:amx56",
+      "kind": "vehicle",
+      "display_name": "AMX-56 Leclerc",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/amx56",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:amx56"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:av8b",
+      "kind": "vehicle",
+      "display_name": "AV-8B Harrier II",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/av8b",
+      "balance_profile": "early_jet",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:av8b"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ba10",
+      "kind": "vehicle",
+      "display_name": "BA-10 Armored Car",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ba10",
+      "balance_profile": "ww2_wheeled",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ba10"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:bmd4m",
+      "kind": "vehicle",
+      "display_name": "BMD-4M",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/bmd4m",
+      "balance_profile": "modern_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:bmd4m"
+      ],
+      "original_recipe_status": "invalid_entity_id"
+    },
+    {
+      "registry_id": "dragonrise_reforge:bmp3",
+      "kind": "vehicle",
+      "display_name": "BMP-3",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/bmp3",
+      "balance_profile": "cold_war_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:bmp3"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:bmpt72",
+      "kind": "vehicle",
+      "display_name": "BMPT-72",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/bmpt72",
+      "balance_profile": "modern_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:bmpt72"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:brdm2",
+      "kind": "vehicle",
+      "display_name": "BRDM-2",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/brdm2",
+      "balance_profile": "cold_war_wheeled",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:camel",
+      "kind": "vehicle",
+      "display_name": "Camel",
+      "category": "aircraft",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/camel",
+      "balance_profile": "ww2_air",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:challenger_ds",
+      "kind": "vehicle",
+      "display_name": "Challenger DS MBT",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/challenger_ds",
+      "balance_profile": "cold_war_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:chonmaho5",
+      "kind": "vehicle",
+      "display_name": "Chonma-Ho 5",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/chonmaho5",
+      "balance_profile": "cold_war_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:churchill_vii",
+      "kind": "vehicle",
+      "display_name": "Churchill VII",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/churchill_vii",
+      "balance_profile": "ww2_heavy",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:churchill_vii"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:cm34",
+      "kind": "vehicle",
+      "display_name": "CM-34",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/cm34",
+      "balance_profile": "modern_wheeled",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:cm34"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:comet",
+      "kind": "vehicle",
+      "display_name": "Comet",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/comet",
+      "balance_profile": "ww2_medium",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:comet"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:csk181",
+      "kind": "vehicle",
+      "display_name": "CSK-181",
+      "category": "civilian",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/csk181",
+      "balance_profile": "civilian_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:csk181"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:cv90",
+      "kind": "vehicle",
+      "display_name": "CV90",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/cv90",
+      "balance_profile": "modern_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:cv90"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:cyborg_tank",
+      "kind": "vehicle",
+      "display_name": "Annihilation Tank",
+      "category": "land",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/cyborg_tank",
+      "balance_profile": "fictional_heavy",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:cyborg_tank"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:darkbear",
+      "kind": "vehicle",
+      "display_name": "Grizzly Bear Tank",
+      "category": "land",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/darkbear",
+      "balance_profile": "fictional_heavy",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ec665",
+      "kind": "vehicle",
+      "display_name": "EC665 Tiger",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ec665",
+      "balance_profile": "modern_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ec665"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:f14",
+      "kind": "vehicle",
+      "display_name": "F-14 Tomcat",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/f14",
+      "balance_profile": "early_jet",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:f14"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:f15e",
+      "kind": "vehicle",
+      "display_name": "F-15E Strike Eagle",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/f15e",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:f16c",
+      "kind": "vehicle",
+      "display_name": "F-16C Fighting Falcon",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/f16c",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:f4u",
+      "kind": "vehicle",
+      "display_name": "F4U Corsair",
+      "category": "aircraft",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/f4u",
+      "balance_profile": "ww2_air",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:fa18e",
+      "kind": "vehicle",
+      "display_name": "F/A-18E Super Hornet",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/fa18e",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:fav_a",
+      "kind": "vehicle",
+      "display_name": "FAV-A",
+      "category": "civilian",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/fav_a",
+      "balance_profile": "civilian_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:fav_a"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:flarakpz1",
+      "kind": "vehicle",
+      "display_name": "Roland 3",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/flarakpz1",
+      "balance_profile": "cold_war_anti_air",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:humvee",
+      "kind": "vehicle",
+      "display_name": "HMMWV",
+      "category": "civilian",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/humvee",
+      "balance_profile": "civilian_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:humveetow",
+      "kind": "vehicle",
+      "display_name": "TOW Humvee",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/humveetow",
+      "balance_profile": "armed_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:hyr0",
+      "kind": "vehicle",
+      "display_name": "HYR0",
+      "category": "land",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/hyr0",
+      "balance_profile": "fictional_heavy",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:hyr0"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ik_fightcat",
+      "kind": "vehicle",
+      "display_name": "I.K. Battle Cat",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ik_fightcat",
+      "balance_profile": "advanced_aircraft",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ik_locust",
+      "kind": "vehicle",
+      "display_name": "I.K. Locust Engineering Ship",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ik_locust",
+      "balance_profile": "advanced_aircraft",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:is2",
+      "kind": "vehicle",
+      "display_name": "IS-2",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/is2",
+      "balance_profile": "ww2_heavy",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:is2"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:j10",
+      "kind": "vehicle",
+      "display_name": "J-10",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/j10",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:j10"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:j10c",
+      "kind": "vehicle",
+      "display_name": "J-10C",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/j10c",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:j10c"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:j11",
+      "kind": "vehicle",
+      "display_name": "J-11B",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/j11",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:j11"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:j15t",
+      "kind": "vehicle",
+      "display_name": "J-15T",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/j15t",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:j15t"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:j16",
+      "kind": "vehicle",
+      "display_name": "J-16",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/j16",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:j16"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:j20",
+      "kind": "vehicle",
+      "display_name": "J-20",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/j20",
+      "balance_profile": "advanced_aircraft",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:j20"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:j20vtol",
+      "kind": "vehicle",
+      "display_name": "J-20C (VTOL)",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/j20vtol",
+      "balance_profile": "advanced_aircraft",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:j20vtol"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:j35",
+      "kind": "vehicle",
+      "display_name": "J-35",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/j35",
+      "balance_profile": "advanced_aircraft",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:j35"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:j8",
+      "kind": "vehicle",
+      "display_name": "J-8B",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/j8",
+      "balance_profile": "early_jet",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:j8"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:jas39e",
+      "kind": "vehicle",
+      "display_name": "JAS 39E Gripen",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/jas39e",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:jas39e"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:jf17",
+      "kind": "vehicle",
+      "display_name": "JF-17 Thunder",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/jf17",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:jf17"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:k1a1",
+      "kind": "vehicle",
+      "display_name": "K1A1 Main Battle Tank",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/k1a1",
+      "balance_profile": "cold_war_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:k1a1"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ka50",
+      "kind": "vehicle",
+      "display_name": "Ka-50 Hokum",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ka50",
+      "balance_profile": "modern_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ka50"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:kv1",
+      "kind": "vehicle",
+      "display_name": "KV-1 Heavy Tank",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/kv1",
+      "balance_profile": "ww2_heavy",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:kv2",
+      "kind": "vehicle",
+      "display_name": "KV-2 Heavy Tank",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/kv2",
+      "balance_profile": "ww2_heavy",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:kv2"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:l1a2",
+      "kind": "vehicle",
+      "display_name": "Gepard 1A2 SPAAG",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/l1a2",
+      "balance_profile": "cold_war_anti_air",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:lcm",
+      "kind": "vehicle",
+      "display_name": "LCM Landing Craft",
+      "category": "water",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/lcm",
+      "balance_profile": "ww2_naval",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:lcm"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:leopard2a4",
+      "kind": "vehicle",
+      "display_name": "Leopard 2A4",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/leopard2a4",
+      "balance_profile": "cold_war_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:lvt",
+      "kind": "vehicle",
+      "display_name": "LVT",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/lvt",
+      "balance_profile": "ww2_medium",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m10booker",
+      "kind": "vehicle",
+      "display_name": "M10 Booker",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m10booker",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:m10booker"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m1126",
+      "kind": "vehicle",
+      "display_name": "M1126 Stryker",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m1126",
+      "balance_profile": "modern_wheeled",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m1128",
+      "kind": "vehicle",
+      "display_name": "M1128 MGS",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m1128",
+      "balance_profile": "modern_wheeled",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:m1128"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m113",
+      "kind": "vehicle",
+      "display_name": "M113",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m113",
+      "balance_profile": "cold_war_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m1296",
+      "kind": "vehicle",
+      "display_name": "M1296 Dragoon",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m1296",
+      "balance_profile": "modern_wheeled",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:m1296"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m1a1hc",
+      "kind": "vehicle",
+      "display_name": "M1A1HC",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m1a1hc",
+      "balance_profile": "cold_war_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m1a2sepv1",
+      "kind": "vehicle",
+      "display_name": "M1A2 SEPv1",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m1a2sepv1",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m1a2sepv2",
+      "kind": "vehicle",
+      "display_name": "M1A2 SEPv2",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m1a2sepv2",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:m1a2sepv2"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m270",
+      "kind": "vehicle",
+      "display_name": "M270 MLRS",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m270",
+      "balance_profile": "modern_artillery",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m3a3",
+      "kind": "vehicle",
+      "display_name": "M3A3 Bradley",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m3a3",
+      "balance_profile": "modern_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:m3a3"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m3stuart",
+      "kind": "vehicle",
+      "display_name": "M3Stuart",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m3stuart",
+      "balance_profile": "ww2_light",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m4a2",
+      "kind": "vehicle",
+      "display_name": "M4A2 Sherman",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m4a2",
+      "balance_profile": "ww2_medium",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:m4a2"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:m4a2_105",
+      "kind": "vehicle",
+      "display_name": "M4A2 (105mm)",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/m4a2_105",
+      "balance_profile": "ww2_medium",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:markv",
+      "kind": "vehicle",
+      "display_name": "MARK-V",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/markv",
+      "balance_profile": "ww2_medium",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:maus",
+      "kind": "vehicle",
+      "display_name": "Maus",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/maus",
+      "balance_profile": "ww2_superheavy",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:maus"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:mi24p",
+      "kind": "vehicle",
+      "display_name": "Mi-24P Hind",
+      "category": "aircraft",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/mi24p",
+      "balance_profile": "cold_war_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:mi24v",
+      "kind": "vehicle",
+      "display_name": "Mi-24V Hind",
+      "category": "aircraft",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/mi24v",
+      "balance_profile": "cold_war_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:motuo",
+      "kind": "vehicle",
+      "display_name": "Motorcycle with Sidecar",
+      "category": "civilian",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/motuo",
+      "balance_profile": "civilian_light",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:motuo"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:mv3",
+      "kind": "vehicle",
+      "display_name": "MV3 Tactical Truck",
+      "category": "civilian",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/mv3",
+      "balance_profile": "logistics_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:mv3_armed",
+      "kind": "vehicle",
+      "display_name": "MV3 Armed Tactical Truck",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/mv3_armed",
+      "balance_profile": "armed_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:mv3_supply",
+      "kind": "vehicle",
+      "display_name": "MV3 Supply Truck",
+      "category": "civilian",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/mv3_supply",
+      "balance_profile": "logistics_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:nh90",
+      "kind": "vehicle",
+      "display_name": "NH90",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/nh90",
+      "balance_profile": "modern_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:npds114",
+      "kind": "vehicle",
+      "display_name": "NPDS114 Auto Turret",
+      "category": "defense",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/npds114",
+      "balance_profile": "fixed_defense",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:npds514",
+      "kind": "vehicle",
+      "display_name": "NPDS514 Auto Turret",
+      "category": "defense",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/npds514",
+      "balance_profile": "fixed_defense",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:npds810",
+      "kind": "vehicle",
+      "display_name": "NPDS810 Auto Turret",
+      "category": "defense",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/npds810",
+      "balance_profile": "advanced_defense",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:panzer4",
+      "kind": "vehicle",
+      "display_name": "Panzer IV",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/panzer4",
+      "balance_profile": "ww2_medium",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:panzer4"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:pershing",
+      "kind": "vehicle",
+      "display_name": "M26 Pershing",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/pershing",
+      "balance_profile": "ww2_heavy",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:pershing"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:project640",
+      "kind": "vehicle",
+      "display_name": "Object 640",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/project640",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:project640"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:pzbjy",
+      "kind": "vehicle",
+      "display_name": "Obstacle Clearing Northern Golden Eagle",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/pzbjy",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:q5",
+      "kind": "vehicle",
+      "display_name": "Q-5",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/q5",
+      "balance_profile": "early_jet",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:q5"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:refale",
+      "kind": "vehicle",
+      "display_name": "Rafale",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/refale",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:refale"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:refaleaa",
+      "kind": "vehicle",
+      "display_name": "Rafale (Naval)",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/refaleaa",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:refaleaa"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:shuangweixie",
+      "kind": "vehicle",
+      "display_name": "Twin-tailed Scorpion UAV",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/shuangweixie",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:silverhand_mk_iv",
+      "kind": "vehicle",
+      "display_name": "Silverhand - Mk. IV",
+      "category": "land",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/silverhand_mk_iv",
+      "balance_profile": "fictional_heavy",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:silverhand_mk_iv"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:strv103",
+      "kind": "vehicle",
+      "display_name": "Strv 103",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/strv103",
+      "balance_profile": "cold_war_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:strv103"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:sx1",
+      "kind": "vehicle",
+      "display_name": "SX-1",
+      "category": "civilian",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/sx1",
+      "balance_profile": "civilian_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:sx1"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:syy651",
+      "kind": "vehicle",
+      "display_name": "SYY-651",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/syy651",
+      "balance_profile": "modern_fighter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:syy651"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:t26b",
+      "kind": "vehicle",
+      "display_name": "T-26B Light Tank",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/t26b",
+      "balance_profile": "ww2_light",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:t26b"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:t3476",
+      "kind": "vehicle",
+      "display_name": "T-34/76",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/t3476",
+      "balance_profile": "ww2_medium",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:t3485",
+      "kind": "vehicle",
+      "display_name": "T-34-85",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/t3485",
+      "balance_profile": "ww2_medium",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:t3485"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:t72b3",
+      "kind": "vehicle",
+      "display_name": "T-72B3 MBT",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/t72b3",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:t80",
+      "kind": "vehicle",
+      "display_name": "T-80BVM",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/t80",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:t80"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:t80b",
+      "kind": "vehicle",
+      "display_name": "T-80B",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/t80b",
+      "balance_profile": "cold_war_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:t80b"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:t90mh",
+      "kind": "vehicle",
+      "display_name": "T-90M",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/t90mh",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:t90mh"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:tiger",
+      "kind": "vehicle",
+      "display_name": "Tiger I",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/tiger",
+      "balance_profile": "ww2_heavy",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:tiger"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:tjgc",
+      "kind": "vehicle",
+      "display_name": "TJP-F01 Tianji",
+      "category": "aircraft",
+      "progression_tier": 5,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/tjgc",
+      "balance_profile": "advanced_aircraft",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:toyota_seiki",
+      "kind": "vehicle",
+      "display_name": "Toyota Century",
+      "category": "civilian",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/toyota_seiki",
+      "balance_profile": "civilian_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:toyota_seiki"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:tunguska",
+      "kind": "vehicle",
+      "display_name": "2K22 Tunguska",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/tunguska",
+      "balance_profile": "cold_war_anti_air",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:tunguska"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:type100",
+      "kind": "vehicle",
+      "display_name": "Type 100",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/type100",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:type100"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:type3",
+      "kind": "vehicle",
+      "display_name": "Type 3 Ka-Chi",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/type3",
+      "balance_profile": "ww2_medium",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:type97",
+      "kind": "vehicle",
+      "display_name": "Type 95 Ha-Go",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/type97",
+      "balance_profile": "ww2_light",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:type97q",
+      "kind": "vehicle",
+      "display_name": "Type 97 Chi-Ha",
+      "category": "land",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/type97q",
+      "balance_profile": "ww2_light",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:uh60",
+      "kind": "vehicle",
+      "display_name": "UH-60 Black Hawk",
+      "category": "aircraft",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/uh60",
+      "balance_profile": "cold_war_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:uh60"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ural4320",
+      "kind": "vehicle",
+      "display_name": "Ural-4320",
+      "category": "civilian",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ural4320",
+      "balance_profile": "logistics_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ural4320_supply",
+      "kind": "vehicle",
+      "display_name": "Ural-4320 Supply Truck",
+      "category": "civilian",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ural4320_supply",
+      "balance_profile": "logistics_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ural4320_zu23",
+      "kind": "vehicle",
+      "display_name": "Ural-4320 ZU-23 SPAA",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ural4320_zu23",
+      "balance_profile": "armed_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:vt4a1",
+      "kind": "vehicle",
+      "display_name": "VT4A1",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/vt4a1",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:vt4a1"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:vt4b",
+      "kind": "vehicle",
+      "display_name": "VT4B",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/vt4b",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:vt4b"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:wlhgzu23",
+      "kind": "vehicle",
+      "display_name": "Wuling Hongguang ZU-23",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/wlhgzu23",
+      "balance_profile": "armed_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:wlhgzu23"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:wlsc",
+      "kind": "vehicle",
+      "display_name": "Wuling Hongguang",
+      "category": "civilian",
+      "progression_tier": 2,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/wlsc",
+      "balance_profile": "civilian_transport",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:wlsc"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:z10a",
+      "kind": "vehicle",
+      "display_name": "Z-10A",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/z10a",
+      "balance_profile": "modern_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:z10a"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:z10me",
+      "kind": "vehicle",
+      "display_name": "Z-10ME",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/z10me",
+      "balance_profile": "modern_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:z10me"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:z20",
+      "kind": "vehicle",
+      "display_name": "Z-20",
+      "category": "aircraft",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/z20",
+      "balance_profile": "modern_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:z9",
+      "kind": "vehicle",
+      "display_name": "Z-9",
+      "category": "aircraft",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/z9",
+      "balance_profile": "cold_war_helicopter",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:z9"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:zbd04a",
+      "kind": "vehicle",
+      "display_name": "ZBD-04A",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/zbd04a",
+      "balance_profile": "modern_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:zbd04a"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:zbd05",
+      "kind": "vehicle",
+      "display_name": "ZBD-05",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/zbd05",
+      "balance_profile": "modern_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:zbl08",
+      "kind": "vehicle",
+      "display_name": "ZBL-08",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/zbl08",
+      "balance_profile": "modern_wheeled",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:zbl08"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:zlt11",
+      "kind": "vehicle",
+      "display_name": "ZLT-11",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/zlt11",
+      "balance_profile": "modern_wheeled",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:zlt11"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:zsd89a",
+      "kind": "vehicle",
+      "display_name": "ZSD-89A Tracked APC",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/zsd89a",
+      "balance_profile": "cold_war_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:zsd89a_covered",
+      "kind": "vehicle",
+      "display_name": "ZSD-89A Tracked APC (Semi-Enclosed Turret)",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/zsd89a_covered",
+      "balance_profile": "cold_war_tracked",
+      "creative_evidence": "ww2_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:zsu234",
+      "kind": "vehicle",
+      "display_name": "ZSU-23-4M",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/zsu234",
+      "balance_profile": "cold_war_anti_air",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ztd05",
+      "kind": "vehicle",
+      "display_name": "ZTD-05",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ztd05",
+      "balance_profile": "modern_tracked",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ztq15",
+      "kind": "vehicle",
+      "display_name": "ZTQ-15",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ztq15",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ztq15"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ztz59a",
+      "kind": "vehicle",
+      "display_name": "ZTZ-59A",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ztz59a",
+      "balance_profile": "cold_war_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ztz59a"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ztz96a",
+      "kind": "vehicle",
+      "display_name": "ZTZ-96A MBT",
+      "category": "land",
+      "progression_tier": 3,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ztz96a",
+      "balance_profile": "cold_war_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ztz99a",
+      "kind": "vehicle",
+      "display_name": "ZTZ-99A",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ztz99a",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ztz99a"
+      ],
+      "original_recipe_status": "legacy_directory"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ztz99ah",
+      "kind": "vehicle",
+      "display_name": "ZTZ-99AH MBT",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ztz99ah",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "main_tab",
+      "original_recipe_ids": [],
+      "original_recipe_status": "none"
+    },
+    {
+      "registry_id": "dragonrise_reforge:ztz99bh",
+      "kind": "vehicle",
+      "display_name": "ZTZ-99B",
+      "category": "land",
+      "progression_tier": 4,
+      "proposed_crafting_method": "superb_warfare_workstation",
+      "implementation_status": "recipe_defined_static",
+      "recipe_id": "techquest:dragonrise/vehicle/ztz99bh",
+      "balance_profile": "modern_tank",
+      "creative_evidence": "original_recipe_only",
+      "original_recipe_ids": [
+        "dragonrise_reforge:ztz99bh"
+      ],
+      "original_recipe_status": "legacy_directory"
+    }
+  ],
+  "external_ammunition": [
+    {
+      "registry_id": "superbwarfare:grenade_40mm",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:heavy_ammo",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:large_anti_ground_missile",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:large_shell_ap",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:large_shell_cm",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:large_shell_gs",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:large_shell_he",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:large_shell_wp",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:medium_aerial_bomb",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:medium_anti_air_missile",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:medium_anti_ground_missile",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:medium_shell_ap",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:medium_shell_he",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:small_rocket",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:small_shell_aa",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:small_shell_ap",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:small_shell_gs",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    },
+    {
+      "registry_id": "superbwarfare:small_shell_he",
+      "status": "original_sbw_recipe_present_static",
+      "action": "preserve_original"
+    }
+  ],
+  "notes": [
+    "SBW vehicle containers share a single item ID and carry distinct entity data; audit coverage therefore counts deployment targets separately.",
+    "Hidden entries are individually recorded; review_required prevents a claim of complete coverage.",
+    "Legacy recipe paths are not evidence of runtime loading.",
+    "No separate DragonRise ammo items found in primary item registry; projectile entities must not become inventory items."
+  ]
+}

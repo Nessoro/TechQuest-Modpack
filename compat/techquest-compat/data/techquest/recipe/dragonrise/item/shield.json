@@ -1,0 +1,21 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "misc",
+  "inputs": [
+    "4 superbwarfare:armor_plate",
+    "superbwarfare:steel_block"
+  ],
+  "result": {
+    "item": "dragonrise_reforge:shield"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    }
+  ]
+}

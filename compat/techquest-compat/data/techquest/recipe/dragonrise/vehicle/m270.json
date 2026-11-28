@@ -1,0 +1,34 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "land",
+  "inputs": [
+    "10 superbwarfare:steel_block",
+    "6 superbwarfare:track",
+    "2 superbwarfare:large_motor",
+    "2 superbwarfare:heavy_armament_module",
+    "4 ic2:advanced_circuit",
+    "2 mekanism:elite_control_circuit",
+    "4 mekanism:alloy_reinforced"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:m270"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ic2"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ]
+}

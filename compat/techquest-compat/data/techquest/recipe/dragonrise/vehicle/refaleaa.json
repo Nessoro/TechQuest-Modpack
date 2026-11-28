@@ -1,0 +1,35 @@
+{
+  "type": "superbwarfare:vehicle_assembling",
+  "category": "aircraft",
+  "inputs": [
+    "16 superbwarfare:steel_block",
+    "8 superbwarfare:cemented_carbide_block",
+    "4 superbwarfare:large_motor",
+    "2 superbwarfare:heavy_armament_module",
+    "3 superbwarfare:large_battery_pack",
+    "6 ic2:advanced_circuit",
+    "4 mekanism:elite_control_circuit",
+    "3 mekanism:alloy_atomic"
+  ],
+  "result": {
+    "entity": "dragonrise_reforge:refaleaa"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dragonrise_reforge"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "superbwarfare"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ic2"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ]
+}
