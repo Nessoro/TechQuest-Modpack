@@ -76,6 +76,14 @@ class LocalizationAuditTests(unittest.TestCase):
         self.assertEqual(signature("Repeated %1$s, %<s"),
                          signature("Повтор %1$s, %1$s"))
 
+    def test_prose_percentages_are_not_java_printf_arguments(self):
+        signature = audit_mod.placeholder_signature
+        self.assertEqual(signature("Increases damage by 25% of its base value"), [])
+        self.assertEqual(signature("100% chance of victory"), [])
+        self.assertEqual(signature("25% protection and 5% increased healing"), [])
+        self.assertEqual(signature("Chance: %1$s%% / Damage: %2$d"), [(1, "s"), (2, "d")])
+        self.assertEqual(signature("Value: %s"), [(1, "s")])
+
     def test_empty_directory_must_not_look_like_full_translation(self):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaisesRegex(ValueError, "No JARs"):
