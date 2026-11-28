@@ -10,12 +10,12 @@ The original 1.5.1 JAR uses the pre-1.21 plural recipe directory. Its recipes ar
 - registered_items: 67
 - registered_entities: 185
 - registered_blocks: 1
-- static_player_facing_targets: 195
-- new_recipes: 195
+- static_player_facing_targets: 196
+- new_recipes: 196
 - legacy_recipe_targets: 118
 - invalid_legacy_target: 1
-- excluded: 51
-- review_required: 7
+- excluded: 57
+- review_required: 0
 - runtime_verified: false
 - obtainable_coverage_percent: unknown
 
@@ -23,7 +23,7 @@ Tier assignments and costs are proposed balance decisions, not measured gameplay
 
 ## Remaining gates
 
-The unresolved hidden entries require explicit inspection of intent and obtainability. A real Minecraft client and dedicated-server session must confirm actual registry IDs, serializer decoding, survival crafting, JEI, container deployment, ammunition/repair and conditional absence. A successful static test is not runtime evidence and does not establish 100% obtainable coverage. No release or merge until review and all acceptance checks pass.
+The hidden entries have explicit static scope decisions; review them before release. A real Minecraft client and dedicated-server session must confirm actual registry IDs, serializer decoding, survival crafting, JEI, container deployment, ammunition/repair and conditional absence. A successful static test is not runtime evidence and does not establish 100% obtainable coverage. No release or merge until review and all acceptance checks pass.
 
 ## Dedicated-server recipe decoding test
 
@@ -45,3 +45,17 @@ For a draft-only branch, use the already-registered [Smoke-test TechQuest server
 The deeper original JAR audit (https://github.com/Nessoro/TechQuest-Modpack/actions/runs/46139219780) found a dedicated generator item with real survival consumption, fuel handling, and stored-energy extraction. Added a tier 4 generator deployer recipe; its entity is not a separate output. Four hidden vehicles have server data but no audited player-facing deployment path; base Su-24 has only client vehicle data. Each remains excluded individually to avoid accidentally exposing unfinished content. These are conservative static scope decisions, not a declaration that the hidden vehicles can never work. Owner can reconsider them after runtime testing.
 
 Updated static totals: 196 recipes, 57 excluded registry records, zero unclassified records. Runtime coverage remains unknown. The observer also compares actual decoded ingredient counts, output counts, and registry IDs; it does not replace manual survival gameplay/JEI testing.
+
+## How to clear the release gate with real evidence
+
+After the opt-in server workflow, preserve its exact JSON reports (absent,
+present_existing_world, present_restart, expected) and recipe-fingerprint.txt
+in `compat/dragonrise_runtime_evidence/` in this review branch. Do not commit
+game logs containing private data, binaries, or worlds. The verifier rejects
+missing/stale/mismatching evidence. The separate manual-acceptance.json must
+contain recipe_fingerprint, review, checks, and obtainability. Each review/check
+or obtainability entry has result: pass and an evidence reference to the actual
+test record. Use the CHECKS set in scripts/dragonrise_acceptance.py and every
+recipe ID in the generated expected.json; a representative tier smoke alone
+cannot establish full obtainability. The submitted evidence requires human review.
+No acceptance file is supplied because no real gameplay or server test has yet run.

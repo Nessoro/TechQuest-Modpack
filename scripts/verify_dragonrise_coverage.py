@@ -6,10 +6,14 @@ unreviewed targets and unknown runtime coverage.
 import argparse
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NS = "dragonrise_reforge:"
+sys.path.insert(0, str(ROOT))
+from scripts.dragonrise_acceptance import current_acceptance
+
 BASE = ROOT / "compat/techquest-compat/data/techquest/recipe/dragonrise"
 
 
@@ -153,8 +157,10 @@ def main():
     parser.add_argument("evidence",type=Path)
     parser.add_argument("--output",type=Path)
     parser.add_argument("--require-complete",action="store_true")
+    parser.add_argument("--runtime-evidence", type=Path, default=ROOT / "compat/dragonrise_runtime_evidence")
     args=parser.parse_args()
     report=verify(args.evidence)
+    report.update(current_acceptance(args.runtime_evidence))
     serialized=json.dumps(report,indent=2)
     print(serialized)
     if args.output:

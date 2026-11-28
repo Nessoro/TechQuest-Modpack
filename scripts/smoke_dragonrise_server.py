@@ -43,6 +43,14 @@ def expected_recipes():
     return rows
 
 
+def recipe_fingerprint():
+    digest = hashlib.sha256()
+    for path in [INVENTORY, *sorted((PREFIX / "dragonrise").rglob("*.json"))]:
+        digest.update(path.relative_to(ROOT).as_posix().encode() + b"\0")
+        digest.update(hashlib.sha256(path.read_bytes()).digest())
+    return digest.hexdigest()
+
+
 def validate_report(report, present, expected):
     if report["dragonrise_present"] != present or report["expected"] != len(expected):
         raise ValueError("Unexpected observer configuration")
@@ -52,6 +60,17 @@ def validate_report(report, present, expected):
         raise ValueError("Incorrect loaded count")
     if set(report["observations"]) != (set(expected) if present else set()):
         raise ValueError("Observed recipe IDs differ from inventory")
+    for rid, observed in report["observations"].items():
+        wanted = expected[rid]
+        if observed["serializer"] != wanted["serializer"] or observed["count"] != wanted["count"]:
+            raise ValueError("Decoded output contract mismatch: " + rid)
+        if observed["decoded_ingredients"] != wanted["ingredients"]:
+            raise ValueError("Decoded ingredient quantities mismatch: " + rid)
+        if wanted["kind"] == "vehicle":
+            if observed["item"] not in ("superbwarfare:container", "superbwarfare:small_container") or observed.get("deployment_entity") != wanted["target"]:
+                raise ValueError("Decoded deployment mismatch: " + rid)
+        elif observed["item"] != wanted["target"]:
+            raise ValueError("Decoded item mismatch: " + rid)
     if not report["original_sbw_recipe_ids"]:
         raise ValueError("Missing original SBW recipes")
 
@@ -107,6 +126,7 @@ def main():
     expected = expected_recipes()
     expected_path = reports / "expected.json"
     expected_path.write_text(json.dumps(expected, indent=2), encoding="utf-8")
+    (reports / "recipe-fingerprint.txt").write_text(recipe_fingerprint() + "\n", encoding="utf-8")
     inv = json.loads(INVENTORY.read_text(encoding="utf-8"))
     if args.dragonrise.name != JAR or hashlib.sha256(args.dragonrise.read_bytes()).hexdigest() != inv["source"]["dragonrise_sha256"]:
         raise ValueError("DragonRise differs from audited original")

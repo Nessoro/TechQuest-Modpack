@@ -126,6 +126,8 @@ public final class DragonRiseProbe {
                         observation.addProperty("serializer", serializer);
                         observation.addProperty("item", item);
                         observation.addProperty("count", stack.getCount());
+                        if (kind.equals("vehicle") && containsExact(stack.save(server.registryAccess()), target))
+                            observation.addProperty("deployment_entity", target);
                         observation.add("decoded_ingredients", new Gson().toJsonTree(decoded));
                         observations.add(id, observation);
                     } catch (Exception ex) {
